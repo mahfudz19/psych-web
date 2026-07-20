@@ -1,65 +1,61 @@
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiFetch } from "../src/utils/api";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router"; //[cite: 14]
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"; //[cite: 14]
+import { apiFetch } from "../src/utils/api"; //[cite: 14]
 
-const fetchUserProfile = () => apiFetch("/api/v1/users/me");
+const fetchUserProfile = () => apiFetch("/api/v1/auth/me"); //[cite: 14]
 
 export const Route = createFileRoute("/dashboard")({
   beforeLoad: async ({ context: { queryClient } }) => {
-    if (!localStorage.getItem("token")) {
-      throw redirect({ to: "/login" });
-    }
+    let isError = false;
 
     try {
       await queryClient.fetchQuery({
-        queryKey: ["userProfile"],
-        queryFn: fetchUserProfile,
-        staleTime: 1000 * 60 * 5,
+        queryKey: ["userProfile"], //[cite: 14]
+        queryFn: fetchUserProfile, //[cite: 14]
+        staleTime: 1000 * 60 * 5, //[cite: 14]
       });
     } catch (error) {
-      localStorage.removeItem("token");
+      isError = true;
+    }
+
+    if (isError) {
       throw redirect({ to: "/login" });
     }
   },
-  component: Dashboard,
+  component: Dashboard, //[cite: 14]
 });
 
 function Dashboard() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
+  const router = useRouter(); //[cite: 14]
+  const queryClient = useQueryClient(); //[cite: 14]
 
   const { data: responseData } = useQuery({
-    queryKey: ["userProfile"],
-    queryFn: fetchUserProfile,
+    queryKey: ["userProfile"], //[cite: 14]
+    queryFn: fetchUserProfile, //[cite: 14]
   });
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      // Jika backend Anda butuh request POST untuk menghancurkan session
-      await apiFetch("/api/v1/auth/logout", { method: "POST" });
+      await apiFetch("/api/v1/auth/logout", { method: "POST" }); //[cite: 14]
     },
     onSettled: () => {
-      // Hapus token dari client, apa pun hasil dari API logout
-      localStorage.removeItem("token");
-      queryClient.clear();
+      queryClient.clear(); //[cite: 14]
       router.invalidate().then(() => {
-        router.navigate({ to: "/login" });
+        //[cite: 14]
+        router.navigate({ to: "/login" }); //[cite: 14]
       });
     },
   });
 
-  // MENYESUAIKAN DENGAN STRUKTUR CURL: user ada langsung di dalam .data
-  const user = responseData?.data || {};
+  const user = responseData?.data || {}; //[cite: 14]
 
   return (
     <div className="min-h-screen bg-bg-default flex flex-col">
-      {/* Navbar Minimalis */}
       <header className="bg-bg-paper border-b border-divider px-8 py-4 flex justify-between items-center sticky top-0 z-10">
         <h1 className="text-xl font-bold text-primary-main">@psych-web</h1>
 
         <div className="flex items-center gap-4">
           <div className="text-right hidden sm:block">
-            {/* Field fullName dan email sekarang akan terbaca dengan benar */}
             <p className="text-sm font-semibold text-text-primary">
               {user.fullName || "User"}
             </p>
@@ -75,7 +71,6 @@ function Dashboard() {
         </div>
       </header>
 
-      {/* Konten Utama */}
       <main className="flex-1 p-8 max-w-5xl w-full mx-auto">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-text-primary mb-2">
@@ -87,7 +82,6 @@ function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Kartu Profil */}
           <div className="bg-bg-paper border border-divider p-6 rounded-lg shadow-sm md:col-span-1">
             <h3 className="text-lg font-semibold text-text-primary mb-4 border-b border-divider pb-2">
               Informasi Akun
@@ -107,8 +101,9 @@ function Dashboard() {
                 </p>
                 <div className="flex gap-2 mt-1">
                   {(user.roles || ["USER"]).map((role: string) => (
+                    //[cite: 14]
                     <span
-                      key={role}
+                      key={role} //[cite: 14]
                       className="bg-primary-light/20 text-primary-dark px-2 py-0.5 rounded text-xs font-semibold"
                     >
                       {role}
@@ -127,8 +122,7 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Area Konten Dinamis */}
-          <div className="bg-bg-paper border border-divider p-6 rounded-lg shadow-sm md:col-span-2 flex items-center justify-center min-h-[300px]">
+          <div className="bg-bg-paper border border-divider p-6 rounded-lg shadow-sm md:col-span-2 flex items-center justify-center min-h-75">
             <div className="text-center">
               <p className="text-text-disabled mb-2 text-4xl">📊</p>
               <p className="text-text-secondary">

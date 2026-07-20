@@ -1,58 +1,59 @@
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { apiFetch } from "../src/utils/api";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router"; //[cite: 13]
+import { useMutation } from "@tanstack/react-query"; //[cite: 13]
+import { useState } from "react"; //[cite: 13]
+import { apiFetch } from "../src/utils/api"; //[cite: 13]
 
-const fetchUserProfile = () => apiFetch("/api/v1/users/me");
+const fetchUserProfile = () => apiFetch("/api/v1/auth/me"); //[cite: 13]
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async ({ context: { queryClient } }) => {
-    // Jika token tidak ada di localStorage, jangan repot-repot tembak API
-    if (!localStorage.getItem("token")) return;
+    let isSuccess = false;
 
     try {
       await queryClient.fetchQuery({
-        queryKey: ["userProfile"],
-        queryFn: fetchUserProfile,
-        staleTime: 1000 * 60 * 5,
+        queryKey: ["userProfile"], //[cite: 13]
+        queryFn: fetchUserProfile, //[cite: 13]
+        staleTime: 1000 * 60 * 5, //[cite: 13]
       });
-      throw redirect({ to: "/dashboard" });
+      isSuccess = true;
     } catch (error) {
-      // Token invalid/expired, bersihkan saja
-      localStorage.removeItem("token");
+      isSuccess = false;
+    }
+
+    // Eksekusi redirect secara aman di luar blok try-catch
+    if (isSuccess) {
+      throw redirect({ to: "/dashboard" });
     }
   },
-  component: Login,
+  component: Login, //[cite: 13]
 });
 
 function Login() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const router = useRouter(); //[cite: 13]
+  const [email, setEmail] = useState(""); //[cite: 13]
+  const [password, setPassword] = useState(""); //[cite: 13]
 
   const loginMutation = useMutation({
     mutationFn: async () => {
-      // Gunakan apiFetch agar rapi
       return apiFetch("/api/v1/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
+        //[cite: 13]
+        method: "POST", //[cite: 13]
+        body: JSON.stringify({ email, password }), //[cite: 13]
       });
     },
-    onSuccess: (responseData) => {
-      // SIMPAN TOKEN KE LOCAL STORAGE
-      // Mengacu pada curl: {"success":true,"data":{"token":"..."}}
-      localStorage.setItem("token", responseData.data.token);
-
+    onSuccess: () => {
       router.invalidate().then(() => {
-        router.navigate({ to: "/dashboard" });
+        //[cite: 13]
+        router.navigate({ to: "/dashboard" }); //[cite: 13]
       });
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) return;
-    loginMutation.mutate();
+    //[cite: 13]
+    e.preventDefault(); //[cite: 13]
+    if (!email || !password) return; //[cite: 13]
+    loginMutation.mutate(); //[cite: 13]
   };
 
   return (
@@ -65,7 +66,6 @@ function Login() {
           Masuk ke akun Anda untuk melanjutkan
         </p>
 
-        {/* Notifikasi Error jika gagal */}
         {loginMutation.isError && (
           <div className="mb-4 p-3 bg-error-main/10 border border-error-main text-error-dark rounded text-sm">
             {loginMutation.error.message}

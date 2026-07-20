@@ -1,5 +1,14 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  Link,
+  Outlet,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import { QueryClient } from "@tanstack/react-query";
+
+export interface MyRouterContext {
+  queryClient: QueryClient;
+}
 
 const GlobalErrorComponent = ({ error }: { error: Error }) => {
   return (
@@ -46,7 +55,6 @@ const GlobalPendingComponent = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg-default">
       <div className="text-primary-main flex flex-col items-center">
-        {/* Kamu bisa ganti ini dengan spinner/MUI Circular Progress */}
         <div className="w-12 h-12 border-4 border-primary-main border-t-transparent rounded-full animate-spin mb-4"></div>
         <p className="text-text-secondary font-medium">Memuat halaman...</p>
       </div>
@@ -55,15 +63,14 @@ const GlobalPendingComponent = () => {
 };
 
 // --- Registrasi Root Route ---
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
       <Outlet />
-      {/* Devtools hanya akan muncul di mode development */}
       <TanStackRouterDevtools position="bottom-right" />
     </>
   ),
-  errorComponent: GlobalErrorComponent, // Handle error dari render atau loader secara global di sini
-  notFoundComponent: GlobalNotFoundComponent, // Handle rute yang tidak cocok (404)
-  pendingComponent: GlobalPendingComponent, // Komponen Loading Standar TanStack
+  errorComponent: GlobalErrorComponent,
+  notFoundComponent: GlobalNotFoundComponent,
+  pendingComponent: GlobalPendingComponent,
 });

@@ -1,14 +1,20 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { isAuthenticated } from "../utils/auth";
+import { apiFetch } from "../src/utils/api";
+
+const fetchUserProfile = () => apiFetch("/api/v1/users/me");
 
 export const Route = createFileRoute("/")({
-  beforeLoad: () => {
-    if (isAuthenticated()) {
+  beforeLoad: async ({ context: { queryClient } }) => {
+    try {
+      await queryClient.fetchQuery({
+        queryKey: ["userProfile"],
+        queryFn: fetchUserProfile,
+        staleTime: 1000 * 60 * 5,
+      });
       throw redirect({ to: "/dashboard" });
-    } else {
+    } catch (error) {
       throw redirect({ to: "/login" });
     }
   },
-  // Komponen tidak akan pernah dirender karena selalu di-redirect
   component: () => null,
 });

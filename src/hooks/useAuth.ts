@@ -11,27 +11,35 @@ export const useAuth = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
-    staleTime: 1000 * 60 * 5, // Cache selama 5 menit
-    retry: false, // Jangan retry jika gagal (kemungkinan 401 Unauthorized)
+    staleTime: 1000 * 60 * 5,
+    retry: false,
   });
 
   const logoutMutation = useMutation({
     mutationFn: () => api("/api/v1/auth/logout", { method: "POST" }),
     onSettled: () => {
-      // Hapus semua cache dan paksa pindah ke login
       queryClient.clear();
-      router.invalidate().then(() => {
-        router.navigate({ to: "/login" });
-      });
+      router.invalidate().then(() => router.navigate({ to: "/login" }));
     },
   });
+  const logout = async () => {
+    try {
+      await api("/api/v1/auth/logout", { method: "POST" });
+
+      queryClient.clear();
+
+      router.navigate({ to: "/login", replace: true });
+    } catch (error) {
+      console.error("Gagal logout", error);
+    }
+  };
 
   return {
-    user: data?.data, // Akan berisi object user jika berhasil
+    user: data?.data,
     isAuthenticated: !!data?.data,
     isLoading,
     isError,
-    logout: () => logoutMutation.mutate(),
+    logout,
     isLoggingOut: logoutMutation.isPending,
   };
 };

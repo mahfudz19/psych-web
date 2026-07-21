@@ -2,6 +2,18 @@ import type { ApiResponse } from "../types";
 
 const BASE_URL = "http://localhost:8080";
 
+export class ApiError extends Error {
+  status: number;
+  data: any;
+
+  constructor(status: number, message: string, data?: any) {
+    super(message);
+    this.status = status;
+    this.data = data;
+    this.name = "ApiError";
+  }
+}
+
 export const api = async <T = unknown>(
   endpoint: string,
   options: RequestInit = {},
@@ -33,7 +45,11 @@ export const api = async <T = unknown>(
   const responseData: ApiResponse<T> = await response.json();
 
   if (!response.ok || !responseData.success) {
-    throw responseData;
+    throw new ApiError(
+      response.status,
+      responseData.message || "Request failed",
+      responseData,
+    );
   }
 
   return responseData;

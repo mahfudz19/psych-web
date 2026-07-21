@@ -1,16 +1,19 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+// src/routes/_guest/register/invite/$token/index.tsx
+import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { api } from "../../../../../utils/api";
+import { AuthSplitLayout } from "../../../components/AuthSplitLayout";
 
 export const Route = createFileRoute("/_guest/register/invite/$token/")({
   component: RegisterInvite,
 });
 
 function RegisterInvite() {
-  // Mengambil parameter $token dari URL (contoh: /register/invite/INV-123)
+  const devMode = false;
+
   const { token } = Route.useParams();
-  const navigate = useNavigate();
+  const router = useRouter(); // Mengganti useNavigate dengan useRouter dari TanStack Router
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -51,7 +54,7 @@ function RegisterInvite() {
     },
     onSuccess: () => {
       alert("Berhasil bergabung dengan organisasi! Silakan login.");
-      navigate({ to: "/login" });
+      router.navigate({ to: "/login" });
     },
   });
 
@@ -61,80 +64,131 @@ function RegisterInvite() {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "400px",
-        margin: "4rem auto",
-        padding: "2rem",
-        border: "1px solid #17a2b8",
-        borderRadius: "8px",
-      }}
+    <AuthSplitLayout
+      title="Kolaborasi Bersama Tim Anda."
+      subtitle="Terima undangan dan mulai berkontribusi dalam evaluasi serta pengembangan organisasi secara terpusat."
+      imagePosition="right"
     >
-      <h3 style={{ color: "#17a2b8" }}>Anda Diundang!</h3>
-      <p style={{ fontSize: "0.9rem", color: "#666", marginBottom: "1.5rem" }}>
-        {inviteData?.type === "DIRECT_ADD"
-          ? `Anda akan bergabung sebagai: ${inviteData.payload.invitationRole}`
-          : "Lengkapi data diri Anda untuk bergabung ke dalam organisasi menggunakan kode undangan ini."}
-      </p>
+      <div className="mb-8">
+        <div className="inline-block px-3 py-1 bg-info-main text-info-contrast font-black text-xs tracking-widest rounded mb-6">
+          INVITATION
+        </div>
+        <h3 className="text-3xl font-extrabold text-text-primary tracking-tight mb-2">
+          Terima Undangan
+        </h3>
+        <p className="text-text-secondary text-sm">
+          Lengkapi profil Anda untuk mengonfirmasi undangan ini.
+        </p>
+      </div>
+
+      {/* Info Banner Status Undangan */}
+      <div className="mb-6 p-4 bg-info-main/10 border border-info-light/30 rounded-xl flex flex-col gap-1">
+        <span className="text-info-dark text-xs font-bold uppercase tracking-wider">
+          Status Undangan
+        </span>
+        <span className="text-info-main text-sm font-medium">
+          {inviteData?.type === "DIRECT_ADD"
+            ? `Anda diundang untuk bergabung sebagai: ${inviteData.payload.invitationRole}`
+            : "Undangan via Kode Registrasi"}
+        </span>
+      </div>
 
       {registerMutation.isError && (
-        <p style={{ color: "red" }}>
-          Gagal bergabung. Undangan mungkin sudah kedaluwarsa atau tidak valid.
-        </p>
+        <div className="mb-6 p-3.5 bg-error-main/10 border-l-4 border-error-main rounded-r-md">
+          <p className="text-error-main text-xs font-semibold">
+            Gagal bergabung. Undangan mungkin sudah kedaluwarsa atau tidak
+            valid.
+          </p>
+        </div>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-      >
-        <input
-          type="text"
-          placeholder="Nama Lengkap"
-          required
-          value={formData.fullName}
-          onChange={(e) =>
-            setFormData({ ...formData, fullName: e.target.value })
-          }
-        />
-        <input
-          type="email"
-          placeholder="Email Anda"
-          required
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-        />
-        <input
-          type="password"
-          placeholder="Buat Password"
-          required
-          value={formData.password}
-          onChange={(e) =>
-            setFormData({ ...formData, password: e.target.value })
-          }
-        />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
+            Nama Lengkap
+          </label>
+          <input
+            type="text"
+            placeholder="John Doe"
+            required
+            value={formData.fullName}
+            onChange={(e) =>
+              setFormData({ ...formData, fullName: e.target.value })
+            }
+            className="w-full px-4 py-2.5 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+          />
+        </div>
 
-        {/* Token bersifat Read-Only untuk memberi tahu user bahwa kode terbaca */}
-        <input
-          type="text"
-          value={`Kode: ${token.substring(0, 15)}${token.length > 15 ? "..." : ""}`}
-          disabled
-          style={{ backgroundColor: "#e9ecef" }}
-        />
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
+            Email Anda
+          </label>
+          <input
+            type="email"
+            placeholder="nama@email.com"
+            required
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+            className="w-full px-4 py-2.5 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
+            Buat Password
+          </label>
+          <input
+            type="password"
+            placeholder="••••••••"
+            required
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+            className="w-full px-4 py-2.5 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+          />
+        </div>
+
+        {devMode && (
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
+              Data Registrasi (Otomatis)
+            </label>
+            <textarea
+              value={
+                inviteData?.type === "DIRECT_ADD"
+                  ? JSON.stringify(inviteData.payload, null, 2)
+                  : token
+              }
+              disabled
+              rows={inviteData?.type === "DIRECT_ADD" ? 4 : 1}
+              className="w-full px-4 py-2.5 rounded-xl border border-divider bg-divider/20 text-text-secondary cursor-not-allowed text-sm font-mono resize-none"
+            />
+          </div>
+        )}
 
         <button
           type="submit"
           disabled={registerMutation.isPending || !inviteData}
-          style={{
-            backgroundColor: "#17a2b8",
-            color: "white",
-            padding: "10px",
-            border: "none",
-            borderRadius: "4px",
-          }}
+          className="w-full mt-4 py-3 px-4 bg-primary-main text-primary-contrast rounded-xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-md shadow-primary-main/20"
         >
-          {registerMutation.isPending ? "Memproses..." : "Terima Undangan"}
+          {registerMutation.isPending
+            ? "Memproses..."
+            : "Terima Undangan & Daftar"}
         </button>
       </form>
-    </div>
+
+      <div className="mt-6 pt-6 border-t border-divider text-left text-sm text-text-secondary">
+        Sudah memiliki akun?{" "}
+        <Link
+          to="/login"
+          className="text-primary-main font-bold hover:underline"
+        >
+          Masuk di sini
+        </Link>
+      </div>
+    </AuthSplitLayout>
   );
 }

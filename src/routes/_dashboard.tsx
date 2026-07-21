@@ -1,3 +1,4 @@
+import { SidebarProvider } from "../contexts/SidebarContext";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { Sidebar } from "../components/layout/Sidebar";
 import { Topbar } from "../components/layout/Topbar";
@@ -27,23 +28,25 @@ export const Route = createFileRoute("/_dashboard")({
 function DashboardLayout() {
   const { user } = useAuth();
 
-  // Guard clause jika user masih loading
-  if (!user) return <p>Memuat layout...</p>;
+  if (!user)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-bg-default text-text-secondary">
+        Memuat layout...
+      </div>
+    );
 
   return (
-    <div className="flex h-screen w-full bg-gray-50">
-      {/* Sidebar tersemat di kiri */}
-      <Sidebar />
+    <SidebarProvider>
+      <div className="flex h-screen w-full bg-bg-default font-sans overflow-hidden">
+        <Sidebar />
 
-      {/* Area utama yang mengisi sisa layar */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Topbar />
-
-        {/* Konten bisa di-scroll di sini */}
-        <main className="flex-1 p-8 overflow-y-auto">
-          <Outlet />
-        </main>
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <Topbar />
+          <main className="flex-1 p-6 md:p-8 overflow-y-auto">
+            <Outlet />
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

@@ -1,8 +1,8 @@
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router"; //[cite: 14]
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"; //[cite: 14]
-import { apiFetch } from "../src/utils/api"; //[cite: 14]
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiFetch } from "../src/utils/api";
 
-const fetchUserProfile = () => apiFetch("/api/v1/auth/me"); //[cite: 14]
+const fetchUserProfile = () => apiFetch("/api/v1/auth/me");
 
 export const Route = createFileRoute("/dashboard")({
   beforeLoad: async ({ context: { queryClient } }) => {
@@ -10,9 +10,9 @@ export const Route = createFileRoute("/dashboard")({
 
     try {
       await queryClient.fetchQuery({
-        queryKey: ["userProfile"], //[cite: 14]
-        queryFn: fetchUserProfile, //[cite: 14]
-        staleTime: 1000 * 60 * 5, //[cite: 14]
+        queryKey: ["userProfile"],
+        queryFn: fetchUserProfile,
+        staleTime: 1000 * 60 * 5,
       });
     } catch (error) {
       isError = true;
@@ -22,32 +22,31 @@ export const Route = createFileRoute("/dashboard")({
       throw redirect({ to: "/login" });
     }
   },
-  component: Dashboard, //[cite: 14]
+  component: Dashboard,
 });
 
 function Dashboard() {
-  const router = useRouter(); //[cite: 14]
-  const queryClient = useQueryClient(); //[cite: 14]
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data: responseData } = useQuery({
-    queryKey: ["userProfile"], //[cite: 14]
-    queryFn: fetchUserProfile, //[cite: 14]
+    queryKey: ["userProfile"],
+    queryFn: fetchUserProfile,
   });
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiFetch("/api/v1/auth/logout", { method: "POST" }); //[cite: 14]
+      await apiFetch("/api/v1/auth/logout", { method: "POST" });
     },
     onSettled: () => {
-      queryClient.clear(); //[cite: 14]
+      queryClient.clear();
       router.invalidate().then(() => {
-        //[cite: 14]
-        router.navigate({ to: "/login" }); //[cite: 14]
+        router.navigate({ to: "/login" });
       });
     },
   });
 
-  const user = responseData?.data || {}; //[cite: 14]
+  const user = responseData?.data || {};
 
   return (
     <div className="min-h-screen bg-bg-default flex flex-col">
@@ -101,9 +100,8 @@ function Dashboard() {
                 </p>
                 <div className="flex gap-2 mt-1">
                   {(user.roles || ["USER"]).map((role: string) => (
-                    //[cite: 14]
                     <span
-                      key={role} //[cite: 14]
+                      key={role}
                       className="bg-primary-light/20 text-primary-dark px-2 py-0.5 rounded text-xs font-semibold"
                     >
                       {role}

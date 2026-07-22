@@ -8,7 +8,6 @@ function DarkMode() {
 
   useEffect(() => {
     const html = document.documentElement;
-
     if (isDarkMode) {
       html.classList.add("dark");
       localStorage.setItem("psych_theme", "dark");
@@ -25,11 +24,10 @@ function DarkMode() {
   return (
     <button
       onClick={toggleDarkMode}
-      className="p-2 rounded-full text-text-secondary hover:bg-divider/20 hover:text-primary-main focus:outline-none transition-all"
+      className="p-2 flex items-center justify-center rounded-xl text-text-secondary hover:bg-divider/20 hover:text-primary-main focus:outline-none transition-all"
       aria-label="Toggle Dark Mode"
     >
       {isDarkMode ? (
-        // Ikon Matahari (Light Mode)
         <svg
           className="w-5 h-5"
           fill="none"
@@ -44,7 +42,6 @@ function DarkMode() {
           />
         </svg>
       ) : (
-        // Ikon Bulan (Dark Mode)
         <svg
           className="w-5 h-5"
           fill="none"

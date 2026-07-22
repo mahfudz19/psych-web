@@ -13,17 +13,15 @@ function LanguageSwitcher() {
     <div className="relative">
       <input type="checkbox" id="lang-toggle" className="peer hidden" />
 
-      {/* OVERLAY: z-40 */}
       <label
         htmlFor="lang-toggle"
         className="fixed inset-0 z-40 hidden peer-checked:block"
         aria-hidden="true"
       ></label>
 
-      {/* TRIGGER: Turunkan ke z-30 dan tambahkan efek peer-checked */}
       <label
         htmlFor="lang-toggle"
-        className="cursor-pointer relative z-30 flex items-center gap-1.5 p-2 rounded-lg text-sm font-bold text-text-secondary hover:bg-divider/20 hover:text-primary-main peer-checked:bg-divider/20 peer-checked:text-primary-main transition-all uppercase"
+        className="cursor-pointer relative z-30 flex items-center justify-center gap-1.5 p-2 rounded-xl text-sm font-bold text-text-secondary hover:bg-divider/20 hover:text-primary-main peer-checked:bg-divider/20 peer-checked:text-primary-main transition-all uppercase"
         aria-label="Ganti Bahasa"
       >
         <svg
@@ -42,16 +40,24 @@ function LanguageSwitcher() {
         <span>{i18n.language.substring(0, 2)}</span>
       </label>
 
-      <div className="absolute right-0 mt-2 w-32 bg-bg-paper rounded-xl shadow-lg border border-divider py-1 z-50 origin-top-right transition-all duration-200 ease-out scale-95 opacity-0 invisible peer-checked:scale-100 peer-checked:opacity-100 peer-checked:visible">
+      <div className="absolute right-0 mt-2 w-36 bg-bg-paper rounded-2xl shadow-xl border border-divider p-1.5 z-50 origin-top-right transition-all duration-200 ease-out scale-95 opacity-0 invisible peer-checked:scale-100 peer-checked:opacity-100 peer-checked:visible">
         <button
           onClick={() => changeLanguage("id")}
-          className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors ${i18n.language.startsWith("id") ? "text-primary-main bg-primary-main/10 font-bold" : "text-text-secondary hover:bg-divider/20"}`}
+          className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+            i18n.language.startsWith("id")
+              ? "text-primary-main bg-primary-main/10 font-bold"
+              : "text-text-secondary hover:bg-divider/20 hover:text-text-primary"
+          }`}
         >
           Indonesia
         </button>
         <button
           onClick={() => changeLanguage("en")}
-          className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors ${i18n.language.startsWith("en") ? "text-primary-main bg-primary-main/10 font-bold" : "text-text-secondary hover:bg-divider/20"}`}
+          className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+            i18n.language.startsWith("en")
+              ? "text-primary-main bg-primary-main/10 font-bold"
+              : "text-text-secondary hover:bg-divider/20 hover:text-text-primary"
+          }`}
         >
           English
         </button>

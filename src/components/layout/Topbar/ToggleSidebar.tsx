@@ -7,7 +7,7 @@ function ToggleSidebar() {
     <>
       <button
         onClick={toggleMobile}
-        className="lg:hidden p-2 rounded-lg hover:bg-divider/20 text-text-secondary focus:outline-none transition-colors"
+        className="lg:hidden p-2 flex items-center justify-center rounded-xl text-text-secondary hover:bg-divider/20 hover:text-primary-main focus:outline-none transition-all"
         aria-label="Buka Menu"
       >
         <svg
@@ -27,7 +27,7 @@ function ToggleSidebar() {
 
       <button
         onClick={toggleMini}
-        className="hidden lg:flex p-2 rounded-lg hover:bg-divider/20 text-text-secondary focus:outline-none transition-colors"
+        className="hidden lg:flex p-2 items-center justify-center rounded-xl text-text-secondary hover:bg-divider/20 hover:text-primary-main focus:outline-none transition-all"
         aria-label={isMini ? "Perbesar Menu" : "Perkecil Menu"}
       >
         {isMini ? (

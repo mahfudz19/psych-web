@@ -26,19 +26,17 @@ function ProfileDropdown() {
     <div className="relative">
       <input type="checkbox" id="profile-toggle" className="peer hidden" />
 
-      {/* OVERLAY: z-40 */}
       <label
         htmlFor="profile-toggle"
         className="fixed inset-0 z-40 hidden peer-checked:block"
         aria-hidden="true"
       ></label>
 
-      {/* TRIGGER: Turunkan ke z-30 dan tambahkan efek peer-checked */}
       <label
         htmlFor="profile-toggle"
-        className="cursor-pointer relative z-30 flex items-center gap-3 p-1 md:pr-3 rounded-full border border-divider hover:border-primary-main/50 peer-checked:border-primary-main/50 bg-bg-default transition-all"
+        className="cursor-pointer relative z-30 flex items-center gap-3 p-1.5 md:pr-3 rounded-xl text-text-secondary hover:bg-divider/20 peer-checked:bg-divider/20 transition-all"
       >
-        <div className="w-8 h-8 rounded-full bg-primary-main text-primary-contrast flex items-center justify-center text-xs font-bold shadow-sm">
+        <div className="w-7 h-7 rounded-full bg-primary-main text-primary-contrast flex items-center justify-center text-xs font-bold shadow-sm">
           {getInitials(user.fullName)}
         </div>
         <div className="hidden sm:flex flex-col items-start text-left">
@@ -50,7 +48,7 @@ function ProfileDropdown() {
           </span>
         </div>
         <svg
-          className="w-4 h-4 text-text-disabled transition-transform duration-200 hidden sm:block peer-checked:rotate-180"
+          className="w-4 h-4 transition-transform duration-200 hidden sm:block peer-checked:rotate-180"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -64,8 +62,10 @@ function ProfileDropdown() {
         </svg>
       </label>
 
-      <div className="absolute right-0 mt-3 w-64 bg-bg-paper rounded-xl shadow-lg border border-divider py-2 z-50 origin-top-right transition-all duration-200 ease-out scale-95 opacity-0 invisible peer-checked:scale-100 peer-checked:opacity-100 peer-checked:visible">
-        <div className="px-4 py-3 border-b border-divider">
+      {/* KONTEN DROPDOWN PROFIL: Diperhalus jarak dan lengkungannya */}
+      <div className="absolute right-0 mt-3 w-64 bg-bg-paper rounded-2xl shadow-xl border border-divider p-2 z-50 origin-top-right transition-all duration-200 ease-out scale-95 opacity-0 invisible peer-checked:scale-100 peer-checked:opacity-100 peer-checked:visible">
+        {/* Header Informasi Akun */}
+        <div className="px-3 py-3 border-b border-divider">
           <p className="text-sm font-bold text-text-primary truncate">
             {user.fullName}
           </p>
@@ -73,20 +73,21 @@ function ProfileDropdown() {
             {user.email}
           </p>
           <div className="flex gap-2 mt-3">
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-info-main/10 text-info-main">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-info-main/10 text-info-main">
               Tier: {user.subscriptionTier}
             </span>
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-success-main/10 text-success-main">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-success-main/10 text-success-main">
               {user.status}
             </span>
           </div>
         </div>
 
-        <div className="px-2 py-2">
+        {/* Tautan Menu */}
+        <div className="py-1.5 space-y-0.5">
           <Link
             to="/profile"
             onClick={closeDropdown}
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main transition-colors"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-divider/20 hover:text-text-primary transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -106,7 +107,7 @@ function ProfileDropdown() {
           <Link
             to="/billing"
             onClick={closeDropdown}
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main transition-colors mt-1"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-divider/20 hover:text-text-primary transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -125,14 +126,15 @@ function ProfileDropdown() {
           </Link>
         </div>
 
-        <div className="px-2 pt-2 border-t border-divider">
+        {/* Tombol Logout */}
+        <div className="pt-1.5 border-t border-divider">
           <button
             onClick={() => {
               closeDropdown();
               logout();
             }}
             disabled={isLoggingOut}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-bold text-error-main hover:bg-error-main/10 transition-colors disabled:opacity-50 text-left"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-error-main hover:bg-error-main/10 transition-colors disabled:opacity-50 text-left"
           >
             <svg
               className="w-4 h-4"
@@ -154,5 +156,7 @@ function ProfileDropdown() {
     </div>
   );
 }
+
+ProfileDropdown.displayName = "ProfileDropdown";
 
 export default ProfileDropdown;

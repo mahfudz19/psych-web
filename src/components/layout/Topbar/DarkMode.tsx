@@ -24,7 +24,7 @@ function DarkMode() {
   return (
     <button
       onClick={toggleDarkMode}
-      className="p-2 flex items-center justify-center rounded-xl text-text-secondary hover:bg-divider/20 hover:text-primary-main focus:outline-none transition-all"
+      className="p-2 flex items-center justify-center rounded-2xl text-text-secondary hover:bg-divider/20 hover:text-primary-main focus:outline-none transition-all"
       aria-label="Toggle Dark Mode"
     >
       {isDarkMode ? (

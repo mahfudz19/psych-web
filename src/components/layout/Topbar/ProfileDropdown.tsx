@@ -34,7 +34,7 @@ function ProfileDropdown() {
 
       <label
         htmlFor="profile-toggle"
-        className="cursor-pointer relative z-30 flex items-center gap-3 p-1.5 md:pr-3 rounded-xl text-text-secondary hover:bg-divider/20 peer-checked:bg-divider/20 transition-all"
+        className="cursor-pointer relative z-30 flex items-center gap-3 p-1.5 md:pr-3 rounded-2xl text-text-secondary hover:bg-divider/20 peer-checked:bg-divider/20 transition-all"
       >
         <div className="w-7 h-7 rounded-full bg-primary-main text-primary-contrast flex items-center justify-center text-xs font-bold shadow-sm">
           {getInitials(user.fullName)}
@@ -63,7 +63,7 @@ function ProfileDropdown() {
       </label>
 
       {/* KONTEN DROPDOWN PROFIL: Diperhalus jarak dan lengkungannya */}
-      <div className="absolute right-0 mt-3 w-64 bg-bg-paper rounded-2xl shadow-xl border border-divider p-2 z-50 origin-top-right transition-all duration-200 ease-out scale-95 opacity-0 invisible peer-checked:scale-100 peer-checked:opacity-100 peer-checked:visible">
+      <div className="absolute right-0 mt-3 w-64 bg-bg-paper rounded-3xl shadow-xl border border-divider p-2 z-50 origin-top-right transition-all duration-200 ease-out scale-95 opacity-0 invisible peer-checked:scale-100 peer-checked:opacity-100 peer-checked:visible">
         {/* Header Informasi Akun */}
         <div className="px-3 py-3 border-b border-divider">
           <p className="text-sm font-bold text-text-primary truncate">
@@ -73,10 +73,10 @@ function ProfileDropdown() {
             {user.email}
           </p>
           <div className="flex gap-2 mt-3">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-info-main/10 text-info-main">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase bg-info-main/10 text-info-main">
               Tier: {user.subscriptionTier}
             </span>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-success-main/10 text-success-main">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase bg-success-main/10 text-success-main">
               {user.status}
             </span>
           </div>
@@ -87,7 +87,7 @@ function ProfileDropdown() {
           <Link
             to="/profile"
             onClick={closeDropdown}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-divider/20 hover:text-text-primary transition-colors"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-medium text-text-secondary hover:bg-divider/20 hover:text-text-primary transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -107,7 +107,7 @@ function ProfileDropdown() {
           <Link
             to="/billing"
             onClick={closeDropdown}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-divider/20 hover:text-text-primary transition-colors"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-medium text-text-secondary hover:bg-divider/20 hover:text-text-primary transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -134,7 +134,7 @@ function ProfileDropdown() {
               logout();
             }}
             disabled={isLoggingOut}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-error-main hover:bg-error-main/10 transition-colors disabled:opacity-50 text-left"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-bold text-error-main hover:bg-error-main/10 transition-colors disabled:opacity-50 text-left"
           >
             <svg
               className="w-4 h-4"

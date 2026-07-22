@@ -53,14 +53,14 @@ function RegisterOrganization() {
         </p>
 
         {/* TAB TOGGLE: Organisasi Aktif, Individu Inaktif */}
-        <div className="flex p-1 bg-divider/10 rounded-xl mb-2">
+        <div className="flex p-1 bg-divider/10 rounded-2xl mb-2">
           <Link
             to="/register"
             className="flex-1 py-2 text-sm font-medium text-text-secondary text-center hover:text-text-primary transition-all"
           >
             {t("guest.register.individualTab")}
           </Link>
-          <button className="flex-1 py-2 text-sm font-bold bg-bg-paper text-primary-main rounded-lg shadow-sm border border-divider transition-all">
+          <button className="flex-1 py-2 text-sm font-bold bg-bg-paper text-primary-main rounded-xl shadow-sm border border-divider transition-all">
             {t("guest.register.organizationTab")}
           </button>
         </div>
@@ -87,7 +87,7 @@ function RegisterOrganization() {
             onChange={(e) =>
               setFormData({ ...formData, fullName: e.target.value })
             }
-            className="w-full px-4 py-2.5 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+            className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
 
@@ -103,7 +103,7 @@ function RegisterOrganization() {
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
-            className="w-full px-4 py-2.5 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+            className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
 
@@ -119,7 +119,7 @@ function RegisterOrganization() {
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
-            className="w-full px-4 py-2.5 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+            className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
 
@@ -137,14 +137,14 @@ function RegisterOrganization() {
             onChange={(e) =>
               setFormData({ ...formData, organizationName: e.target.value })
             }
-            className="w-full px-4 py-2.5 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+            className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
 
         <button
           type="submit"
           disabled={registerMutation.isPending}
-          className="w-full mt-4 py-3 px-4 bg-primary-main text-primary-contrast rounded-xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-md shadow-primary-main/20"
+          className="w-full mt-4 py-3 px-4 bg-primary-main text-primary-contrast rounded-2xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-md shadow-primary-main/20"
         >
           {registerMutation.isPending
             ? t("guest.register.processing")

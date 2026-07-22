@@ -43,13 +43,13 @@ const GlobalErrorComponent = ({ error }: { error: any }) => {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-primary-main text-primary-contrast rounded-xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] transition-all shadow-md shadow-primary-main/20"
+            className="px-6 py-3 bg-primary-main text-primary-contrast rounded-2xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] transition-all shadow-md shadow-primary-main/20"
           >
             Muat Ulang Halaman
           </button>
           <button
             onClick={() => window.history.back()}
-            className="px-6 py-3 bg-transparent text-text-primary border border-divider rounded-xl font-bold text-sm hover:bg-divider/20 active:scale-[0.99] transition-all"
+            className="px-6 py-3 bg-transparent text-text-primary border border-divider rounded-2xl font-bold text-sm hover:bg-divider/20 active:scale-[0.99] transition-all"
           >
             Kembali ke Sebelumnya
           </button>
@@ -76,7 +76,7 @@ const GlobalNotFoundComponent = () => {
         </p>
         <Link
           to="/dashboard"
-          className="inline-block px-6 py-3 bg-primary-main text-primary-contrast rounded-xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] transition-all shadow-md shadow-primary-main/20"
+          className="inline-block px-6 py-3 bg-primary-main text-primary-contrast rounded-2xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] transition-all shadow-md shadow-primary-main/20"
         >
           Kembali ke Dashboard
         </Link>

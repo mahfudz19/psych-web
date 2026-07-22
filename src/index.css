@@ -1,130 +1,152 @@
 @import "tailwindcss";
 
-/* 1. Mendaftarkan variant class "dark" jika kamu tetap butuh class seperti `dark:text-white` */
+/* 1. VARIANT DARK MODE TAILWIND V4 */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* 2. ROOT: LIGHT MODE - Warna standar MUI */
+/* 2. ROOT: LIGHT MODE (Clinical-Modern Minimalist) */
 :root {
-  --mui-primary-main: #1976d2;
-  --mui-primary-light: #42a5f5;
-  --mui-primary-dark: #1565c0;
-  --mui-primary-contrast: #ffffff;
+  /* Primary: Deep Teal (Tenang, Profesional, Presisi) */
+  --app-primary-main: #0f766e;
+  --app-primary-light: #14b8a6;
+  --app-primary-dark: #115e59;
+  --app-primary-contrast: #ffffff;
 
-  --mui-secondary-main: #9c27b0;
-  --mui-secondary-light: #ba68c8;
-  --mui-secondary-dark: #7b1fa2;
-  --mui-secondary-contrast: #ffffff;
+  /* Secondary: Slate Blue (Aksen Elegan) */
+  --app-secondary-main: #334155;
+  --app-secondary-light: #64748b;
+  --app-secondary-dark: #1e293b;
+  --app-secondary-contrast: #ffffff;
 
-  --mui-error-main: #d32f2f;
-  --mui-error-light: #ef5350;
-  --mui-error-dark: #c62828;
+  /* Semantik: Soft & Muted (Tidak Mengintimidasi) */
+  --app-error-main: #e11d48;
+  --app-error-light: #f43f5e;
+  --app-error-dark: #be123c;
 
-  --mui-warning-main: #ed6c02;
-  --mui-warning-light: #ff9800;
-  --mui-warning-dark: #e65100;
+  --app-warning-main: #d97706;
+  --app-warning-light: #f59e0b;
+  --app-warning-dark: #b45309;
 
-  --mui-info-main: #0288d1;
-  --mui-info-light: #03a9f4;
-  --mui-info-dark: #01579b;
+  --app-info-main: #0284c7;
+  --app-info-light: #38bdf8;
+  --app-info-dark: #0369a1;
 
-  --mui-success-main: #2e7d32;
-  --mui-success-light: #4caf50;
-  --mui-success-dark: #1b5e20;
+  --app-success-main: #15803d;
+  --app-success-light: #22c55e;
+  --app-success-dark: #166534;
 
-  --mui-bg-default: #ffffff;
-  --mui-bg-paper: #ffffff;
+  /* Background: Off-white lembut untuk mengurangi kelelahan mata */
+  --app-bg-default: #f8fafc;
+  --app-bg-paper: #ffffff;
 
-  --mui-text-primary: rgba(0, 0, 0, 0.87);
-  --mui-text-secondary: rgba(0, 0, 0, 0.6);
-  --mui-text-disabled: rgba(0, 0, 0, 0.38);
+  /* Tipografi: Slate Neutrals */
+  --app-text-primary: #0f172a;
+  --app-text-secondary: #475569;
+  --app-text-disabled: #94a3b8;
 
-  --mui-divider: rgba(0, 0, 0, 0.12);
+  /* Garis Batas Eksplisit & Muted */
+  --app-divider: #e2e8f0;
 }
 
-/* 3. ROOT: DARK MODE - Warna yang disesuaikan saat class .dark aktif */
+/* 3. ROOT: DARK MODE (Deep Slate Neutral) */
 .dark {
-  /* Primary & Secondary dibuat lebih terang agar kontras */
-  --mui-primary-main: #90caf9;
-  --mui-primary-light: #e3f2fd;
-  --mui-primary-dark: #42a5f5;
-  --mui-primary-contrast: rgba(0, 0, 0, 0.87);
+  /* Primary & Secondary disesuaikan untuk kontras di layar gelap */
+  --app-primary-main: #2dd4bf;
+  --app-primary-light: #5eead4;
+  --app-primary-dark: #0f766e;
+  --app-primary-contrast: #0f172a;
 
-  --mui-secondary-main: #ce93d8;
-  --mui-secondary-light: #f3e5f5;
-  --mui-secondary-dark: #ab47bc;
-  --mui-secondary-contrast: rgba(0, 0, 0, 0.87);
+  --app-secondary-main: #94a3b8;
+  --app-secondary-light: #cbd5e1;
+  --app-secondary-dark: #64748b;
+  --app-secondary-contrast: #0f172a;
 
-  --mui-error-main: #f44336;
-  --mui-error-light: #e57373;
-  --mui-error-dark: #d32f2f;
+  /* Semantik Dark Mode */
+  --app-error-main: #fb7185;
+  --app-error-light: #fda4af;
+  --app-error-dark: #f43f5e;
 
-  --mui-warning-main: #ffa726;
-  --mui-warning-light: #ffb74d;
-  --mui-warning-dark: #f57c00;
+  --app-warning-main: #fbbf24;
+  --app-warning-light: #fde047;
+  --app-warning-dark: #f59e0b;
 
-  --mui-info-main: #29b6f6;
-  --mui-info-light: #4fc3f7;
-  --mui-info-dark: #0288d1;
+  --app-info-main: #38bdf8;
+  --app-info-light: #7dd3fc;
+  --app-info-dark: #0284c7;
 
-  --mui-success-main: #66bb6a;
-  --mui-success-light: #81c784;
-  --mui-success-dark: #388e3c;
+  --app-success-main: #4ade80;
+  --app-success-light: #86efac;
+  --app-success-dark: #22c55e;
 
-  /* Background standar MUI Dark Theme (#121212) */
-  --mui-bg-default: #121212;
-  --mui-bg-paper: #1e1e1e;
+  /* Background Deep Slate (Tidak Pitch Black agar mata nyaman) */
+  --app-bg-default: #0f172a;
+  --app-bg-paper: #1e293b;
 
-  /* Teks di-invert menjadi putih */
-  --mui-text-primary: #ffffff;
-  --mui-text-secondary: rgba(255, 255, 255, 0.7);
-  --mui-text-disabled: rgba(255, 255, 255, 0.5);
+  /* Tipografi Dark Mode */
+  --app-text-primary: #f8fafc;
+  --app-text-secondary: #94a3b8;
+  --app-text-disabled: #64748b;
 
-  --mui-divider: rgba(255, 255, 255, 0.12);
+  --app-divider: #334155;
 }
 
-/* 4. MAPPING CSS VARIABLES KE TAILWIND V4 THEME */
+/* 4. MAPPING KE TAILWIND V4 THEME */
 @theme {
-  --color-primary-main: var(--mui-primary-main);
-  --color-primary-light: var(--mui-primary-light);
-  --color-primary-dark: var(--mui-primary-dark);
-  --color-primary-contrast: var(--mui-primary-contrast);
+  --color-primary-main: var(--app-primary-main);
+  --color-primary-light: var(--app-primary-light);
+  --color-primary-dark: var(--app-primary-dark);
+  --color-primary-contrast: var(--app-primary-contrast);
 
-  --color-secondary-main: var(--mui-secondary-main);
-  --color-secondary-light: var(--mui-secondary-light);
-  --color-secondary-dark: var(--mui-secondary-dark);
-  --color-secondary-contrast: var(--mui-secondary-contrast);
+  --color-secondary-main: var(--app-secondary-main);
+  --color-secondary-light: var(--app-secondary-light);
+  --color-secondary-dark: var(--app-secondary-dark);
+  --color-secondary-contrast: var(--app-secondary-contrast);
 
-  --color-error-main: var(--mui-error-main);
-  --color-error-light: var(--mui-error-light);
-  --color-error-dark: var(--mui-error-dark);
+  --color-error-main: var(--app-error-main);
+  --color-error-light: var(--app-error-light);
+  --color-error-dark: var(--app-error-dark);
 
-  --color-warning-main: var(--mui-warning-main);
-  --color-warning-light: var(--mui-warning-light);
-  --color-warning-dark: var(--mui-warning-dark);
+  --color-warning-main: var(--app-warning-main);
+  --color-warning-light: var(--app-warning-light);
+  --color-warning-dark: var(--app-warning-dark);
 
-  --color-info-main: var(--mui-info-main);
-  --color-info-light: var(--mui-info-light);
-  --color-info-dark: var(--mui-info-dark);
+  --color-info-main: var(--app-info-main);
+  --color-info-light: var(--app-info-light);
+  --color-info-dark: var(--app-info-dark);
 
-  --color-success-main: var(--mui-success-main);
-  --color-success-light: var(--mui-success-light);
-  --color-success-dark: var(--mui-success-dark);
+  --color-success-main: var(--app-success-main);
+  --color-success-light: var(--app-success-light);
+  --color-success-dark: var(--app-success-dark);
 
-  --color-bg-default: var(--mui-bg-default);
-  --color-bg-paper: var(--mui-bg-paper);
+  --color-bg-default: var(--app-bg-default);
+  --color-bg-paper: var(--app-bg-paper);
 
-  --color-text-primary: var(--mui-text-primary);
-  --color-text-secondary: var(--mui-text-secondary);
-  --color-text-disabled: var(--mui-text-disabled);
+  --color-text-primary: var(--app-text-primary);
+  --color-text-secondary: var(--app-text-secondary);
+  --color-text-disabled: var(--app-text-disabled);
 
-  --color-divider: var(--mui-divider);
+  --color-divider: var(--app-divider);
+
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
 }
 
-/* 5. Set Base Styles agar auto berubah mengikuti tema */
+/* 5. BASE STYLES */
 @layer base {
   body {
-    background-color: var(--mui-bg-default);
-    color: var(--mui-text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: var(--app-bg-default);
+    color: var(--app-text-primary);
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      sans-serif;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+    -webkit-font-smoothing: antialiased;
   }
 }

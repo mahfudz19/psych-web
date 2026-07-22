@@ -94,7 +94,7 @@ export function Sidebar() {
                       // Jika punya anak: Tampilkan sebagai tombol Akordeon
                       <button
                         onClick={() => handleToggleExpand(item.titleKey)}
-                        className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main transition-colors focus:outline-none"
+                        className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main transition-colors focus:outline-none"
                       >
                         <div className="flex items-center">
                           {item.icon}
@@ -127,7 +127,7 @@ export function Sidebar() {
                         onClick={() =>
                           window.innerWidth < 1024 && toggleMobile()
                         }
-                        className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main [&.active]:bg-primary-main/10 [&.active]:text-primary-main transition-colors"
+                        className="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main [&.active]:bg-primary-main/10 [&.active]:text-primary-main transition-colors"
                       >
                         {item.icon}
                         <span
@@ -141,7 +141,7 @@ export function Sidebar() {
 
                     {/* INTERAKSI A: FLYOUT POPOVER UNTUK MODE MINI (DESKTOP SAJA) */}
                     {isMini && (
-                      <div className="absolute left-full top-0 ml-2 w-48 bg-bg-paper border border-divider shadow-lg rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-60 hidden lg:block overflow-hidden">
+                      <div className="absolute left-full top-0 ml-2 w-48 bg-bg-paper border border-divider shadow-lg rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-60 hidden lg:block overflow-hidden">
                         <div className="px-4 py-3 bg-divider/20 border-b border-divider font-bold text-sm text-text-primary">
                           {t(item.titleKey as any)}
                         </div>
@@ -179,7 +179,7 @@ export function Sidebar() {
                                 onClick={() =>
                                   window.innerWidth < 1024 && toggleMobile()
                                 }
-                                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-text-secondary hover:text-primary-main hover:bg-primary-main/5 [&.active]:text-primary-main [&.active]:font-bold transition-colors"
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-text-secondary hover:text-primary-main hover:bg-primary-main/5 [&.active]:text-primary-main [&.active]:font-bold transition-colors"
                               >
                                 {child.icon}
                                 <span>{t(child.titleKey as any)}</span>{" "}

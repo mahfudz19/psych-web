@@ -71,7 +71,7 @@ function RegisterInvite() {
   return (
     <AuthSplitLayout layoutKey="registerInvite" imagePosition="right">
       <div className="mb-8">
-        <div className="inline-block px-3 py-1 bg-info-main text-info-contrast font-black text-xs tracking-widest rounded mb-6">
+        <div className="inline-block px-3 py-1 bg-info-main text-info-contrast font-black text-xs tracking-widest rounded-md mb-6">
           {t("guest.invite.badge")}
         </div>
         <h3 className="text-3xl font-extrabold text-text-primary tracking-tight mb-2">
@@ -83,7 +83,7 @@ function RegisterInvite() {
       </div>
 
       {/* Info Banner Status Undangan */}
-      <div className="mb-6 p-4 bg-info-main/10 border border-info-light/30 rounded-xl flex flex-col gap-1">
+      <div className="mb-6 p-4 bg-info-main/10 border border-info-light/30 rounded-2xl flex flex-col gap-1">
         <span className="text-info-dark text-xs font-bold uppercase tracking-wider">
           {t("guest.invite.statusLabel")}
         </span>
@@ -117,7 +117,7 @@ function RegisterInvite() {
             onChange={(e) =>
               setFormData({ ...formData, fullName: e.target.value })
             }
-            className="w-full px-4 py-2.5 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+            className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
 
@@ -133,7 +133,7 @@ function RegisterInvite() {
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
-            className="w-full px-4 py-2.5 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+            className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
 
@@ -149,7 +149,7 @@ function RegisterInvite() {
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
-            className="w-full px-4 py-2.5 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+            className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
 
@@ -166,7 +166,7 @@ function RegisterInvite() {
               }
               disabled
               rows={inviteData?.type === "DIRECT_ADD" ? 4 : 1}
-              className="w-full px-4 py-2.5 rounded-xl border border-divider bg-divider/20 text-text-secondary cursor-not-allowed text-sm font-mono resize-none"
+              className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-divider/20 text-text-secondary cursor-not-allowed text-sm font-mono resize-none"
             />
           </div>
         )}
@@ -174,7 +174,7 @@ function RegisterInvite() {
         <button
           type="submit"
           disabled={registerMutation.isPending || !inviteData}
-          className="w-full mt-4 py-3 px-4 bg-primary-main text-primary-contrast rounded-xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-md shadow-primary-main/20"
+          className="w-full mt-4 py-3 px-4 bg-primary-main text-primary-contrast rounded-2xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-md shadow-primary-main/20"
         >
           {registerMutation.isPending
             ? t("guest.invite.processing")

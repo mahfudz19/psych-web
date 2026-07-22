@@ -39,7 +39,7 @@ function Login() {
   return (
     <AuthSplitLayout layoutKey="login" imagePosition="left">
       <div className="mb-10">
-        <div className="inline-block px-3 py-1 bg-primary-main text-primary-contrast font-black text-xs tracking-widest rounded mb-6">
+        <div className="inline-block px-3 py-1 bg-primary-main text-primary-contrast font-black text-xs tracking-widest rounded-md mb-6">
           {t("guest.login.badge")}
         </div>
         <h3 className="text-3xl font-extrabold text-text-primary tracking-tight mb-2">
@@ -69,7 +69,7 @@ function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-3 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all font-medium text-sm"
+            className="w-full px-4 py-3 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all font-medium text-sm"
           />
         </div>
 
@@ -85,14 +85,14 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full px-4 py-3 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all font-medium text-sm"
+            className="w-full px-4 py-3 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all font-medium text-sm"
           />
         </div>
 
         <button
           type="submit"
           disabled={loginMutation.isPending}
-          className="w-full mt-3 py-3 px-4 bg-primary-main text-primary-contrast rounded-xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-md shadow-primary-main/20"
+          className="w-full mt-3 py-3 px-4 bg-primary-main text-primary-contrast rounded-2xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-md shadow-primary-main/20"
         >
           {loginMutation.isPending
             ? t("guest.login.processing")

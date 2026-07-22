@@ -2,6 +2,7 @@
 import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { api } from "../../../../../utils/api";
 import { AuthSplitLayout } from "../../../components/AuthSplitLayout";
 
@@ -9,11 +10,16 @@ export const Route = createFileRoute("/_guest/register/invite/$token/")({
   component: RegisterInvite,
 });
 
+/**
+ * Komponen halaman registrasi untuk undangan organisasi.
+ * @param token - Token undangan dari URL parameter
+ */
 function RegisterInvite() {
+  const { t } = useTranslation();
   const devMode = false;
 
   const { token } = Route.useParams();
-  const router = useRouter(); // Mengganti useNavigate dengan useRouter dari TanStack Router
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -64,40 +70,37 @@ function RegisterInvite() {
   };
 
   return (
-    <AuthSplitLayout
-      title="Kolaborasi Bersama Tim Anda."
-      subtitle="Terima undangan dan mulai berkontribusi dalam evaluasi serta pengembangan organisasi secara terpusat."
-      imagePosition="right"
-    >
+    <AuthSplitLayout layoutKey="registerInvite" imagePosition="right">
       <div className="mb-8">
         <div className="inline-block px-3 py-1 bg-info-main text-info-contrast font-black text-xs tracking-widest rounded mb-6">
-          INVITATION
+          {t("guest.invite.badge")}
         </div>
         <h3 className="text-3xl font-extrabold text-text-primary tracking-tight mb-2">
-          Terima Undangan
+          {t("guest.invite.title")}
         </h3>
         <p className="text-text-secondary text-sm">
-          Lengkapi profil Anda untuk mengonfirmasi undangan ini.
+          {t("guest.invite.subtitle")}
         </p>
       </div>
 
       {/* Info Banner Status Undangan */}
       <div className="mb-6 p-4 bg-info-main/10 border border-info-light/30 rounded-xl flex flex-col gap-1">
         <span className="text-info-dark text-xs font-bold uppercase tracking-wider">
-          Status Undangan
+          {t("guest.invite.statusLabel")}
         </span>
         <span className="text-info-main text-sm font-medium">
           {inviteData?.type === "DIRECT_ADD"
-            ? `Anda diundang untuk bergabung sebagai: ${inviteData.payload.invitationRole}`
-            : "Undangan via Kode Registrasi"}
+            ? t("guest.invite.statusDirectAdd", {
+                role: inviteData.payload.invitationRole,
+              })
+            : t("guest.invite.statusInviteCode")}
         </span>
       </div>
 
       {registerMutation.isError && (
         <div className="mb-6 p-3.5 bg-error-main/10 border-l-4 border-error-main rounded-r-md">
           <p className="text-error-main text-xs font-semibold">
-            Gagal bergabung. Undangan mungkin sudah kedaluwarsa atau tidak
-            valid.
+            {t("guest.invite.error")}
           </p>
         </div>
       )}
@@ -105,11 +108,11 @@ function RegisterInvite() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
-            Nama Lengkap
+            {t("guest.invite.fullNameLabel")}
           </label>
           <input
             type="text"
-            placeholder="John Doe"
+            placeholder={t("guest.invite.fullNamePlaceholder")}
             required
             value={formData.fullName}
             onChange={(e) =>
@@ -121,11 +124,11 @@ function RegisterInvite() {
 
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
-            Email Anda
+            {t("guest.invite.emailLabel")}
           </label>
           <input
             type="email"
-            placeholder="nama@email.com"
+            placeholder={t("guest.invite.emailPlaceholder")}
             required
             value={formData.email}
             onChange={(e) =>
@@ -137,11 +140,11 @@ function RegisterInvite() {
 
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
-            Buat Password
+            {t("guest.invite.passwordLabel")}
           </label>
           <input
             type="password"
-            placeholder="••••••••"
+            placeholder={t("guest.invite.passwordPlaceholder")}
             required
             value={formData.password}
             onChange={(e) =>
@@ -175,18 +178,18 @@ function RegisterInvite() {
           className="w-full mt-4 py-3 px-4 bg-primary-main text-primary-contrast rounded-xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-md shadow-primary-main/20"
         >
           {registerMutation.isPending
-            ? "Memproses..."
-            : "Terima Undangan & Daftar"}
+            ? t("guest.invite.processing")
+            : t("guest.invite.submitBtn")}
         </button>
       </form>
 
       <div className="mt-6 pt-6 border-t border-divider text-left text-sm text-text-secondary">
-        Sudah memiliki akun?{" "}
+        {t("guest.invite.hasAccount")}{" "}
         <Link
           to="/login"
           className="text-primary-main font-bold hover:underline"
         >
-          Masuk di sini
+          {t("guest.invite.loginLink")}
         </Link>
       </div>
     </AuthSplitLayout>

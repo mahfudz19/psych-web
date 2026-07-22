@@ -1,20 +1,31 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../../../components/layout/Topbar/LanguageSwitcher";
+import DarkMode from "../../../components/layout/Topbar/DarkMode";
 
 interface AuthSplitLayoutProps {
   children: React.ReactNode;
-  title: string;
-  subtitle: string;
+  layoutKey:
+    "login" | "registerIndividual" | "registerOrganization" | "registerInvite";
   imagePosition?: "left" | "right";
 }
 
+/**
+ * Layout komponen untuk halaman autentikasi (login/register) dengan
+ * tampilan split antara form dan branding visual.
+ * @param children - Konten form yang akan ditampilkan
+ * @param layoutKey - Key translasi untuk layout (login, registerIndividual, registerOrganization, registerInvite)
+ * @param imagePosition - Posisi gambar branding (left atau right)
+ */
 export function AuthSplitLayout({
   children,
-  title,
-  subtitle,
+  layoutKey,
   imagePosition = "left",
 }: AuthSplitLayoutProps) {
+  const { t } = useTranslation();
+
   return (
-    <div className="min-h-screen flex w-full bg-bg-default text-text-primary overflow-hidden">
+    <div className="min-h-screen flex w-full bg-bg-default text-text-primary overflow-hidden relative">
       {/* SISI BRANDING / VISUAL (70% Lebar Layar) */}
       <div
         className={`hidden lg:flex lg:w-[70%] relative items-center justify-center p-16 bg-linear-to-br from-primary-main/10 via-bg-default to-secondary-main/10
@@ -29,15 +40,15 @@ export function AuthSplitLayout({
           {/* Badge/Pill */}
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-primary-main/10 text-primary-main border border-primary-main/20 mb-6">
             <span className="w-2 h-2 rounded-full bg-primary-main animate-pulse" />
-            Psychology & Evaluation Platform
+            {t("layout.methodBadge")}
           </span>
 
           <h2 className="text-4xl xl:text-5xl font-extrabold text-text-primary tracking-tight leading-tight mb-6">
-            {title}
+            {t(`layout.${layoutKey}.title`)}
           </h2>
 
           <p className="text-text-secondary text-lg leading-relaxed mb-8">
-            {subtitle}
+            {t(`layout.${layoutKey}.subtitle`)}
           </p>
 
           {/* Statistik / Social Proof Kecil agar Lebih Menarik */}
@@ -45,7 +56,7 @@ export function AuthSplitLayout({
             <div>
               <p className="text-2xl font-bold text-primary-main">100%</p>
               <p className="text-xs text-text-secondary mt-0.5">
-                Tervalidasi Metode Psikotes
+                {t("layout.stats.validated")}
               </p>
             </div>
             <div>
@@ -53,7 +64,7 @@ export function AuthSplitLayout({
                 B2B & B2C
               </p>
               <p className="text-xs text-text-secondary mt-0.5">
-                Siap Untuk Organisasi
+                {t("layout.stats.readyForOrg")}
               </p>
             </div>
           </div>
@@ -68,6 +79,11 @@ export function AuthSplitLayout({
       >
         {/* Tanpa bg-bg-paper, tanpa shadow, tanpa border card */}
         <div className="w-full max-w-sm">{children}</div>
+      </div>
+
+      <div className="absolute top-5 right-5 flex gap-1 items-center justify-center">
+        <DarkMode />
+        <LanguageSwitcher />
       </div>
     </div>
   );

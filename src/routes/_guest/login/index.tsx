@@ -2,6 +2,7 @@
 import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { api } from "../../../utils/api";
 import { AuthSplitLayout } from "../components/AuthSplitLayout";
 
@@ -9,7 +10,11 @@ export const Route = createFileRoute("/_guest/login/")({
   component: Login,
 });
 
+/**
+ * Komponen halaman login untuk autentikasi pengguna.
+ */
 function Login() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,27 +38,23 @@ function Login() {
   };
 
   return (
-    <AuthSplitLayout
-      title="Kelola Evaluasi Psikologi Lebih Cepat & Presisi."
-      subtitle="Satu platform terintegrasi untuk pengerjaan psikotes individu dan pemetaan potensi anggota dalam organisasi Anda."
-      imagePosition="left"
-    >
+    <AuthSplitLayout layoutKey="login" imagePosition="left">
       <div className="mb-10">
         <div className="inline-block px-3 py-1 bg-primary-main text-primary-contrast font-black text-xs tracking-widest rounded mb-6">
-          PSYCH-WEB
+          {t("guest.login.badge")}
         </div>
         <h3 className="text-3xl font-extrabold text-text-primary tracking-tight mb-2">
-          Masuk
+          {t("guest.login.title")}
         </h3>
         <p className="text-text-secondary text-sm">
-          Masukkan kredensial akun Anda untuk mengakses *workspace*.
+          {t("guest.login.subtitle")}
         </p>
       </div>
 
       {loginMutation.isError && (
         <div className="mb-6 p-3.5 bg-error-main/10 border-l-4 border-error-main rounded-r-md">
           <p className="text-error-main text-xs font-semibold">
-            Login Gagal: Periksa kembali email dan password Anda.
+            {t("guest.login.error")}
           </p>
         </div>
       )}
@@ -61,11 +62,11 @@ function Login() {
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-2">
-            Email
+            {t("guest.login.emailLabel")}
           </label>
           <input
             type="email"
-            placeholder="nama@perusahaan.com"
+            placeholder={t("guest.login.emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -76,7 +77,7 @@ function Login() {
         <div>
           <div className="flex justify-between items-center mb-2">
             <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary">
-              Password
+              {t("guest.login.passwordLabel")}
             </label>
           </div>
           <input
@@ -94,17 +95,19 @@ function Login() {
           disabled={loginMutation.isPending}
           className="w-full mt-3 py-3 px-4 bg-primary-main text-primary-contrast rounded-xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-md shadow-primary-main/20"
         >
-          {loginMutation.isPending ? "Memproses..." : "Masuk ke Dashboard →"}
+          {loginMutation.isPending
+            ? t("guest.login.processing")
+            : t("guest.login.submitBtn")}
         </button>
       </form>
 
       <div className="mt-8 pt-6 border-t border-divider text-left text-sm text-text-secondary">
-        Belum memiliki akun?{" "}
+        {t("guest.login.noAccount")}{" "}
         <Link
           to="/register"
           className="text-primary-main font-bold hover:underline"
         >
-          Daftar akun baru
+          {t("guest.login.registerLink")}
         </Link>
       </div>
     </AuthSplitLayout>

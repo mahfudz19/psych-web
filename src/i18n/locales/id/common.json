@@ -18,5 +18,86 @@
     "logout": "Logout",
     "loggingOut": "Keluar...",
     "profileSettings": "Pengaturan Profil"
+  },
+  "guest": {
+    "login": {
+      "badge": "PSYCH-WEB",
+      "title": "Masuk",
+      "subtitle": "Masukkan kredensial akun Anda untuk mengakses *workspace*.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "nama@perusahaan.com",
+      "passwordLabel": "Password",
+      "submitBtn": "Masuk ke Dashboard →",
+      "processing": "Memproses...",
+      "error": "Login Gagal: Periksa kembali email dan password Anda.",
+      "noAccount": "Belum memiliki akun?",
+      "registerLink": "Daftar akun baru"
+    },
+    "register": {
+      "title": "Daftar Akun",
+      "subtitle": "Pilih tipe akun yang sesuai dengan kebutuhan Anda.",
+      "individualTab": "Individu",
+      "organizationTab": "Organisasi",
+      "fullNameLabel": "Nama Lengkap Admin",
+      "fullNamePlaceholder": "John Doe",
+      "emailLabel": "Email Kerja",
+      "emailPlaceholder": "admin@perusahaan.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "referralLabel": "Kode Referral",
+      "referralOptional": "Opsional",
+      "referralPlaceholder": "Contoh: PSYCH2026",
+      "organizationNameLabel": "Nama Organisasi",
+      "submitIndividual": "Daftar Akun Baru",
+      "submitOrganization": "Daftar Organisasi Baru",
+      "processing": "Memproses...",
+      "error": "Gagal mendaftar. Pastikan email belum digunakan dan data valid.",
+      "hasAccount": "Sudah memiliki akun?",
+      "loginLink": "Masuk di sini"
+    },
+    "invite": {
+      "badge": "INVITATION",
+      "title": "Terima Undangan",
+      "subtitle": "Lengkapi profil Anda untuk mengonfirmasi undangan ini.",
+      "statusLabel": "Status Undangan",
+      "statusDirectAdd": "Anda diundang untuk bergabung sebagai: {{role}}",
+      "statusInviteCode": "Undangan via Kode Registrasi",
+      "error": "Gagal bergabung. Undangan mungkin sudah kedaluwarsa atau tidak valid.",
+      "fullNameLabel": "Nama Lengkap",
+      "fullNamePlaceholder": "John Doe",
+      "emailLabel": "Email Anda",
+      "emailPlaceholder": "nama@email.com",
+      "passwordLabel": "Buat Password",
+      "passwordPlaceholder": "••••••••",
+      "submitBtn": "Terima Undangan & Daftar",
+      "processing": "Memproses...",
+      "hasAccount": "Sudah memiliki akun?",
+      "loginLink": "Masuk di sini"
+    }
+  },
+  "layout": {
+    "login": {
+      "title": "Kelola Evaluasi Psikologi Lebih Cepat & Presisi.",
+      "subtitle": "Satu platform terintegrasi untuk pengerjaan psikotes individu dan pemetaan potensi anggota dalam organisasi Anda."
+    },
+    "registerIndividual": {
+      "title": "Mulai Perjalanan Pengembangan Diri Anda.",
+      "subtitle": "Bergabung dengan ribuan profesional lainnya. Ikuti tes psikologi yang tervalidasi dan temukan potensi terbaik Anda."
+    },
+    "registerOrganization": {
+      "title": "Bangun Ekosistem Evaluasi Perusahaan Anda.",
+      "subtitle": "Kelola anggota, tugaskan psikotes, dan pantau perkembangan tim Anda dalam satu dasbor terpusat yang komprehensif."
+    },
+    "registerInvite": {
+      "title": "Kolaborasi Bersama Tim Anda.",
+      "subtitle": "Terima undangan dan mulai berkontribusi dalam evaluasi dan pengembangan organisasi secara terpusat."
+    },
+    "methodBadge": "Platform Psikologi & Evaluasi",
+    "validatedMethod": "Tervalidasi Metode Psikotes",
+    "readyOrg": "Siap Untuk Organisasi",
+    "stats": {
+      "validated": "Tervalidasi Metode Psikotes",
+      "readyForOrg": "Siap Untuk Organisasi"
+    }
   }
 }

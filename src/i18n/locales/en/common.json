@@ -18,5 +18,86 @@
     "logout": "Logout",
     "loggingOut": "Logging out...",
     "profileSettings": "Profile Settings"
+  },
+  "guest": {
+    "login": {
+      "badge": "PSYCH-WEB",
+      "title": "Sign In",
+      "subtitle": "Enter your account credentials to access the *workspace*.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "name@company.com",
+      "passwordLabel": "Password",
+      "submitBtn": "Sign In to Dashboard →",
+      "processing": "Processing...",
+      "error": "Login Failed: Please check your email and password.",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Register new account"
+    },
+    "register": {
+      "title": "Register Account",
+      "subtitle": "Choose the account type that suits your needs.",
+      "individualTab": "Individual",
+      "organizationTab": "Organization",
+      "fullNameLabel": "Admin Full Name",
+      "fullNamePlaceholder": "John Doe",
+      "emailLabel": "Work Email",
+      "emailPlaceholder": "admin@company.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "referralLabel": "Referral Code",
+      "referralOptional": "Optional",
+      "referralPlaceholder": "Example: PSYCH2026",
+      "organizationNameLabel": "Organization Name",
+      "submitIndividual": "Register New Account",
+      "submitOrganization": "Register New Organization",
+      "processing": "Processing...",
+      "error": "Registration failed. Please ensure email is not already in use and data is valid.",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in here"
+    },
+    "invite": {
+      "badge": "INVITATION",
+      "title": "Accept Invitation",
+      "subtitle": "Complete your profile to confirm this invitation.",
+      "statusLabel": "Invitation Status",
+      "statusDirectAdd": "You are invited to join as: {{role}}",
+      "statusInviteCode": "Invitation via Registration Code",
+      "error": "Failed to join. The invitation may have expired or is invalid.",
+      "fullNameLabel": "Full Name",
+      "fullNamePlaceholder": "John Doe",
+      "emailLabel": "Your Email",
+      "emailPlaceholder": "name@email.com",
+      "passwordLabel": "Create Password",
+      "passwordPlaceholder": "••••••••",
+      "submitBtn": "Accept Invitation & Register",
+      "processing": "Processing...",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in here"
+    }
+  },
+  "layout": {
+    "login": {
+      "title": "Manage Psychological Evaluations Faster & Precisely.",
+      "subtitle": "An integrated platform for individual psychological tests and mapping the potential of members in your organization."
+    },
+    "registerIndividual": {
+      "title": "Start Your Self-Development Journey.",
+      "subtitle": "Join thousands of other professionals. Take validated psychological tests and discover your best potential."
+    },
+    "registerOrganization": {
+      "title": "Build Your Company's Evaluation Ecosystem.",
+      "subtitle": "Manage members, assign psychological tests, and monitor your team's progress in one comprehensive centralized dashboard."
+    },
+    "registerInvite": {
+      "title": "Collaborate with Your Team.",
+      "subtitle": "Accept the invitation and start contributing to organizational evaluation and development in a centralized manner."
+    },
+    "methodBadge": "Psychology & Evaluation Platform",
+    "validatedMethod": "Validated Psychological Test Methods",
+    "readyOrg": "Ready for Organizations",
+    "stats": {
+      "validated": "Validated Psychological Test Methods",
+      "readyForOrg": "Ready for Organizations"
+    }
   }
 }

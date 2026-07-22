@@ -25,7 +25,6 @@ function ToggleSidebar() {
         </svg>
       </button>
 
-      {/* Tombol Pencilik Sidebar Desktop */}
       <button
         onClick={toggleMini}
         className="hidden lg:flex p-2 rounded-lg hover:bg-divider/20 text-text-secondary focus:outline-none transition-colors"

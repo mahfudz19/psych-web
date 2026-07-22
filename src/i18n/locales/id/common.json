@@ -1,0 +1,22 @@
+{
+  "sidebar": {
+    "mainMenu": "Menu Utama",
+    "overview": "Overview",
+    "psychTest": "Evaluasi Psikologi",
+    "testList": "Daftar Tes",
+    "history": "Riwayat & Hasil",
+    "billing": "Langganan & Tagihan",
+    "organization": "Organisasi",
+    "teamMembers": "Anggota Tim",
+    "memberList": "Daftar Anggota",
+    "inviteNew": "Undang Baru",
+    "system": "Sistem",
+    "adminPanel": "Super Admin Panel"
+  },
+  "topbar": {
+    "welcome": "Selamat datang",
+    "logout": "Logout",
+    "loggingOut": "Keluar...",
+    "profileSettings": "Pengaturan Profil"
+  }
+}

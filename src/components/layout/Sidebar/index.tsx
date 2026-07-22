@@ -1,15 +1,17 @@
-// src/components/layout/Sidebar.tsx
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { useAuth } from "../../hooks/useAuth";
-import { useSidebar } from "../../contexts/SidebarContext";
-import { menuConfig, type NavGroup, type NavItem } from "../../config/menu";
+import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useAuth } from "../../../hooks/useAuth";
+import { useSidebar } from "../../../contexts/SidebarContext";
+import { menuConfig, type NavGroup, type NavItem } from "./menu";
 
 export function Sidebar() {
   const { user } = useAuth();
   const { isMobileOpen, isMini, toggleMobile } = useSidebar();
+  const { t } = useTranslation(); // Inisialisasi fungsi penerjemah
 
   // State untuk melacak menu mana yang sedang dibuka (Akordeon)
+  // Perhatikan: Karena menuConfig sekarang menggunakan titleKey, kita melacak titleKey-nya
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
 
   if (!user) return null;
@@ -24,11 +26,11 @@ export function Sidebar() {
   };
 
   // Fungsi Toggle Akordeon
-  const handleToggleExpand = (title: string) => {
+  const handleToggleExpand = (titleKey: string) => {
     setExpandedMenus((prev) =>
-      prev.includes(title)
-        ? prev.filter((item) => item !== title)
-        : [...prev, title],
+      prev.includes(titleKey)
+        ? prev.filter((item) => item !== titleKey)
+        : [...prev, titleKey],
     );
   };
 
@@ -69,7 +71,6 @@ export function Sidebar() {
         </div>
 
         {/* NAVIGASI MENU */}
-        {/* PERBAIKAN BUG: Jika isMini, kita hilangkan overflow-hidden agar kotak Flyout tidak terpotong (clipped) */}
         <nav
           className={`flex-1 px-3 py-6 space-y-1 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
         >
@@ -79,12 +80,12 @@ export function Sidebar() {
               <p
                 className={`px-3 text-xs font-bold text-text-disabled uppercase tracking-widest mb-3 transition-opacity duration-300 ${isMini ? "lg:opacity-0 lg:invisible lg:h-0 lg:mb-0" : ""}`}
               >
-                {group.groupLabel}
+                {t(group.groupLabelKey as any)} {/* Terjemahkan label grup */}
               </p>
 
               {group.items.filter(checkAccess).map((item, itemIdx) => {
                 const hasChildren = item.children && item.children.length > 0;
-                const isExpanded = expandedMenus.includes(item.title);
+                const isExpanded = expandedMenus.includes(item.titleKey);
 
                 return (
                   <div key={itemIdx} className="relative group">
@@ -92,7 +93,7 @@ export function Sidebar() {
                     {hasChildren ? (
                       // Jika punya anak: Tampilkan sebagai tombol Akordeon
                       <button
-                        onClick={() => handleToggleExpand(item.title)}
+                        onClick={() => handleToggleExpand(item.titleKey)}
                         className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main transition-colors focus:outline-none"
                       >
                         <div className="flex items-center">
@@ -100,7 +101,8 @@ export function Sidebar() {
                           <span
                             className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0 lg:hidden" : ""}`}
                           >
-                            {item.title}
+                            {t(item.titleKey as any)}{" "}
+                            {/* Terjemahkan judul parent */}
                           </span>
                         </div>
                         {/* Ikon Chevron (Disembunyikan saat Mini Desktop) */}
@@ -131,7 +133,8 @@ export function Sidebar() {
                         <span
                           className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0 lg:hidden" : ""}`}
                         >
-                          {item.title}
+                          {t(item.titleKey as any)}{" "}
+                          {/* Terjemahkan judul link tunggal */}
                         </span>
                       </Link>
                     )}
@@ -140,7 +143,7 @@ export function Sidebar() {
                     {isMini && (
                       <div className="absolute left-full top-0 ml-2 w-48 bg-bg-paper border border-divider shadow-lg rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-60 hidden lg:block overflow-hidden">
                         <div className="px-4 py-3 bg-divider/20 border-b border-divider font-bold text-sm text-text-primary">
-                          {item.title}
+                          {t(item.titleKey as any)}
                         </div>
                         {hasChildren && (
                           <div className="py-1">
@@ -152,7 +155,8 @@ export function Sidebar() {
                                   to={child.path!}
                                   className="block px-4 py-2.5 text-sm font-medium text-text-secondary hover:bg-primary-main/5 hover:text-primary-main [&.active]:text-primary-main"
                                 >
-                                  {child.title}
+                                  {t(child.titleKey as any)}{" "}
+                                  {/* Terjemahkan submenu */}
                                 </Link>
                               ))}
                           </div>
@@ -178,7 +182,8 @@ export function Sidebar() {
                                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-text-secondary hover:text-primary-main hover:bg-primary-main/5 [&.active]:text-primary-main [&.active]:font-bold transition-colors"
                               >
                                 {child.icon}
-                                <span>{child.title}</span>
+                                <span>{t(child.titleKey as any)}</span>{" "}
+                                {/* Terjemahkan submenu */}
                               </Link>
                             ))}
                         </div>
@@ -196,7 +201,7 @@ export function Sidebar() {
           <p
             className={`text-xs text-text-disabled font-medium whitespace-nowrap transition-all duration-300 text-center ${isMini ? "lg:opacity-0 lg:hidden" : ""}`}
           >
-            &copy; 2026 PsyCorp
+            &copy; {new Date().getFullYear()} PsyCorp
           </p>
           {isMini && (
             <p className="text-[10px] text-text-disabled font-bold text-center hidden lg:block">

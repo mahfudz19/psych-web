@@ -1,18 +1,19 @@
+// src/components/layout/menu.ts
 import React from "react";
 
 // Tipe data untuk setiap item menu
 export interface NavItem {
-  title: string;
-  path?: string; // Opsional jika hanya berupa induk submenu
+  titleKey: string; // Menggunakan titleKey untuk i18n
+  path?: string;
   icon: React.ReactNode;
-  accountTypes?: string[]; // Jika kosong, berarti bisa diakses semua tipe akun
-  roles?: string[]; // Khusus untuk role spesifik (seperti ADMIN)
-  children?: NavItem[]; // Array untuk submenu
+  accountTypes?: string[];
+  roles?: string[];
+  children?: NavItem[];
 }
 
-// Tipe data untuk pengelompokan menu (misal: "Menu Utama", "Organisasi")
+// Tipe data untuk pengelompokan menu
 export interface NavGroup {
-  groupLabel: string;
+  groupLabelKey: string; // Menggunakan groupLabelKey untuk i18n
   accountTypes?: string[];
   roles?: string[];
   items: NavItem[];
@@ -20,10 +21,10 @@ export interface NavGroup {
 
 export const menuConfig: NavGroup[] = [
   {
-    groupLabel: "Menu Utama",
+    groupLabelKey: "sidebar.mainMenu",
     items: [
       {
-        title: "Overview",
+        titleKey: "sidebar.overview",
         path: "/dashboard",
         icon: (
           <svg
@@ -42,8 +43,7 @@ export const menuConfig: NavGroup[] = [
         ),
       },
       {
-        // Menu Psikotes diubah menjadi Parent dengan Submenu
-        title: "Evaluasi Psikologi",
+        titleKey: "sidebar.psychTest",
         icon: (
           <svg
             className="w-5 h-5 shrink-0"
@@ -61,7 +61,7 @@ export const menuConfig: NavGroup[] = [
         ),
         children: [
           {
-            title: "Daftar Tes",
+            titleKey: "sidebar.testList",
             path: "/tests",
             icon: (
               <svg
@@ -86,7 +86,7 @@ export const menuConfig: NavGroup[] = [
             ),
           },
           {
-            title: "Riwayat & Hasil",
+            titleKey: "sidebar.history",
             path: "/tests/history",
             icon: (
               <svg
@@ -107,7 +107,7 @@ export const menuConfig: NavGroup[] = [
         ],
       },
       {
-        title: "Langganan & Tagihan",
+        titleKey: "sidebar.billing",
         path: "/billing",
         icon: (
           <svg
@@ -128,11 +128,11 @@ export const menuConfig: NavGroup[] = [
     ],
   },
   {
-    groupLabel: "Organisasi",
-    accountTypes: ["ORGANIZATION"], // Seluruh grup ini dilindungi
+    groupLabelKey: "sidebar.organization",
+    accountTypes: ["ORGANIZATION"],
     items: [
       {
-        title: "Anggota Tim",
+        titleKey: "sidebar.teamMembers",
         icon: (
           <svg
             className="w-5 h-5 shrink-0"
@@ -150,7 +150,7 @@ export const menuConfig: NavGroup[] = [
         ),
         children: [
           {
-            title: "Daftar Anggota",
+            titleKey: "sidebar.memberList",
             path: "/members",
             icon: (
               <svg
@@ -169,7 +169,7 @@ export const menuConfig: NavGroup[] = [
             ),
           },
           {
-            title: "Undang Baru",
+            titleKey: "sidebar.inviteNew",
             path: "/members/invite",
             icon: (
               <svg
@@ -192,11 +192,11 @@ export const menuConfig: NavGroup[] = [
     ],
   },
   {
-    groupLabel: "Sistem",
-    roles: ["ADMIN"], // Seluruh grup ini dilindungi oleh Role
+    groupLabelKey: "sidebar.system",
+    roles: ["ADMIN"],
     items: [
       {
-        title: "Super Admin Panel",
+        titleKey: "sidebar.adminPanel",
         path: "/admin",
         icon: (
           <svg

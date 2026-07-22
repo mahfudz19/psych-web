@@ -1,10 +1,14 @@
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../../hooks/useAuth";
 import DarkMode from "./DarkMode";
 import ProfileDropdown from "./ProfileDropdown";
 import ToggleSidebar from "./ToggleSidebar";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export function Topbar() {
   const { user } = useAuth();
+  const { t } = useTranslation(); // Inisialisasi translasi
+
   if (!user) return null;
 
   return (
@@ -13,7 +17,7 @@ export function Topbar() {
         <ToggleSidebar />
 
         <span className="text-sm font-medium text-text-secondary hidden sm:inline-block pl-2 lg:pl-0">
-          Selamat datang,{" "}
+          {t("topbar.welcome")},{" "}
           <strong className="text-text-primary font-bold">
             {user.fullName.split(" ")[0]}
           </strong>
@@ -21,6 +25,7 @@ export function Topbar() {
       </div>
 
       <div className="flex items-center space-x-3 lg:space-x-4">
+        <LanguageSwitcher />
         <DarkMode />
         <div className="h-6 w-px bg-divider mx-1 hidden sm:block"></div>
         <ProfileDropdown />

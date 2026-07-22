@@ -1,0 +1,22 @@
+{
+  "sidebar": {
+    "mainMenu": "Main Menu",
+    "overview": "Overview",
+    "psychTest": "Psychological Evaluation",
+    "testList": "Test List",
+    "history": "History & Results",
+    "billing": "Billing & Subscription",
+    "organization": "Organization",
+    "teamMembers": "Team Members",
+    "memberList": "Member List",
+    "inviteNew": "Invite New",
+    "system": "System",
+    "adminPanel": "Super Admin Panel"
+  },
+  "topbar": {
+    "welcome": "Welcome",
+    "logout": "Logout",
+    "loggingOut": "Logging out...",
+    "profileSettings": "Profile Settings"
+  }
+}

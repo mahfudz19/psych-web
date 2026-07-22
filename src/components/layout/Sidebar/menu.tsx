@@ -1,4 +1,3 @@
-// src/components/layout/menu.ts
 import React from "react";
 
 // Tipe data untuk setiap item menu

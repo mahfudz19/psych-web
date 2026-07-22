@@ -1,10 +1,10 @@
-// src/routes/_guest/register/organization/index.tsx
 import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api } from "../../../../utils/api";
 import { AuthSplitLayout } from "../../components/AuthSplitLayout";
+import { removeEmptyValues } from "../../../../utils/src/utils/removeEmptyValues";
 
 export const Route = createFileRoute("/_guest/register/organization/")({
   component: RegisterOrganization,
@@ -27,10 +27,9 @@ function RegisterOrganization() {
     mutationFn: () =>
       api("/api/v1/auth/register", {
         method: "POST",
-        body: JSON.stringify({
-          ...formData,
-          accountType: "ORGANIZATION",
-        }),
+        body: JSON.stringify(
+          removeEmptyValues({ ...formData, accountType: "ORGANIZATION" }),
+        ),
       }),
     onSuccess: () => {
       alert("Registrasi Organisasi berhasil! Silakan login.");

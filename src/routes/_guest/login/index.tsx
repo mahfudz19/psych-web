@@ -1,4 +1,3 @@
-// src/routes/_guest/login/index.tsx
 import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";

@@ -1,17 +1,20 @@
-import { SidebarProvider } from "../contexts/SidebarContext";
+import { SidebarProvider } from "../../contexts/SidebarContext";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { Sidebar } from "../components/layout/Sidebar";
-import { Topbar } from "../components/layout/Topbar";
-import { useAuth } from "../hooks/useAuth";
-import { api } from "../utils/api";
+import { Sidebar } from "../../components/layout/Sidebar";
+import { Topbar } from "../../components/layout/Topbar";
+import { useAuth } from "../../hooks/useAuth";
+import { api } from "../../utils/api";
+import type { User } from "../../types/user";
+import { getRedirectPathByRole } from "../../utils/auth";
 
-export const Route = createFileRoute("/_dashboard")({
+export const Route = createFileRoute("/_auth/_dashboard")({
   beforeLoad: async ({ context: { queryClient } }) => {
     let isError = false;
+    let data = null;
     try {
-      await queryClient.fetchQuery({
+      data = await queryClient.fetchQuery({
         queryKey: ["userProfile"],
-        queryFn: () => api("/api/v1/auth/me"),
+        queryFn: () => api<User>("/api/v1/auth/me"),
         staleTime: 1000 * 60 * 5,
       });
     } catch (error) {
@@ -19,7 +22,7 @@ export const Route = createFileRoute("/_dashboard")({
     }
 
     if (isError) {
-      throw redirect({ to: "/login" });
+      throw redirect({ to: getRedirectPathByRole(data?.data) });
     }
   },
   component: DashboardLayout,

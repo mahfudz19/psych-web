@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../../hooks/useAuth";
 
-export const Route = createFileRoute("/_dashboard/dashboard/")({
+export const Route = createFileRoute("/_auth/_dashboard/dashboard/")({
   component: DashboardOverview,
 });
 

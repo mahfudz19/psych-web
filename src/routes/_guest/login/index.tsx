@@ -4,14 +4,13 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api } from "../../../utils/api";
 import { AuthSplitLayout } from "../components/AuthSplitLayout";
+import type { User } from "../../../types/user";
+import { getRedirectPathByRole } from "../../../utils/auth";
 
 export const Route = createFileRoute("/_guest/login/")({
   component: Login,
 });
 
-/**
- * Komponen halaman login untuk autentikasi pengguna.
- */
 function Login() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -20,13 +19,13 @@ function Login() {
 
   const loginMutation = useMutation({
     mutationFn: () =>
-      api("/api/v1/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-      }),
-    onSuccess: () => {
+      api<{ user: User; token: string; expiresIn: number }>(
+        "/api/v1/auth/login",
+        { method: "POST", body: JSON.stringify({ email, password }) },
+      ),
+    onSuccess: ({ data }) => {
       router.invalidate().then(() => {
-        router.navigate({ to: "/dashboard" });
+        router.navigate({ to: getRedirectPathByRole(data?.user) });
       });
     },
   });

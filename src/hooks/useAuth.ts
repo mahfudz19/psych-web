@@ -33,7 +33,6 @@ export const useAuth = () => {
       console.error("Gagal logout", error);
     }
   };
-  console.log(data?.data);
 
   return {
     user: data?.data,

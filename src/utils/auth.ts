@@ -138,5 +138,5 @@ export function getRedirectPathByRole(user: User | null | undefined): string {
   }
 
   // Default untuk individual user
-  return "/portal/tests";
+  return "/portal";
 }

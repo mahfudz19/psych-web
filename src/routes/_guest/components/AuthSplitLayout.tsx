@@ -10,13 +10,6 @@ interface AuthSplitLayoutProps {
   imagePosition?: "left" | "right";
 }
 
-/**
- * Layout komponen untuk halaman autentikasi (login/register) dengan
- * tampilan split antara form dan branding visual.
- * @param children - Konten form yang akan ditampilkan
- * @param layoutKey - Key translasi untuk layout (login, registerIndividual, registerOrganization, registerInvite)
- * @param imagePosition - Posisi gambar branding (left atau right)
- */
 export function AuthSplitLayout({
   children,
   layoutKey,

@@ -6,9 +6,11 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { QueryClient } from "@tanstack/react-query";
 import { TopProgressBar } from "../components/layout/TopProgressBar";
+import type { useAuth } from "../hooks/useAuth";
 
 export interface MyRouterContext {
   queryClient: QueryClient;
+  auth: ReturnType<typeof useAuth>;
 }
 
 // 1. Ubah tipe error menjadi 'any' (atau custom interface) agar kita bisa mengekstrak properti status dari API

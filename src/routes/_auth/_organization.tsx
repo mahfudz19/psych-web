@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_auth/_organization")({
     try {
       data = await queryClient.fetchQuery({
         queryKey: ["userProfile"],
-        queryFn: () => api<User>("/api/v1/auth/me"),
+        queryFn: () => api.get<User>("/api/v1/auth/me"),
         staleTime: 1000 * 60 * 5,
       });
     } catch (error) {

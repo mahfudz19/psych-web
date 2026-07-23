@@ -52,8 +52,7 @@ function RegisterInvite() {
           : { inviteCode: token }),
       };
 
-      return api("/api/v1/auth/register", {
-        method: "POST",
+      return api.post("/api/v1/auth/register", {
         body: JSON.stringify(bodyPayload),
       });
     },

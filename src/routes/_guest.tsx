@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_guest")({
     try {
       data = await queryClient.fetchQuery({
         queryKey: ["userProfile"],
-        queryFn: () => api<User>("/api/v1/auth/me"),
+        queryFn: () => api.get<User>("/api/v1/auth/me"),
         staleTime: 1000 * 60 * 5,
       });
       isSuccess = true;

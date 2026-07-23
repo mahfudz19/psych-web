@@ -3,7 +3,7 @@ import { useRouter } from "@tanstack/react-router";
 import type { User } from "../types/user";
 import { api } from "../utils/api";
 
-const fetchUserProfile = () => api<User>("/api/v1/auth/me");
+const fetchUserProfile = () => api.get<User>("/api/v1/auth/me");
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
@@ -17,7 +17,7 @@ export const useAuth = () => {
   });
 
   const logoutMutation = useMutation({
-    mutationFn: () => api("/api/v1/auth/logout", { method: "POST" }),
+    mutationFn: () => api.post("/api/v1/auth/logout"),
     onSettled: () => {
       queryClient.clear();
       router.invalidate().then(() => router.navigate({ to: "/login" }));
@@ -26,7 +26,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await api("/api/v1/auth/logout", { method: "POST" });
+      await api.post("/api/v1/auth/logout");
       queryClient.clear();
       router.navigate({ to: "/login", replace: true });
     } catch (error) {

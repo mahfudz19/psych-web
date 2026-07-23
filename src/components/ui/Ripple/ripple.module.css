@@ -1,0 +1,48 @@
+.rippleContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.focusPulseAfter::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  opacity: var(--ripple-opacity);
+  width: var(--ripple-size);
+  height: var(--ripple-size);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(var(--ripple-scale));
+
+  animation:
+    pulseIn 300ms ease-out forwards,
+    focusPulseLoop 2s ease-in-out infinite;
+  animation-delay: 0ms, 300ms;
+}
+
+@keyframes pulseIn {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(var(--ripple-scale));
+  }
+}
+
+@keyframes focusPulseLoop {
+  0% {
+    transform: translate(-50%, -50%) scale(var(--ripple-scale));
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(var(--ripple-scale-max));
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(var(--ripple-scale));
+  }
+}

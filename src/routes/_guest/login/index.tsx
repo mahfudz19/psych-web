@@ -1,38 +1,21 @@
-import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { api } from "../../../utils/api";
 import { AuthSplitLayout } from "../-components/AuthSplitLayout";
-import type { User } from "../../../types/user";
-import { getRedirectPathByRole } from "../../../utils/auth";
+import { useLoginMutation } from "./-api/login.query";
 
-export const Route = createFileRoute("/_guest/login/")({
-  component: Login,
-});
+export const Route = createFileRoute("/_guest/login/")({ component: Login });
 
 function Login() {
   const { t } = useTranslation();
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const loginMutation = useMutation({
-    mutationFn: () =>
-      api<{ user: User; token: string; expiresIn: number }>(
-        "/api/v1/auth/login",
-        { method: "POST", body: JSON.stringify({ email, password }) },
-      ),
-    onSuccess: ({ data }) => {
-      router.invalidate().then(() => {
-        router.navigate({ to: getRedirectPathByRole(data?.user) });
-      });
-    },
-  });
+  const loginMutation = useLoginMutation();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    loginMutation.mutate();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    loginMutation.mutate({ email, password });
   };
 
   return (
@@ -49,14 +32,6 @@ function Login() {
         </p>
       </div>
 
-      {loginMutation.isError && (
-        <div className="mb-6 p-3.5 bg-error-main/10 border-l-4 border-error-main rounded-r-md">
-          <p className="text-error-main text-xs font-semibold">
-            {t("guest.login.error")}
-          </p>
-        </div>
-      )}
-
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-2">
@@ -64,9 +39,8 @@ function Login() {
           </label>
           <input
             type="email"
+            name="email"
             placeholder={t("guest.login.emailPlaceholder")}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             required
             className="w-full px-4 py-3 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all font-medium text-sm"
           />
@@ -80,9 +54,8 @@ function Login() {
           </div>
           <input
             type="password"
+            name="password"
             placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             required
             className="w-full px-4 py-3 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all font-medium text-sm"
           />

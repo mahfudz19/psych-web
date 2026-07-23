@@ -1,21 +1,15 @@
-import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { api } from "../../../../utils/api";
 import { AuthSplitLayout } from "../../-components/AuthSplitLayout";
-import { removeEmptyValues } from "../../../../utils/src/utils/removeEmptyValues";
+import { useRegisterMutation } from "../api/register.query";
 
 export const Route = createFileRoute("/_guest/register/organization/")({
   component: RegisterOrganization,
 });
 
-/**
- * Komponen halaman registrasi untuk akun organisasi.
- */
 function RegisterOrganization() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -23,23 +17,22 @@ function RegisterOrganization() {
     organizationName: "",
   });
 
-  const registerMutation = useMutation({
-    mutationFn: () =>
-      api("/api/v1/auth/register", {
-        method: "POST",
-        body: JSON.stringify(
-          removeEmptyValues({ ...formData, accountType: "ORGANIZATION" }),
-        ),
-      }),
-    onSuccess: () => {
-      alert("Registrasi Organisasi berhasil! Silakan login.");
-      router.navigate({ to: "/login" });
-    },
-  });
+  const registerMutation = useRegisterMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    registerMutation.mutate();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const fullName = formData.get("fullName") as string;
+    const inviteCode = formData.get("inviteCode") as string;
+    registerMutation.mutate({
+      email,
+      password,
+      fullName,
+      inviteCode,
+      accountType: "ORGANIZATION",
+    });
   };
 
   return (
@@ -132,7 +125,8 @@ function RegisterOrganization() {
           </label>
           <input
             type="text"
-            placeholder="PT Sukses Makmur"
+            placeholder="inviteCode"
+            name="inviteCode"
             value={formData.organizationName}
             onChange={(e) =>
               setFormData({ ...formData, organizationName: e.target.value })

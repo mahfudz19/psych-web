@@ -1,45 +1,31 @@
-import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { api } from "../../../utils/api";
 import { AuthSplitLayout } from "../-components/AuthSplitLayout";
-import { removeEmptyValues } from "../../../utils/src/utils/removeEmptyValues";
+import { useRegisterMutation } from "./api/register.query";
 
 export const Route = createFileRoute("/_guest/register/")({
   component: RegisterIndividual,
 });
 
-/**
- * Komponen halaman registrasi untuk akun individual.
- */
 function RegisterIndividual() {
   const { t } = useTranslation();
-  const router = useRouter();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    fullName: "",
-    referralCode: "",
-  });
 
-  const registerMutation = useMutation({
-    mutationFn: () =>
-      api("/api/v1/auth/register", {
-        method: "POST",
-        body: JSON.stringify(
-          removeEmptyValues({ ...formData, accountType: "INDIVIDUAL" }),
-        ),
-      }),
-    onSuccess: () => {
-      alert("Registrasi berhasil! Silakan login.");
-      router.navigate({ to: "/login" });
-    },
-  });
+  const registerMutation = useRegisterMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    registerMutation.mutate();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const fullName = formData.get("fullName") as string;
+    const referralCode = formData.get("referralCode") as string;
+    registerMutation.mutate({
+      email,
+      password,
+      fullName,
+      referralCode,
+      accountType: "INDIVIDUAL",
+    });
   };
 
   return (
@@ -83,10 +69,7 @@ function RegisterIndividual() {
             type="text"
             placeholder={t("guest.register.fullNamePlaceholder")}
             required
-            value={formData.fullName}
-            onChange={(e) =>
-              setFormData({ ...formData, fullName: e.target.value })
-            }
+            name="fullName"
             className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
@@ -97,12 +80,9 @@ function RegisterIndividual() {
           </label>
           <input
             type="email"
+            name="email"
             placeholder={t("guest.register.emailPlaceholder")}
             required
-            value={formData.email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
             className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
@@ -113,12 +93,9 @@ function RegisterIndividual() {
           </label>
           <input
             type="password"
+            name="password"
             placeholder={t("guest.register.passwordPlaceholder")}
             required
-            value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
             className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
@@ -132,11 +109,8 @@ function RegisterIndividual() {
           </label>
           <input
             type="text"
+            name="referralCode"
             placeholder={t("guest.register.referralPlaceholder")}
-            value={formData.referralCode}
-            onChange={(e) =>
-              setFormData({ ...formData, referralCode: e.target.value })
-            }
             className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium uppercase"
           />
         </div>

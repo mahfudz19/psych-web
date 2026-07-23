@@ -116,7 +116,7 @@ const loginMutation = useMutation({
     try {
       const userProfile = await queryClient.fetchQuery({
         queryKey: ["userProfile"],
-        queryFn: () => api<User>("/api/v1/auth/me"),
+        queryFn: () => api.get<User>("/api/v1/auth/me"),
       });
 
       const user = userProfile.data;

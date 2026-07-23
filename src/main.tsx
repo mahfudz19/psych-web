@@ -7,6 +7,7 @@ import "./index.css";
 import { routeTree } from "./routeTree.gen";
 import "./i18n";
 import { useAuth } from "./hooks/useAuth";
+import { Toaster } from "./components/ui/Toast";
 
 const GlobalPendingComponent = () => {
   return (
@@ -40,23 +41,13 @@ const GlobalPendingComponent = () => {
   );
 };
 
-// 1. Inisialisasi QueryClient
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: 1,
-    },
-  },
+  defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } },
 });
 
-// 2. Inisialisasi Router instance (Hanya untuk context statis)
 const router = createRouter({
   routeTree,
-  context: {
-    queryClient,
-    auth: undefined!,
-  },
+  context: { queryClient, auth: undefined! },
   defaultPreload: "intent",
   defaultNotFoundComponent: GlobalPendingComponent,
   defaultPendingMs: 0,
@@ -68,22 +59,17 @@ declare module "@tanstack/react-router" {
   }
 }
 
-// 3. BUAT KOMPONEN PEMBUNGKUS (APP)
-// Ini diperlukan agar kita bisa memanggil hook useAuth di dalam React Lifecycle
 function App() {
-  const auth = useAuth(); // Ambil state autentikasi Anda
+  const auth = useAuth();
 
-  return (
-    // 4. Injeksi context dinamis melalui RouterProvider
-    <RouterProvider router={router} context={{ queryClient, auth }} />
-  );
+  return <RouterProvider router={router} context={{ queryClient, auth }} />;
 }
 
-// 5. Render komponen App di dalam root
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <Toaster position="top-right" />
     <QueryClientProvider client={queryClient}>
-      <App /> {/* Menggantikan <RouterProvider /> langsung */}
+      <App />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </StrictMode>,

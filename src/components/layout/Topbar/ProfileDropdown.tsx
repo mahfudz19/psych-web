@@ -22,6 +22,8 @@ function ProfileDropdown() {
     if (checkbox) checkbox.checked = false;
   };
 
+  if (!user) return null;
+
   return (
     <div className="relative">
       <input type="checkbox" id="profile-toggle" className="peer hidden" />

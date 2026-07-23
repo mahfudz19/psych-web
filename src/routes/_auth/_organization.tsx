@@ -7,7 +7,7 @@ import { api } from "../../utils/api";
 import type { User } from "../../types/user";
 import { getRedirectPathByRole } from "../../utils/auth";
 
-export const Route = createFileRoute("/_auth/_dashboard")({
+export const Route = createFileRoute("/_auth/_organization")({
   beforeLoad: async ({ context: { queryClient } }) => {
     let isError = false;
     let data = null;

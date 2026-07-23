@@ -1,10 +1,10 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import type { User } from "../../types/user";
-import { api } from "../../utils/api";
 import { getRedirectPathByRole } from "../../utils/auth";
-import PortalLayout from "./_portal/components/layout";
+import { api } from "../../utils/api";
+import type { User } from "../../types/user";
+import ExamLayout from "./_exam/components/layout.tsx";
 
-export const Route = createFileRoute("/_auth/_portal")({
+export const Route = createFileRoute("/_auth/_exam")({
   beforeLoad: async ({ context: { queryClient } }) => {
     let isError = false;
     let data = null;
@@ -22,5 +22,5 @@ export const Route = createFileRoute("/_auth/_portal")({
       throw redirect({ to: getRedirectPathByRole(data?.data) });
     }
   },
-  component: PortalLayout,
+  component: ExamLayout,
 });

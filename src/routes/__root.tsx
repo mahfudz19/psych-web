@@ -75,7 +75,7 @@ const GlobalNotFoundComponent = () => {
           atau telah dipindahkan.
         </p>
         <Link
-          to="/dashboard"
+          to="/"
           className="inline-block px-6 py-3 bg-primary-main text-primary-contrast rounded-2xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] transition-all shadow-md shadow-primary-main/20"
         >
           Kembali ke Dashboard

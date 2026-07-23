@@ -83,7 +83,7 @@ src/
 │   │       └── history/index.tsx # Riwayat hasil tes peserta
 │   │
 │   └── _exam.tsx                 # (BARU) AREA 4: Distraction-Free Exam Mode (ExamHeader Saja)
-│       └── _exam/
+│   └── _exam/
 │           └── $testId/index.tsx # Halaman Pengerjaan Soal (Layar Penuh/Fokus)
 │
 ├── index.css                     # Konfigurasi CSS & Tailwind (Clinical-Modern Minimalist tokens)[cite: 19]

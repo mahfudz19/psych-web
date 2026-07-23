@@ -1,8 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
+import type { User } from "../types/user";
 import { api } from "../utils/api";
 
-const fetchUserProfile = () => api<any>("/api/v1/auth/me");
+const fetchUserProfile = () => api<User>("/api/v1/auth/me");
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
@@ -11,7 +12,7 @@ export const useAuth = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5, // 5 menit
     retry: false,
   });
 
@@ -22,17 +23,17 @@ export const useAuth = () => {
       router.invalidate().then(() => router.navigate({ to: "/login" }));
     },
   });
+
   const logout = async () => {
     try {
       await api("/api/v1/auth/logout", { method: "POST" });
-
       queryClient.clear();
-
       router.navigate({ to: "/login", replace: true });
     } catch (error) {
       console.error("Gagal logout", error);
     }
   };
+  console.log(data?.data);
 
   return {
     user: data?.data,

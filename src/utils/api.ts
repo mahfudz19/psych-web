@@ -14,7 +14,8 @@ export class ApiError extends Error {
   }
 }
 
-export const api = async <T = unknown>(
+// Base request function
+const request = async <T = unknown>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<ApiResponse<T>> => {
@@ -54,3 +55,41 @@ export const api = async <T = unknown>(
 
   return responseData;
 };
+
+// Create api object with HTTP methods
+export const api = Object.assign(
+  request, // api() still callable directly
+  {
+    get<T = unknown>(endpoint: string, options?: RequestInit) {
+      return request<T>(endpoint, { ...options, method: "GET" });
+    },
+
+    post<T = unknown>(endpoint: string, data?: any, options?: RequestInit) {
+      return request<T>(endpoint, {
+        ...options,
+        method: "POST",
+        body: data instanceof FormData ? data : JSON.stringify(data),
+      });
+    },
+
+    put<T = unknown>(endpoint: string, data?: any, options?: RequestInit) {
+      return request<T>(endpoint, {
+        ...options,
+        method: "PUT",
+        body: data instanceof FormData ? data : JSON.stringify(data),
+      });
+    },
+
+    patch<T = unknown>(endpoint: string, data?: any, options?: RequestInit) {
+      return request<T>(endpoint, {
+        ...options,
+        method: "PATCH",
+        body: data instanceof FormData ? data : JSON.stringify(data),
+      });
+    },
+
+    delete<T = unknown>(endpoint: string, options?: RequestInit) {
+      return request<T>(endpoint, { ...options, method: "DELETE" });
+    },
+  },
+);

@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { getRedirectPathByRole } from "../../utils/auth";
 import { api } from "../../utils/api";
 import type { User } from "../../types/user";
-import ExamLayout from "./_exam/components/layout.tsx";
+import ExamLayout from "./_exam/-components/layout.tsx";
 
 export const Route = createFileRoute("/_auth/_exam")({
   beforeLoad: async ({ context: { queryClient } }) => {

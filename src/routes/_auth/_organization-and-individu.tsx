@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { User } from "../../types/user";
 import { api } from "../../utils/api";
 import { getRedirectPathByRole } from "../../utils/auth";
-import IndividuAndOrganizationLayout from "./_organization-and-individu/components/layout";
+import IndividuAndOrganizationLayout from "./_organization-and-individu/-components/layout";
 
 export const Route = createFileRoute("/_auth/_organization-and-individu")({
   beforeLoad: async ({ context: { queryClient } }) => {

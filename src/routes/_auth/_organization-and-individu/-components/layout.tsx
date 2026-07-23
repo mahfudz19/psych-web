@@ -1,7 +1,7 @@
 import { Outlet } from "@tanstack/react-router";
 import { useAuth } from "../../../../hooks/useAuth";
-import { PortalLayout } from "../../_individu/components/layout";
-import { DashboardLayout } from "../../_organization/components/layout";
+import { PortalLayout } from "../../_individu/-components/layout";
+import { DashboardLayout } from "../../_organization/-components/layout";
 
 export default function IndividuAndOrganizationLayout() {
   const { user } = useAuth();

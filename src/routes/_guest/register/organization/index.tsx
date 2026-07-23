@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api } from "../../../../utils/api";
-import { AuthSplitLayout } from "../../components/AuthSplitLayout";
+import { AuthSplitLayout } from "../../-components/AuthSplitLayout";
 import { removeEmptyValues } from "../../../../utils/src/utils/removeEmptyValues";
 
 export const Route = createFileRoute("/_guest/register/organization/")({

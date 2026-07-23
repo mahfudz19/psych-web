@@ -1,11 +1,8 @@
-import { SidebarProvider } from "../../contexts/SidebarContext";
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { Sidebar } from "../../components/layout/Sidebar";
-import { Topbar } from "../../components/layout/Topbar";
-import { useAuth } from "../../hooks/useAuth";
-import { api } from "../../utils/api";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { User } from "../../types/user";
+import { api } from "../../utils/api";
 import { getRedirectPathByRole } from "../../utils/auth";
+import DashboardLayout from "./_organization/components/layout";
 
 export const Route = createFileRoute("/_auth/_organization")({
   beforeLoad: async ({ context: { queryClient } }) => {
@@ -27,29 +24,3 @@ export const Route = createFileRoute("/_auth/_organization")({
   },
   component: DashboardLayout,
 });
-
-function DashboardLayout() {
-  const { user } = useAuth();
-
-  if (!user)
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-bg-default text-text-secondary">
-        Memuat layout...
-      </div>
-    );
-
-  return (
-    <SidebarProvider>
-      <div className="flex h-screen w-full bg-bg-default font-sans overflow-hidden">
-        <Sidebar />
-
-        <div className="flex flex-col flex-1 overflow-hidden">
-          <Topbar />
-          <main className="flex-1 p-6 md:p-8 overflow-y-auto">
-            <Outlet />
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
-  );
-}

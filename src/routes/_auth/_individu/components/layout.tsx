@@ -40,12 +40,12 @@ function PortalHeader() {
   );
 }
 
-export default function PortalLayout() {
+export function PortalLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-bg-default text-text-primary transition-colors duration-200">
       <PortalHeader />
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 flex flex-col">
-        <Outlet />
+        {children}
       </main>
 
       <footer className="py-6 text-center shrink-0">
@@ -54,5 +54,13 @@ export default function PortalLayout() {
         </p>
       </footer>
     </div>
+  );
+}
+
+export default function Layout() {
+  return (
+    <PortalLayout>
+      <Outlet />
+    </PortalLayout>
   );
 }

@@ -5,6 +5,29 @@
 export type AccountType = "INDIVIDUAL" | "ORGANIZATION";
 
 /**
+ * Tipe data untuk alasan pengarsipan kode referral
+ */
+export type ReferralArchiveReason = "regenerated" | "user_request" | "security";
+
+/**
+ * Interface untuk entri riwayat kode referral yang diarsipkan
+ * Sesuai dengan embedded array referralCodeHistory di MongoDB
+ */
+export interface ReferralHistoryEntry {
+  /** Kode referral lama yang diarsipkan */
+  code: string;
+
+  /** Tanggal pengarsipan (ISO 8601) */
+  archivedAt: string;
+
+  /** Alasan pengarsipan */
+  reason: ReferralArchiveReason;
+
+  /** Kode referral baru yang menggantikan (jika regenerated) */
+  replacedBy: string | null;
+}
+
+/**
  * Tipe data untuk Role dalam Organisasi
  * Menentukan level akses user dalam konteks organisasi
  */
@@ -113,6 +136,9 @@ export interface User {
   /** Timestamp kapan user ini direferensikan (nullable) */
   referredAt: string | null;
 
+  /** Riwayat kode referral yang diarsipkan */
+  referralCodeHistory?: ReferralHistoryEntry[];
+
   // === ORGANIZATION INVITATION ===
   /** Kode undangan unik untuk user ini */
   inviteCode: string | null;
@@ -195,4 +221,32 @@ export interface TestAccess {
     duration: number; // dalam detik
     totalQuestions: number;
   };
+}
+
+/**
+ * Interface untuk statistik referral
+ */
+export interface ReferralStats {
+  /** Total jumlah user yang direferensikan */
+  totalReferred: number;
+
+  /** Jumlah referral yang berhasil completed registration */
+  successfulReferrals: number;
+
+  /** Total earnings dari referrals */
+  referralEarnings: number;
+}
+
+/**
+ * Interface untuk response regenerasi kode referral
+ */
+export interface RegenerateReferralResponse {
+  /** Kode referral baru */
+  referralCode: string;
+
+  /** Kode referral lama yang diarsipkan */
+  archivedCode: string;
+
+  /** User data yang sudah diupdate */
+  user: User;
 }

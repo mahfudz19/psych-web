@@ -59,14 +59,6 @@ function RegisterOrganization() {
         </div>
       </div>
 
-      {registerMutation.isError && (
-        <div className="mb-6 p-3.5 bg-error-main/10 border-l-4 border-error-main rounded-r-md">
-          <p className="text-error-main text-xs font-semibold">
-            {t("guest.register.error")}
-          </p>
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">

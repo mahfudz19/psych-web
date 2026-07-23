@@ -1,5 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../../../../../hooks/useAuth";
+import {
+  useReferralStatsQuery,
+  useRegenerateMutation,
+} from "./-api/referral.query";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/profile/referral/",
@@ -8,173 +14,125 @@ export const Route = createFileRoute(
 });
 
 export function ReferralPage() {
-  const [referralData, setReferralData] = useState({
-    activeCode: "PSY-2026-X99Q",
-    stats: {
-      totalReferred: 5,
-      activeRewards: "Diskon 20% Asesmen",
-    },
-    history: [
-      {
-        code: "PSY-OLD-110A",
-        archivedAt: "10 Jan 2026",
-        reason: "Regenerated",
-        replacedBy: "PSY-2026-X99Q",
-      },
-    ],
-  });
+  const { t } = useTranslation();
+  const { user } = useAuth();
+
+  // Fetch referral stats from backend (optional - will use user profile as fallback)
+  const { data: statsData, isLoading: isLoadingStats } =
+    useReferralStatsQuery();
+
+  // Regenerate mutation
+  const regenerateMutation = useRegenerateMutation();
 
   const [copied, setCopied] = useState(false);
-  const [isRegenerating, setIsRegenerating] = useState(false);
 
-  const handleCopyCode = () => {
-    navigator.clipboard.writeText(referralData.activeCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  // Get stats - prioritize backend data, fallback to user profile
+  const stats = statsData?.data?.stats;
+  const totalReferred = stats?.totalReferred ?? user?.totalReferrals ?? 0;
+  const referralEarnings =
+    stats?.referralEarnings ?? user?.referralEarnings ?? 0;
+  // Get active code from user profile (primary source)
+  const activeCode = user?.referralCode ?? "";
 
-  const handleRegenerate = () => {
-    if (
-      window.confirm(
-        "Perbarui kode referral? Kode lama akan diarsipkan otomatis.",
-      )
-    ) {
-      setIsRegenerating(true);
-      setTimeout(() => {
-        const oldCode = referralData.activeCode;
-        const newCode = "PSY-2026-NEW" + Math.floor(100 + Math.random() * 900);
+  // Format rewards display
+  const activeRewards =
+    referralEarnings > 0
+      ? `Rp ${referralEarnings.toLocaleString("id-ID")}`
+      : t("referral.stats.noRewards");
 
-        setReferralData((prev) => ({
-          ...prev,
-          activeCode: newCode,
-          history: [
-            {
-              code: oldCode,
-              archivedAt: new Date().toLocaleDateString("id-ID", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              }),
-              reason: "Regenerated",
-              replacedBy: newCode,
-            },
-            ...prev.history,
-          ],
-        }));
-        setIsRegenerating(false);
-      }, 500);
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(activeCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error("Failed to copy code:", error);
     }
   };
 
+  const handleRegenerate = () => {
+    if (window.confirm(t("referral.regenerateConfirm"))) {
+      regenerateMutation.mutate({ reason: "user_request" });
+    }
+  };
+
+  // Loading state
+  if (isLoadingStats) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="md:col-span-2 p-5 rounded-3xl bg-bg-paper border border-divider shadow-sm animate-pulse">
+            <div className="h-4 bg-divider rounded w-1/3 mb-4"></div>
+            <div className="h-8 bg-divider rounded w-1/2"></div>
+          </div>
+          <div className="p-5 rounded-3xl bg-bg-paper border border-divider shadow-sm animate-pulse">
+            <div className="h-4 bg-divider rounded w-1/3 mb-4"></div>
+            <div className="h-8 bg-divider rounded w-1/2"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      {/* GRID UTAMA: KODE AKTIF & STATISTIK */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Kolom 1-2: Kode Aktif */}
-        <div className="md:col-span-2 p-5 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col justify-between space-y-4">
-          <div>
-            <span className="text-[11px] font-bold text-primary-main uppercase tracking-wider">
-              Kode Aktif Saat Ini
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Kolom 1-2: Kode Aktif */}
+      <div className="md:col-span-2 p-5 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col justify-between space-y-4">
+        <div>
+          <span className="text-[11px] font-bold text-primary-main uppercase tracking-wider">
+            {t("referral.activeCodeLabel")}
+          </span>
+          <div className="flex items-center gap-2 mt-2">
+            <span className="text-2xl font-black font-mono tracking-wide text-text-primary bg-bg-default px-3 py-1.5 rounded-xl border border-divider">
+              {activeCode || "-"}
             </span>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-2xl font-black font-mono tracking-wide text-text-primary bg-bg-default px-3 py-1.5 rounded-xl border border-divider">
-                {referralData.activeCode}
-              </span>
+            {activeCode && (
               <button
                 onClick={handleCopyCode}
                 className="px-4 py-2 rounded-xl text-xs font-bold bg-primary-main text-primary-contrast hover:opacity-95 transition-all shadow-sm"
               >
-                {copied ? "Disalin! ✓" : "Salin"}
+                {copied ? t("referral.copiedButton") : t("referral.copyButton")}
               </button>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between pt-3 border-t border-divider">
-            <span className="text-[11px] text-text-disabled">
-              Kompatibilitas arsip otomatis aktif.
-            </span>
-            <button
-              onClick={handleRegenerate}
-              disabled={isRegenerating}
-              className="text-xs font-bold text-warning-main hover:underline disabled:opacity-50"
-            >
-              {isRegenerating ? "Memproses..." : "🔄 Regenerasi Kode"}
-            </button>
+            )}
           </div>
         </div>
 
-        {/* Kolom 3: Statistik Singkat */}
-        <div className="p-5 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col justify-between space-y-3">
-          <div>
-            <p className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">
-              Total Direferensikan
-            </p>
-            <p className="text-xl font-extrabold text-text-primary mt-0.5">
-              {referralData.stats.totalReferred}{" "}
-              <span className="text-xs font-normal text-text-secondary">
-                Orang
-              </span>
-            </p>
-          </div>
-          <div className="pt-2 border-t border-divider">
-            <p className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">
-              Keuntungan
-            </p>
-            <p className="text-xs font-bold text-success-main mt-0.5 truncate">
-              {referralData.stats.activeRewards}
-            </p>
-          </div>
+        <div className="flex items-center justify-between pt-3 border-t border-divider">
+          <span className="text-[11px] text-text-disabled">
+            {t("referral.compatibilityNote")}
+          </span>
+          <button
+            onClick={handleRegenerate}
+            disabled={regenerateMutation.isPending}
+            className="text-xs font-bold text-warning-main hover:underline disabled:opacity-50"
+          >
+            {regenerateMutation.isPending
+              ? t("referral.regeneratingButton")
+              : t("referral.regenerateButton")}
+          </button>
         </div>
       </div>
 
-      {/* TABEL RIWAYAT ARSIP */}
-      <div className="space-y-3">
-        <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider">
-          Riwayat Arsip Kode
-        </h2>
-
-        <div className="bg-bg-paper border border-divider rounded-3xl overflow-hidden shadow-sm">
-          {referralData.history.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="border-b border-divider bg-divider/10 font-bold text-text-secondary uppercase">
-                    <th className="p-3 px-4">Kode Lama</th>
-                    <th className="p-3 px-4">Tanggal Arsip</th>
-                    <th className="p-3 px-4">Status</th>
-                    <th className="p-3 px-4">Pengganti</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-divider">
-                  {referralData.history.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="hover:bg-divider/5 transition-colors"
-                    >
-                      <td className="p-3 px-4 font-mono font-bold text-text-secondary line-through">
-                        {item.code}
-                      </td>
-                      <td className="p-3 px-4 text-text-secondary">
-                        {item.archivedAt}
-                      </td>
-                      <td className="p-3 px-4">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-warning-main/10 text-warning-main">
-                          {item.reason}
-                        </span>
-                      </td>
-                      <td className="p-3 px-4 font-mono font-bold text-primary-main">
-                        {item.replacedBy}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="p-6 text-center text-xs text-text-secondary">
-              Belum ada riwayat arsip kode referral.
-            </div>
-          )}
+      {/* Kolom 3: Statistik Singkat */}
+      <div className="p-5 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col justify-between space-y-3">
+        <div>
+          <p className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">
+            {t("referral.stats.totalReferredLabel")}
+          </p>
+          <p className="text-xl font-extrabold text-text-primary mt-0.5">
+            {totalReferred}{" "}
+            <span className="text-xs font-normal text-text-secondary">
+              {t("referral.stats.peopleSuffix")}
+            </span>
+          </p>
+        </div>
+        <div className="pt-2 border-t border-divider">
+          <p className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">
+            {t("referral.stats.rewardsLabel")}
+          </p>
+          <p className="text-xs font-bold text-success-main mt-0.5 truncate">
+            {activeRewards}
+          </p>
         </div>
       </div>
     </div>

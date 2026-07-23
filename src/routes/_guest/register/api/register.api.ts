@@ -16,6 +16,6 @@ export interface RegisterRequest {
 export function register(data: RegisterRequest) {
   return api.post<{ user: User; token: string; expiresIn: number }>(
     "/api/v1/auth/register",
-    { body: removeEmptyValues(JSON.stringify(data)) },
+    removeEmptyValues(data),
   );
 }

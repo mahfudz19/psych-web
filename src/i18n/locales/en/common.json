@@ -99,5 +99,41 @@
       "validated": "Validated Psychological Test Methods",
       "readyForOrg": "Ready for Organizations"
     }
+  },
+  "referral": {
+    "pageTitle": "Referral Program",
+    "activeCodeLabel": "Current Active Code",
+    "copyButton": "Copy",
+    "copiedButton": "Copied! ✓",
+    "compatibilityNote": "Archive compatibility automatically active.",
+    "regenerateButton": "Regenerate Code",
+    "regeneratingButton": "Processing...",
+    "regenerateConfirm": "Update referral code? Old code will be archived automatically.",
+    "stats": {
+      "totalReferredLabel": "Total Referred",
+      "peopleSuffix": "People",
+      "rewardsLabel": "Rewards",
+      "noRewards": "No rewards yet"
+    },
+    "history": {
+      "title": "Archived Code History",
+      "tableHeaders": {
+        "oldCode": "Old Code",
+        "archivedDate": "Archived Date",
+        "status": "Status",
+        "replacement": "Replacement"
+      },
+      "empty": "No archived referral code history yet.",
+      "reasons": {
+        "regenerated": "Regenerated",
+        "user_request": "User Request",
+        "security": "Security"
+      }
+    },
+    "errors": {
+      "rateLimitExceeded": "Too many requests. Please try again later.",
+      "regenerateFailed": "Failed to update referral code",
+      "copyFailed": "Failed to copy code"
+    }
   }
 }

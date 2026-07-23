@@ -99,5 +99,41 @@
       "validated": "Tervalidasi Metode Psikotes",
       "readyForOrg": "Siap Untuk Organisasi"
     }
+  },
+  "referral": {
+    "pageTitle": "Program Referral",
+    "activeCodeLabel": "Kode Aktif Saat Ini",
+    "copyButton": "Salin",
+    "copiedButton": "Disalin! ✓",
+    "compatibilityNote": "Kompatibilitas arsip otomatis aktif.",
+    "regenerateButton": "Regenerasi Kode",
+    "regeneratingButton": "Memproses...",
+    "regenerateConfirm": "Perbarui kode referral? Kode lama akan diarsipkan otomatis.",
+    "stats": {
+      "totalReferredLabel": "Total Direferensikan",
+      "peopleSuffix": "Orang",
+      "rewardsLabel": "Keuntungan",
+      "noRewards": "Belum ada keuntungan"
+    },
+    "history": {
+      "title": "Riwayat Arsip Kode",
+      "tableHeaders": {
+        "oldCode": "Kode Lama",
+        "archivedDate": "Tanggal Arsip",
+        "status": "Status",
+        "replacement": "Pengganti"
+      },
+      "empty": "Belum ada riwayat arsip kode referral.",
+      "reasons": {
+        "regenerated": "Regenerasi",
+        "user_request": "Permintaan User",
+        "security": "Keamanan"
+      }
+    },
+    "errors": {
+      "rateLimitExceeded": "Terlalu banyak permintaan. Silakan coba lagi nanti.",
+      "regenerateFailed": "Gagal memperbarui kode referral",
+      "copyFailed": "Gagal menyalin kode"
+    }
   }
 }

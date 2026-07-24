@@ -9,6 +9,37 @@ import {
   ORGANIZATION_ROLE_HIERARCHY,
 } from "../constants/organization-roles";
 
+/**
+ * Cek apakah user perlu membuat organization
+ * Kondisi: accountType = ORGANIZATION tapi organizationId = null
+ * atau user memiliki role ORGANIZATION tapi tidak punya organizationId
+ * @param user - User object yang akan dicek
+ * @returns boolean - true jika user perlu membuat organization
+ */
+export function needsOrganizationCreation(
+  user: User | null | undefined,
+): boolean {
+  if (!user) return false;
+
+  const isOrganizationAccountType =
+    user.accountType === ACCOUNT_TYPE_ORGANIZATION;
+  const hasOrganizationSystemRole = user.roles?.includes("ORGANIZATION");
+  const noOrganizationId = !user.organizationId;
+
+  return (
+    (isOrganizationAccountType || hasOrganizationSystemRole) && noOrganizationId
+  );
+}
+
+/**
+ * Cek apakah user memiliki organisasi yang valid
+ * @param user - User object yang akan dicek
+ * @returns boolean - true jika user punya organizationId
+ */
+export function hasOrganization(user: User | null | undefined): boolean {
+  return !!user?.organizationId;
+}
+
 export function isIndividualUser(user: User | null | undefined): boolean {
   return user?.accountType === ACCOUNT_TYPE_INDIVIDUAL;
 }
@@ -70,6 +101,11 @@ export function isAdminOrOwner(user: User | null | undefined): boolean {
 export function getRedirectPathByRole(user: User | null | undefined): string {
   if (!user) {
     return "/login";
+  }
+
+  // Jika user ORGANIZATION tapi belum punya organizationId, arahkan ke create organization
+  if (needsOrganizationCreation(user)) {
+    return "/create-organization";
   }
 
   if (isOrganizationUser(user)) {

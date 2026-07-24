@@ -1,4 +1,12 @@
 {
+  "common": {
+    "cancel": "Batal",
+    "save": "Simpan",
+    "delete": "Hapus",
+    "processing": "Memproses...",
+    "error": "Terjadi kesalahan",
+    "success": "Berhasil"
+  },
   "sidebar": {
     "mainMenu": "Menu Utama",
     "overview": "Overview",
@@ -10,6 +18,7 @@
     "teamMembers": "Anggota Tim",
     "memberList": "Daftar Anggota",
     "inviteNew": "Undang Baru",
+    "organizationSettings": "Pengaturan Organisasi",
     "system": "Sistem",
     "adminPanel": "Super Admin Panel"
   },
@@ -134,6 +143,56 @@
       "rateLimitExceeded": "Terlalu banyak permintaan. Silakan coba lagi nanti.",
       "regenerateFailed": "Gagal memperbarui kode referral",
       "copyFailed": "Gagal menyalin kode"
+    }
+  },
+  "organization": {
+    "create": {
+      "title": "Buat Organisasi Anda",
+      "subtitle": "Atur workspace organisasi Anda untuk mulai mengelola evaluasi psikologi untuk tim Anda.",
+      "info": "Hai {{name}}, silakan lengkapi profil organisasi Anda. Anda dapat memperbarui detail ini nanti di pengaturan organisasi.",
+      "submit": "Buat Organisasi",
+      "processing": "Membuat organisasi...",
+      "success": "Organisasi berhasil dibuat",
+      "error": "Gagal membuat organisasi. Periksa data Anda dan coba lagi."
+    },
+    "settings": {
+      "title": "Pengaturan Organisasi",
+      "subtitle": "Kelola profil dan preferensi organisasi Anda.",
+      "updateButton": "Simpan Perubahan",
+      "updateSuccess": "Organisasi berhasil diperbarui",
+      "updateError": "Gagal memperbarui organisasi",
+      "dangerZone": "Zona Berbahaya",
+      "deleteWarning": "Menghapus organisasi ini akan menghapus semua data secara permanen termasuk anggota, tes, dan hasil. Tindakan ini tidak dapat dibatalkan.",
+      "deleteButton": "Hapus Organisasi",
+      "deleteSuccess": "Organisasi berhasil dihapus",
+      "deleteError": "Gagal menghapus organisasi"
+    },
+    "fields": {
+      "name": "Nama Organisasi",
+      "namePlaceholder": "PT Nama Perusahaan",
+      "description": "Deskripsi",
+      "descriptionPlaceholder": "Deskripsi singkat tentang organisasi Anda",
+      "website": "Website",
+      "websitePlaceholder": "https://perusahaan.com",
+      "phone": "Nomor Telepon",
+      "phonePlaceholder": "+622112345678",
+      "email": "Email Kontak",
+      "emailPlaceholder": "kontak@perusahaan.com",
+      "address": "Alamat",
+      "addressPlaceholder": "Jl. Sudirman No. 1, Jakarta"
+    },
+    "delete": {
+      "title": "Hapus Organisasi",
+      "warning": "Apakah Anda yakin ingin menghapus organisasi ini? Semua data akan dihapus secara permanen dan tidak dapat dikembalikan.",
+      "confirmationLabel": "Untuk mengonfirmasi, ketik teks berikut:",
+      "confirmationPlaceholder": "Ketik DELETE_MY_ORGANIZATION",
+      "confirmButton": "Hapus Organisasi"
+    },
+    "errors": {
+      "notFound": "Organisasi tidak ditemukan",
+      "unauthorized": "Anda tidak memiliki akses ke organisasi ini",
+      "ownerCannotDelete": "Silakan transfer ownership terlebih dahulu sebelum menghapus organisasi",
+      "invalidConfirmation": "Teks konfirmasi tidak cocok"
     }
   }
 }

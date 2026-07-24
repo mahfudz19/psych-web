@@ -1,4 +1,12 @@
 {
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "processing": "Processing...",
+    "error": "An error occurred",
+    "success": "Success"
+  },
   "sidebar": {
     "mainMenu": "Main Menu",
     "overview": "Overview",
@@ -10,6 +18,7 @@
     "teamMembers": "Team Members",
     "memberList": "Member List",
     "inviteNew": "Invite New",
+    "organizationSettings": "Organization Settings",
     "system": "System",
     "adminPanel": "Super Admin Panel"
   },
@@ -134,6 +143,56 @@
       "rateLimitExceeded": "Too many requests. Please try again later.",
       "regenerateFailed": "Failed to update referral code",
       "copyFailed": "Failed to copy code"
+    }
+  },
+  "organization": {
+    "create": {
+      "title": "Create Your Organization",
+      "subtitle": "Set up your organization workspace to start managing psychological evaluations for your team.",
+      "info": "Hi {{name}}, please complete your organization profile. You can update these details later in organization settings.",
+      "submit": "Create Organization",
+      "processing": "Creating organization...",
+      "success": "Organization created successfully",
+      "error": "Failed to create organization. Please check your data and try again."
+    },
+    "settings": {
+      "title": "Organization Settings",
+      "subtitle": "Manage your organization profile and preferences.",
+      "updateButton": "Save Changes",
+      "updateSuccess": "Organization updated successfully",
+      "updateError": "Failed to update organization",
+      "dangerZone": "Danger Zone",
+      "deleteWarning": "Deleting this organization will permanently remove all data including members, tests, and results. This action cannot be undone.",
+      "deleteButton": "Delete Organization",
+      "deleteSuccess": "Organization deleted successfully",
+      "deleteError": "Failed to delete organization"
+    },
+    "fields": {
+      "name": "Organization Name",
+      "namePlaceholder": "PT Company Name",
+      "description": "Description",
+      "descriptionPlaceholder": "Brief description about your organization",
+      "website": "Website",
+      "websitePlaceholder": "https://company.com",
+      "phone": "Phone Number",
+      "phonePlaceholder": "+622112345678",
+      "email": "Contact Email",
+      "emailPlaceholder": "contact@company.com",
+      "address": "Address",
+      "addressPlaceholder": "Jl. Sudirman No. 1, Jakarta"
+    },
+    "delete": {
+      "title": "Delete Organization",
+      "warning": "Are you sure you want to delete this organization? All data will be permanently removed and cannot be recovered.",
+      "confirmationLabel": "To confirm, type the following text:",
+      "confirmationPlaceholder": "Type DELETE_MY_ORGANIZATION",
+      "confirmButton": "Delete Organization"
+    },
+    "errors": {
+      "notFound": "Organization not found",
+      "unauthorized": "You don't have permission to access this organization",
+      "ownerCannotDelete": "Please transfer ownership before deleting the organization",
+      "invalidConfirmation": "Confirmation text does not match"
     }
   }
 }

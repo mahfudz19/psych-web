@@ -1,11 +1,15 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { User } from "../../types/user";
 import { api } from "../../utils/api";
-import { getRedirectPathByRole } from "../../utils/auth";
+import {
+  getRedirectPathByRole,
+  isIndividualUser,
+  needsOrganizationCreation,
+} from "../../utils/auth";
 import DashboardLayout from "./_organization/-components/layout";
 
 export const Route = createFileRoute("/_auth/_organization")({
-  beforeLoad: async ({ context: { queryClient } }) => {
+  beforeLoad: async ({ context: { queryClient }, location }) => {
     let isError = false;
     let data = null;
     try {
@@ -18,8 +22,23 @@ export const Route = createFileRoute("/_auth/_organization")({
       isError = true;
     }
 
-    if (isError) {
+    if (isError || !data?.data) {
       throw redirect({ to: getRedirectPathByRole(data?.data) });
+    }
+
+    const user = data.data;
+
+    // Validasi: User INDIVIDUAL tidak boleh akses organization routes
+    if (isIndividualUser(user)) {
+      throw redirect({ to: "/portal" });
+    }
+
+    // Validasi: User ORGANIZATION tanpa organizationId harus create organization dulu
+    if (needsOrganizationCreation(user)) {
+      // Hindari redirect loop jika sudah di halaman create organization
+      if (location.pathname !== "/create-organization") {
+        throw redirect({ to: "/create-organization" });
+      }
     }
   },
   component: DashboardLayout,

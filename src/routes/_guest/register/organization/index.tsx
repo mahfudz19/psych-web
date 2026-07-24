@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AuthSplitLayout } from "../../-components/AuthSplitLayout";
 import { useRegisterMutation } from "../api/register.query";
@@ -10,12 +9,6 @@ export const Route = createFileRoute("/_guest/register/organization/")({
 
 function RegisterOrganization() {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    organizationName: "",
-  });
 
   const registerMutation = useRegisterMutation();
 
@@ -68,10 +61,7 @@ function RegisterOrganization() {
             type="text"
             placeholder={t("guest.register.fullNamePlaceholder")}
             required
-            value={formData.fullName}
-            onChange={(e) =>
-              setFormData({ ...formData, fullName: e.target.value })
-            }
+            name="fullName"
             className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
@@ -84,10 +74,7 @@ function RegisterOrganization() {
             type="email"
             placeholder="admin@perusahaan.com"
             required
-            value={formData.email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
+            name="email"
             className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
@@ -100,10 +87,7 @@ function RegisterOrganization() {
             type="password"
             placeholder={t("guest.register.passwordPlaceholder")}
             required
-            value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
+            name="password"
             className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
@@ -119,10 +103,6 @@ function RegisterOrganization() {
             type="text"
             placeholder="inviteCode"
             name="inviteCode"
-            value={formData.organizationName}
-            onChange={(e) =>
-              setFormData({ ...formData, organizationName: e.target.value })
-            }
             className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>

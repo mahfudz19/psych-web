@@ -1,19 +1,15 @@
 import React from "react";
 
-// Tipe data untuk setiap item menu
 export interface NavItem {
-  titleKey: string; // Menggunakan titleKey untuk i18n
+  titleKey: string;
   path?: string;
   icon: React.ReactNode;
-  accountTypes?: string[];
   roles?: string[];
   children?: NavItem[];
 }
 
-// Tipe data untuk pengelompokan menu
 export interface NavGroup {
-  groupLabelKey: string; // Menggunakan groupLabelKey untuk i18n
-  accountTypes?: string[];
+  groupLabelKey: string;
   roles?: string[];
   items: NavItem[];
 }
@@ -128,10 +124,10 @@ export const menuConfig: NavGroup[] = [
   },
   {
     groupLabelKey: "sidebar.organization",
-    accountTypes: ["ORGANIZATION"],
     items: [
       {
         titleKey: "sidebar.teamMembers",
+        path: "/members",
         icon: (
           <svg
             className="w-5 h-5 shrink-0"
@@ -147,46 +143,6 @@ export const menuConfig: NavGroup[] = [
             />
           </svg>
         ),
-        children: [
-          {
-            titleKey: "sidebar.memberList",
-            path: "/members",
-            icon: (
-              <svg
-                className="w-4 h-4 shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            ),
-          },
-          {
-            titleKey: "sidebar.inviteNew",
-            path: "/members/invite",
-            icon: (
-              <svg
-                className="w-4 h-4 shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-            ),
-          },
-        ],
       },
     ],
   },

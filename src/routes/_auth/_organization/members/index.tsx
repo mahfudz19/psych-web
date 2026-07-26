@@ -48,14 +48,14 @@ function getInitials(name: string): string {
  * @param role - Role member
  * @returns String class CSS untuk styling badge
  */
-function getRoleBadgeClass(role?: string) {
-  switch (role?.toLowerCase()) {
+function getRoleBadgeClass(organizationRole?: string) {
+  switch (organizationRole?.toLowerCase()) {
     case "owner":
       return "bg-warning-main/10 text-warning-main";
     case "admin":
       return "bg-info-main/10 text-info-main";
     default:
-      return "bg-bg-tertiary text-text-secondary";
+      return "bg-divider text-text-secondary";
   }
 }
 
@@ -99,7 +99,7 @@ function OrganizationMembersPage() {
   const meta = data?.meta;
 
   const handleKickMember = (member: OrganizationMember) => {
-    if (member.role === "owner") {
+    if (member.organizationRole === "owner") {
       toast.error(t("organization.members.kickOwnerError"));
       return;
     }
@@ -259,9 +259,9 @@ function OrganizationMembersPage() {
                   {/* Kolom Role */}
                   <td className="p-4 px-6">
                     <span
-                      className={`inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${getRoleBadgeClass(member.role)}`}
+                      className={`inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${getRoleBadgeClass(member.organizationRole)}`}
                     >
-                      {member.role}
+                      {member.organizationRole}
                     </span>
                   </td>
 
@@ -275,11 +275,12 @@ function OrganizationMembersPage() {
                     <button
                       onClick={() => handleKickMember(member)}
                       disabled={
-                        member.role === "owner" || kickMutation.isPending
+                        member.organizationRole === "owner" ||
+                        kickMutation.isPending
                       }
                       className="px-3 py-1.5 rounded-lg text-xs font-bold text-error-main bg-error-main/10 hover:bg-error-main hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                       title={
-                        member.role === "owner"
+                        member.organizationRole === "owner"
                           ? t("organization.members.cannotKickOwner")
                           : t("organization.members.kickAction")
                       }

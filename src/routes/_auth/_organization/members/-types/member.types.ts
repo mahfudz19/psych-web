@@ -18,7 +18,7 @@ export interface OrganizationMember {
   profilePicture?: string | null;
 
   /** Role member dalam organisasi */
-  role?: OrganizationRole;
+  organizationRole?: OrganizationRole;
 
   /** Tanggal bergabung dengan organisasi (ISO 8601) */
   joinedAt: string;

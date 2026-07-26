@@ -2,6 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { AuthSplitLayout } from "../../-components/AuthSplitLayout";
 import { useRegisterMutation } from "../api/register.query";
+import PassworfField from "../../-components/PassworfField";
+import Input from "../../../../components/ui/Input";
+import Button from "../../../../components/ui/Button";
 
 export const Route = createFileRoute("/_guest/register/organization/")({
   component: RegisterOrganization,
@@ -57,12 +60,12 @@ function RegisterOrganization() {
           <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
             {t("guest.register.fullNameLabel")}
           </label>
-          <input
+          <Input
             type="text"
             placeholder={t("guest.register.fullNamePlaceholder")}
             required
             name="fullName"
-            className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+            className="w-full"
           />
         </div>
 
@@ -70,12 +73,12 @@ function RegisterOrganization() {
           <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
             {t("guest.register.emailLabel")}
           </label>
-          <input
+          <Input
             type="email"
             placeholder="admin@perusahaan.com"
             required
             name="email"
-            className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+            className="w-full"
           />
         </div>
 
@@ -83,12 +86,11 @@ function RegisterOrganization() {
           <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
             {t("guest.register.passwordLabel")}
           </label>
-          <input
+          <PassworfField
             type="password"
             placeholder={t("guest.register.passwordPlaceholder")}
             required
             name="password"
-            className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
           />
         </div>
 
@@ -99,23 +101,19 @@ function RegisterOrganization() {
               {t("guest.register.referralOptional")}
             </span>
           </label>
-          <input
+          <Input
             type="text"
             placeholder="inviteCode"
             name="inviteCode"
-            className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium"
+            className="w-full"
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={registerMutation.isPending}
-          className="w-full mt-4 py-3 px-4 bg-primary-main text-primary-contrast rounded-2xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-md shadow-primary-main/20"
-        >
+        <Button type="submit" disabled={registerMutation.isPending}>
           {registerMutation.isPending
             ? t("guest.register.processing")
             : t("guest.register.submitOrganization")}
-        </button>
+        </Button>
       </form>
 
       <div className="mt-6 pt-6 border-t border-divider text-left text-sm text-text-secondary">

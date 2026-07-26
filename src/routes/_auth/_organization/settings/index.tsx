@@ -9,8 +9,8 @@ import {
 } from "../../../../hooks/useOrganization";
 import { isOrganizationOwner } from "../../../../utils/auth";
 import Button from "../../../../components/ui/Button";
-import DeleteOrganizationModal from "../../../../components/organization/DeleteOrganizationModal";
 import toast from "../../../../components/ui/Toast";
+import DeleteOrganizationModal from "./-components/DeleteOrganizationModal";
 
 /**
  * Halaman pengaturan organisasi
@@ -229,7 +229,7 @@ function OrganizationSettingsPage() {
             type="submit"
             loading={updateMutation.isPending}
             disabled={updateMutation.isPending}
-            sizes="large"
+            size="lg"
           >
             {t("organization.settings.updateButton")}
           </Button>
@@ -267,7 +267,7 @@ function OrganizationSettingsPage() {
                 variant="outlined"
                 onClick={() => setIsDeleteModalOpen(true)}
                 disabled={isDeleting}
-                sizes="large"
+                size="lg"
               >
                 {t("organization.settings.deleteButton")}
               </Button>

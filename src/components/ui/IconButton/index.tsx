@@ -8,12 +8,13 @@ import { twMerge } from "tailwind-merge";
 import { type ButtonVariantProps, switchVariant } from "../Button";
 import Ripple from "../Ripple";
 import CircularProgress from "../CircularProgress";
+import type { size } from "../Type";
 
 interface MoreProps {
   noRipple?: boolean;
   loading?: boolean;
   variant?: "contained" | "outlined" | "text";
-  sizes?: "small" | "medium" | "large";
+  size?: size;
   onClickDownloadURL?: string;
   href?: string;
   target?: HTMLAttributeAnchorTarget;
@@ -30,7 +31,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       className,
       variant = "contained",
       color = "primary",
-      sizes = "medium",
+      size = "md",
       loading,
       children,
       href,
@@ -41,7 +42,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     } = props;
 
     if (rest.disabled) LinkComponent = "button";
-    let choseVariant = switchVariant(variant, sizes, color, noRipple, true);
+    let choseVariant = switchVariant(variant, size, color, noRipple, true);
 
     if (onClickDownloadURL) {
       rest.onClick = () => {

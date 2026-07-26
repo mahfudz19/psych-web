@@ -180,7 +180,7 @@ function CreateOrganizationPage() {
               fullWidth
               loading={isCreating}
               disabled={isCreating}
-              sizes="large"
+              size="lg"
             >
               {isCreating
                 ? t("organization.create.processing")

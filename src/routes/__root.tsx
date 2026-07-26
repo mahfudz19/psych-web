@@ -7,19 +7,17 @@ import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { QueryClient } from "@tanstack/react-query";
 import { TopProgressBar } from "../components/layout/TopProgressBar";
 import type { useAuth } from "../hooks/useAuth";
+import DetailError from "../components/ErrorComponent";
 
 export interface MyRouterContext {
   queryClient: QueryClient;
   auth: ReturnType<typeof useAuth>;
 }
 
-// 1. Ubah tipe error menjadi 'any' (atau custom interface) agar kita bisa mengekstrak properti status dari API
 const GlobalErrorComponent = ({ error }: { error: any }) => {
-  // Mengekstrak HTTP Status Code dari berbagai kemungkinan struktur Error API (Axios / Fetch)
   const statusCode =
     error?.status || error?.response?.status || error?.statusCode || "500";
 
-  // Mengekstrak pesan error spesifik dari Backend, atau gunakan bawaan Javascript, atau gunakan default
   const errorMessage =
     error?.response?.data?.message ||
     error?.message ||
@@ -56,12 +54,13 @@ const GlobalErrorComponent = ({ error }: { error: any }) => {
             Kembali ke Sebelumnya
           </button>
         </div>
+
+        <DetailError error={error} />
       </div>
     </div>
   );
 };
 
-// 2. Perbarui juga UI 404 agar senada dengan GlobalErrorComponent
 const GlobalNotFoundComponent = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-bg-default p-6 text-center font-sans">

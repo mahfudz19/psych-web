@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import toast from "../../../../components/ui/Toast";
+import Button from "../../../../components/ui/Button";
+import { Plus } from "lucide-react";
 
 export const Route = createFileRoute("/_auth/_organization/members/")({
   component: OrganizationMembersPage,
@@ -82,12 +84,12 @@ function OrganizationMembersPage() {
             organisasi Anda.
           </p>
         </div>
-        <button
+        <Button
+          startIcon={<Plus size={12} />}
           onClick={() => setIsInviteModalOpen(true)}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-primary-main text-primary-contrast shadow-sm hover:opacity-90 hover:-translate-y-0.5 transition-all w-fit"
         >
-          <span>+</span> Undang Anggota
-        </button>
+          Undang Anggota
+        </Button>
       </div>
 
       {/* 2. TABEL DAFTAR ANGGOTA */}

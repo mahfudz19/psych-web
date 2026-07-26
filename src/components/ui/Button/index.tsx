@@ -9,15 +9,15 @@ import {
 import { twMerge } from "tailwind-merge";
 import Ripple from "../Ripple";
 import CircularProgress from "../CircularProgress";
+import type { size } from "../Type";
 
 const baseClass = [
-  "rounded-xl",
+  "rounded-2xl",
   "tracking-wide",
   "cursor-pointer",
   "inline-flex",
   "items-center",
   "justify-center",
-  "uppercase",
   "transition",
   "font-semibold",
 ];
@@ -31,9 +31,9 @@ const disabledClass = [
 ];
 
 const interactionClass = [
-  "hover:scale-[1.03]",
+  "hover:scale-[1.01]",
   "outline-none",
-  "active:scale-95",
+  "active:scale-[1]",
   "hover:shadow-md",
 ];
 
@@ -59,39 +59,33 @@ const containedVariant = cva(
     variants: {
       color: {
         primary: [
-          "bg-gradient-to-br",
-          "from-primary-light",
-          "to-primary-dark",
+          "bg-primary-main",
+          "hover:bg-primary-dark",
           "focus:ring-primary-main",
         ],
         secondary: [
-          "bg-gradient-to-br",
-          "from-secondary-light",
-          "to-secondary-dark",
+          "bg-secondary-main",
+          "hover:bg-secondary-dark",
           "focus:ring-secondary-main",
         ],
         success: [
-          "bg-gradient-to-br",
-          "from-success-light",
-          "to-success-dark",
+          "bg-success-main",
+          "hover:bg-success-dark",
           "focus:ring-success-main",
         ],
         error: [
-          "bg-gradient-to-br",
-          "from-error-light",
-          "to-error-dark",
+          "bg-error-main",
+          "hover:bg-error-dark",
           "focus:ring-error-main",
         ],
         warning: [
-          "bg-gradient-to-br",
-          "from-warning-light",
-          "to-warning-dark",
+          "bg-warning-main",
+          "hover:bg-warning-dark",
           "focus:ring-warning-main",
         ],
         info: [
-          "bg-gradient-to-br",
-          "from-info-light",
-          "to-info-dark",
+          "bg-info-main",
+          "hover:bg-info-dark",
           "text-white",
           "focus:ring-info-main",
         ],
@@ -221,7 +215,7 @@ const textVariant = cva(
 interface MoreProps {
   loading?: boolean;
   variant?: "contained" | "outlined" | "text";
-  sizes?: "small" | "medium" | "large";
+  size?: size;
   fullWidth?: boolean;
   noRipple?: boolean;
   startIcon?: ReactNode;
@@ -240,7 +234,7 @@ export type ButtonProp = ButtonHTMLAttributes<HTMLButtonElement> &
 
 export const switchVariant = (
   variant: MoreProps["variant"],
-  size: "small" | "medium" | "large",
+  size: size,
   color?: ButtonVariantProps["color"],
   noRipple?: boolean,
   icon?: boolean,
@@ -250,21 +244,18 @@ export const switchVariant = (
     outlined: outlinedVariant,
     text: textVariant,
   };
-  const sizeMap: Record<
-    "small" | "medium" | "large",
-    { default: string[]; icon: string[] }
-  > = {
-    small: {
-      default: ["text-xs", "p-1", "px-4"],
-      icon: ["text-xs", "p-1.5", "rounded-full"],
+  const sizeMap: Record<size, { default: string[]; icon: string[] }> = {
+    sm: {
+      default: ["text-xs", "px-3 py-2", "px-4"],
+      icon: ["text-xs", "p-2", "rounded-full"],
     },
-    medium: {
-      default: ["text-xs", "p-1", "leading-6", "px-6"],
-      icon: ["text-sm", "p-2", "rounded-full"],
+    md: {
+      default: ["text-sm", "px-4 py-2.5", "leading-6", "px-6"],
+      icon: ["text-sm", "p-3", "rounded-full"],
     },
-    large: {
-      default: ["text-sm", "p-2.5", "px-9"],
-      icon: ["text-base", "p-3", "rounded-full"],
+    lg: {
+      default: ["text-base", "p-2.5", "px-9"],
+      icon: ["text-md", "px-6 py-3", "rounded-full"],
     },
   };
 
@@ -283,7 +274,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProp>(
       className,
       variant = "contained",
       color = "primary",
-      sizes = "medium",
+      size = "md",
       loading,
       children,
       startIcon,
@@ -297,7 +288,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProp>(
     } = props;
 
     if (rest.disabled) LinkComponent = "button";
-    let choseVariant = switchVariant(variant, sizes, color, noRipple);
+    let choseVariant = switchVariant(variant, size, color, noRipple);
 
     if (onClickDownloadURL) {
       rest.onClick = () => {

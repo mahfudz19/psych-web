@@ -7,3 +7,5 @@ export type ComponentProp = {
 
 export type color =
   "primary" | "secondary" | "success" | "error" | "warning" | "info" | "white";
+
+export type size = "sm" | "md" | "lg";

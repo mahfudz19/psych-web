@@ -5,7 +5,12 @@
     "delete": "Delete",
     "processing": "Processing...",
     "error": "An error occurred",
-    "success": "Success"
+    "success": "Success",
+    "page": "page",
+    "sort": {
+      "asc": "Ascending (A-Z)",
+      "desc": "Descending (Z-A)"
+    }
   },
   "sidebar": {
     "mainMenu": "Main Menu",
@@ -56,7 +61,7 @@
       "referralLabel": "Referral Code",
       "referralOptional": "Optional",
       "referralPlaceholder": "Example: PSYCH2026",
-      "organizationNameLabel": "Organization Name",
+      "organizationNameLabel": "Invitation Code",
       "submitIndividual": "Register New Account",
       "submitOrganization": "Register New Organization",
       "processing": "Processing...",
@@ -146,6 +151,33 @@
     }
   },
   "organization": {
+    "members": {
+      "title": "Member Management",
+      "subtitle": "Manage team access, invite colleagues, or revoke access from your organization.",
+      "inviteButton": "Invite Member",
+      "searchPlaceholder": "Search by name or email...",
+      "sortByName": "Name",
+      "sortByEmail": "Email",
+      "sortByRole": "Role",
+      "sortByJoinedAt": "Joined Date",
+      "loadError": "Failed to load members data",
+      "kickOwnerError": "You cannot remove the owner from the organization.",
+      "kickConfirm": "Are you sure you want to remove {{name}} from this organization? Their access will be immediately revoked.",
+      "cannotKickOwner": "Owner cannot be removed",
+      "kickAction": "Remove member",
+      "kickButton": "Remove",
+      "noResults": "No members found.",
+      "empty": "No members in this organization yet.",
+      "pagination": {
+        "info": "Showing {{from}} - {{to}} of {{total}} members"
+      },
+      "table": {
+        "memberInfo": "Member Information",
+        "role": "Role",
+        "joinedAt": "Joined Date",
+        "actions": "Actions"
+      }
+    },
     "create": {
       "title": "Create Your Organization",
       "subtitle": "Set up your organization workspace to start managing psychological evaluations for your team.",

@@ -5,7 +5,12 @@
     "delete": "Hapus",
     "processing": "Memproses...",
     "error": "Terjadi kesalahan",
-    "success": "Berhasil"
+    "success": "Berhasil",
+    "page": "halaman",
+    "sort": {
+      "asc": "Naik (A-Z)",
+      "desc": "Turun (Z-A)"
+    }
   },
   "sidebar": {
     "mainMenu": "Menu Utama",
@@ -56,7 +61,7 @@
       "referralLabel": "Kode Referral",
       "referralOptional": "Opsional",
       "referralPlaceholder": "Contoh: PSYCH2026",
-      "organizationNameLabel": "Nama Organisasi",
+      "organizationNameLabel": "Kode Invitasi",
       "submitIndividual": "Daftar Akun Baru",
       "submitOrganization": "Daftar Organisasi Baru",
       "processing": "Memproses...",
@@ -146,6 +151,33 @@
     }
   },
   "organization": {
+    "members": {
+      "title": "Manajemen Anggota",
+      "subtitle": "Kelola akses tim, undang rekan kerja, atau cabut hak akses dari organisasi Anda.",
+      "inviteButton": "Undang Anggota",
+      "searchPlaceholder": "Cari nama atau email...",
+      "sortByName": "Nama",
+      "sortByEmail": "Email",
+      "sortByRole": "Role",
+      "sortByJoinedAt": "Tanggal Bergabung",
+      "loadError": "Gagal memuat data anggota",
+      "kickOwnerError": "Anda tidak dapat mengeluarkan pemilik organisasi.",
+      "kickConfirm": "Apakah Anda yakin ingin mengeluarkan {{name}} dari organisasi ini? Akses mereka akan segera dicabut.",
+      "cannotKickOwner": "Owner tidak dapat dikeluarkan",
+      "kickAction": "Keluarkan anggota",
+      "kickButton": "Keluarkan",
+      "noResults": "Tidak ada anggota yang ditemukan.",
+      "empty": "Belum ada anggota di organisasi ini.",
+      "pagination": {
+        "info": "Menampilkan {{from}} - {{to}} dari {{total}} anggota"
+      },
+      "table": {
+        "memberInfo": "Informasi Anggota",
+        "role": "Peran (Role)",
+        "joinedAt": "Tanggal Bergabung",
+        "actions": "Aksi"
+      }
+    },
     "create": {
       "title": "Buat Organisasi Anda",
       "subtitle": "Atur workspace organisasi Anda untuk mulai mengelola evaluasi psikologi untuk tim Anda.",

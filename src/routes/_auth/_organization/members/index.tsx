@@ -1,107 +1,238 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import toast from "../../../../components/ui/Toast";
+import ModalInvite from "./-components/ModalInvite";
+import Dialog from "../../../../components/ui/DIalog";
 import Button from "../../../../components/ui/Button";
-import { Plus } from "lucide-react";
+import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { useAuth } from "../../../../hooks/useAuth";
+import {
+  useMembersListQuery,
+  useKickMemberMutation,
+} from "./-api/member.query";
+import type {
+  OrganizationMember,
+  MembersListParams,
+} from "./-types/member.types";
 
 export const Route = createFileRoute("/_auth/_organization/members/")({
   component: OrganizationMembersPage,
 });
 
-// --- TIPE DATA DUMMY ---
-type Member = {
-  id: string;
-  name: string;
-  email: string;
-  role: "Owner" | "Admin" | "Member";
-  joinedAt: string;
-};
+/**
+ * Format tanggal ke format Indonesia yang lebih mudah dibaca
+ * @param dateString - Tanggal dalam format ISO 8601
+ * @returns Tanggal dalam format "DD MMM YYYY"
+ */
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
 
-const MOCK_MEMBERS: Member[] = [
-  {
-    id: "usr_01",
-    name: "Bondan Prakoso",
-    email: "bondan@psycorp.test",
-    role: "Owner",
-    joinedAt: "12 Jan 2026",
-  },
-  {
-    id: "usr_02",
-    name: "Teguh Saputra",
-    email: "teguh@psycorp.test",
-    role: "Member",
-    joinedAt: "15 Jan 2026",
-  },
-];
+/**
+ * Mendapatkan inisial dari nama lengkap
+ * @param name - Nama lengkap
+ * @returns Huruf pertama nama dalam uppercase
+ */
+function getInitials(name: string): string {
+  return name.charAt(0).toUpperCase();
+}
+
+/**
+ * Mendapatkan class CSS untuk badge role berdasarkan role
+ * @param role - Role member
+ * @returns String class CSS untuk styling badge
+ */
+function getRoleBadgeClass(role?: string) {
+  switch (role?.toLowerCase()) {
+    case "owner":
+      return "bg-warning-main/10 text-warning-main";
+    case "admin":
+      return "bg-info-main/10 text-info-main";
+    default:
+      return "bg-bg-tertiary text-text-secondary";
+  }
+}
 
 function OrganizationMembersPage() {
-  const [members, setMembers] = useState<Member[]>(MOCK_MEMBERS);
-  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const orgId = user?.organizationId;
 
-  // --- HANDLER: KELUARKAN MEMBER ---
-  const handleKickMember = (member: Member) => {
-    if (member.role === "Owner") {
-      toast.error("Anda tidak dapat mengeluarkan pemilik organisasi.");
+  // State untuk pagination, search, dan sort
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+  });
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] =
+    useState<MembersListParams["sortBy"]>("createdAt");
+  const [sortOrder, setSortOrder] =
+    useState<MembersListParams["sortOrder"]>("desc");
+
+  // Query parameters untuk API
+  const queryParams: MembersListParams = useMemo(
+    () => ({
+      page: pagination.page,
+      limit: pagination.limit,
+      search: search || undefined,
+      sortBy,
+      sortOrder,
+    }),
+    [pagination, search, sortBy, sortOrder],
+  );
+
+  const { data, isLoading, isError } = useMembersListQuery(
+    orgId || "",
+    queryParams,
+  );
+
+  const kickMutation = useKickMemberMutation(orgId || "");
+
+  const members = data?.data || [];
+  console.log({ members, data });
+  const meta = data?.meta;
+
+  const handleKickMember = (member: OrganizationMember) => {
+    if (member.role === "owner") {
+      toast.error(t("organization.members.kickOwnerError"));
       return;
     }
 
     if (
       window.confirm(
-        `Apakah Anda yakin ingin mengeluarkan ${member.name} dari organisasi ini? Akses mereka akan segera dicabut.`,
+        t("organization.members.kickConfirm", { name: member.fullName }),
       )
     ) {
-      // Simulasi API Call
-      setMembers((prev) => prev.filter((m) => m.id !== member.id));
-      toast.success(`${member.name} telah berhasil dihapus dari organisasi.`);
+      kickMutation.mutate(member.id);
     }
   };
 
-  // --- HANDLER: SALIN LINK UNDANGAN (Mewakili konsep query Anda) ---
-  const handleCopyInviteLink = (type: "inviteCode" | "organizationId") => {
-    const baseUrl = window.location.origin + "/invite";
-
-    // Konsep pembuatan link berdasarkan 2 cara yang Anda sebutkan
-    const inviteUrl =
-      type === "inviteCode"
-        ? `${baseUrl}?inviteCode=PSY-ORG-X99Q`
-        : `${baseUrl}?invitedOrganizationId=ORG-12345`;
-
-    navigator.clipboard.writeText(inviteUrl);
-    toast.success(`Tautan undangan via ${type} siap dibagikan.`);
-    setIsInviteModalOpen(false);
+  const handlePageChange = (newPage: number) => {
+    setPagination((prev) => ({ ...prev, page: newPage }));
   };
+
+  const handleLimitChange = (newLimit: number) => {
+    setPagination({ page: 1, limit: newLimit });
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPagination((prev) => ({ ...prev, page: 1 })); // Reset ke halaman 1 saat search
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center text-text-secondary">
+        {t("common.processing")}
+      </div>
+    );
+  }
+
+  // Error state
+  if (isError || !orgId) {
+    return (
+      <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center text-error-main">
+        {t("organization.members.loadError")}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {/* 1. HEADER & ACTION BAR */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-divider">
         <div>
           <h1 className="text-2xl font-extrabold text-text-primary tracking-tight">
-            Manajemen Anggota
+            {t("organization.members.title")}
           </h1>
           <p className="text-sm text-text-secondary mt-1">
-            Kelola akses tim, undang rekan kerja, atau cabut hak akses dari
-            organisasi Anda.
+            {t("organization.members.subtitle")}
           </p>
         </div>
-        <Button
-          startIcon={<Plus size={12} />}
-          onClick={() => setIsInviteModalOpen(true)}
+
+        <Dialog
+          trigger={(openDialog) => (
+            <Button startIcon={<Plus size={12} />} onClick={() => openDialog()}>
+              {t("organization.members.inviteButton")}
+            </Button>
+          )}
         >
-          Undang Anggota
-        </Button>
+          {(close) => <ModalInvite close={close} />}
+        </Dialog>
       </div>
 
-      {/* 2. TABEL DAFTAR ANGGOTA */}
+      {/* Search dan Filter Controls */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        {/* Search Input */}
+        <div className="relative w-full sm:w-72">
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-text-disabled"
+            size={16}
+          />
+          <input
+            type="text"
+            placeholder={t("organization.members.searchPlaceholder")}
+            value={search}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm"
+          />
+        </div>
+
+        {/* Sort Dropdown */}
+        <div className="flex gap-2">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="px-3 py-2 rounded-xl border border-divider bg-bg-default text-text-primary focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm"
+          >
+            <option value="fullName">
+              {t("organization.members.sortByName")}
+            </option>
+            <option value="email">
+              {t("organization.members.sortByEmail")}
+            </option>
+            <option value="role">{t("organization.members.sortByRole")}</option>
+            <option value="joinedAt">
+              {t("organization.members.sortByJoinedAt")}
+            </option>
+          </select>
+
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as any)}
+            className="px-3 py-2 rounded-xl border border-divider bg-bg-default text-text-primary focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm"
+          >
+            <option value="asc">{t("common.sort.asc")}</option>
+            <option value="desc">{t("common.sort.desc")}</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Members Table */}
       <div className="bg-bg-paper border border-divider rounded-3xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
               <tr className="border-b border-divider bg-divider/5 font-bold text-text-secondary uppercase tracking-wider text-xs">
-                <th className="p-4 px-6">Informasi Anggota</th>
-                <th className="p-4 px-6">Peran (Role)</th>
-                <th className="p-4 px-6">Tanggal Bergabung</th>
-                <th className="p-4 px-6 text-right">Aksi</th>
+                <th className="p-4 px-6">
+                  {t("organization.members.table.memberInfo")}
+                </th>
+                <th className="p-4 px-6">
+                  {t("organization.members.table.role")}
+                </th>
+                <th className="p-4 px-6">
+                  {t("organization.members.table.joinedAt")}
+                </th>
+                <th className="p-4 px-6 text-right">
+                  {t("organization.members.table.actions")}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-divider">
@@ -113,11 +244,11 @@ function OrganizationMembersPage() {
                   {/* Kolom Profil */}
                   <td className="p-4 px-6 flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-primary-main/10 text-primary-main flex items-center justify-center font-bold uppercase shadow-sm">
-                      {member.name.charAt(0)}
+                      {getInitials(member.fullName)}
                     </div>
                     <div>
                       <p className="font-bold text-text-primary">
-                        {member.name}
+                        {member.fullName}
                       </p>
                       <p className="text-xs text-text-secondary mt-0.5">
                         {member.email}
@@ -128,34 +259,35 @@ function OrganizationMembersPage() {
                   {/* Kolom Role */}
                   <td className="p-4 px-6">
                     <span
-                      className={`inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
-                        member.role === "Owner"
-                          ? "bg-warning-main/10 text-warning-main"
-                          : "bg-info-main/10 text-info-main"
-                      }`}
+                      className={`inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${getRoleBadgeClass(member.role)}`}
                     >
                       {member.role}
                     </span>
                   </td>
 
-                  {/* Kolom Tanggal */}
+                  {/* Kolom Tanggal Bergabung */}
                   <td className="p-4 px-6 text-text-secondary text-xs font-medium">
-                    {member.joinedAt}
+                    {formatDate(member.joinedAt)}
                   </td>
 
                   {/* Kolom Aksi */}
                   <td className="p-4 px-6 text-right">
                     <button
                       onClick={() => handleKickMember(member)}
-                      disabled={member.role === "Owner"}
+                      disabled={
+                        member.role === "owner" || kickMutation.isPending
+                      }
                       className="px-3 py-1.5 rounded-lg text-xs font-bold text-error-main bg-error-main/10 hover:bg-error-main hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                       title={
-                        member.role === "Owner"
-                          ? "Owner tidak dapat dikeluarkan"
-                          : "Keluarkan anggota"
+                        member.role === "owner"
+                          ? t("organization.members.cannotKickOwner")
+                          : t("organization.members.kickAction")
                       }
                     >
-                      Keluarkan
+                      {kickMutation.isPending &&
+                      kickMutation.variables === member.id
+                        ? t("common.processing")
+                        : t("organization.members.kickButton")}
                     </button>
                   </td>
                 </tr>
@@ -167,73 +299,67 @@ function OrganizationMembersPage() {
                     colSpan={4}
                     className="p-8 text-center text-text-secondary"
                   >
-                    Belum ada anggota di organisasi ini.
+                    {search
+                      ? t("organization.members.noResults")
+                      : t("organization.members.empty")}
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
-      </div>
 
-      {/* 3. MODAL UNDANGAN SEDERHANA */}
-      {isInviteModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-bg-paper border border-divider rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 relative">
-            {/* Tombol Tutup */}
-            <button
-              onClick={() => setIsInviteModalOpen(false)}
-              className="absolute top-5 right-5 text-text-secondary hover:text-text-primary"
-            >
-              ✕
-            </button>
-
-            <div>
-              <h2 className="text-lg font-bold text-text-primary">
-                Undang ke Organisasi
-              </h2>
-              <p className="text-xs text-text-secondary mt-1">
-                Pilih metode undangan yang ingin Anda gunakan. Tautan akan
-                disalin ke *clipboard* Anda.
-              </p>
+        {/* Pagination */}
+        {meta && meta.totalPages > 1 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-divider bg-bg-default">
+            {/* Info */}
+            <div className="text-xs text-text-secondary">
+              {t("organization.members.pagination.info", {
+                from: (meta.page - 1) * meta.limit + 1,
+                to: Math.min(meta.page * meta.limit, meta.totalElements),
+                total: meta.totalElements,
+              })}
             </div>
 
-            <div className="space-y-3">
-              {/* Metode 1: Invite Code */}
-              <button
-                onClick={() => handleCopyInviteLink("inviteCode")}
-                className="w-full flex items-center justify-between p-4 rounded-2xl border border-divider hover:border-primary-main/50 hover:bg-primary-main/5 transition-all text-left group"
+            {/* Controls */}
+            <div className="flex items-center gap-2">
+              {/* Limit Selector */}
+              <select
+                value={pagination.limit}
+                onChange={(e) => handleLimitChange(Number(e.target.value))}
+                className="px-2 py-1.5 rounded-lg border border-divider bg-bg-default text-text-primary focus:outline-none focus:border-primary-main text-xs"
               >
-                <div>
-                  <p className="text-sm font-bold text-text-primary group-hover:text-primary-main transition-colors">
-                    Gunakan Kode Undangan Khusus
-                  </p>
-                  <p className="text-[11px] text-text-secondary mt-0.5">
-                    Link berisi `?inviteCode=...`
-                  </p>
-                </div>
-                <span className="text-lg">🔗</span>
-              </button>
+                <option value={10}>10 / {t("common.page")}</option>
+                <option value={25}>25 / {t("common.page")}</option>
+                <option value={50}>50 / {t("common.page")}</option>
+              </select>
 
-              {/* Metode 2: Organization ID */}
-              <button
-                onClick={() => handleCopyInviteLink("organizationId")}
-                className="w-full flex items-center justify-between p-4 rounded-2xl border border-divider hover:border-info-main/50 hover:bg-info-main/5 transition-all text-left group"
-              >
-                <div>
-                  <p className="text-sm font-bold text-text-primary group-hover:text-info-main transition-colors">
-                    Gunakan ID Organisasi
-                  </p>
-                  <p className="text-[11px] text-text-secondary mt-0.5">
-                    Link berisi `?invitedOrganizationId=...`
-                  </p>
-                </div>
-                <span className="text-lg">🏢</span>
-              </button>
+              {/* Page Navigation */}
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => handlePageChange(meta.page - 1)}
+                  disabled={meta.page === 1}
+                  className="p-1.5 rounded-lg hover:bg-divider/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+
+                <span className="px-3 py-1 text-xs font-medium text-text-primary">
+                  {meta.page} / {meta.totalPages}
+                </span>
+
+                <button
+                  onClick={() => handlePageChange(meta.page + 1)}
+                  disabled={meta.page === meta.totalPages}
+                  className="p-1.5 rounded-lg hover:bg-divider/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

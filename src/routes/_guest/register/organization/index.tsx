@@ -96,7 +96,7 @@ function RegisterOrganization() {
 
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5 justify-between">
-            <span>{t("guest.register.organizationNameLabel")}</span>
+            <span>{t("guest.register.organizationNameLabel")}</span>{" "}
             <span className="text-text-disabled font-normal normal-case">
               {t("guest.register.referralOptional")}
             </span>

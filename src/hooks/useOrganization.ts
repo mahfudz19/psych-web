@@ -8,11 +8,6 @@ import type {
 import { api } from "../utils/api";
 import toast from "../components/ui/Toast";
 
-/**
- * Hook untuk mengambil detail organisasi berdasarkan ID
- * @param orgId - ID organisasi yang akan diambil
- * @returns Object berisi data organisasi, status loading, dan error
- */
 export function useOrganization(orgId?: string | null) {
   return useQuery({
     queryKey: ["organization", orgId],
@@ -22,10 +17,6 @@ export function useOrganization(orgId?: string | null) {
   });
 }
 
-/**
- * Hook untuk membuat organisasi baru
- * @returns Object berisi fungsi createOrganization dan status mutation
- */
 export function useCreateOrganization() {
   const queryClient = useQueryClient();
 
@@ -33,10 +24,8 @@ export function useCreateOrganization() {
     mutationFn: (data: CreateOrganizationRequest) =>
       api.post<CreateOrganizationResponse>("/api/v1/organizations", data),
     onSuccess: (response) => {
-      // Invalidate user profile query untuk update organizationId
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
 
-      // Set cache untuk organization yang baru dibuat
       if (response.data) {
         queryClient.setQueryData(
           ["organization", response.data.organization.id],
@@ -74,10 +63,6 @@ export function useUpdateOrganization() {
   });
 }
 
-/**
- * Hook untuk menghapus organisasi
- * @returns Object berisi fungsi deleteOrganization dan status mutation
- */
 export function useDeleteOrganization() {
   const queryClient = useQueryClient();
 

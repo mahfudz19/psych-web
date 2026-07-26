@@ -32,7 +32,8 @@ function RegisterInvite() {
   useEffect(() => {
     try {
       // Opsi B: Mencoba decode Base64 (Token Direct Add)
-      const decodedString = atob(token);
+      // Decode dengan UTF-8 support untuk karakter non-ASCII
+      const decodedString = decodeURIComponent(escape(atob(token)));
       const parsedJson = JSON.parse(decodedString);
       setInviteData({ type: "DIRECT_ADD", payload: parsedJson });
     } catch (e) {
@@ -52,9 +53,7 @@ function RegisterInvite() {
           : { inviteCode: token }),
       };
 
-      return api.post("/api/v1/auth/register", {
-        body: JSON.stringify(bodyPayload),
-      });
+      return api.post("/api/v1/auth/register", bodyPayload);
     },
     onSuccess: () => {
       alert("Berhasil bergabung dengan organisasi! Silakan login.");
@@ -89,7 +88,7 @@ function RegisterInvite() {
         <span className="text-info-main text-sm font-medium">
           {inviteData?.type === "DIRECT_ADD"
             ? t("guest.invite.statusDirectAdd", {
-                role: inviteData.payload.invitationRole,
+                invitedBy: inviteData.payload.invitedBy,
               })
             : t("guest.invite.statusInviteCode")}
         </span>

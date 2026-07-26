@@ -10,13 +10,27 @@ const ModalInvite = ({ close }: { close: () => void }) => {
     inviteCode?: string | null,
     organizationId?: string | null,
   ) => {
-    const baseUrl = window.location.origin + "/invite";
+    const baseUrl = window.location.origin + "/register";
 
-    const inviteUrl = inviteCode
-      ? `${baseUrl}?inviteCode=${inviteCode}`
-      : organizationId
-        ? `${baseUrl}?organizationId=${organizationId}`
-        : null;
+    let inviteUrl: string | null = null;
+
+    if (inviteCode) {
+      // Opsi A: Menggunakan Kode Undangan Khusus (plain string)
+      inviteUrl = `${baseUrl}?inviteCode=${inviteCode}`;
+    } else if (organizationId) {
+      // Opsi B: Menggunakan Direct Add Token (Base64 encoded JSON)
+      const invitePayload = {
+        invitedBy: user?.id || "",
+        invitedOrganizationId: organizationId,
+      };
+
+      // Encode ke Base64 dengan UTF-8 support untuk karakter non-ASCII
+      const encodedToken = btoa(
+        unescape(encodeURIComponent(JSON.stringify(invitePayload))),
+      );
+
+      inviteUrl = `${baseUrl}/invite/${encodedToken}`;
+    }
 
     if (!inviteUrl) return;
 
@@ -56,9 +70,7 @@ const ModalInvite = ({ close }: { close: () => void }) => {
         {user?.inviteCode && (
           <button
             autoFocus
-            onClick={() =>
-              handleCopyInviteLink(user?.inviteCode, user?.organizationId)
-            }
+            onClick={() => handleCopyInviteLink(user?.inviteCode)}
             className="w-full flex items-center justify-between p-4 rounded-2xl border border-divider hover:border-primary-main/50 hover:bg-primary-main/5 transition-all text-left group"
           >
             <div>
@@ -76,7 +88,7 @@ const ModalInvite = ({ close }: { close: () => void }) => {
         {user?.organizationId && (
           <button
             onClick={() =>
-              handleCopyInviteLink(user?.inviteCode, user?.organizationId)
+              handleCopyInviteLink(undefined, user?.organizationId)
             }
             className="w-full flex items-center justify-between p-4 rounded-2xl border border-divider hover:border-info-main/50 hover:bg-info-main/5 transition-all text-left group"
           >
@@ -85,7 +97,7 @@ const ModalInvite = ({ close }: { close: () => void }) => {
                 Gunakan ID Organisasi
               </p>
               <p className="text-[11px] text-text-secondary mt-0.5">
-                Link berisi `?invitedOrganizationId=...`
+                Link berisi `?token=...` (Base64 encoded)
               </p>
             </div>
             <span className="text-lg">🏢</span>

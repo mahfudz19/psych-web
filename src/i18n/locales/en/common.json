@@ -74,7 +74,7 @@
       "title": "Accept Invitation",
       "subtitle": "Complete your profile to confirm this invitation.",
       "statusLabel": "Invitation Status",
-      "statusDirectAdd": "You are invited to join as: {{role}}",
+      "statusDirectAdd": "You are invited by: {{invitedBy}}",
       "statusInviteCode": "Invitation via Registration Code",
       "error": "Failed to join. The invitation may have expired or is invalid.",
       "fullNameLabel": "Full Name",

@@ -74,7 +74,7 @@
       "title": "Terima Undangan",
       "subtitle": "Lengkapi profil Anda untuk mengonfirmasi undangan ini.",
       "statusLabel": "Status Undangan",
-      "statusDirectAdd": "Anda diundang untuk bergabung sebagai: {{role}}",
+      "statusDirectAdd": "Anda diundang oleh: {{invitedBy}}",
       "statusInviteCode": "Undangan via Kode Registrasi",
       "error": "Gagal bergabung. Undangan mungkin sudah kedaluwarsa atau tidak valid.",
       "fullNameLabel": "Nama Lengkap",

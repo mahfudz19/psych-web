@@ -9,9 +9,14 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+
+    env:
+      DEV: false
+      VITE_BASE_URL: https://psych-api-dev-726645884787.asia-southeast1.run.app
+
     steps:
       - uses: actions/checkout@v4
-      - run: npm install && npm run build
+      - run: rm -f package-lock.json && rm -rf yarn.lock && npm install && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

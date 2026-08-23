@@ -2,9 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { AuthSplitLayout } from "../-components/AuthSplitLayout";
 import PassworfField from "../-components/PassworfField";
-import { useRegisterMutation } from "./-api/register.query";
 import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
+import { useRegisterMutation } from "../-api/auth.query";
 
 export const Route = createFileRoute("/_guest/register/")({
   component: RegisterIndividual,

@@ -6,20 +6,12 @@ import {
   type RegenerateReferralRequest,
 } from "./referral.api";
 
-/**
- * Query keys constants untuk referral
- * Menggunakan factory pattern untuk type safety dan maintainability
- */
 export const referralKeys = {
   all: ["referral"] as const,
   stats: () => [...referralKeys.all, "stats"] as const,
   history: () => [...referralKeys.all, "history"] as const,
 };
 
-/**
- * Hook untuk fetch referral statistics dan history
- * Query key: referralKeys.stats()
- */
 export function useReferralStatsQuery() {
   return useQuery({
     queryKey: referralKeys.stats(),
@@ -29,10 +21,6 @@ export function useReferralStatsQuery() {
   });
 }
 
-/**
- * Hook untuk regenerate referral code
- * Invalidates referral queries setelah regenerasi berhasil
- */
 export function useRegenerateMutation() {
   const queryClient = useQueryClient();
 
@@ -41,7 +29,6 @@ export function useRegenerateMutation() {
       regenerateReferralCode(data),
     onSuccess: () => {
       toast.success("Kode referral berhasil diperbarui");
-      // Invalidate semua referral queries untuk refresh data
       queryClient.invalidateQueries({ queryKey: referralKeys.all });
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
     },

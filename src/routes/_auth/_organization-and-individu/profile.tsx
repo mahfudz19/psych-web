@@ -9,7 +9,6 @@ export const Route = createFileRoute(
 function ProfileLayout() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pt-4 max-w-4xl w-full mx-auto">
-      {/* HEADER GLOBAL PROFIL */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-text-primary tracking-tight">
@@ -54,7 +53,6 @@ function ProfileLayout() {
         </Link>
       </div>
 
-      {/* AREA KONTEN HALAMAN (Index Profil atau Referral akan muncul di sini) */}
       <Outlet />
     </div>
   );

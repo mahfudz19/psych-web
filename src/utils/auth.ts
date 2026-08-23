@@ -45,10 +45,10 @@ export function isIndividualUser(user: User | null | undefined): boolean {
 }
 
 export function isOrganizationUser(user?: User | null): boolean {
-  const noOrganization = !user?.organizationId;
-  if (noOrganization) {
+  const hasOrganizationId = !!user?.organizationId;
+  if (hasOrganizationId) {
     return Boolean(
-      user?.accountType === ACCOUNT_TYPE_ORGANIZATION || noOrganization,
+      user?.accountType === ACCOUNT_TYPE_ORGANIZATION || hasOrganizationId,
     );
   }
 

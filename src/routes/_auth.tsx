@@ -1,30 +1,27 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import type { User } from "../types/user";
-import { api } from "../utils/api";
+import * as authApi from "./_guest/-api/auth.api";
 
-/**
- * Layout route untuk area yang memerlukan autentikasi
- * Semua route di bawah /_auth akan melewati guard ini
- */
 export const Route = createFileRoute("/_auth")({
-  beforeLoad: async ({ context: { queryClient } }) => {
+  beforeLoad: async ({ context: { queryClient, auth }, location }) => {
+    if (auth.isAuthenticated()) {
+      return;
+    }
+
     try {
-      await queryClient.fetchQuery({
+      const response = await queryClient.fetchQuery({
         queryKey: ["userProfile"],
-        queryFn: () => api.get<User>("/api/v1/auth/me"),
+        queryFn: () => authApi.me(),
         staleTime: 1000 * 60 * 5,
       });
+
+      auth.set({ user: response.data });
     } catch (error) {
-      throw redirect({ to: "/login" });
+      throw redirect({ to: "/login", search: { redirect: location.href } });
     }
   },
   component: AuthLayout,
 });
 
-/**
- * Layout sederhana untuk area autentikasi
- * Child routes akan me-render melalui Outlet
- */
 function AuthLayout() {
   return <Outlet />;
 }

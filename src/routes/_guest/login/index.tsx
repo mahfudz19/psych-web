@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { AuthSplitLayout } from "../-components/AuthSplitLayout";
 import PassworfField from "../-components/PassworfField";
-import { useLoginMutation } from "./-api/login.query";
+import { useLoginMutation } from "../-api/auth.query";
 import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
 

@@ -2,17 +2,10 @@ import { Link, Outlet } from "@tanstack/react-router";
 import DarkMode from "../../../../components/layout/Topbar/DarkMode";
 import LanguageSwitcher from "../../../../components/layout/Topbar/LanguageSwitcher";
 import ProfileDropdown from "../../../../components/layout/Topbar/ProfileDropdown";
-import { useAuth } from "../../../../hooks/useAuth";
+import { authStore } from "../../../../utils/authStore";
 
 function PortalHeader() {
-  const { user } = useAuth();
-
-  if (!user)
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-bg-default text-text-secondary">
-        Memuat layout...
-      </div>
-    );
+  const { user } = authStore.get();
 
   return (
     <header className="h-16 bg-bg-paper border-b border-divider flex items-center justify-between px-4 lg:px-8 sticky top-0 z-40 shadow-sm transition-colors duration-200">
@@ -34,7 +27,13 @@ function PortalHeader() {
         <LanguageSwitcher />
         <DarkMode />
         <div className="h-6 w-px bg-divider mx-1 hidden sm:block"></div>
-        <ProfileDropdown />
+        <ProfileDropdown
+          fullName={user?.fullName || ""}
+          accountType={user?.accountType || ""}
+          email={user?.email || ""}
+          subscriptionTier={user?.subscriptionTier || ""}
+          status={user?.status || ""}
+        />
       </div>
     </header>
   );

@@ -227,14 +227,11 @@ export interface TestAccess {
  * Interface untuk statistik referral
  */
 export interface ReferralStats {
-  /** Total jumlah user yang direferensikan */
-  totalReferred: number;
-
-  /** Jumlah referral yang berhasil completed registration */
-  successfulReferrals: number;
-
-  /** Total earnings dari referrals */
+  referralCode: string;
   referralEarnings: number;
+  revenueSharePercentage: number;
+  successfulReferrals: number;
+  totalReferrals: number;
 }
 
 /**

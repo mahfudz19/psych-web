@@ -123,6 +123,15 @@
     "regenerateButton": "Regenerate Code",
     "regeneratingButton": "Processing...",
     "regenerateConfirm": "Update referral code? Old code will be archived automatically.",
+    "regenerateDialog": {
+      "warningBadge": "⚠️ WARNING",
+      "title": "Regenerate Referral Code?",
+      "description": "Old code will be archived, but remains valid for legacy usage.",
+      "rateLimitLabel": "Limit:",
+      "rateLimitValue": "Maximum 3 regenerations per day.",
+      "cancelButton": "Cancel",
+      "confirmButton": "Yes, Regenerate"
+    },
     "stats": {
       "totalReferredLabel": "Total Referred",
       "peopleSuffix": "People",

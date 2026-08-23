@@ -1,10 +1,10 @@
 import { X } from "lucide-react";
 import IconButton from "../../../../../components/ui/IconButton";
 import toast from "../../../../../components/ui/Toast";
-import { useAuth } from "../../../../../hooks/useAuth";
+import { authStore } from "../../../../../utils/authStore";
 
 const ModalInvite = ({ close }: { close: () => void }) => {
-  const { user } = useAuth();
+  const { user } = authStore.get();
 
   const handleCopyInviteLink = (
     inviteCode?: string | null,

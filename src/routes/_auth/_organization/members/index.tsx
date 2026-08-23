@@ -6,25 +6,17 @@ import ModalInvite from "./-components/ModalInvite";
 import Dialog from "../../../../components/ui/DIalog";
 import Button from "../../../../components/ui/Button";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { useAuth } from "../../../../hooks/useAuth";
+import { authStore } from "../../../../utils/authStore";
+import type { MembersListParams, OrganizationMember } from "../../../../types";
 import {
-  useMembersListQuery,
   useKickMemberMutation,
-} from "./-api/member.query";
-import type {
-  OrganizationMember,
-  MembersListParams,
-} from "./-types/member.types";
+  useMembersListQuery,
+} from "./-api/organization.query";
 
 export const Route = createFileRoute("/_auth/_organization/members/")({
   component: OrganizationMembersPage,
 });
 
-/**
- * Format tanggal ke format Indonesia yang lebih mudah dibaca
- * @param dateString - Tanggal dalam format ISO 8601
- * @returns Tanggal dalam format "DD MMM YYYY"
- */
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
   return date.toLocaleDateString("id-ID", {
@@ -34,20 +26,10 @@ function formatDate(dateString: string): string {
   });
 }
 
-/**
- * Mendapatkan inisial dari nama lengkap
- * @param name - Nama lengkap
- * @returns Huruf pertama nama dalam uppercase
- */
 function getInitials(name: string): string {
   return name.charAt(0).toUpperCase();
 }
 
-/**
- * Mendapatkan class CSS untuk badge role berdasarkan role
- * @param role - Role member
- * @returns String class CSS untuk styling badge
- */
 function getRoleBadgeClass(organizationRole?: string) {
   switch (organizationRole?.toLowerCase()) {
     case "owner":
@@ -61,7 +43,7 @@ function getRoleBadgeClass(organizationRole?: string) {
 
 function OrganizationMembersPage() {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user } = authStore.get();
   const orgId = user?.organizationId;
 
   // State untuk pagination, search, dan sort
@@ -95,7 +77,6 @@ function OrganizationMembersPage() {
   const kickMutation = useKickMemberMutation(orgId || "");
 
   const members = data?.data || [];
-  console.log({ members, data });
   const meta = data?.meta;
 
   const handleKickMember = (member: OrganizationMember) => {

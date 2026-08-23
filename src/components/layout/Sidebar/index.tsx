@@ -1,22 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSidebar } from "../../../contexts/SidebarContext";
-import { useAuth } from "../../../hooks/useAuth";
-import { menuConfig, type NavGroup, type NavItem } from "./menu";
 import { twMerge } from "tailwind-merge";
+import { useSidebar } from "../../../contexts/SidebarContext";
+import { menuConfig } from "./menu";
 
 export function Sidebar() {
-  const { user } = useAuth();
   const { isMobileOpen, isMini, toggleMobile } = useSidebar();
   const { t } = useTranslation();
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
-
-  if (!user) return null;
-
-  const checkAccess = (item: NavGroup | NavItem) => {
-    return !item.roles || item.roles.some((role) => user.roles?.includes(role));
-  };
 
   const handleToggleExpand = (titleKey: string) => {
     setExpandedMenus((prev) =>
@@ -66,7 +58,7 @@ export function Sidebar() {
         <nav
           className={`flex-1 px-3 py-6 space-y-1 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
         >
-          {menuConfig.filter(checkAccess).map((group, groupIdx) => (
+          {menuConfig.map((group, groupIdx) => (
             <div key={groupIdx} className="mb-8">
               <p
                 className={`px-3 text-xs font-bold text-text-disabled uppercase tracking-widest mb-3 transition-opacity duration-300 ${isMini ? "lg:opacity-0 lg:invisible lg:h-0 lg:mb-0" : ""}`}
@@ -74,7 +66,7 @@ export function Sidebar() {
                 {t(group.groupLabelKey as any)}
               </p>
 
-              {group.items.filter(checkAccess).map((item, itemIdx) => {
+              {group.items.map((item, itemIdx) => {
                 const hasChildren = item.children && item.children.length > 0;
                 const isExpanded = expandedMenus.includes(item.titleKey);
 
@@ -131,17 +123,15 @@ export function Sidebar() {
                         </div>
                         {hasChildren && (
                           <div className="py-1">
-                            {item
-                              .children!.filter(checkAccess)
-                              .map((child, childIdx) => (
-                                <Link
-                                  key={childIdx}
-                                  to={child.path!}
-                                  className="block px-4 py-2.5 text-sm font-medium text-text-secondary hover:bg-primary-main/5 hover:text-primary-main [&.active]:text-primary-main"
-                                >
-                                  {t(child.titleKey as any)}
-                                </Link>
-                              ))}
+                            {(item.children || []).map((child, childIdx) => (
+                              <Link
+                                key={childIdx}
+                                to={child.path!}
+                                className="block px-4 py-2.5 text-sm font-medium text-text-secondary hover:bg-primary-main/5 hover:text-primary-main [&.active]:text-primary-main"
+                              >
+                                {t(child.titleKey as any)}
+                              </Link>
+                            ))}
                           </div>
                         )}
                       </div>
@@ -152,21 +142,19 @@ export function Sidebar() {
                         className={`overflow-hidden transition-all duration-300 ease-in-out ${isMini ? "lg:hidden" : ""} ${isExpanded ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"}`}
                       >
                         <div className="ml-7 pl-3 border-l-2 border-divider space-y-1 py-1">
-                          {item
-                            .children!.filter(checkAccess)
-                            .map((child, childIdx) => (
-                              <Link
-                                key={childIdx}
-                                to={child.path!}
-                                onClick={() =>
-                                  window.innerWidth < 1024 && toggleMobile()
-                                }
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-text-secondary hover:text-primary-main hover:bg-primary-main/5 [&.active]:text-primary-main [&.active]:font-bold transition-colors"
-                              >
-                                {child.icon}
-                                <span>{t(child.titleKey as any)}</span>
-                              </Link>
-                            ))}
+                          {(item.children || []).map((child, childIdx) => (
+                            <Link
+                              key={childIdx}
+                              to={child.path!}
+                              onClick={() =>
+                                window.innerWidth < 1024 && toggleMobile()
+                              }
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-text-secondary hover:text-primary-main hover:bg-primary-main/5 [&.active]:text-primary-main [&.active]:font-bold transition-colors"
+                            >
+                              {child.icon}
+                              <span>{t(child.titleKey as any)}</span>
+                            </Link>
+                          ))}
                         </div>
                       </div>
                     )}

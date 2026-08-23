@@ -123,6 +123,15 @@
     "regenerateButton": "Regenerasi Kode",
     "regeneratingButton": "Memproses...",
     "regenerateConfirm": "Perbarui kode referral? Kode lama akan diarsipkan otomatis.",
+    "regenerateDialog": {
+      "warningBadge": "⚠️ PERHATIAN",
+      "title": "Regenerasi Kode Referral?",
+      "description": "Kode lama akan diarsipkan, tetapi tetap valid untuk penggunaan lama.",
+      "rateLimitLabel": "Batas:",
+      "rateLimitValue": "Maksimal 3x regenerasi per hari.",
+      "cancelButton": "Batal",
+      "confirmButton": "Ya, Regenerasi"
+    },
     "stats": {
       "totalReferredLabel": "Total Direferensikan",
       "peopleSuffix": "Orang",

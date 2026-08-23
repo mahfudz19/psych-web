@@ -1,10 +1,20 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../../hooks/useAuth";
+import { useLogoutMutation } from "../../../routes/_guest/-api/auth.query";
 
-function ProfileDropdown() {
-  const { user, logout, isLoggingOut } = useAuth();
+export interface ProfileDropdownProps {
+  fullName: string;
+  accountType: string;
+  email: string;
+  subscriptionTier: string;
+  status: string;
+}
+
+function ProfileDropdown(props: ProfileDropdownProps) {
+  const { fullName, accountType, email, subscriptionTier, status } = props;
   const { t } = useTranslation();
+
+  const logout = useLogoutMutation();
 
   const getInitials = (name: string) => {
     return name
@@ -22,8 +32,6 @@ function ProfileDropdown() {
     if (checkbox) checkbox.checked = false;
   };
 
-  if (!user) return null;
-
   return (
     <div className="relative">
       <input type="checkbox" id="profile-toggle" className="peer hidden" />
@@ -39,14 +47,14 @@ function ProfileDropdown() {
         className="cursor-pointer relative z-30 flex items-center gap-3 p-1.5 md:pr-3 rounded-2xl text-text-secondary hover:bg-divider/20 peer-checked:bg-divider/20 transition-all"
       >
         <div className="w-7 h-7 rounded-full bg-primary-main text-primary-contrast flex items-center justify-center text-xs font-bold shadow-sm">
-          {getInitials(user.fullName)}
+          {getInitials(fullName)}
         </div>
         <div className="hidden sm:flex flex-col items-start text-left">
           <span className="text-xs font-bold text-text-primary leading-none">
-            {user.fullName}
+            {fullName}
           </span>
           <span className="text-[10px] text-text-secondary uppercase mt-1 tracking-wider">
-            {user.accountType}
+            {accountType}
           </span>
         </div>
         <svg
@@ -69,17 +77,15 @@ function ProfileDropdown() {
         {/* Header Informasi Akun */}
         <div className="px-3 py-3 border-b border-divider">
           <p className="text-sm font-bold text-text-primary truncate">
-            {user.fullName}
+            {fullName}
           </p>
-          <p className="text-xs text-text-secondary truncate mt-0.5">
-            {user.email}
-          </p>
+          <p className="text-xs text-text-secondary truncate mt-0.5">{email}</p>
           <div className="flex gap-2 mt-3">
             <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase bg-info-main/10 text-info-main">
-              Tier: {user.subscriptionTier}
+              Tier: {subscriptionTier}
             </span>
             <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase bg-success-main/10 text-success-main">
-              {user.status}
+              {status}
             </span>
           </div>
         </div>
@@ -133,9 +139,9 @@ function ProfileDropdown() {
           <button
             onClick={() => {
               closeDropdown();
-              logout();
+              logout.mutate();
             }}
-            disabled={isLoggingOut}
+            disabled={logout.isPending}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-bold text-error-main hover:bg-error-main/10 transition-colors disabled:opacity-50 text-left"
           >
             <svg
@@ -151,7 +157,7 @@ function ProfileDropdown() {
                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 01-3-3h4a3 3 0 013 3v1"
               />
             </svg>
-            {isLoggingOut ? t("topbar.loggingOut") : t("topbar.logout")}
+            {logout.isPending ? t("topbar.loggingOut") : t("topbar.logout")}
           </button>
         </div>
       </div>

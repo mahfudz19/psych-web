@@ -1,14 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-// Tambahkan useAuth jika Anda ingin menyapa pengguna dengan namanya
-// import { useAuth } from "../../../../hooks/useAuth";
 
 export const Route = createFileRoute("/_auth/_individu/portal/")({
   component: PortalDashboard,
 });
 
 export function PortalDashboard() {
-  // const { user } = useAuth(); // (Opsional) Buka komentar jika hook tersedia
-
   return (
     <div className="space-y-8 animate-in fade-in duration-300 max-w-5xl mx-auto">
       {/* 1. HEADER & UCAPAN SELAMAT DATANG (Personal & Menenangkan) */}

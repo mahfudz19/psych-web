@@ -3,10 +3,10 @@ import { useTranslation } from "react-i18next";
 import { api } from "../../../utils/api";
 import type { User } from "../../../types/user";
 import { needsOrganizationCreation } from "../../../utils/auth";
-import { useCreateOrganization } from "../../../hooks/useOrganization";
-import { useAuth } from "../../../hooks/useAuth";
 import toast from "../../../components/ui/Toast";
 import Button from "../../../components/ui/Button";
+import { authStore } from "../../../utils/authStore";
+import { useCreateOrganizationMutation } from "../_organization/-api/organization.query";
 
 export const Route = createFileRoute("/_auth/create-organization/")({
   beforeLoad: async ({ context: { queryClient } }) => {
@@ -26,9 +26,9 @@ export const Route = createFileRoute("/_auth/create-organization/")({
 function CreateOrganizationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = authStore.get();
   const { mutateAsync: createOrganization, isPending: isCreating } =
-    useCreateOrganization();
+    useCreateOrganizationMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

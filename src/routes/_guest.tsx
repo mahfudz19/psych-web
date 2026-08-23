@@ -1,25 +1,26 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { api } from "../utils/api";
 import { getRedirectPathByRole } from "../utils/auth";
-import type { User } from "../types/user";
+import * as authApi from "./_guest/-api/auth.api";
 
 export const Route = createFileRoute("/_guest")({
-  beforeLoad: async ({ context: { queryClient } }) => {
-    let isSuccess = false;
-    let data = null;
-    try {
-      data = await queryClient.fetchQuery({
-        queryKey: ["userProfile"],
-        queryFn: () => api.get<User>("/api/v1/auth/me"),
-        staleTime: 1000 * 60 * 5,
-      });
-      isSuccess = true;
-    } catch (error) {
-      isSuccess = false;
+  beforeLoad: async ({ context: { queryClient, auth } }) => {
+    if (auth?.isAuthenticated?.()) {
+      throw redirect({ to: getRedirectPathByRole(auth.get().user) });
     }
 
-    if (isSuccess) {
-      throw redirect({ to: getRedirectPathByRole(data?.data) });
+    try {
+      const response = await queryClient.fetchQuery({
+        queryKey: ["userProfile"],
+        queryFn: () => authApi.me(),
+        staleTime: 1000 * 60 * 5,
+      });
+
+      if (response?.data) {
+        auth.set({ user: response.data });
+        throw redirect({ to: getRedirectPathByRole(response.data) });
+      }
+    } catch (error) {
+      return;
     }
   },
   component: GuestLayout,

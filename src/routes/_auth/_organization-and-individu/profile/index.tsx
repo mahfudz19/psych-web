@@ -1,18 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useAuth } from "../../../../hooks/useAuth";
+import { authStore } from "../../../../utils/authStore";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/profile/",
 )({
-  beforeLoad: ({ context }) => {
-    console.log("Context profil:", context);
-  },
   component: ProfileInfoPage,
 });
 
 function ProfileInfoPage() {
-  const { user } = useAuth();
+  const { user } = authStore.get();
   const [isSaving, setIsSaving] = useState(false);
 
   // Status tipe pengguna
@@ -29,7 +26,6 @@ function ProfileInfoPage() {
 
   return (
     <form onSubmit={handleSave} className="space-y-6">
-      {/* 1. KARTU HEADER IDENTITAS & AURA KLINIS */}
       <div className="p-6 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
         <div className="flex items-center gap-5">
           <div className="relative">

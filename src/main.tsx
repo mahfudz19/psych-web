@@ -6,8 +6,8 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import "./index.css";
 import { routeTree } from "./routeTree.gen";
 import "./i18n";
-import { useAuth } from "./hooks/useAuth";
 import { Toaster } from "./components/ui/Toast";
+import { authStore } from "./utils/authStore";
 
 const GlobalPendingComponent = () => {
   return (
@@ -42,12 +42,18 @@ const GlobalPendingComponent = () => {
 };
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } },
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+      staleTime: 1000 * 60 * 5,
+    },
+  },
 });
 
 const router = createRouter({
   routeTree,
-  context: { queryClient, auth: undefined! },
+  context: { queryClient, auth: authStore },
   defaultPreload: "intent",
   defaultNotFoundComponent: GlobalPendingComponent,
   defaultPendingMs: 0,
@@ -60,9 +66,7 @@ declare module "@tanstack/react-router" {
 }
 
 function App() {
-  const auth = useAuth();
-
-  return <RouterProvider router={router} context={{ queryClient, auth }} />;
+  return <RouterProvider router={router} context={{ queryClient }} />;
 }
 
 createRoot(document.getElementById("root")!).render(

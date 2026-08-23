@@ -6,12 +6,12 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { QueryClient } from "@tanstack/react-query";
 import { TopProgressBar } from "../components/layout/TopProgressBar";
-import type { useAuth } from "../hooks/useAuth";
 import DetailError from "../components/ErrorComponent";
+import type { authStore } from "../utils/authStore";
 
 export interface MyRouterContext {
   queryClient: QueryClient;
-  auth: ReturnType<typeof useAuth>;
+  auth: typeof authStore;
 }
 
 const GlobalErrorComponent = ({ error }: { error: any }) => {

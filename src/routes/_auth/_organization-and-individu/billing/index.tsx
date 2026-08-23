@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useAuth } from "../../../../hooks/useAuth";
+import { authStore } from "../../../../utils/authStore";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/billing/",
@@ -8,7 +8,7 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  const { user } = useAuth();
+  const { user } = authStore.get();
 
   return (
     <div>

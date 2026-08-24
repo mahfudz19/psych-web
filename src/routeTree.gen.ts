@@ -29,6 +29,7 @@ import { Route as AuthOrganizationDashboardIndexRouteImport } from './routes/_au
 import { Route as AuthOrganizationMembersIndexRouteImport } from './routes/_auth/_organization/members/index'
 import { Route as AuthOrganizationSettingsIndexRouteImport } from './routes/_auth/_organization/settings/index'
 import { Route as GuestRegisterOrganizationIndexRouteImport } from './routes/_guest/register/organization/index'
+import { Route as GuestRegisterVerifyEmailIndexRouteImport } from './routes/_guest/register/verify-email/index'
 import { Route as AuthExamExamTestIdIndexRouteImport } from './routes/_auth/_exam/exam/$testId/index'
 import { Route as AuthOrganizationAndIndividuProfileReferralIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/referral/index'
 import { Route as GuestRegisterInviteTokenIndexRouteImport } from './routes/_guest/register/invite/$token/index'
@@ -137,6 +138,12 @@ const GuestRegisterOrganizationIndexRoute =
     path: '/register/organization/',
     getParentRoute: () => GuestRoute,
   } as any)
+const GuestRegisterVerifyEmailIndexRoute =
+  GuestRegisterVerifyEmailIndexRouteImport.update({
+    id: '/register/verify-email/',
+    path: '/register/verify-email/',
+    getParentRoute: () => GuestRoute,
+  } as any)
 const AuthExamExamTestIdIndexRoute = AuthExamExamTestIdIndexRouteImport.update({
   id: '/exam/$testId/',
   path: '/exam/$testId/',
@@ -170,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/members/': typeof AuthOrganizationMembersIndexRoute
   '/settings/': typeof AuthOrganizationSettingsIndexRoute
   '/register/organization/': typeof GuestRegisterOrganizationIndexRoute
+  '/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
   '/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
   '/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
@@ -188,6 +196,7 @@ export interface FileRoutesByTo {
   '/members': typeof AuthOrganizationMembersIndexRoute
   '/settings': typeof AuthOrganizationSettingsIndexRoute
   '/register/organization': typeof GuestRegisterOrganizationIndexRoute
+  '/register/verify-email': typeof GuestRegisterVerifyEmailIndexRoute
   '/exam/$testId': typeof AuthExamExamTestIdIndexRoute
   '/profile/referral': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/register/invite/$token': typeof GuestRegisterInviteTokenIndexRoute
@@ -214,6 +223,7 @@ export interface FileRoutesById {
   '/_auth/_organization/members/': typeof AuthOrganizationMembersIndexRoute
   '/_auth/_organization/settings/': typeof AuthOrganizationSettingsIndexRoute
   '/_guest/register/organization/': typeof GuestRegisterOrganizationIndexRoute
+  '/_guest/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
   '/_auth/_exam/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
   '/_auth/_organization-and-individu/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/_guest/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
@@ -235,6 +245,7 @@ export interface FileRouteTypes {
     | '/members/'
     | '/settings/'
     | '/register/organization/'
+    | '/register/verify-email/'
     | '/exam/$testId/'
     | '/profile/referral/'
     | '/register/invite/$token/'
@@ -253,6 +264,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/settings'
     | '/register/organization'
+    | '/register/verify-email'
     | '/exam/$testId'
     | '/profile/referral'
     | '/register/invite/$token'
@@ -278,6 +290,7 @@ export interface FileRouteTypes {
     | '/_auth/_organization/members/'
     | '/_auth/_organization/settings/'
     | '/_guest/register/organization/'
+    | '/_guest/register/verify-email/'
     | '/_auth/_exam/exam/$testId/'
     | '/_auth/_organization-and-individu/profile/referral/'
     | '/_guest/register/invite/$token/'
@@ -430,6 +443,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuestRegisterOrganizationIndexRouteImport
       parentRoute: typeof GuestRoute
     }
+    '/_guest/register/verify-email/': {
+      id: '/_guest/register/verify-email/'
+      path: '/register/verify-email'
+      fullPath: '/register/verify-email/'
+      preLoaderRoute: typeof GuestRegisterVerifyEmailIndexRouteImport
+      parentRoute: typeof GuestRoute
+    }
     '/_auth/_exam/exam/$testId/': {
       id: '/_auth/_exam/exam/$testId/'
       path: '/exam/$testId'
@@ -557,6 +577,7 @@ interface GuestRouteChildren {
   GuestLoginIndexRoute: typeof GuestLoginIndexRoute
   GuestRegisterIndexRoute: typeof GuestRegisterIndexRoute
   GuestRegisterOrganizationIndexRoute: typeof GuestRegisterOrganizationIndexRoute
+  GuestRegisterVerifyEmailIndexRoute: typeof GuestRegisterVerifyEmailIndexRoute
   GuestRegisterInviteTokenIndexRoute: typeof GuestRegisterInviteTokenIndexRoute
 }
 
@@ -565,6 +586,7 @@ const GuestRouteChildren: GuestRouteChildren = {
   GuestLoginIndexRoute: GuestLoginIndexRoute,
   GuestRegisterIndexRoute: GuestRegisterIndexRoute,
   GuestRegisterOrganizationIndexRoute: GuestRegisterOrganizationIndexRoute,
+  GuestRegisterVerifyEmailIndexRoute: GuestRegisterVerifyEmailIndexRoute,
   GuestRegisterInviteTokenIndexRoute: GuestRegisterInviteTokenIndexRoute,
 }
 

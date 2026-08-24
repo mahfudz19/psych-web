@@ -5,7 +5,7 @@ import { removeEmptyValues } from "../../../utils/removeEmptyValues";
 export const BASE = "/api/v1/auth";
 
 type Auth = {
-  user: User;
+  user?: User;
   accessToken: string;
   refreshToken: string;
   expiresIn: 900;
@@ -39,4 +39,12 @@ export function logout(refreshTokenId?: string[]) {
     refreshTokenId && refreshTokenId.length > 0 ? { refreshTokenId } : {};
 
   return api.post(`${BASE}/logout`, payload);
+}
+
+export function resendVerifyEmail(email: string) {
+  return api.post<User>(`${BASE}/resend-verify-email`, { email });
+}
+
+export function verifyEmail(email: string, plainToken: string) {
+  return api.post<Auth>(`${BASE}/verify-email`, { email, plainToken });
 }

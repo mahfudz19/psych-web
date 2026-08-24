@@ -14,18 +14,14 @@ export function useLoginMutation() {
       api.login(credentials),
     onSuccess: ({ data }) => {
       if (!data) throw new Error("Login failed");
-      // 1. Simpan ke memory (synchronous)
-      authStore.set({
-        user: data.user,
-        accessToken: data.accessToken,
-      });
 
-      // 2. Pre-populate cache Query agar tidak fetch ulang
+      if (data.user) {
+        authStore.set({ user: data.user, accessToken: data.accessToken });
+      }
+
       queryClient.setQueryData(["userProfile"], { data: data.user });
-
       toast.success("Login success");
 
-      // 3. Invalidate router & redirect
       router.invalidate().then(() => {
         router.navigate({ to: getRedirectPathByRole(data.user) });
       });
@@ -60,5 +56,36 @@ export function useLogoutMutation() {
       router.navigate({ to: "/login", replace: true });
       toast.error("Logout failed");
     },
+  });
+}
+
+export function useResendVerifyEmailMutation() {
+  return useMutation({
+    mutationFn: (email: string) => api.resendVerifyEmail(email),
+    onSuccess: () => toast.success("Verification email resent successfully"),
+    onError: () => toast.error("Failed to resend verification email"),
+  });
+}
+
+export function useVerifyEmailMutation() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    retry: false,
+    mutationFn: ({
+      email,
+      plainToken,
+    }: {
+      email: string;
+      plainToken: string;
+    }) => api.verifyEmail(email, plainToken),
+    onSuccess: ({ data }) => {
+      toast.success("Email verified successfully");
+      router.navigate({ to: getRedirectPathByRole(data?.user), replace: true });
+      if (data?.user)
+        queryClient.setQueryData(["userProfile"], { data: data.user });
+    },
+    onError: ({ message }) => toast.error(message || "Failed to verify email"),
   });
 }

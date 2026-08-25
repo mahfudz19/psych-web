@@ -21,6 +21,9 @@ export function needsOrganizationCreation(
 ): boolean {
   if (!user) return false;
 
+  // is super admin
+  if (user.roles.includes("SUPERADMIN")) return false;
+
   const isOrganizationAccountType =
     user.accountType === ACCOUNT_TYPE_ORGANIZATION;
   const hasOrganizationSystemRole = user.roles?.includes("ORGANIZATION");
@@ -41,11 +44,18 @@ export function hasOrganization(user: User | null | undefined): boolean {
 }
 
 export function isIndividualUser(user: User | null | undefined): boolean {
+  const isSuperadmin = user?.roles?.includes("SUPERADMIN");
+  if (isSuperadmin) return false;
+
   return user?.accountType === ACCOUNT_TYPE_INDIVIDUAL;
 }
 
 export function isOrganizationUser(user?: User | null): boolean {
   const hasOrganizationId = !!user?.organizationId;
+
+  const isSupertadmin = user?.roles?.includes("SUPERADMIN");
+  if (isSupertadmin) return true;
+
   if (hasOrganizationId) {
     return Boolean(
       user?.accountType === ACCOUNT_TYPE_ORGANIZATION || hasOrganizationId,

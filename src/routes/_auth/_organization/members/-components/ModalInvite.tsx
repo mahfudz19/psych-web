@@ -1,10 +1,10 @@
-import { Plus, X } from "lucide-react";
+import { Users, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import Button from "../../../../../components/ui/Button";
+import Dialog from "../../../../../components/ui/DIalog";
 import IconButton from "../../../../../components/ui/IconButton";
 import toast from "../../../../../components/ui/Toast";
 import { authStore } from "../../../../../utils/authStore";
-import Dialog from "../../../../../components/ui/DIalog";
-import Button from "../../../../../components/ui/Button";
-import { useTranslation } from "react-i18next";
 
 export type invitePayload = {
   invitedBy: string;
@@ -26,10 +26,8 @@ const ModalInvite = () => {
     let inviteUrl: string | null = null;
 
     if (inviteCode) {
-      // Opsi A: Menggunakan Kode Undangan Khusus (plain string)
-      inviteUrl = `${baseUrl}?inviteCode=${inviteCode}`;
+      inviteUrl = inviteCode;
     } else if (organizationId) {
-      // Opsi B: Menggunakan Direct Add Token (Base64 encoded JSON)
       const invitePayload: invitePayload = {
         invitedBy: user?.id || "",
         invitedName: user?.fullName || undefined,
@@ -37,7 +35,6 @@ const ModalInvite = () => {
         invitedOrganizationName: user?.organizationName || undefined,
       };
 
-      // Encode ke Base64 dengan UTF-8 support untuk karakter non-ASCII
       const encodedToken = btoa(
         unescape(encodeURIComponent(JSON.stringify(invitePayload))),
       );
@@ -56,7 +53,10 @@ const ModalInvite = () => {
   return (
     <Dialog
       trigger={(openDialog) => (
-        <Button startIcon={<Plus size={12} />} onClick={() => openDialog()}>
+        <Button
+          startIcon={<Users className="w-4 h-4" />}
+          onClick={() => openDialog()}
+        >
           {t("organization.members.inviteButton")}
         </Button>
       )}
@@ -98,7 +98,7 @@ const ModalInvite = () => {
                     Gunakan Kode Undangan Khusus
                   </p>
                   <p className="text-[11px] text-text-secondary mt-0.5">
-                    Link berisi `?inviteCode=...`
+                    {user?.inviteCode}
                   </p>
                 </div>
                 <span className="text-lg">🔗</span>

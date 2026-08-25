@@ -88,7 +88,7 @@ export interface User {
   providerId: string | null;
 
   // === SYSTEM ROLES ===
-  /** Array of system roles: ['USER'] atau ['ORGANIZATION'] */
+  /** Array of system roles: ['USER'] atau ['ORGANIZATION'] atau ['SUPERADMIN'] */
   roles: string[];
 
   /** Tipe akun: INDIVIDUAL atau ORGANIZATION */

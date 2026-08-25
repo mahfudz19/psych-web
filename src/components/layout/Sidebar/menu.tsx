@@ -1,16 +1,28 @@
 import React from "react";
+import {
+  LayoutDashboard,
+  BrainCircuit,
+  ClipboardList,
+  History,
+  CreditCard,
+  Users,
+  Building2,
+  ShieldAlert,
+} from "lucide-react";
 
 export interface NavItem {
   titleKey: string;
   path?: string;
   icon: React.ReactNode;
-  roles?: string[];
+  roles?: string[]; // Untuk ["USER", "ORGANIZATION", "SUPERADMIN"]
+  orgRoles?: string[]; // Untuk ["owner", "admin", "member"]
   children?: NavItem[];
 }
 
 export interface NavGroup {
   groupLabelKey: string;
   roles?: string[];
+  orgRoles?: string[];
   items: NavItem[];
 }
 
@@ -21,104 +33,28 @@ export const menuConfig: NavGroup[] = [
       {
         titleKey: "sidebar.overview",
         path: "/dashboard",
-        icon: (
-          <svg
-            className="w-5 h-5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-            />
-          </svg>
-        ),
+        icon: <LayoutDashboard className="w-5 h-5 shrink-0" />,
       },
       {
         titleKey: "sidebar.psychTest",
-        icon: (
-          <svg
-            className="w-5 h-5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-        ),
+        icon: <BrainCircuit className="w-5 h-5 shrink-0" />,
         children: [
           {
             titleKey: "sidebar.testList",
             path: "/tests",
-            icon: (
-              <svg
-                className="w-4 h-4 shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-              </svg>
-            ),
+            icon: <ClipboardList className="w-4 h-4 shrink-0" />,
           },
           {
             titleKey: "sidebar.history",
             path: "/tests/history",
-            icon: (
-              <svg
-                className="w-4 h-4 shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-            ),
+            icon: <History className="w-4 h-4 shrink-0" />,
           },
         ],
       },
       {
         titleKey: "sidebar.billing",
         path: "/billing",
-        icon: (
-          <svg
-            className="w-5 h-5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-            />
-          </svg>
-        ),
+        icon: <CreditCard className="w-5 h-5 shrink-0" />,
       },
     ],
   },
@@ -128,77 +64,25 @@ export const menuConfig: NavGroup[] = [
       {
         titleKey: "sidebar.teamMembers",
         path: "/members",
-        icon: (
-          <svg
-            className="w-5 h-5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-            />
-          </svg>
-        ),
+        orgRoles: ["owner", "admin"],
+        icon: <Users className="w-5 h-5 shrink-0" />,
       },
       {
         titleKey: "sidebar.organizationSettings",
         path: "/settings",
-        icon: (
-          <svg
-            className="w-5 h-5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
-        ),
+        orgRoles: ["owner", "admin"],
+        icon: <Building2 className="w-5 h-5 shrink-0" />,
       },
     ],
   },
   {
     groupLabelKey: "sidebar.system",
-    roles: ["ADMIN"],
+    roles: ["SUPERADMIN"],
     items: [
       {
         titleKey: "sidebar.adminPanel",
         path: "/admin",
-        icon: (
-          <svg
-            className="w-5 h-5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
-        ),
+        icon: <ShieldAlert className="w-5 h-5 shrink-0" />,
       },
     ],
   },

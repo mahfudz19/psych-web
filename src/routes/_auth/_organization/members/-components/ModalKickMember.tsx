@@ -6,6 +6,7 @@ import Dialog from "../../../../../components/ui/DIalog";
 import IconButton from "../../../../../components/ui/IconButton";
 import type { OrganizationMember } from "../../../../../types";
 import toast from "../../../../../components/ui/Toast";
+import { authStore } from "../../../../../utils/authStore";
 
 export default function ModalKickMember({
   orgId,
@@ -15,13 +16,18 @@ export default function ModalKickMember({
   member: OrganizationMember;
 }) {
   const { t } = useTranslation();
+  const { user } = authStore.get();
 
   const kickMutation = useKickMemberMutation(orgId || "");
   const isLoading = kickMutation.isPending;
-  const isOwner = member.organizationRole === "owner";
+  const isOwnerOrAdmin = member.organizationRole
+    ? ["owner", "admin"].includes(member.organizationRole)
+    : false;
+
+  const disabled = isLoading || isOwnerOrAdmin || user?.id === member.id;
 
   const handleConfirm = (closeDialog: () => void) => {
-    if (isOwner) {
+    if (isOwnerOrAdmin) {
       toast.error(t("organization.members.kickOwnerError"));
       return;
     }
@@ -38,10 +44,10 @@ export default function ModalKickMember({
             color="error"
             variant="text"
             onClick={openDialog}
-            disabled={isLoading || isOwner}
+            disabled={disabled}
             size="sm"
             title={
-              isOwner
+              isOwnerOrAdmin
                 ? t("organization.members.cannotKickOwner")
                 : t("organization.members.kickAction")
             }

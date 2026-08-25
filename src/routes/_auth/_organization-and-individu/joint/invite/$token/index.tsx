@@ -5,6 +5,7 @@ import toast from "../../../../../../components/ui/Toast";
 import { authStore } from "../../../../../../utils/authStore";
 import type { invitePayload } from "../../../../_organization/members/-components/ModalInvite";
 import { useJoinOrganizationMutation } from "./-api/invite.query";
+import Button from "../../../../../../components/ui/Button";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/joint/invite/$token/",
@@ -161,11 +162,7 @@ function RouteComponent() {
             </Link>
 
             {/* Tombol Terima */}
-            <button
-              type="submit"
-              disabled={isPending}
-              className="w-full sm:w-1/2 flex items-center justify-center px-6 py-3.5 rounded-2xl bg-primary-main text-primary-contrast text-sm font-bold hover:bg-primary-dark transition-all shadow-md shadow-primary-main/20 disabled:opacity-70 focus:ring-2 focus:ring-primary-main/50 outline-none"
-            >
+            <Button type="submit" disabled={isPending} fullWidth>
               {isPending ? (
                 <>
                   <svg
@@ -192,7 +189,7 @@ function RouteComponent() {
               ) : (
                 "Terima Undangan"
               )}
-            </button>
+            </Button>
           </form>
         </div>
       </div>

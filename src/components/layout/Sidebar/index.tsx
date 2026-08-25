@@ -1,14 +1,65 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { twMerge } from "tailwind-merge";
 import { useSidebar } from "../../../contexts/SidebarContext";
-import { menuConfig } from "./menu";
+import { menuConfig, type NavGroup, type NavItem } from "./menu";
+import { authStore } from "../../../utils/authStore";
 
 export function Sidebar() {
   const { isMobileOpen, isMini, toggleMobile } = useSidebar();
   const { t } = useTranslation();
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
+
+  const user = authStore.get().user;
+
+  const checkAccess = (allowedRoles?: string[], allowedOrgRoles?: string[]) => {
+    let roleMatch = true;
+    if (allowedRoles && allowedRoles.length > 0) {
+      roleMatch = allowedRoles.some((role) => user?.roles?.includes(role));
+    }
+
+    let orgRoleMatch = true;
+    if (allowedOrgRoles && allowedOrgRoles.length > 0) {
+      orgRoleMatch = allowedOrgRoles.includes(
+        user?.organizationRole?.toString() || "",
+      );
+    }
+
+    if (allowedRoles && allowedOrgRoles) return roleMatch && orgRoleMatch;
+
+    return allowedRoles ? roleMatch : orgRoleMatch;
+  };
+
+  const dynamicMenu = useMemo(() => {
+    return menuConfig
+      .map((group) => {
+        if (!checkAccess(group.roles, group.orgRoles)) return null;
+
+        const filteredItems = group.items
+          .map((item) => {
+            if (!checkAccess(item.roles, item.orgRoles)) return null;
+
+            if (item.children) {
+              const filteredChildren = item.children.filter((child) =>
+                checkAccess(child.roles, child.orgRoles),
+              );
+
+              if (filteredChildren.length === 0) return null;
+
+              return { ...item, children: filteredChildren };
+            }
+
+            return item;
+          })
+          .filter(Boolean) as NavItem[];
+
+        if (filteredItems.length === 0) return null;
+
+        return { ...group, items: filteredItems };
+      })
+      .filter(Boolean) as NavGroup[];
+  }, [user]);
 
   const handleToggleExpand = (titleKey: string) => {
     setExpandedMenus((prev) =>
@@ -58,7 +109,7 @@ export function Sidebar() {
         <nav
           className={`flex-1 px-3 py-6 space-y-1 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
         >
-          {menuConfig.map((group, groupIdx) => (
+          {dynamicMenu.map((group, groupIdx) => (
             <div key={groupIdx} className="mb-8">
               <p
                 className={`px-3 text-xs font-bold text-text-disabled uppercase tracking-widest mb-3 transition-opacity duration-300 ${isMini ? "lg:opacity-0 lg:invisible lg:h-0 lg:mb-0" : ""}`}

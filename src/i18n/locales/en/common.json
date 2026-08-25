@@ -52,7 +52,6 @@
       "subtitle": "Choose the account type that suits your needs.",
       "individualTab": "Individual",
       "organizationTab": "Organization",
-      "fullNameAdminLabel": "Admin Full Name",
       "fullNameLabel": "Full Name",
       "fullNamePlaceholder": "John Doe",
       "emailAdminLabel": "Work Email",

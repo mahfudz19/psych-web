@@ -57,7 +57,7 @@ function RegisterOrganization() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
-                {t("guest.register.fullNameAdminLabel")}
+                {t("guest.register.fullNameLabel")}
               </label>
               <Input
                 type="text"

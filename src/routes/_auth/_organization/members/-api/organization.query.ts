@@ -26,6 +26,7 @@ export function useKickMemberMutation(orgId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: memberKeys.list(orgId),
+        exact: false,
       });
 
       toast.success("Member berhasil dikeluarkan.");

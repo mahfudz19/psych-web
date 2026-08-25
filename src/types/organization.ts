@@ -137,11 +137,3 @@ export interface KickMemberRequest {
   memberId: string;
   reason?: string;
 }
-
-/**
- * Interface untuk response kick member
- */
-export interface KickMemberResponse {
-  message: string;
-  removedMemberId: string;
-}

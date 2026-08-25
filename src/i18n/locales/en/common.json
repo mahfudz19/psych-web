@@ -91,9 +91,8 @@
       "title": "Accept Invitation",
       "subtitle": "Complete your profile to confirm this invitation.",
       "statusLabel": "Invitation Status",
-      "statusDirectAdd": "You are invited by: {{invitedBy}}",
+      "statusDirectAdd": "You are invited by {{invitedBy}} to join {{invitedOrganizationName}}",
       "statusInviteCode": "Invitation via Registration Code",
-      "error": "Failed to join. The invitation may have expired or is invalid.",
       "fullNameLabel": "Full Name",
       "fullNamePlaceholder": "John Doe",
       "emailLabel": "Your Email",
@@ -208,7 +207,6 @@
       "kickConfirm": "Are you sure you want to remove {{name}} from this organization? Their access will be immediately revoked.",
       "cannotKickOwner": "Owner cannot be removed",
       "kickAction": "Remove member",
-      "kickButton": "Remove",
       "noResults": "No members found.",
       "empty": "No members in this organization yet.",
       "pagination": {

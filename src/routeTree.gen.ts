@@ -16,6 +16,7 @@ import { Route as AuthIndividuRouteImport } from './routes/_auth/_individu'
 import { Route as AuthOrganizationRouteImport } from './routes/_auth/_organization'
 import { Route as AuthOrganizationAndIndividuRouteImport } from './routes/_auth/_organization-and-individu'
 import { Route as GuestIndexRouteImport } from './routes/_guest/index'
+import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthOrganizationAndIndividuProfileRouteImport } from './routes/_auth/_organization-and-individu/profile'
 import { Route as AuthCreateOrganizationIndexRouteImport } from './routes/_auth/create-organization/index'
 import { Route as GuestLoginIndexRouteImport } from './routes/_guest/login/index'
@@ -33,6 +34,7 @@ import { Route as GuestRegisterVerifyEmailIndexRouteImport } from './routes/_gue
 import { Route as AuthExamExamTestIdIndexRouteImport } from './routes/_auth/_exam/exam/$testId/index'
 import { Route as AuthOrganizationAndIndividuProfileReferralIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/referral/index'
 import { Route as GuestRegisterInviteTokenIndexRouteImport } from './routes/_guest/register/invite/$token/index'
+import { Route as AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport } from './routes/_auth/_organization-and-individu/joint/invite/$token/index'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
@@ -63,6 +65,11 @@ const GuestIndexRoute = GuestIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => GuestRoute,
+} as any)
+const InviteTokenRoute = InviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthOrganizationAndIndividuProfileRoute =
   AuthOrganizationAndIndividuProfileRouteImport.update({
@@ -161,9 +168,16 @@ const GuestRegisterInviteTokenIndexRoute =
     path: '/register/invite/$token/',
     getParentRoute: () => GuestRoute,
   } as any)
+const AuthOrganizationAndIndividuJointInviteTokenIndexRoute =
+  AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport.update({
+    id: '/joint/invite/$token/',
+    path: '/joint/invite/$token/',
+    getParentRoute: () => AuthOrganizationAndIndividuRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof GuestIndexRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/profile': typeof AuthOrganizationAndIndividuProfileRouteWithChildren
   '/create-organization/': typeof AuthCreateOrganizationIndexRoute
   '/login/': typeof GuestLoginIndexRoute
@@ -181,9 +195,11 @@ export interface FileRoutesByFullPath {
   '/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
   '/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
+  '/joint/invite/$token/': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof GuestIndexRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/create-organization': typeof AuthCreateOrganizationIndexRoute
   '/login': typeof GuestLoginIndexRoute
   '/register': typeof GuestRegisterIndexRoute
@@ -200,6 +216,7 @@ export interface FileRoutesByTo {
   '/exam/$testId': typeof AuthExamExamTestIdIndexRoute
   '/profile/referral': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/register/invite/$token': typeof GuestRegisterInviteTokenIndexRoute
+  '/joint/invite/$token': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -209,6 +226,7 @@ export interface FileRoutesById {
   '/_auth/_individu': typeof AuthIndividuRouteWithChildren
   '/_auth/_organization': typeof AuthOrganizationRouteWithChildren
   '/_auth/_organization-and-individu': typeof AuthOrganizationAndIndividuRouteWithChildren
+  '/invite/$token': typeof InviteTokenRoute
   '/_guest/': typeof GuestIndexRoute
   '/_auth/_organization-and-individu/profile': typeof AuthOrganizationAndIndividuProfileRouteWithChildren
   '/_auth/create-organization/': typeof AuthCreateOrganizationIndexRoute
@@ -227,11 +245,13 @@ export interface FileRoutesById {
   '/_auth/_exam/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
   '/_auth/_organization-and-individu/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/_guest/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
+  '/_auth/_organization-and-individu/joint/invite/$token/': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/invite/$token'
     | '/profile'
     | '/create-organization/'
     | '/login/'
@@ -249,9 +269,11 @@ export interface FileRouteTypes {
     | '/exam/$testId/'
     | '/profile/referral/'
     | '/register/invite/$token/'
+    | '/joint/invite/$token/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/invite/$token'
     | '/create-organization'
     | '/login'
     | '/register'
@@ -268,6 +290,7 @@ export interface FileRouteTypes {
     | '/exam/$testId'
     | '/profile/referral'
     | '/register/invite/$token'
+    | '/joint/invite/$token'
   id:
     | '__root__'
     | '/_auth'
@@ -276,6 +299,7 @@ export interface FileRouteTypes {
     | '/_auth/_individu'
     | '/_auth/_organization'
     | '/_auth/_organization-and-individu'
+    | '/invite/$token'
     | '/_guest/'
     | '/_auth/_organization-and-individu/profile'
     | '/_auth/create-organization/'
@@ -294,11 +318,13 @@ export interface FileRouteTypes {
     | '/_auth/_exam/exam/$testId/'
     | '/_auth/_organization-and-individu/profile/referral/'
     | '/_guest/register/invite/$token/'
+    | '/_auth/_organization-and-individu/joint/invite/$token/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   GuestRoute: typeof GuestRouteWithChildren
+  InviteTokenRoute: typeof InviteTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -351,6 +377,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof GuestIndexRouteImport
       parentRoute: typeof GuestRoute
+    }
+    '/invite/$token': {
+      id: '/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof InviteTokenRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_auth/_organization-and-individu/profile': {
       id: '/_auth/_organization-and-individu/profile'
@@ -471,6 +504,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuestRegisterInviteTokenIndexRouteImport
       parentRoute: typeof GuestRoute
     }
+    '/_auth/_organization-and-individu/joint/invite/$token/': {
+      id: '/_auth/_organization-and-individu/joint/invite/$token/'
+      path: '/joint/invite/$token'
+      fullPath: '/joint/invite/$token/'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuRoute
+    }
   }
 }
 
@@ -538,6 +578,7 @@ const AuthOrganizationAndIndividuProfileRouteWithChildren =
 interface AuthOrganizationAndIndividuRouteChildren {
   AuthOrganizationAndIndividuProfileRoute: typeof AuthOrganizationAndIndividuProfileRouteWithChildren
   AuthOrganizationAndIndividuBillingIndexRoute: typeof AuthOrganizationAndIndividuBillingIndexRoute
+  AuthOrganizationAndIndividuJointInviteTokenIndexRoute: typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
 }
 
 const AuthOrganizationAndIndividuRouteChildren: AuthOrganizationAndIndividuRouteChildren =
@@ -546,6 +587,8 @@ const AuthOrganizationAndIndividuRouteChildren: AuthOrganizationAndIndividuRoute
       AuthOrganizationAndIndividuProfileRouteWithChildren,
     AuthOrganizationAndIndividuBillingIndexRoute:
       AuthOrganizationAndIndividuBillingIndexRoute,
+    AuthOrganizationAndIndividuJointInviteTokenIndexRoute:
+      AuthOrganizationAndIndividuJointInviteTokenIndexRoute,
   }
 
 const AuthOrganizationAndIndividuRouteWithChildren =
@@ -595,6 +638,7 @@ const GuestRouteWithChildren = GuestRoute._addFileChildren(GuestRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   GuestRoute: GuestRouteWithChildren,
+  InviteTokenRoute: InviteTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -6,8 +6,8 @@ import type {
   DeleteOrganizationRequest,
   MembersListParams,
   OrganizationMember,
-  KickMemberResponse,
 } from "../../../../types/organization";
+import type { User } from "../../../../types/user";
 import { api } from "../../../../utils/api";
 
 const BASE = "/api/v1/organizations";
@@ -72,5 +72,13 @@ export async function getMembers(orgId: string, params?: MembersListParams) {
 }
 
 export function kickMember(orgId: string, memberId: string) {
-  return api.delete<KickMemberResponse>(`${BASE}/${orgId}/members/${memberId}`);
+  return api.delete(`${BASE}/${orgId}/members/${memberId}/kick`);
+}
+
+export function leaveOrganization(orgId: string) {
+  return api.patch<User>(`${BASE}/${orgId}/members/leave`);
+}
+
+export function joinOrganization(orgId: string) {
+  return api.patch<User>(`${BASE}/${orgId}/members/join`);
 }

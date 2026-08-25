@@ -41,11 +41,7 @@ function RegisterIndividual() {
 
     registerMutation.mutate(
       { email, password, fullName, referralCode, accountType: "INDIVIDUAL" },
-      {
-        onSuccess: () => {
-          setSubmittedEmail(email);
-        },
-      },
+      { onSuccess: () => setSubmittedEmail(email) },
     );
   };
 

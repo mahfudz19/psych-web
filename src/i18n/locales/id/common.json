@@ -91,9 +91,8 @@
       "title": "Terima Undangan",
       "subtitle": "Lengkapi profil Anda untuk mengonfirmasi undangan ini.",
       "statusLabel": "Status Undangan",
-      "statusDirectAdd": "Anda diundang oleh: {{invitedBy}}",
+      "statusDirectAdd": "Anda diundang oleh {{invitedBy}} untuk join {{invitedOrganizationName}}",
       "statusInviteCode": "Undangan via Kode Registrasi",
-      "error": "Gagal bergabung. Undangan mungkin sudah kedaluwarsa atau tidak valid.",
       "fullNameLabel": "Nama Lengkap",
       "fullNamePlaceholder": "John Doe",
       "emailLabel": "Email Anda",
@@ -208,7 +207,6 @@
       "kickConfirm": "Apakah Anda yakin ingin mengeluarkan {{name}} dari organisasi ini? Akses mereka akan segera dicabut.",
       "cannotKickOwner": "Owner tidak dapat dikeluarkan",
       "kickAction": "Keluarkan anggota",
-      "kickButton": "Keluarkan",
       "noResults": "Tidak ada anggota yang ditemukan.",
       "empty": "Belum ada anggota di organisasi ini.",
       "pagination": {

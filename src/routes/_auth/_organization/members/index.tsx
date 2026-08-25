@@ -1,17 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import toast from "../../../../components/ui/Toast";
-import ModalInvite from "./-components/ModalInvite";
-import Dialog from "../../../../components/ui/DIalog";
-import Button from "../../../../components/ui/Button";
-import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import type { MembersListParams } from "../../../../types";
 import { authStore } from "../../../../utils/authStore";
-import type { MembersListParams, OrganizationMember } from "../../../../types";
-import {
-  useKickMemberMutation,
-  useMembersListQuery,
-} from "./-api/organization.query";
+import { useMembersListQuery } from "./-api/organization.query";
+import ModalInvite from "./-components/ModalInvite";
+import ModalKickMember from "./-components/ModalKickMember";
 
 export const Route = createFileRoute("/_auth/_organization/members/")({
   component: OrganizationMembersPage,
@@ -74,25 +69,8 @@ function OrganizationMembersPage() {
     queryParams,
   );
 
-  const kickMutation = useKickMemberMutation(orgId || "");
-
   const members = data?.data || [];
   const meta = data?.meta;
-
-  const handleKickMember = (member: OrganizationMember) => {
-    if (member.organizationRole === "owner") {
-      toast.error(t("organization.members.kickOwnerError"));
-      return;
-    }
-
-    if (
-      window.confirm(
-        t("organization.members.kickConfirm", { name: member.fullName }),
-      )
-    ) {
-      kickMutation.mutate(member.id);
-    }
-  };
 
   const handlePageChange = (newPage: number) => {
     setPagination((prev) => ({ ...prev, page: newPage }));
@@ -137,16 +115,7 @@ function OrganizationMembersPage() {
             {t("organization.members.subtitle")}
           </p>
         </div>
-
-        <Dialog
-          trigger={(openDialog) => (
-            <Button startIcon={<Plus size={12} />} onClick={() => openDialog()}>
-              {t("organization.members.inviteButton")}
-            </Button>
-          )}
-        >
-          {(close) => <ModalInvite close={close} />}
-        </Dialog>
+        <ModalInvite />
       </div>
 
       {/* Search dan Filter Controls */}
@@ -253,24 +222,11 @@ function OrganizationMembersPage() {
 
                   {/* Kolom Aksi */}
                   <td className="p-4 px-6 text-right">
-                    <button
-                      onClick={() => handleKickMember(member)}
-                      disabled={
-                        member.organizationRole === "owner" ||
-                        kickMutation.isPending
-                      }
-                      className="px-3 py-1.5 rounded-lg text-xs font-bold text-error-main bg-error-main/10 hover:bg-error-main hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                      title={
-                        member.organizationRole === "owner"
-                          ? t("organization.members.cannotKickOwner")
-                          : t("organization.members.kickAction")
-                      }
-                    >
-                      {kickMutation.isPending &&
-                      kickMutation.variables === member.id
-                        ? t("common.processing")
-                        : t("organization.members.kickButton")}
-                    </button>
+                    <ModalKickMember
+                      orgId={orgId}
+                      member={member}
+                      key={`kick-member-${member.id}`}
+                    />
                   </td>
                 </tr>
               ))}

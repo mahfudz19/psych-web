@@ -52,9 +52,11 @@
       "subtitle": "Choose the account type that suits your needs.",
       "individualTab": "Individual",
       "organizationTab": "Organization",
-      "fullNameLabel": "Admin Full Name",
+      "fullNameAdminLabel": "Admin Full Name",
+      "fullNameLabel": "Full Name",
       "fullNamePlaceholder": "John Doe",
-      "emailLabel": "Work Email",
+      "emailAdminLabel": "Work Email",
+      "emailLabel": "Email",
       "emailPlaceholder": "admin@company.com",
       "passwordLabel": "Password",
       "passwordPlaceholder": "••••••••",
@@ -76,7 +78,13 @@
       "processing": "Processing...",
       "error": "Registration failed. Please ensure email is not already in use and data is valid.",
       "hasAccount": "Already have an account?",
-      "loginLink": "Sign in here"
+      "loginLink": "Sign in here",
+      "addReferral": "Add Referral Code",
+      "addInvite": "Add Invitation Code",
+      "checkEmailTitle": "Check your email",
+      "checkEmailDesc": "We have sent a verification link to your email.",
+      "spamNotice": "If you do not receive the email, check your spam folder.",
+      "backToLogin": "Back to login page"
     },
     "invite": {
       "badge": "INVITATION",

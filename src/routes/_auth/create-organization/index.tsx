@@ -7,6 +7,7 @@ import toast from "../../../components/ui/Toast";
 import Button from "../../../components/ui/Button";
 import { authStore } from "../../../utils/authStore";
 import { useCreateOrganizationMutation } from "../_organization/-api/organization.query";
+import { me } from "../../_guest/-api/auth.api";
 
 export const Route = createFileRoute("/_auth/create-organization/")({
   beforeLoad: async ({ context: { queryClient } }) => {
@@ -43,6 +44,8 @@ function CreateOrganizationPage() {
         email: (formData.get("email") as string) || undefined,
         address: (formData.get("address") as string) || undefined,
       });
+      const { data: updatedUser } = await me();
+      authStore.set({ user: updatedUser });
 
       toast.success(t("organization.create.success"));
       navigate({ to: "/dashboard", replace: true });

@@ -11,6 +11,7 @@ import {
   updateOrganization,
   uploadOrganizationLogo,
 } from "./organization.api";
+import { useTranslation } from "react-i18next";
 
 export const organizationKeys = {
   all: ["organization"] as const,
@@ -34,8 +35,6 @@ export function useCreateOrganizationMutation() {
   return useMutation({
     mutationFn: (data: CreateOrganizationRequest) => createOrganization(data),
     onSuccess: (response) => {
-      toast.success("Organisasi berhasil dibuat");
-
       // Invalidate user profile karena organizationId berubah
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
 
@@ -47,14 +46,12 @@ export function useCreateOrganizationMutation() {
         );
       }
     },
-    onError: () => {
-      toast.error("Gagal membuat organisasi");
-    },
   });
 }
 
 export function useUpdateOrganizationMutation() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: ({
@@ -65,8 +62,7 @@ export function useUpdateOrganizationMutation() {
       data: UpdateOrganizationRequest;
     }) => updateOrganization({ orgId, data }),
     onSuccess: (response) => {
-      // ✅ Ubah parameter name
-      toast.success("Organisasi berhasil diperbarui");
+      toast.success(t("organization.create.success"));
 
       if (response.data) {
         queryClient.setQueryData(
@@ -77,7 +73,7 @@ export function useUpdateOrganizationMutation() {
 
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
     },
-    onError: () => toast.error("Gagal memperbarui organisasi"),
+    onError: () => toast.error(t("organization.create.error")),
   });
 }
 
@@ -93,16 +89,8 @@ export function useDeleteOrganizationMutation() {
       confirmation: "DELETE_MY_ORGANIZATION";
     }) => deleteOrganization({ orgId, confirmation }),
     onSuccess: () => {
-      toast.success("Organisasi berhasil dihapus");
-
-      // Invalidate user profile
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
-
-      // Remove organization cache
       queryClient.removeQueries({ queryKey: organizationKeys.all });
-    },
-    onError: () => {
-      toast.error("Gagal menghapus organisasi");
     },
   });
 }

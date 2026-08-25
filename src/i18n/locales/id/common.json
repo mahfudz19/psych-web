@@ -52,9 +52,11 @@
       "subtitle": "Pilih tipe akun yang sesuai dengan kebutuhan Anda.",
       "individualTab": "Individu",
       "organizationTab": "Organisasi",
-      "fullNameLabel": "Nama Lengkap Admin",
+      "fullNameAdminLabel": "Nama Lengkap Admin",
+      "fullNameLabel": "Nama Lengkap",
       "fullNamePlaceholder": "John Doe",
-      "emailLabel": "Email Kerja",
+      "emailAdminLabel": "Email Kerja",
+      "emailLabel": "Email",
       "emailPlaceholder": "admin@perusahaan.com",
       "passwordLabel": "Password",
       "passwordPlaceholder": "••••••••",
@@ -76,7 +78,13 @@
       "processing": "Memproses...",
       "error": "Gagal mendaftar. Pastikan email belum digunakan dan data valid.",
       "hasAccount": "Sudah memiliki akun?",
-      "loginLink": "Masuk di sini"
+      "loginLink": "Masuk di sini",
+      "addReferral": "Tambahkan Kode Referral",
+      "addInvite": "Tambahkan Kode Invitasi",
+      "checkEmailTitle": "Periksa email Anda",
+      "checkEmailDesc": "Kami telah mengirimkan tautan verifikasi ke email Anda.",
+      "spamNotice": "Jika Anda tidak mendapatkan email, coba periksa folder spam.",
+      "backToLogin": "Kembali ke halaman login"
     },
     "invite": {
       "badge": "INVITATION",

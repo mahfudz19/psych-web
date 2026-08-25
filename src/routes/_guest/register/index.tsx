@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRegisterMutation } from "../-api/auth.query";
@@ -7,6 +7,7 @@ import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import PasswordFields, { requirements } from "./-components/PassWordFields";
 import ReferralOrInvitedCode from "./-components/ReferralOrInvitedCode";
+import RegisterLayout from "./-components/RegisterLayout";
 import SuccessRegisration from "./-components/SuccessRegisration";
 
 export const Route = createFileRoute("/_guest/register/")({
@@ -51,28 +52,7 @@ function RegisterIndividual() {
   return (
     <AuthSplitLayout layoutKey="registerIndividual" imagePosition="right">
       {!registerMutation.isSuccess ? (
-        <div className="animate-in fade-in duration-500">
-          <div className="mb-8">
-            <h3 className="text-3xl font-extrabold text-text-primary tracking-tight mb-2">
-              {t("guest.register.title")}
-            </h3>
-            <p className="text-text-secondary text-sm mb-6">
-              {t("guest.register.subtitle")}
-            </p>
-
-            <div className="flex p-1 bg-divider/10 rounded-2xl mb-2">
-              <button className="flex-1 py-2 text-sm font-bold bg-bg-paper text-primary-main rounded-xl shadow-sm border border-divider transition-all">
-                {t("guest.register.individualTab")}
-              </button>
-              <Link
-                to="/register/organization"
-                className="flex-1 py-2 text-sm font-medium text-text-secondary text-center hover:text-text-primary transition-all"
-              >
-                {t("guest.register.organizationTab")}
-              </Link>
-            </div>
-          </div>
-
+        <RegisterLayout>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
@@ -121,17 +101,7 @@ function RegisterIndividual() {
                 : t("guest.register.submitIndividual")}
             </Button>
           </form>
-
-          <div className="mt-6 pt-6 border-t border-divider text-left text-sm text-text-secondary">
-            {t("guest.register.hasAccount")}{" "}
-            <Link
-              to="/login"
-              className="text-primary-main font-bold hover:underline"
-            >
-              {t("guest.register.loginLink")}
-            </Link>
-          </div>
-        </div>
+        </RegisterLayout>
       ) : (
         <SuccessRegisration email={submittedEmail} />
       )}

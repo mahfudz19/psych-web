@@ -69,6 +69,7 @@ function Login() {
         {t("guest.login.noAccount")}{" "}
         <Link
           to="/register"
+          preload={false}
           className="text-primary-main font-bold hover:underline"
         >
           {t("guest.login.registerLink")}

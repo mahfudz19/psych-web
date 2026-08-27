@@ -115,6 +115,8 @@ const request = async <T = unknown>(
         const currentPath = window.location.pathname;
         const isGuestRoute =
           currentPath.startsWith("/login") ||
+          currentPath.startsWith("/forgot-password") ||
+          currentPath.startsWith("/reset-password") ||
           currentPath.startsWith("/register");
 
         if (!isGuestRoute) window.location.href = "/login?reason=UNAUTHORIZED";

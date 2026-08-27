@@ -19,8 +19,10 @@ import { Route as GuestIndexRouteImport } from './routes/_guest/index'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthOrganizationAndIndividuProfileRouteImport } from './routes/_auth/_organization-and-individu/profile'
 import { Route as AuthCreateOrganizationIndexRouteImport } from './routes/_auth/create-organization/index'
+import { Route as GuestForgotPasswordIndexRouteImport } from './routes/_guest/forgot-password/index'
 import { Route as GuestLoginIndexRouteImport } from './routes/_guest/login/index'
 import { Route as GuestRegisterIndexRouteImport } from './routes/_guest/register/index'
+import { Route as GuestResetPasswordIndexRouteImport } from './routes/_guest/reset-password/index'
 import { Route as AuthIndividuPortalIndexRouteImport } from './routes/_auth/_individu/portal/index'
 import { Route as AuthIndividuTestHistoryIndexRouteImport } from './routes/_auth/_individu/test-history/index'
 import { Route as AuthIndividuTestIndexRouteImport } from './routes/_auth/_individu/test/index'
@@ -83,6 +85,12 @@ const AuthCreateOrganizationIndexRoute =
     path: '/create-organization/',
     getParentRoute: () => AuthRoute,
   } as any)
+const GuestForgotPasswordIndexRoute =
+  GuestForgotPasswordIndexRouteImport.update({
+    id: '/forgot-password/',
+    path: '/forgot-password/',
+    getParentRoute: () => GuestRoute,
+  } as any)
 const GuestLoginIndexRoute = GuestLoginIndexRouteImport.update({
   id: '/login/',
   path: '/login/',
@@ -91,6 +99,11 @@ const GuestLoginIndexRoute = GuestLoginIndexRouteImport.update({
 const GuestRegisterIndexRoute = GuestRegisterIndexRouteImport.update({
   id: '/register/',
   path: '/register/',
+  getParentRoute: () => GuestRoute,
+} as any)
+const GuestResetPasswordIndexRoute = GuestResetPasswordIndexRouteImport.update({
+  id: '/reset-password/',
+  path: '/reset-password/',
   getParentRoute: () => GuestRoute,
 } as any)
 const AuthIndividuPortalIndexRoute = AuthIndividuPortalIndexRouteImport.update({
@@ -180,8 +193,10 @@ export interface FileRoutesByFullPath {
   '/invite/$token': typeof InviteTokenRoute
   '/profile': typeof AuthOrganizationAndIndividuProfileRouteWithChildren
   '/create-organization/': typeof AuthCreateOrganizationIndexRoute
+  '/forgot-password/': typeof GuestForgotPasswordIndexRoute
   '/login/': typeof GuestLoginIndexRoute
   '/register/': typeof GuestRegisterIndexRoute
+  '/reset-password/': typeof GuestResetPasswordIndexRoute
   '/portal/': typeof AuthIndividuPortalIndexRoute
   '/test-history/': typeof AuthIndividuTestHistoryIndexRoute
   '/test/': typeof AuthIndividuTestIndexRoute
@@ -201,8 +216,10 @@ export interface FileRoutesByTo {
   '/': typeof GuestIndexRoute
   '/invite/$token': typeof InviteTokenRoute
   '/create-organization': typeof AuthCreateOrganizationIndexRoute
+  '/forgot-password': typeof GuestForgotPasswordIndexRoute
   '/login': typeof GuestLoginIndexRoute
   '/register': typeof GuestRegisterIndexRoute
+  '/reset-password': typeof GuestResetPasswordIndexRoute
   '/portal': typeof AuthIndividuPortalIndexRoute
   '/test-history': typeof AuthIndividuTestHistoryIndexRoute
   '/test': typeof AuthIndividuTestIndexRoute
@@ -230,8 +247,10 @@ export interface FileRoutesById {
   '/_guest/': typeof GuestIndexRoute
   '/_auth/_organization-and-individu/profile': typeof AuthOrganizationAndIndividuProfileRouteWithChildren
   '/_auth/create-organization/': typeof AuthCreateOrganizationIndexRoute
+  '/_guest/forgot-password/': typeof GuestForgotPasswordIndexRoute
   '/_guest/login/': typeof GuestLoginIndexRoute
   '/_guest/register/': typeof GuestRegisterIndexRoute
+  '/_guest/reset-password/': typeof GuestResetPasswordIndexRoute
   '/_auth/_individu/portal/': typeof AuthIndividuPortalIndexRoute
   '/_auth/_individu/test-history/': typeof AuthIndividuTestHistoryIndexRoute
   '/_auth/_individu/test/': typeof AuthIndividuTestIndexRoute
@@ -254,8 +273,10 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/profile'
     | '/create-organization/'
+    | '/forgot-password/'
     | '/login/'
     | '/register/'
+    | '/reset-password/'
     | '/portal/'
     | '/test-history/'
     | '/test/'
@@ -275,8 +296,10 @@ export interface FileRouteTypes {
     | '/'
     | '/invite/$token'
     | '/create-organization'
+    | '/forgot-password'
     | '/login'
     | '/register'
+    | '/reset-password'
     | '/portal'
     | '/test-history'
     | '/test'
@@ -303,8 +326,10 @@ export interface FileRouteTypes {
     | '/_guest/'
     | '/_auth/_organization-and-individu/profile'
     | '/_auth/create-organization/'
+    | '/_guest/forgot-password/'
     | '/_guest/login/'
     | '/_guest/register/'
+    | '/_guest/reset-password/'
     | '/_auth/_individu/portal/'
     | '/_auth/_individu/test-history/'
     | '/_auth/_individu/test/'
@@ -399,6 +424,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCreateOrganizationIndexRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_guest/forgot-password/': {
+      id: '/_guest/forgot-password/'
+      path: '/forgot-password'
+      fullPath: '/forgot-password/'
+      preLoaderRoute: typeof GuestForgotPasswordIndexRouteImport
+      parentRoute: typeof GuestRoute
+    }
     '/_guest/login/': {
       id: '/_guest/login/'
       path: '/login'
@@ -411,6 +443,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register/'
       preLoaderRoute: typeof GuestRegisterIndexRouteImport
+      parentRoute: typeof GuestRoute
+    }
+    '/_guest/reset-password/': {
+      id: '/_guest/reset-password/'
+      path: '/reset-password'
+      fullPath: '/reset-password/'
+      preLoaderRoute: typeof GuestResetPasswordIndexRouteImport
       parentRoute: typeof GuestRoute
     }
     '/_auth/_individu/portal/': {
@@ -617,8 +656,10 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface GuestRouteChildren {
   GuestIndexRoute: typeof GuestIndexRoute
+  GuestForgotPasswordIndexRoute: typeof GuestForgotPasswordIndexRoute
   GuestLoginIndexRoute: typeof GuestLoginIndexRoute
   GuestRegisterIndexRoute: typeof GuestRegisterIndexRoute
+  GuestResetPasswordIndexRoute: typeof GuestResetPasswordIndexRoute
   GuestRegisterOrganizationIndexRoute: typeof GuestRegisterOrganizationIndexRoute
   GuestRegisterVerifyEmailIndexRoute: typeof GuestRegisterVerifyEmailIndexRoute
   GuestRegisterInviteTokenIndexRoute: typeof GuestRegisterInviteTokenIndexRoute
@@ -626,8 +667,10 @@ interface GuestRouteChildren {
 
 const GuestRouteChildren: GuestRouteChildren = {
   GuestIndexRoute: GuestIndexRoute,
+  GuestForgotPasswordIndexRoute: GuestForgotPasswordIndexRoute,
   GuestLoginIndexRoute: GuestLoginIndexRoute,
   GuestRegisterIndexRoute: GuestRegisterIndexRoute,
+  GuestResetPasswordIndexRoute: GuestResetPasswordIndexRoute,
   GuestRegisterOrganizationIndexRoute: GuestRegisterOrganizationIndexRoute,
   GuestRegisterVerifyEmailIndexRoute: GuestRegisterVerifyEmailIndexRoute,
   GuestRegisterInviteTokenIndexRoute: GuestRegisterInviteTokenIndexRoute,

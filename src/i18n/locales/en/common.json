@@ -41,6 +41,7 @@
       "emailLabel": "Email",
       "emailPlaceholder": "name@company.com",
       "passwordLabel": "Password",
+      "forgotPassword": "Forgot Password?",
       "submitBtn": "Sign In to Dashboard →",
       "processing": "Processing...",
       "error": "Login Failed: Please check your email and password.",

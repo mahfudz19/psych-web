@@ -41,6 +41,7 @@
       "emailLabel": "Email",
       "emailPlaceholder": "nama@perusahaan.com",
       "passwordLabel": "Password",
+      "forgotPassword": "Lupa Password?",
       "submitBtn": "Masuk ke Dashboard →",
       "processing": "Memproses...",
       "error": "Login Gagal: Periksa kembali email dan password Anda.",

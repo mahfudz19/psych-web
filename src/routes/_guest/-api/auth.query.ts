@@ -89,3 +89,33 @@ export function useVerifyEmailMutation() {
     onError: ({ message }) => toast.error(message || "Failed to verify email"),
   });
 }
+
+export function useForgotPasswordMutation() {
+  return useMutation({
+    mutationFn: (email: string) => api.forgotPassword(email),
+    onError: (error: any) =>
+      toast.error(error?.message || "Gagal mengirim tautan reset"),
+  });
+}
+
+export function useResetPasswordMutation() {
+  const router = useRouter();
+  return useMutation({
+    mutationFn: ({
+      token,
+      newPassword,
+    }: {
+      token: string;
+      newPassword: string;
+    }) => api.resetPassword(token, newPassword),
+    onSuccess: () => {
+      toast.success("Kata sandi berhasil diperbarui. Silakan login.");
+      router.navigate({ to: "/login", replace: true });
+    },
+    onError: (error: any) =>
+      toast.error(
+        error?.message ||
+          "Gagal mereset kata sandi. Tautan mungkin kedaluwarsa.",
+      ),
+  });
+}

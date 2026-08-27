@@ -48,3 +48,11 @@ export function resendVerifyEmail(email: string) {
 export function verifyEmail(email: string, plainToken: string) {
   return api.post<Auth>(`${BASE}/verify-email`, { email, plainToken });
 }
+
+export function forgotPassword(email: string) {
+  return api.post(`${BASE}/forgot-password`, { email });
+}
+
+export function resetPassword(token: string, newPassword: string) {
+  return api.post(`${BASE}/reset-password`, { token, newPassword });
+}

@@ -54,6 +54,15 @@ function Login() {
             <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary">
               {t("guest.login.passwordLabel")}
             </label>
+
+            <Link
+              to="/forgot-password"
+              preload={false}
+              tabIndex={-1}
+              className="text-primary-main font-bold hover:underline text-sm"
+            >
+              {t("guest.login.forgotPassword")}
+            </Link>
           </div>
           <PassworfField name="password" placeholder="••••••••" required />
         </div>

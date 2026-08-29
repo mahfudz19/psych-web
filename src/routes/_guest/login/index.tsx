@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { useLoginMutation } from "../-api/auth.query";
 import { AuthSplitLayout } from "../-components/AuthSplitLayout";
 import PassworfField from "../-components/PassworfField";
-import { useLoginMutation } from "../-api/auth.query";
-import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
+import Input from "../../../components/ui/Input";
+import ButtonLoginGoogle from "../register/-components/ButtonLoginGoogle";
 
 export const Route = createFileRoute("/_guest/login/")({ component: Login });
 
@@ -72,6 +73,8 @@ function Login() {
             ? t("guest.login.processing")
             : t("guest.login.submitBtn")}
         </Button>
+
+        <ButtonLoginGoogle />
       </form>
 
       <div className="mt-8 pt-6 border-t border-divider text-left text-sm text-text-secondary">

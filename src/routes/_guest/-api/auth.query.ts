@@ -29,11 +29,52 @@ export function useLoginMutation() {
     onError: () => toast.error("Login failed"),
   });
 }
+export function useGoogleLoginMutation() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (credentials: { token: string }) =>
+      api.googleLogin(credentials),
+    onSuccess: ({ data }) => {
+      if (!data) throw new Error("Login failed");
+
+      if (data.user) {
+        authStore.set({ user: data.user, accessToken: data.accessToken });
+      }
+
+      queryClient.setQueryData(["userProfile"], { data: data.user });
+      toast.success("Login success");
+
+      router.invalidate().then(() => {
+        router.navigate({ to: getRedirectPathByRole(data.user) });
+      });
+    },
+    onError: () => toast.error("Login failed"),
+  });
+}
 
 export function useRegisterMutation() {
   return useMutation({
     mutationFn: (credentials: api.RegisterRequest) => api.register(credentials),
     onSuccess: () => toast.success("Register success"),
+    onError: () => toast.error("Register failed"),
+  });
+}
+
+export function useGoogleRegisterMutation() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (credentials: api.GoogleRegisterRequest) =>
+      api.googleRegister(credentials),
+    onSuccess: ({ data }) => {
+      toast.success("Email verified successfully");
+      router.navigate({ to: getRedirectPathByRole(data?.user), replace: true });
+      if (data?.user)
+        queryClient.setQueryData(["userProfile"], { data: data.user });
+    },
     onError: () => toast.error("Register failed"),
   });
 }

@@ -8,6 +8,8 @@ import { routeTree } from "./routeTree.gen";
 import "./i18n";
 import { Toaster } from "./components/ui/Toast";
 import { authStore } from "./utils/authStore";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+const googleClientId = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID;
 
 const GlobalPendingComponent = () => {
   return (
@@ -73,7 +75,10 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Toaster position="top-right" />
     <QueryClientProvider client={queryClient}>
-      <App />
+      <GoogleOAuthProvider clientId={googleClientId}>
+        <App />
+      </GoogleOAuthProvider>
+
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </StrictMode>,

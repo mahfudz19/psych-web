@@ -5,6 +5,7 @@ import { useRegisterMutation } from "../-api/auth.query";
 import { AuthSplitLayout } from "../-components/AuthSplitLayout";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
+import ButtonRegisrationGoogle from "./-components/ButtonRegisrationGoogle";
 import PasswordFields, { requirements } from "./-components/PassWordFields";
 import ReferralOrInvitedCode from "./-components/ReferralOrInvitedCode";
 import RegisterLayout from "./-components/RegisterLayout";
@@ -96,6 +97,8 @@ function RegisterIndividual() {
                 ? t("guest.register.processing")
                 : t("guest.register.submitIndividual")}
             </Button>
+
+            <ButtonRegisrationGoogle fieldName="referralCode" />
           </form>
         </RegisterLayout>
       ) : (

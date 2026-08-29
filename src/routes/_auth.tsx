@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_auth")({
     }
 
     try {
-      const response = await queryClient.fetchQuery({
+      const response = await queryClient.query({
         queryKey: ["userProfile"],
         queryFn: () => authApi.me(),
         staleTime: 1000 * 60 * 5,

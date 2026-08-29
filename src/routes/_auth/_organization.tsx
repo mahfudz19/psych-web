@@ -6,9 +6,7 @@ export const Route = createFileRoute("/_auth/_organization")({
   beforeLoad: ({ context: { auth }, location }) => {
     const user = auth.get().user;
 
-    if (isIndividualUser(user)) {
-      throw redirect({ to: "/portal" });
-    }
+    if (isIndividualUser(user)) throw redirect({ to: "/portal" });
 
     if (needsOrganizationCreation(user)) {
       if (location.pathname !== "/create-organization") {

@@ -11,7 +11,7 @@ import { me } from "../../_guest/-api/auth.api";
 
 export const Route = createFileRoute("/_auth/create-organization/")({
   beforeLoad: async ({ context: { queryClient } }) => {
-    const data = await queryClient.fetchQuery({
+    const data = await queryClient.query({
       queryKey: ["userProfile"],
       queryFn: () => api.get<User>("/api/v1/auth/me"),
       staleTime: 1000 * 60 * 5,

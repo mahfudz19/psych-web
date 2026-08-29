@@ -75,7 +75,7 @@ function DashboardOverview() {
         {/* Aksen Visual */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary-main/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
 
-        <div className="relative z-10">
+        <div className="relative">
           <h2 className="text-3xl font-extrabold text-text-primary tracking-tight mb-2">
             {t("dashboard.welcome", "Selamat datang kembali,")}{" "}
             {user?.fullName?.split(" ")[0]}!
@@ -92,7 +92,7 @@ function DashboardOverview() {
         </div>
 
         {/* Action Button Global (Menyesuaikan Role) */}
-        <div className="relative z-10 flex shrink-0">
+        <div className="relative flex shrink-0">
           {isSuperAdmin ? (
             <button className="px-6 py-3 bg-error-main text-white rounded-2xl text-sm font-bold shadow-md shadow-error-main/20 hover:bg-error-dark transition-all flex items-center gap-2">
               <ShieldAlert className="w-4 h-4" /> System Settings

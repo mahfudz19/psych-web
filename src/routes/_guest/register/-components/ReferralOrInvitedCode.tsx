@@ -55,7 +55,7 @@ function ReferralOrInvitedCode({
               type="text"
               name={fieldName}
               placeholder={t("guest.register.referralPlaceholder")}
-              className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 transition-all text-sm font-medium uppercase"
+              className="w-full"
             />
           </div>
         )}

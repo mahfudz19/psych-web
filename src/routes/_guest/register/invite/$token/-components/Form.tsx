@@ -1,14 +1,16 @@
+import type { UseMutationResult } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { useState, type Dispatch, type SetStateAction } from "react";
+import { useTranslation } from "react-i18next";
+import ButtonRegisrationGoogle from "../../../-components/ButtonRegisrationGoogle";
 import PasswordFields, {
   requirements,
 } from "../../../-components/PassWordFields";
-import type { UseMutationResult } from "@tanstack/react-query";
+import type { RegisterRequest } from "../../../../-api/auth.api";
+import Button from "../../../../../../components/ui/Button";
+import Input from "../../../../../../components/ui/Input";
 import type { ApiResponse } from "../../../../../../types";
 import type { User } from "../../../../../../types/user";
-import type { RegisterRequest } from "../../../../-api/auth.api";
-import Input from "../../../../../../components/ui/Input";
-import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
 import type { invitePayload } from "../../../../../_auth/_organization/members/-components/ModalInvite";
 
 export default function FormInviteRegister({
@@ -135,15 +137,22 @@ export default function FormInviteRegister({
           </div>
         )}
 
-        <button
+        <Button
           type="submit"
           disabled={registerMutation.isPending || !inviteData}
-          className="w-full mt-4 py-3 px-4 bg-primary-main text-primary-contrast rounded-2xl font-bold text-sm hover:bg-primary-dark active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-md shadow-primary-main/20"
         >
           {registerMutation.isPending
             ? t("guest.invite.processing")
             : t("guest.invite.submitBtn")}
-        </button>
+        </Button>
+
+        <ButtonRegisrationGoogle
+          fieldName="inviteToken"
+          inviteToken={{
+            invitedBy: inviteData?.invitedBy || "",
+            invitedOrganizationId: inviteData?.invitedOrganizationId || "",
+          }}
+        />
       </form>
 
       <div className="mt-6 pt-6 border-t border-divider text-left text-sm text-text-secondary">

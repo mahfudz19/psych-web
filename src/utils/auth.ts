@@ -22,7 +22,7 @@ export function needsOrganizationCreation(
   if (!user) return false;
 
   // is super admin
-  if (user.roles.includes("SUPERADMIN")) return false;
+  if (user.roles?.includes?.("SUPERADMIN")) return false;
 
   const isOrganizationAccountType =
     user.accountType === ACCOUNT_TYPE_ORGANIZATION;
@@ -113,7 +113,6 @@ export function getRedirectPathByRole(user: User | null | undefined): string {
     return "/login";
   }
 
-  // Jika user ORGANIZATION tapi belum punya organizationId, arahkan ke create organization
   if (needsOrganizationCreation(user)) {
     return "/create-organization";
   }
@@ -122,6 +121,5 @@ export function getRedirectPathByRole(user: User | null | undefined): string {
     return "/dashboard";
   }
 
-  // Default untuk individual user
   return "/portal";
 }

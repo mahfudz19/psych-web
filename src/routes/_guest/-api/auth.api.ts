@@ -20,6 +20,10 @@ export function login(data: { email: string; password: string }) {
   return api.post<Auth>(`${BASE}/login`, data);
 }
 
+export function googleLogin(data: { token: string }) {
+  return api.post<Auth>(`${BASE}/google/login`, data);
+}
+
 export interface RegisterRequest {
   email: string;
   password: string;
@@ -32,6 +36,16 @@ export interface RegisterRequest {
 }
 export function register(data: RegisterRequest) {
   return api.post<User>(`${BASE}/register`, removeEmptyValues(data));
+}
+
+export interface GoogleRegisterRequest extends Omit<
+  RegisterRequest,
+  "email" | "password" | "fullName"
+> {
+  token: string;
+}
+export function googleRegister(data: GoogleRegisterRequest) {
+  return api.post<Auth>(`${BASE}/google/register`, removeEmptyValues(data));
 }
 
 export function logout(refreshTokenId?: string[]) {

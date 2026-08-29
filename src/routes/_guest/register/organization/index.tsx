@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import ButtonRegisrationGoogle from "../-components/ButtonRegisrationGoogle";
 import PasswordFields, { requirements } from "../-components/PassWordFields";
 import ReferralOrInvitedCode from "../-components/ReferralOrInvitedCode";
 import RegisterLayout from "../-components/RegisterLayout";
@@ -101,6 +102,8 @@ function RegisterOrganization() {
                 ? t("guest.register.processing")
                 : t("guest.register.submitOrganization")}
             </Button>
+
+            <ButtonRegisrationGoogle fieldName="inviteCode" />
           </form>
         </RegisterLayout>
       ) : (

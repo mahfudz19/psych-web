@@ -86,12 +86,17 @@ export default function Popover({
       )}
 
       {interaction === "click" ? (
-        <label
-          htmlFor={popoverId}
+        <div
           className="cursor-pointer relative z-30 block"
+          onClick={() => {
+            const checkbox = document.getElementById(
+              popoverId,
+            ) as HTMLInputElement;
+            if (checkbox) checkbox.checked = !checkbox.checked;
+          }}
         >
           {trigger}
-        </label>
+        </div>
       ) : (
         <div className="relative z-30 block">{trigger}</div>
       )}

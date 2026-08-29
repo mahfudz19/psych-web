@@ -1,13 +1,16 @@
 import { useSidebar } from "../../../contexts/SidebarContext";
+import IconButton from "../../ui/IconButton";
 
 function ToggleSidebar() {
   const { toggleMobile, toggleMini, isMini } = useSidebar();
 
   return (
     <>
-      <button
+      <IconButton
         onClick={toggleMobile}
-        className="lg:hidden p-2 flex items-center justify-center rounded-2xl text-text-secondary hover:bg-divider/20 hover:text-primary-main focus:outline-none transition-all"
+        variant="text"
+        size="sm"
+        className="lg:hidden flex"
         aria-label="Buka Menu"
       >
         <svg
@@ -23,11 +26,13 @@ function ToggleSidebar() {
             d="M4 6h16M4 12h16M4 18h16"
           />
         </svg>
-      </button>
+      </IconButton>
 
-      <button
+      <IconButton
         onClick={toggleMini}
-        className="hidden lg:flex p-2 items-center justify-center rounded-2xl text-text-secondary hover:bg-divider/20 hover:text-primary-main focus:outline-none transition-all"
+        variant="text"
+        size="sm"
+        className="hidden lg:flex"
         aria-label={isMini ? "Perbesar Menu" : "Perkecil Menu"}
       >
         {isMini ? (
@@ -59,7 +64,7 @@ function ToggleSidebar() {
             />
           </svg>
         )}
-      </button>
+      </IconButton>
     </>
   );
 }

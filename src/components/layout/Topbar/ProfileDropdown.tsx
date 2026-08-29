@@ -1,7 +1,8 @@
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useLogoutMutation } from "../../../routes/_guest/-api/auth.query";
-import Popover from "../../ui/Popover";
+import { Menu, MenuDivider, MenuHeader, MenuItem } from "../../ui/Menu";
+import Button from "../../ui/Button";
 
 export interface ProfileDropdownProps {
   fullName: string;
@@ -15,6 +16,7 @@ function ProfileDropdown(props: ProfileDropdownProps) {
   const { fullName, accountType, email, subscriptionTier, status } = props;
   const { t } = useTranslation();
   const logout = useLogoutMutation();
+  const navigate = useNavigate();
 
   const getInitials = (name: string) =>
     name
@@ -25,13 +27,35 @@ function ProfileDropdown(props: ProfileDropdownProps) {
       .toUpperCase();
 
   return (
-    <Popover
-      position="bottom-right" // Bisa dihilangkan karena ini default
+    <Menu
+      position="bottom-right"
+      widthClass="w-64"
       trigger={
-        <div className="flex items-center gap-3 p-1.5 md:pr-3 rounded-2xl text-text-secondary hover:bg-divider/20 peer-checked:bg-divider/20 transition-all">
-          <div className="w-7 h-7 rounded-full bg-primary-main text-primary-contrast flex items-center justify-center text-xs font-bold shadow-sm">
-            {getInitials(fullName)}
-          </div>
+        <Button
+          size="sm"
+          variant="text"
+          startIcon={
+            <div className="w-7 h-7 rounded-full bg-primary-main text-primary-contrast flex items-center justify-center text-xs font-bold shadow-sm">
+              {getInitials(fullName)}
+            </div>
+          }
+          endIcon={
+            <svg
+              className="w-4 h-4 transition-transform duration-200 hidden sm:block group-data-[state=open]:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          }
+          className="text-sm"
+        >
           <div className="hidden sm:flex flex-col items-start text-left">
             <span className="text-xs font-bold text-text-primary leading-none">
               {fullName}
@@ -40,26 +64,12 @@ function ProfileDropdown(props: ProfileDropdownProps) {
               {accountType}
             </span>
           </div>
-          <svg
-            className="w-4 h-4 transition-transform duration-200 hidden sm:block peer-checked:rotate-180"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </div>
+        </Button>
       }
     >
       {(close) => (
-        <div className="w-64">
-          {/* Header */}
-          <div className="px-3 py-3 border-b border-divider">
+        <div className="flex flex-col pb-1">
+          <MenuHeader>
             <p className="text-sm font-bold text-text-primary truncate">
               {fullName}
             </p>
@@ -74,81 +84,91 @@ function ProfileDropdown(props: ProfileDropdownProps) {
                 {status}
               </span>
             </div>
-          </div>
+          </MenuHeader>
 
-          {/* Links */}
-          <div className="py-1.5 space-y-0.5">
-            <Link
-              to="/profile"
-              onClick={close}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-medium text-text-secondary hover:bg-divider/20 hover:text-text-primary transition-colors"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-              {t("topbar.profileSettings")}
-            </Link>
-            <Link
-              to="/billing"
-              onClick={close}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-medium text-text-secondary hover:bg-divider/20 hover:text-text-primary transition-colors"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                />
-              </svg>
-              {t("sidebar.billing")}
-            </Link>
-          </div>
-
-          {/* Logout */}
-          <div className="pt-1.5 border-t border-divider">
-            <button
+          <div className="flex flex-col gap-0.5 p-1">
+            <MenuItem
+              icon={
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+              }
               onClick={() => {
+                close();
+                navigate({ to: "/profile" });
+              }}
+            >
+              {t("topbar.profileSettings")}
+            </MenuItem>
+
+            <MenuItem
+              icon={
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                  />
+                </svg>
+              }
+              onClick={() => {
+                close();
+                navigate({ to: "/billing" });
+              }}
+            >
+              {t("sidebar.billing")}
+            </MenuItem>
+          </div>
+
+          <MenuDivider />
+
+          <div className="p-1">
+            <MenuItem
+              icon={
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 01-3-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+              }
+              rippleColor="error"
+              className="text-error-main hover:bg-error-main/10 hover:text-error-main focus:bg-error-main/10 focus:text-error-main disabled:opacity-50"
+              onClick={() => {
+                if (logout.isPending) return;
                 close();
                 logout.mutate();
               }}
-              disabled={logout.isPending}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-bold text-error-main hover:bg-error-main/10 transition-colors disabled:opacity-50 text-left"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 01-3-3h4a3 3 0 013 3v1"
-                />
-              </svg>
               {logout.isPending ? t("topbar.loggingOut") : t("topbar.logout")}
-            </button>
+            </MenuItem>
           </div>
         </div>
       )}
-    </Popover>
+    </Menu>
   );
 }
 

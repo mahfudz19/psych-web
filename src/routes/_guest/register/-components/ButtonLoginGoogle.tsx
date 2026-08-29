@@ -21,6 +21,7 @@ function ButtonLoginGoogle() {
         toast.error("Proses autentikasi Google digagalkan.");
       }}
       shape="pill"
+      width="100%"
     />
   );
 }

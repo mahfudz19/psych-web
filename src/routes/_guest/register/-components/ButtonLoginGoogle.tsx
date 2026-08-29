@@ -15,14 +15,15 @@ function ButtonLoginGoogle() {
   };
 
   return (
-    <GoogleLogin
-      onSuccess={handleGoogleSuccess}
-      onError={() => {
-        toast.error("Proses autentikasi Google digagalkan.");
-      }}
-      shape="pill"
-      width="100%"
-    />
+    <div className="flex justify-center">
+      <GoogleLogin
+        onSuccess={handleGoogleSuccess}
+        onError={() => {
+          toast.error("Proses autentikasi Google digagalkan.");
+        }}
+        shape="pill"
+      />
+    </div>
   );
 }
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useGoogleLogin } from "@react-oauth/google"; // <-- 1. Ubah import menjadi hook
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google"; // Gunakan komponen bawaan
 import { useGoogleRegisterMutation } from "../../-api/auth.query";
 import Button from "../../../../components/ui/Button";
 import Dialog from "../../../../components/ui/DIalog";
@@ -25,31 +25,31 @@ function ButtonRegisrationGoogle({ fieldName, inviteToken }: Props) {
   const isReferral = fieldName === "referralCode";
   const isInviteToken = fieldName === "inviteToken";
 
-  const loginWithGoogle = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      if (fieldName === "inviteToken" && !inviteToken) {
-        toast.error("Token undangan tidak ditemukan.");
-        return;
-      }
+  const handleGoogleSuccess = (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse.credential) {
+      toast.error("Token Google tidak ditemukan.");
+      return;
+    }
 
-      googleRegisterMutation.mutate({
-        accountType: isReferral ? "INDIVIDUAL" : "ORGANIZATION",
-        token: tokenResponse.access_token,
-        ...(inputValue.trim()
-          ? fieldName === "referralCode"
-            ? { referralCode: inputValue }
-            : fieldName === "inviteCode"
-              ? { inviteCode: inputValue }
-              : {}
-          : fieldName === "inviteToken" && inviteToken
-            ? inviteToken
-            : {}),
-      });
-    },
-    onError: () => {
-      toast.error("Proses autentikasi Google digagalkan.");
-    },
-  });
+    if (fieldName === "inviteToken" && !inviteToken) {
+      toast.error("Token undangan tidak ditemukan.");
+      return;
+    }
+
+    googleRegisterMutation.mutate({
+      accountType: isReferral ? "INDIVIDUAL" : "ORGANIZATION",
+      token: credentialResponse.credential,
+      ...(inputValue.trim()
+        ? fieldName === "referralCode"
+          ? { referralCode: inputValue }
+          : fieldName === "inviteCode"
+            ? { inviteCode: inputValue }
+            : {}
+        : fieldName === "inviteToken" && inviteToken
+          ? inviteToken
+          : {}),
+    });
+  };
 
   const CustomGoogleButton = ({ onClick }: { onClick: () => void }) => (
     <Button
@@ -85,18 +85,27 @@ function ButtonRegisrationGoogle({ fieldName, inviteToken }: Props) {
     </Button>
   );
 
+  if (isInviteToken) {
+    return (
+      <div className="relative">
+        <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 cursor-pointer">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => toast.error("Proses autentikasi Google digagalkan.")}
+            text="signup_with"
+          />
+        </div>
+        <CustomGoogleButton onClick={() => {}} />
+      </div>
+    );
+  }
+
   return (
     <Dialog
       skeleton={<Skeleton height={44} width="100%" variant="rounded" />}
-      trigger={(openDialog) =>
-        isInviteToken ? (
-          // Jika invite token, langsung eksekusi pop-up Google tanpa dialog
-          <CustomGoogleButton onClick={() => loginWithGoogle()} />
-        ) : (
-          // Jika bukan, buka dialog dulu untuk isi referral code
-          <CustomGoogleButton onClick={() => openDialog()} />
-        )
-      }
+      trigger={(openDialog) => (
+        <CustomGoogleButton onClick={() => openDialog()} />
+      )}
     >
       <div className="flex flex-col gap-5">
         <div className="animate-in fade-in slide-in-from-top-2 duration-300">
@@ -124,7 +133,13 @@ function ButtonRegisrationGoogle({ fieldName, inviteToken }: Props) {
 
         {/* Tombol Eksekusi dari Google */}
         <div className="flex justify-center border-t border-divider pt-5">
-          <CustomGoogleButton onClick={() => loginWithGoogle()} />
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => toast.error("Proses autentikasi Google digagalkan.")}
+            shape="rectangular"
+            text="continue_with"
+            width="100%"
+          />
         </div>
       </div>
     </Dialog>

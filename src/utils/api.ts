@@ -67,7 +67,7 @@ const request = async <T = unknown>(
     credentials: "include",
   });
 
-  // 2. KATEGORI 1: REFRESH TOKEN (Hanya untuk 401 UNAUTHORIZED)
+  // 2. KATEGORI 1: REFRESH TOKEN
   if (response.status === 401 && !endpoint.includes(`${authApi.BASE}/login`)) {
     if (isRefreshing) {
       // Jika sedang proses refresh, antre request ini
@@ -119,7 +119,7 @@ const request = async <T = unknown>(
           currentPath.startsWith("/reset-password") ||
           currentPath.startsWith("/register");
 
-        if (!isGuestRoute) window.location.href = "/login?reason=UNAUTHORIZED";
+        if (!isGuestRoute) window.location.href = "/login";
 
         throw new ApiError(401, "Session expired, please login again.", error);
       } finally {

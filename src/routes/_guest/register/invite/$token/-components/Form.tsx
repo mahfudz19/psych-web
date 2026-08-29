@@ -30,7 +30,7 @@ export default function FormInviteRegister({
 }) {
   const { t } = useTranslation();
 
-  const devMode = false;
+  const devMode = import.meta.env.DEV;
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

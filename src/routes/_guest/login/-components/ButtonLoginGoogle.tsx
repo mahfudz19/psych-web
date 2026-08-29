@@ -18,9 +18,7 @@ function ButtonLoginGoogle() {
     <div className="flex justify-center">
       <GoogleLogin
         onSuccess={handleGoogleSuccess}
-        onError={() => {
-          toast.error("Proses autentikasi Google digagalkan.");
-        }}
+        onError={() => toast.error("Proses autentikasi Google digagalkan.")}
         shape="pill"
       />
     </div>

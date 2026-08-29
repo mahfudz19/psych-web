@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { Menu, MenuItem } from "../../../components/ui/Menu";
+import Menu from "../../../components/ui/Menu";
 import Button from "../../ui/Button";
+import MenuItem from "../../ui/Menu/MenuItem";
 
 const LANGUAGES = [
   { code: "id", label: "Indonesia", flag: "🇮🇩" },

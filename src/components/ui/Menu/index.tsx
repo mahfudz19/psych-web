@@ -1,18 +1,23 @@
-import React, { lazy, Suspense } from "react";
-import MenuCoreStatic, { type MenuProps } from "./MenuCore";
+import React, { lazy, Suspense, type ReactNode } from "react";
+import MenuCoreStatic from "./MenuCore";
+import type { PopoverPosition } from "../Popover";
 
 const MenuCoreDynamic = lazy(() => import("./MenuCore"));
 
-export type MenuWrapperProps = MenuProps & {
+export type MenuProps = {
   isDynamic?: boolean;
   skeleton?: React.ReactNode;
+  trigger: ReactNode;
+  position?: PopoverPosition;
+  widthClass?: string;
+  children: (close: () => void) => ReactNode;
 };
 
-export function Menu({
+export default function Menu({
   isDynamic = true,
   skeleton = null,
   ...props
-}: MenuWrapperProps) {
+}: MenuProps) {
   const Component = isDynamic ? MenuCoreDynamic : MenuCoreStatic;
 
   if (isDynamic) {
@@ -25,6 +30,3 @@ export function Menu({
 
   return <Component {...props} />;
 }
-
-export { MenuItem, MenuHeader, MenuDivider } from "./MenuCore";
-export type { MenuItemProps, MenuProps } from "./MenuCore";

@@ -95,7 +95,7 @@ function Dialog(props: DialogProps) {
         {scroll === "body" ? (
           <div
             className={twMerge(
-              "bg-bg-paper border border-divider rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative",
+              "bg-bg-paper border border-divider rounded-3xl max-w-md w-full shadow-2xl relative",
               "my-auto shrink-0",
 
               "transition-all duration-200 ease-out",

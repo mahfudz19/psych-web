@@ -1,8 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useLogoutMutation } from "../../../routes/_guest/-api/auth.query";
-import { Menu, MenuDivider, MenuHeader, MenuItem } from "../../ui/Menu";
+import Menu from "../../ui/Menu";
 import Button from "../../ui/Button";
+import MenuDivider from "../../ui/Menu/MenuDivider";
+import MenuHeader from "../../ui/Menu/MenuHeader";
+import MenuItem from "../../ui/Menu/MenuItem";
 
 export interface ProfileDropdownProps {
   fullName: string;

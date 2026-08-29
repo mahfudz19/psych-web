@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { GoogleLogin, type CredentialResponse } from "@react-oauth/google"; // Gunakan komponen bawaan
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { useGoogleRegisterMutation } from "../../-api/auth.query";
 import Button from "../../../../components/ui/Button";
 import Dialog from "../../../../components/ui/DIalog";
@@ -106,8 +106,36 @@ function ButtonRegisrationGoogle({ fieldName, inviteToken }: Props) {
       trigger={(openDialog) => (
         <CustomGoogleButton onClick={() => openDialog()} />
       )}
+      className="p-6"
     >
       <div className="flex flex-col gap-5">
+        <div className="flex flex-col items-center text-center">
+          <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-primary-main/10 text-primary-main mb-4">
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 11-4 0 2 2 0 014 0zM19 12a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-text-primary">
+            {t("guest.register.dialogTitle", "Satu Langkah Lagi")}
+          </h3>
+          <p className="text-sm text-text-secondary mt-1.5 px-4">
+            {t(
+              "guest.register.dialogSubtitle",
+              "Punya kode undangan? Masukkan di bawah ini, atau langsung lanjutkan untuk menyelesaikan pendaftaran.",
+            )}
+          </p>
+        </div>
+
         <div className="animate-in fade-in slide-in-from-top-2 duration-300">
           <label className="flex text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5 justify-between">
             <span>
@@ -115,10 +143,10 @@ function ButtonRegisrationGoogle({ fieldName, inviteToken }: Props) {
                 isReferral
                   ? "guest.register.referralLabel"
                   : "guest.register.organizationNameLabel",
-              )}{" "}
-              <span className="text-text-disabled">
-                ({t("guest.register.referralOptional")})
-              </span>
+              )}
+            </span>
+            <span className="text-text-disabled">
+              {t("guest.register.referralOptional")}
             </span>
           </label>
           <Input
@@ -127,20 +155,27 @@ function ButtonRegisrationGoogle({ fieldName, inviteToken }: Props) {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={t("guest.register.referralPlaceholder")}
-            className="w-full"
+            className="w-full bg-transparent"
           />
         </div>
 
-        {/* Tombol Eksekusi dari Google */}
-        <div className="flex justify-center border-t border-divider pt-5">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => toast.error("Proses autentikasi Google digagalkan.")}
-            shape="rectangular"
-            text="continue_with"
-            width="100%"
-          />
+        <div className="w-full flex justify-center">
+          <div className="min-w-60 w-full">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() =>
+                toast.error("Proses autentikasi Google digagalkan.")
+              }
+              shape="pill"
+              text="continue_with"
+              width="100%"
+            />
+          </div>
         </div>
+        <span className="text-xs text-text-disabled text-center mt-2 max-w-xs">
+          Dengan mendaftar, Anda menyetujui Syarat & Ketentuan serta Kebijakan
+          Privasi kami.
+        </span>
       </div>
     </Dialog>
   );

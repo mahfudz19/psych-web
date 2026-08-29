@@ -5,7 +5,7 @@ import { AuthSplitLayout } from "../-components/AuthSplitLayout";
 import PassworfField from "../-components/PassworfField";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
-import ButtonLoginGoogle from "../register/-components/ButtonLoginGoogle";
+import ButtonLoginGoogle from "./-components/ButtonLoginGoogle";
 
 export const Route = createFileRoute("/_guest/login/")({ component: Login });
 

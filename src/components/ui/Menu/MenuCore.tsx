@@ -1,46 +1,13 @@
-import React, { type ReactNode, useRef } from "react";
-import Popover, { type PopoverPosition } from "../Popover";
-import Ripple from "../Ripple";
-import type { color } from "../Type";
-
-export interface MenuItemProps {
-  children: ReactNode;
-  onClick?: () => void;
-  className?: string;
-  icon?: ReactNode;
-  rippleColor?: color;
-}
-
-export function MenuItem({
-  children,
-  onClick,
-  className = "",
-  icon,
-  rippleColor = "primary",
-}: MenuItemProps) {
-  return (
-    <button
-      type="button"
-      role="menuitem"
-      onClick={onClick}
-      className={`w-full relative overflow-hidden flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-medium text-text-secondary focus:outline-none transition-colors text-left ${className}`}
-    >
-      <span className="relative z-10 flex items-center gap-3 w-full">
-        {icon && <span className="shrink-0">{icon}</span>}
-        <span className="flex-1 truncate">{children}</span>
-      </span>
-
-      <Ripple color={rippleColor} />
-    </button>
-  );
-}
-
-export interface MenuProps {
-  trigger: ReactNode;
-  position?: PopoverPosition;
-  widthClass?: string;
-  children: (close: () => void) => ReactNode;
-}
+import {
+  cloneElement,
+  isValidElement,
+  type KeyboardEvent,
+  type MouseEvent,
+  useRef,
+} from "react";
+import type { MenuProps } from ".";
+import Popover from "../Popover";
+import { twMerge } from "tailwind-merge";
 
 export default function MenuCore({
   trigger,
@@ -49,10 +16,10 @@ export default function MenuCore({
   children,
 }: MenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
-  type TriggerProps = { onClick?: (e: React.MouseEvent) => void };
+  type TriggerProps = { onClick?: (e: MouseEvent) => void };
 
-  const triggerWithFocus = React.isValidElement<TriggerProps>(trigger)
-    ? React.cloneElement(trigger, {
+  const triggerWithFocus = isValidElement<TriggerProps>(trigger)
+    ? cloneElement(trigger, {
         onClick: (e: React.MouseEvent) => {
           if (trigger.props.onClick) trigger.props.onClick(e);
 
@@ -71,7 +38,7 @@ export default function MenuCore({
   return (
     <Popover trigger={triggerWithFocus} position={position} interaction="click">
       {(close) => {
-        const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
           if (!menuRef.current) return;
 
           const items = Array.from(
@@ -128,7 +95,10 @@ export default function MenuCore({
             role="menu"
             tabIndex={-1}
             onKeyDown={handleKeyDown}
-            className={`${widthClass} flex flex-col gap-0.5 outline-none`}
+            className={twMerge(
+              "flex flex-col gap-0.5 outline-none",
+              widthClass,
+            )}
           >
             {children(close)}
           </div>
@@ -136,22 +106,4 @@ export default function MenuCore({
       }}
     </Popover>
   );
-}
-
-export function MenuHeader({
-  children,
-  className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={`px-3 py-3 border-b border-divider ${className}`}>
-      {children}
-    </div>
-  );
-}
-
-export function MenuDivider() {
-  return <div className="my-1 border-t border-divider" />;
 }

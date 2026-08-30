@@ -1,14 +1,15 @@
-import React from "react";
 import {
-  LayoutDashboard,
   BrainCircuit,
-  ClipboardList,
-  History,
-  CreditCard,
-  Users,
   Building2,
+  ClipboardList,
+  CreditCard,
+  History,
+  LayoutDashboard,
+  Settings,
   ShieldAlert,
+  Users,
 } from "lucide-react";
+import React from "react";
 
 export interface NavItem {
   titleKey: string;
@@ -81,8 +82,20 @@ export const menuConfig: NavGroup[] = [
     items: [
       {
         titleKey: "sidebar.adminPanel",
-        path: "/admin",
         icon: <ShieldAlert className="w-5 h-5 shrink-0" />,
+        children: [
+          {
+            titleKey: "sidebar.users",
+            path: "/users",
+            icon: <Users className="w-4 h-4 shrink-0" />,
+          },
+          // settings-app
+          {
+            titleKey: "sidebar.settingsApp",
+            path: "/settings-app",
+            icon: <Settings className="w-4 h-4 shrink-0" />,
+          },
+        ],
       },
     ],
   },

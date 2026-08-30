@@ -187,7 +187,11 @@ const request = async <T = unknown>(
 
 // Create api object with HTTP methods (Tetap Sama)
 export const api = Object.assign(request, {
-  get<T = unknown>(endpoint: string, options?: RequestInit) {
+  get<T = unknown>(
+    endpoint: string,
+    options?: RequestInit & { params?: Record<string, any> },
+  ) {
+    if (options?.params) endpoint = buildURL(endpoint, options.params);
     return request<T>(endpoint, { ...options, method: "GET" });
   },
   post<T = unknown>(endpoint: string, data?: any, options?: RequestInit) {
@@ -215,3 +219,43 @@ export const api = Object.assign(request, {
     return request<T>(endpoint, { ...options, method: "DELETE" });
   },
 });
+
+function buildURL(url: string, params?: Record<string, any>): string {
+  if (!params) return url;
+
+  const parts: string[] = [];
+
+  Object.entries(params).forEach(([key, val]) => {
+    if (val === null || typeof val === "undefined") return;
+
+    let values: any[] = [];
+
+    if (Array.isArray(val)) {
+      key = `${key}[]`;
+      values = val;
+    } else {
+      values = [val];
+    }
+
+    values.forEach((v) => {
+      let serializedValue = v;
+      if (v instanceof Date) serializedValue = v.toISOString();
+      else if (v !== null && typeof v === "object") {
+        serializedValue = JSON.stringify(v);
+      }
+      parts.push(
+        `${encodeURIComponent(key)}=${encodeURIComponent(String(serializedValue))}`,
+      );
+    });
+  });
+
+  const serializedParams = parts.join("&");
+
+  if (serializedParams) {
+    const hashIndex = url.indexOf("#");
+    if (hashIndex !== -1) url = url.slice(0, hashIndex);
+    url += (url.indexOf("?") === -1 ? "?" : "&") + serializedParams;
+  }
+
+  return url;
+}

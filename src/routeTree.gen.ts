@@ -36,6 +36,8 @@ import { Route as GuestRegisterOrganizationIndexRouteImport } from './routes/_gu
 import { Route as GuestRegisterVerifyEmailIndexRouteImport } from './routes/_guest/register/verify-email/index'
 import { Route as AuthExamExamTestIdIndexRouteImport } from './routes/_auth/_exam/exam/$testId/index'
 import { Route as AuthOrganizationAndIndividuProfileReferralIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/referral/index'
+import { Route as AuthOrganizationAdminSettingsAppIndexRouteImport } from './routes/_auth/_organization/_admin/settings-app/index'
+import { Route as AuthOrganizationAdminUsersIndexRouteImport } from './routes/_auth/_organization/_admin/users/index'
 import { Route as GuestRegisterInviteTokenIndexRouteImport } from './routes/_guest/register/invite/$token/index'
 import { Route as AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport } from './routes/_auth/_organization-and-individu/joint/invite/$token/index'
 
@@ -181,6 +183,18 @@ const AuthOrganizationAndIndividuProfileReferralIndexRoute =
     path: '/referral/',
     getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
   } as any)
+const AuthOrganizationAdminSettingsAppIndexRoute =
+  AuthOrganizationAdminSettingsAppIndexRouteImport.update({
+    id: '/_admin/settings-app/',
+    path: '/settings-app/',
+    getParentRoute: () => AuthOrganizationRoute,
+  } as any)
+const AuthOrganizationAdminUsersIndexRoute =
+  AuthOrganizationAdminUsersIndexRouteImport.update({
+    id: '/_admin/users/',
+    path: '/users/',
+    getParentRoute: () => AuthOrganizationRoute,
+  } as any)
 const GuestRegisterInviteTokenIndexRoute =
   GuestRegisterInviteTokenIndexRouteImport.update({
     id: '/register/invite/$token/',
@@ -216,6 +230,8 @@ export interface FileRoutesByFullPath {
   '/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
   '/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
   '/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
+  '/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
+  '/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
   '/joint/invite/$token/': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
 }
@@ -240,6 +256,8 @@ export interface FileRoutesByTo {
   '/register/verify-email': typeof GuestRegisterVerifyEmailIndexRoute
   '/exam/$testId': typeof AuthExamExamTestIdIndexRoute
   '/profile/referral': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
+  '/settings-app': typeof AuthOrganizationAdminSettingsAppIndexRoute
+  '/users': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token': typeof GuestRegisterInviteTokenIndexRoute
   '/joint/invite/$token': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
 }
@@ -272,6 +290,8 @@ export interface FileRoutesById {
   '/_guest/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
   '/_auth/_exam/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
   '/_auth/_organization-and-individu/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
+  '/_auth/_organization/_admin/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
+  '/_auth/_organization/_admin/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/_guest/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
   '/_auth/_organization-and-individu/joint/invite/$token/': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
 }
@@ -299,6 +319,8 @@ export interface FileRouteTypes {
     | '/register/verify-email/'
     | '/exam/$testId/'
     | '/profile/referral/'
+    | '/settings-app/'
+    | '/users/'
     | '/register/invite/$token/'
     | '/joint/invite/$token/'
   fileRoutesByTo: FileRoutesByTo
@@ -323,6 +345,8 @@ export interface FileRouteTypes {
     | '/register/verify-email'
     | '/exam/$testId'
     | '/profile/referral'
+    | '/settings-app'
+    | '/users'
     | '/register/invite/$token'
     | '/joint/invite/$token'
   id:
@@ -354,6 +378,8 @@ export interface FileRouteTypes {
     | '/_guest/register/verify-email/'
     | '/_auth/_exam/exam/$testId/'
     | '/_auth/_organization-and-individu/profile/referral/'
+    | '/_auth/_organization/_admin/settings-app/'
+    | '/_auth/_organization/_admin/users/'
     | '/_guest/register/invite/$token/'
     | '/_auth/_organization-and-individu/joint/invite/$token/'
   fileRoutesById: FileRoutesById
@@ -556,6 +582,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationAndIndividuProfileReferralIndexRouteImport
       parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
     }
+    '/_auth/_organization/_admin/settings-app/': {
+      id: '/_auth/_organization/_admin/settings-app/'
+      path: '/settings-app'
+      fullPath: '/settings-app/'
+      preLoaderRoute: typeof AuthOrganizationAdminSettingsAppIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
+    }
+    '/_auth/_organization/_admin/users/': {
+      id: '/_auth/_organization/_admin/users/'
+      path: '/users'
+      fullPath: '/users/'
+      preLoaderRoute: typeof AuthOrganizationAdminUsersIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
+    }
     '/_guest/register/invite/$token/': {
       id: '/_guest/register/invite/$token/'
       path: '/register/invite/$token'
@@ -605,12 +645,17 @@ interface AuthOrganizationRouteChildren {
   AuthOrganizationDashboardIndexRoute: typeof AuthOrganizationDashboardIndexRoute
   AuthOrganizationMembersIndexRoute: typeof AuthOrganizationMembersIndexRoute
   AuthOrganizationSettingsIndexRoute: typeof AuthOrganizationSettingsIndexRoute
+  AuthOrganizationAdminSettingsAppIndexRoute: typeof AuthOrganizationAdminSettingsAppIndexRoute
+  AuthOrganizationAdminUsersIndexRoute: typeof AuthOrganizationAdminUsersIndexRoute
 }
 
 const AuthOrganizationRouteChildren: AuthOrganizationRouteChildren = {
   AuthOrganizationDashboardIndexRoute: AuthOrganizationDashboardIndexRoute,
   AuthOrganizationMembersIndexRoute: AuthOrganizationMembersIndexRoute,
   AuthOrganizationSettingsIndexRoute: AuthOrganizationSettingsIndexRoute,
+  AuthOrganizationAdminSettingsAppIndexRoute:
+    AuthOrganizationAdminSettingsAppIndexRoute,
+  AuthOrganizationAdminUsersIndexRoute: AuthOrganizationAdminUsersIndexRoute,
 }
 
 const AuthOrganizationRouteWithChildren =

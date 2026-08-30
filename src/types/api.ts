@@ -1,7 +1,7 @@
 export interface PaginationMeta {
   page: number;
   limit: number;
-  totalElements: number;
+  total: number;
   totalPages: number;
 }
 

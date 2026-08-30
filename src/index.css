@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin "tailwindcss-animate";
 
 /* 1. VARIANT DARK MODE TAILWIND V4 */
 @custom-variant dark (&:where(.dark, .dark *));

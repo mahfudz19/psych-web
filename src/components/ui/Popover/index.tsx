@@ -1,6 +1,13 @@
-import { useId, type ReactNode } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  type ReactNode,
+} from "react";
+import { createPortal } from "react-dom";
+import { twMerge } from "tailwind-merge";
 
-// Definisikan opsi posisi yang tersedia
 export type PopoverPosition =
   "bottom-right" | "bottom-left" | "right-center" | "left-center" | "top-right";
 
@@ -9,103 +16,153 @@ export interface PopoverProps {
   children: ReactNode | ((close: () => void) => ReactNode);
   position?: PopoverPosition;
   interaction?: "click" | "focus";
+  classNames?: {
+    trigger?: string;
+    popover?: string;
+  };
 }
-
-const POSITION_PRESETS: Record<
-  PopoverPosition,
-  { wrapper: string; animateOnFocus: string; animateOnClick: string }
-> = {
-  "bottom-right": {
-    wrapper: "absolute right-0 mt-3",
-    animateOnFocus:
-      "origin-top-right transition-all duration-200 ease-out scale-95 opacity-0 invisible group-focus-within:scale-100 group-focus-within:opacity-100 group-focus-within:visible",
-    animateOnClick:
-      "origin-top-right transition-all duration-200 ease-out scale-95 opacity-0 invisible peer-checked:scale-100 peer-checked:opacity-100 peer-checked:visible",
-  },
-  "bottom-left": {
-    wrapper: "absolute left-0 mt-3",
-    animateOnFocus:
-      "origin-top-left transition-all duration-200 ease-out scale-95 opacity-0 invisible group-focus-within:scale-100 group-focus-within:opacity-100 group-focus-within:visible",
-    animateOnClick:
-      "origin-top-left transition-all duration-200 ease-out scale-95 opacity-0 invisible peer-checked:scale-100 peer-checked:opacity-100 peer-checked:visible",
-  },
-  "right-center": {
-    wrapper:
-      "absolute left-0 bottom-full mb-2 lg:bottom-auto lg:left-[calc(100%+8px)] lg:top-1/2 lg:mb-0 lg:transform lg:-translate-y-1/2", // Password Popover responsive
-    animateOnFocus:
-      "origin-bottom lg:origin-left transition-all duration-300 pointer-events-none opacity-0 invisible scale-95 lg:scale-95 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:scale-100",
-    animateOnClick:
-      "origin-bottom lg:origin-left transition-all duration-300 opacity-0 invisible scale-95 lg:scale-95 peer-checked:opacity-100 peer-checked:visible peer-checked:scale-100",
-  },
-  "left-center": {
-    wrapper: "absolute right-full mr-2 top-1/2 transform -translate-y-1/2",
-    animateOnFocus:
-      "origin-right transition-all duration-200 ease-out scale-95 opacity-0 invisible group-focus-within:scale-100 group-focus-within:opacity-100 group-focus-within:visible",
-    animateOnClick:
-      "origin-right transition-all duration-200 ease-out scale-95 opacity-0 invisible peer-checked:scale-100 peer-checked:opacity-100 peer-checked:visible",
-  },
-  "top-right": {
-    wrapper: "absolute right-0 bottom-full mb-3",
-    animateOnFocus:
-      "origin-bottom-right transition-all duration-200 ease-out scale-95 opacity-0 invisible group-focus-within:scale-100 group-focus-within:opacity-100 group-focus-within:visible",
-    animateOnClick:
-      "origin-bottom-right transition-all duration-200 ease-out scale-95 opacity-0 invisible peer-checked:scale-100 peer-checked:opacity-100 peer-checked:visible",
-  },
-};
 
 export default function Popover({
   trigger,
   children,
   position = "bottom-right",
   interaction = "click",
+  classNames,
 }: PopoverProps) {
-  const popoverId = useId();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  // State untuk memastikan popover belum ditampilkan sebelum posisinya akurat
+  const [isPositionReady, setIsPositionReady] = useState(false);
 
   const closePopover = () => {
-    if (interaction === "click") {
-      const checkbox = document.getElementById(popoverId) as HTMLInputElement;
-      if (checkbox) checkbox.checked = false;
+    setIsOpen(false);
+    setIsPositionReady(false);
+  };
+
+  const togglePopover = () => {
+    if (!isOpen) {
+      setIsPositionReady(false); // Reset status siap setiap kali mau buka
+      setIsOpen(true);
+    } else {
+      closePopover();
     }
   };
 
-  const preset = POSITION_PRESETS[position];
-  const animationClass =
-    interaction === "click" ? preset.animateOnClick : preset.animateOnFocus;
+  // Fungsi kalkulasi koordinat
+  const calculatePosition = () => {
+    if (!triggerRef.current || !popoverRef.current) return;
+
+    const tRect = triggerRef.current.getBoundingClientRect();
+    const pRect = popoverRef.current.getBoundingClientRect();
+
+    let top = 0;
+    let left = 0;
+
+    switch (position) {
+      case "bottom-right":
+        top = tRect.bottom + 8;
+        left = tRect.right - pRect.width;
+        break;
+      case "bottom-left":
+        top = tRect.bottom + 8;
+        left = tRect.left;
+        break;
+      case "right-center":
+        top = tRect.top + tRect.height / 2 - pRect.height / 2;
+        left = tRect.right + 8;
+        break;
+      case "left-center":
+        top = tRect.top + tRect.height / 2 - pRect.height / 2;
+        left = tRect.left - pRect.width - 8;
+        break;
+      case "top-right":
+        top = tRect.top - pRect.height - 8;
+        left = tRect.right - pRect.width;
+        break;
+    }
+
+    // Deteksi benturan layar
+    if (left < 16) left = 16;
+    if (left + pRect.width > window.innerWidth - 16) {
+      left = window.innerWidth - pRect.width - 16;
+    }
+    if (top + pRect.height > window.innerHeight - 16) {
+      top = tRect.top - pRect.height - 8;
+    }
+
+    setCoords({ top, left });
+    // Koordinat sudah siap, nyalakan visibilitas secara instan
+    setIsPositionReady(true);
+  };
+
+  // Gunakan useLayoutEffect agar kalkulasi selesai SEBELUM browser menggambar ke layar
+  useLayoutEffect(() => {
+    if (isOpen) {
+      calculatePosition();
+      window.addEventListener("scroll", calculatePosition, true);
+      window.addEventListener("resize", calculatePosition);
+    }
+    return () => {
+      window.removeEventListener("scroll", calculatePosition, true);
+      window.removeEventListener("resize", calculatePosition);
+    };
+  }, [isOpen, position]);
+
+  // Click Outside Listener
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        triggerRef.current?.contains(e.target as Node) ||
+        popoverRef.current?.contains(e.target as Node)
+      ) {
+        return;
+      }
+      closePopover();
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
 
   return (
-    <div className={`relative ${interaction === "focus" ? "group" : ""}`}>
-      {interaction === "click" && (
-        <>
-          <input type="checkbox" id={popoverId} className="peer hidden" />
-          <label
-            htmlFor={popoverId}
-            className="fixed inset-0 z-40 hidden peer-checked:block cursor-default"
-            aria-hidden="true"
-          ></label>
-        </>
-      )}
-
-      {interaction === "click" ? (
-        <div
-          className="cursor-pointer relative z-30 block"
-          onClick={() => {
-            const checkbox = document.getElementById(
-              popoverId,
-            ) as HTMLInputElement;
-            if (checkbox) checkbox.checked = !checkbox.checked;
-          }}
-        >
-          {trigger}
-        </div>
-      ) : (
-        <div className="relative z-30 block">{trigger}</div>
-      )}
-
+    <>
       <div
-        className={`bg-bg-paper rounded-3xl shadow-xl border border-divider p-2 z-50 ${preset.wrapper} ${animationClass}`}
+        ref={triggerRef}
+        className={twMerge("inline-block", classNames?.trigger)}
+        onClick={interaction === "click" ? togglePopover : undefined}
+        onMouseEnter={
+          interaction === "focus"
+            ? () => {
+                setIsOpen(true);
+                setIsPositionReady(false);
+              }
+            : undefined
+        }
+        onMouseLeave={interaction === "focus" ? closePopover : undefined}
       >
-        {typeof children === "function" ? children(closePopover) : children}
+        {trigger}
       </div>
-    </div>
+
+      {isOpen &&
+        createPortal(
+          <div
+            ref={popoverRef}
+            style={{ top: coords.top, left: coords.left }}
+            className={twMerge(
+              "fixed z-9999 bg-bg-paper rounded-3xl shadow-xl border border-divider p-2",
+              "transition-opacity duration-150 ease-out",
+              isPositionReady ? "opacity-100 visible" : "opacity-0 invisible",
+              classNames?.popover,
+            )}
+          >
+            {typeof children === "function" ? children(closePopover) : children}
+          </div>,
+          document.body,
+        )}
+    </>
   );
 }

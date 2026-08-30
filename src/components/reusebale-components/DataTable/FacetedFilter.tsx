@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
 import { Filter } from "lucide-react";
+import Popover from "../../ui/Popover";
 
 interface FacetedFilterProps {
   title: string;
@@ -8,14 +8,12 @@ interface FacetedFilterProps {
   onChange: (val: string) => void;
 }
 
-export function FacetedFilter({
+export default function FacetedFilter({
   title,
   options,
   currentValue,
   onChange,
 }: FacetedFilterProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const selectedValues = new Set(currentValue ? currentValue.split(",") : []);
 
   const handleSelect = (val: string) => {
@@ -25,37 +23,29 @@ export function FacetedFilter({
     onChange(Array.from(newValues).join(","));
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const triggerElement = (
+    <div
+      className={`flex items-center justify-between w-full gap-2 px-2 py-1.5 text-xs border rounded-md transition-colors ${
+        selectedValues.size > 0
+          ? "border-primary-main bg-primary-main/10 text-primary-main font-medium"
+          : "border-gray-300 bg-white hover:bg-gray-50 text-gray-600"
+      }`}
+    >
+      <span className="flex items-center gap-1.5 truncate">
+        <Filter className="w-3 h-3 shrink-0" />
+        Filter {title} {selectedValues.size > 0 && `(${selectedValues.size})`}
+      </span>
+    </div>
+  );
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center justify-between w-full gap-2 px-2 py-1.5 text-xs border rounded-md transition-colors ${
-          selectedValues.size > 0
-            ? "border-primary-main bg-primary-main/10 text-primary-main font-medium"
-            : "border-gray-300 bg-white hover:bg-gray-50 text-gray-600"
-        }`}
-      >
-        <span className="flex items-center gap-1.5 truncate">
-          <Filter className="w-3 h-3 shrink-0" />
-          Filter {title} {selectedValues.size > 0 && `(${selectedValues.size})`}
-        </span>
-      </button>
-
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 p-2">
+    <Popover
+      trigger={triggerElement}
+      position="bottom-left"
+      interaction="click"
+    >
+      {(closePopover) => (
+        <div className="w-48 p-1">
           <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
             {options.map((opt) => (
               <label
@@ -77,7 +67,7 @@ export function FacetedFilter({
               <button
                 onClick={() => {
                   onChange("");
-                  setIsOpen(false);
+                  closePopover();
                 }}
                 className="w-full text-xs text-center text-red-600 hover:text-red-700 font-medium py-1"
               >
@@ -87,6 +77,6 @@ export function FacetedFilter({
           )}
         </div>
       )}
-    </div>
+    </Popover>
   );
 }

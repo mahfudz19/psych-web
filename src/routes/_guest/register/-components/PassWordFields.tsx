@@ -53,7 +53,8 @@ export default function PasswordFields({
 
         <Popover
           interaction="focus"
-          position="right-center"
+          position="top-right"
+          classNames={{ trigger: "w-full" }}
           trigger={
             <>
               <PassworfField
@@ -61,6 +62,7 @@ export default function PasswordFields({
                 placeholder={t("guest.register.passwordPlaceholder")}
                 required
                 value={password}
+                className="w-full!"
                 onChange={(e) => setPassword(e.target.value)}
               />
             </>

@@ -81,6 +81,7 @@ function UsersPage() {
     {
       header: "Tanggal Daftar",
       accessorKey: "createdAt",
+      filterType: "date-range",
       sortable: true,
       cell: (row) =>
         new Date(row.createdAt).toLocaleDateString("id-ID", {

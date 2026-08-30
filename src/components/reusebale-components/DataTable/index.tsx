@@ -1,17 +1,18 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import type { PaginationMeta } from "../../types";
-import IconButton from "../ui/IconButton";
-import Input from "../ui/Input";
-import { FacetedFilter } from "./FacetedFilter";
-import type { UserListParams } from "../../routes/_auth/_organization/_admin/users/-api/user.api";
+import type { PaginationMeta } from "../../../types";
+import IconButton from "../../ui/IconButton";
+import Input from "../../ui/Input";
+import FacetedFilter from "./FacetedFilter";
+import type { UserListParams } from "../../../routes/_auth/_organization/_admin/users/-api/user.api";
+import DateRangeFilter from "./DateRangeFilter";
 
 export interface ColumnDef<T> {
   header: string;
   accessorKey: keyof T | string;
   sortable?: boolean;
   cell?: (row: T) => React.ReactNode;
-  filterType?: "text" | "faceted";
+  filterType?: "text" | "faceted" | "date-range";
   filterOptions?: { label: string; value: string }[];
 }
 
@@ -28,36 +29,53 @@ const parseFilterString = (filterStr?: string): Record<string, string> => {
   const result: Record<string, string> = {};
   if (!filterStr) return result;
 
-  const fields = filterStr.split(";");
+  const fields = filterStr.split(";"); //[cite: 12]
   fields.forEach((field) => {
-    const firstColonIdx = field.indexOf(":");
-    if (firstColonIdx === -1) return;
+    const firstColonIdx = field.indexOf(":"); //[cite: 12]
+    if (firstColonIdx === -1) return; //[cite: 12]
 
-    const key = field.slice(0, firstColonIdx);
-    let value = field.slice(firstColonIdx + 1);
+    const key = field.slice(0, firstColonIdx); //[cite: 12]
+    let value = field.slice(firstColonIdx + 1); //[cite: 12]
 
+    // Penanganan untuk "in:" (Faceted)[cite: 12]
     if (value.startsWith("in:")) {
       value = value.slice(3);
     }
-    result[key] = value;
+    // Penanganan untuk "between:" (Date Range)
+    else if (value.startsWith("between:")) {
+      value = value.slice(8);
+    }
+    result[key] = value; //[cite: 12]
   });
-  return result;
+  return result; //[cite: 12]
 };
 
 const buildFilterString = (
   filters: Record<string, string>,
 ): string | undefined => {
-  const parts: string[] = [];
+  const parts: string[] = []; //[cite: 12]
   Object.entries(filters).forEach(([key, val]) => {
-    if (!val) return;
+    //[cite: 12]
+    if (!val) return; //[cite: 12]
 
-    if (val.includes(",")) {
-      parts.push(`${key}:in:${val}`);
-    } else {
-      parts.push(`${key}:${val}`);
+    // Jika formatnya adalah tanggal rentang (YYYY-MM-DD,YYYY-MM-DD)
+    if (
+      val.match(/^\d{4}-\d{2}-\d{2},?\d{4}-\d{2}-\d{2}?$/) ||
+      val.match(/^,\d{4}-\d{2}-\d{2}$/) ||
+      val.match(/^\d{4}-\d{2}-\d{2},$/)
+    ) {
+      parts.push(`${key}:between:${val}`);
+    }
+    // Jika value memiliki koma (karena multi-select dari faceted)[cite: 12]
+    else if (val.includes(",")) {
+      parts.push(`${key}:in:${val}`); //[cite: 12]
+    }
+    // Filter teks biasa[cite: 12]
+    else {
+      parts.push(`${key}:${val}`); //[cite: 12]
     }
   });
-  return parts.length > 0 ? parts.join(";") : undefined;
+  return parts.length > 0 ? parts.join(";") : undefined; //[cite: 12]
 };
 
 export function DataTable<T>({
@@ -75,54 +93,66 @@ export function DataTable<T>({
   );
 
   const emitCleanState = (newState: UserListParams) => {
+    //[cite: 12]
     const cleanState: UserListParams = {
-      ...newState,
-      search: newState.search === "" ? undefined : newState.search,
-      sortBy: newState.sortBy === "" ? undefined : newState.sortBy,
-      sortOrder: newState.sortOrder === "" ? undefined : newState.sortOrder,
-      filter: newState.filter === "" ? undefined : newState.filter,
-    };
-    onStateChange(cleanState);
-  };
+      //[cite: 12]
+      ...newState, //[cite: 12]
+      search: newState.search === "" ? undefined : newState.search, //[cite: 12]
+      sortBy: newState.sortBy === "" ? undefined : newState.sortBy, //[cite: 12]
+      sortOrder: newState.sortOrder === "" ? undefined : newState.sortOrder, //[cite: 12]
+      filter: newState.filter === "" ? undefined : newState.filter, //[cite: 12]
+    }; //[cite: 12]
+    onStateChange(cleanState); //[cite: 12]
+  }; //[cite: 12]
 
   useEffect(() => {
+    //[cite: 12]
     const timer = setTimeout(() => {
+      //[cite: 12]
       if (searchInput !== (state.search || "")) {
-        emitCleanState({ ...state, search: searchInput, page: 1 });
-      }
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchInput, state]);
+        //[cite: 12]
+        emitCleanState({ ...state, search: searchInput, page: 1 }); //[cite: 12]
+      } //[cite: 12]
+    }, 500); //[cite: 12]
+    return () => clearTimeout(timer); //[cite: 12]
+  }, [searchInput, state]); //[cite: 12]
 
   useEffect(() => {
+    //[cite: 12]
     const timer = setTimeout(() => {
-      const currentFilterStr = state.filter || "";
-      const newFilterStr = buildFilterString(localFilters) || "";
+      //[cite: 12]
+      const currentFilterStr = state.filter || ""; //[cite: 12]
+      const newFilterStr = buildFilterString(localFilters) || ""; //[cite: 12]
 
       if (currentFilterStr !== newFilterStr) {
-        emitCleanState({ ...state, filter: newFilterStr, page: 1 });
-      }
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [localFilters, state]);
+        //[cite: 12]
+        emitCleanState({ ...state, filter: newFilterStr, page: 1 }); //[cite: 12]
+      } //[cite: 12]
+    }, 500); //[cite: 12]
+    return () => clearTimeout(timer); //[cite: 12]
+  }, [localFilters, state]); //[cite: 12]
 
   const handleSort = (accessorKey: string, isSortable?: boolean) => {
-    if (!isSortable) return;
-    let newOrder: "asc" | "desc" = "asc";
+    //[cite: 12]
+    if (!isSortable) return; //[cite: 12]
+    let newOrder: "asc" | "desc" = "asc"; //[cite: 12]
     if (state.sortBy === accessorKey) {
-      newOrder = state.sortOrder === "asc" ? "desc" : "asc";
-    }
+      //[cite: 12]
+      newOrder = state.sortOrder === "asc" ? "desc" : "asc"; //[cite: 12]
+    } //[cite: 12]
     emitCleanState({
-      ...state,
-      sortBy: accessorKey,
-      sortOrder: newOrder,
-      page: 1,
-    });
-  };
+      //[cite: 12]
+      ...state, //[cite: 12]
+      sortBy: accessorKey, //[cite: 12]
+      sortOrder: newOrder, //[cite: 12]
+      page: 1, //[cite: 12]
+    }); //[cite: 12]
+  }; //[cite: 12]
 
   const handleFilterChange = (key: string, value: string) => {
-    setLocalFilters((prev) => ({ ...prev, [key]: value }));
-  };
+    //[cite: 12]
+    setLocalFilters((prev) => ({ ...prev, [key]: value })); //[cite: 12]
+  }; //[cite: 12]
 
   return (
     <div className="flex flex-col gap-4 w-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -146,7 +176,7 @@ export function DataTable<T>({
             }
             className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none"
           >
-            {[10, 25, 50, 100].map((size) => (
+            {[5, 10, 25, 50, 100].map((size) => (
               <option key={size} value={size}>
                 {size}
               </option>
@@ -174,15 +204,15 @@ export function DataTable<T>({
                       <span className="text-primary-main text-xs">
                         {state.sortOrder === "asc" ? "▲" : "▼"}
                       </span>
-                    )}
+                    )}{" "}
                     {col.sortable && state.sortBy !== col.accessorKey && (
                       <span className="text-gray-300 text-xs">↕</span>
-                    )}
-                  </div>
+                    )}{" "}
+                  </div>{" "}
                 </th>
-              ))}
+              ))}{" "}
             </tr>
-            {/* BARIS 2: FILTER INPUTS */}
+
             <tr className="border-t border-gray-100 bg-gray-50/50">
               {columns.map((col, idx) => (
                 <th
@@ -207,6 +237,18 @@ export function DataTable<T>({
                     <FacetedFilter
                       title={col.header}
                       options={col.filterOptions}
+                      currentValue={
+                        localFilters[col.accessorKey as string] || ""
+                      }
+                      onChange={(val) =>
+                        handleFilterChange(col.accessorKey as string, val)
+                      }
+                    />
+                  )}
+                  {/* TAMPILKAN FILTER TANGGAL */}
+                  {col.filterType === "date-range" && (
+                    <DateRangeFilter
+                      title="Rentang"
                       currentValue={
                         localFilters[col.accessorKey as string] || ""
                       }

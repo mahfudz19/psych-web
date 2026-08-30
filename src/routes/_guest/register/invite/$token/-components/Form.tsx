@@ -1,5 +1,4 @@
 import type { UseMutationResult } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import ButtonRegisrationGoogle from "../../../-components/ButtonRegisrationGoogle";
@@ -29,8 +28,6 @@ export default function FormInviteRegister({
   setSubmittedEmail: Dispatch<SetStateAction<string>>;
 }) {
   const { t } = useTranslation();
-
-  const devMode = import.meta.env.DEV;
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

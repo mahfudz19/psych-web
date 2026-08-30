@@ -16,6 +16,7 @@ import { Route as AuthIndividuRouteImport } from './routes/_auth/_individu'
 import { Route as AuthOrganizationRouteImport } from './routes/_auth/_organization'
 import { Route as AuthOrganizationAndIndividuRouteImport } from './routes/_auth/_organization-and-individu'
 import { Route as GuestIndexRouteImport } from './routes/_guest/index'
+import { Route as ExamplePageIndexRouteImport } from './routes/example-page/index'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthOrganizationAndIndividuProfileRouteImport } from './routes/_auth/_organization-and-individu/profile'
 import { Route as AuthCreateOrganizationIndexRouteImport } from './routes/_auth/create-organization/index'
@@ -67,6 +68,11 @@ const GuestIndexRoute = GuestIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => GuestRoute,
+} as any)
+const ExamplePageIndexRoute = ExamplePageIndexRouteImport.update({
+  id: '/example-page/',
+  path: '/example-page/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const InviteTokenRoute = InviteTokenRouteImport.update({
   id: '/invite/$token',
@@ -191,6 +197,7 @@ const AuthOrganizationAndIndividuJointInviteTokenIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof GuestIndexRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/example-page/': typeof ExamplePageIndexRoute
   '/profile': typeof AuthOrganizationAndIndividuProfileRouteWithChildren
   '/create-organization/': typeof AuthCreateOrganizationIndexRoute
   '/forgot-password/': typeof GuestForgotPasswordIndexRoute
@@ -215,6 +222,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof GuestIndexRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/example-page': typeof ExamplePageIndexRoute
   '/create-organization': typeof AuthCreateOrganizationIndexRoute
   '/forgot-password': typeof GuestForgotPasswordIndexRoute
   '/login': typeof GuestLoginIndexRoute
@@ -245,6 +253,7 @@ export interface FileRoutesById {
   '/_auth/_organization-and-individu': typeof AuthOrganizationAndIndividuRouteWithChildren
   '/invite/$token': typeof InviteTokenRoute
   '/_guest/': typeof GuestIndexRoute
+  '/example-page/': typeof ExamplePageIndexRoute
   '/_auth/_organization-and-individu/profile': typeof AuthOrganizationAndIndividuProfileRouteWithChildren
   '/_auth/create-organization/': typeof AuthCreateOrganizationIndexRoute
   '/_guest/forgot-password/': typeof GuestForgotPasswordIndexRoute
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/invite/$token'
+    | '/example-page/'
     | '/profile'
     | '/create-organization/'
     | '/forgot-password/'
@@ -295,6 +305,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/invite/$token'
+    | '/example-page'
     | '/create-organization'
     | '/forgot-password'
     | '/login'
@@ -324,6 +335,7 @@ export interface FileRouteTypes {
     | '/_auth/_organization-and-individu'
     | '/invite/$token'
     | '/_guest/'
+    | '/example-page/'
     | '/_auth/_organization-and-individu/profile'
     | '/_auth/create-organization/'
     | '/_guest/forgot-password/'
@@ -350,6 +362,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   GuestRoute: typeof GuestRouteWithChildren
   InviteTokenRoute: typeof InviteTokenRoute
+  ExamplePageIndexRoute: typeof ExamplePageIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -402,6 +415,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof GuestIndexRouteImport
       parentRoute: typeof GuestRoute
+    }
+    '/example-page/': {
+      id: '/example-page/'
+      path: '/example-page'
+      fullPath: '/example-page/'
+      preLoaderRoute: typeof ExamplePageIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/invite/$token': {
       id: '/invite/$token'
@@ -682,6 +702,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   GuestRoute: GuestRouteWithChildren,
   InviteTokenRoute: InviteTokenRoute,
+  ExamplePageIndexRoute: ExamplePageIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

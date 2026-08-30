@@ -2,14 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRegisterMutation } from "../-api/auth.query";
-import { AuthSplitLayout } from "../-components/AuthSplitLayout";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import ButtonRegisrationGoogle from "./-components/ButtonRegisrationGoogle";
 import PasswordFields, { requirements } from "./-components/PassWordFields";
 import ReferralOrInvitedCode from "./-components/ReferralOrInvitedCode";
-import RegisterLayout from "./-components/RegisterLayout";
 import SuccessRegisration from "./-components/SuccessRegisration";
+import RegisterLayout from "./-components/RegisterLayout";
 
 export const Route = createFileRoute("/_guest/register/")({
   component: RegisterIndividual,
@@ -46,64 +45,62 @@ function RegisterIndividual() {
     );
   };
 
+  if (registerMutation.isSuccess) {
+    return <SuccessRegisration email={submittedEmail} />;
+  }
+
   return (
-    <AuthSplitLayout layoutKey="registerIndividual" imagePosition="right">
-      {!registerMutation.isSuccess ? (
-        <RegisterLayout>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
-                {t("guest.register.fullNameLabel")}
-              </label>
-              <Input
-                type="text"
-                placeholder={t("guest.register.fullNamePlaceholder")}
-                required
-                name="fullName"
-                className="w-full"
-              />
-            </div>
+    <RegisterLayout>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
+            {t("guest.register.fullNameLabel")}
+          </label>
+          <Input
+            type="text"
+            placeholder={t("guest.register.fullNamePlaceholder")}
+            required
+            name="fullName"
+            className="w-full"
+          />
+        </div>
 
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
-                {t("guest.register.emailLabel")}
-              </label>
-              <Input
-                type="email"
-                name="email"
-                placeholder={t("guest.register.emailPlaceholder")}
-                required
-                className="w-full"
-              />
-            </div>
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
+            {t("guest.register.emailLabel")}
+          </label>
+          <Input
+            type="email"
+            name="email"
+            placeholder={t("guest.register.emailPlaceholder")}
+            required
+            className="w-full"
+          />
+        </div>
 
-            <PasswordFields
-              password={password}
-              setPassword={setPassword}
-              confirmPassword={confirmPassword}
-              setConfirmPassword={setConfirmPassword}
-              requirements={requirements(password)}
-              passwordsMatch={passwordsMatch}
-            />
+        <PasswordFields
+          password={password}
+          setPassword={setPassword}
+          confirmPassword={confirmPassword}
+          setConfirmPassword={setConfirmPassword}
+          requirements={requirements(password)}
+          passwordsMatch={passwordsMatch}
+        />
 
-            <ReferralOrInvitedCode
-              fieldName="referralCode"
-              show={showReferral}
-              setShow={setShowReferral}
-            />
+        <ReferralOrInvitedCode
+          fieldName="referralCode"
+          show={showReferral}
+          setShow={setShowReferral}
+        />
 
-            <Button type="submit" disabled={registerMutation.isPending}>
-              {registerMutation.isPending
-                ? t("guest.register.processing")
-                : t("guest.register.submitIndividual")}
-            </Button>
+        <Button type="submit" disabled={registerMutation.isPending}>
+          {registerMutation.isPending
+            ? t("guest.register.processing")
+            : t("guest.register.submitIndividual")}
+        </Button>
 
-            <ButtonRegisrationGoogle fieldName="referralCode" />
-          </form>
-        </RegisterLayout>
-      ) : (
-        <SuccessRegisration email={submittedEmail} />
-      )}
-    </AuthSplitLayout>
+        <ButtonRegisrationGoogle fieldName="referralCode" />
+      </form>
+    </RegisterLayout>
   );
 }

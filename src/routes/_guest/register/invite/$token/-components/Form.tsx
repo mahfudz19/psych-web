@@ -63,18 +63,6 @@ export default function FormInviteRegister({
   };
   return (
     <>
-      <div className="mb-8">
-        <div className="inline-block px-3 py-1 bg-info-main text-info-contrast font-black text-xs tracking-widest rounded-md mb-6">
-          {t("guest.invite.badge")}
-        </div>
-        <h3 className="text-3xl font-extrabold text-text-primary tracking-tight mb-2">
-          {t("guest.invite.title")}
-        </h3>
-        <p className="text-text-secondary text-sm">
-          {t("guest.invite.subtitle")}
-        </p>
-      </div>
-
       {/* Info Banner Status Undangan */}
       <div className="mb-6 p-4 bg-info-main/10 border border-info-light/30 rounded-2xl flex flex-col gap-1">
         <span className="text-info-dark text-xs font-bold uppercase tracking-wider">
@@ -123,20 +111,6 @@ export default function FormInviteRegister({
           passwordsMatch={passwordsMatch}
         />
 
-        {devMode && (
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
-              Data Registrasi (Otomatis)
-            </label>
-            <textarea
-              value={JSON.stringify(inviteData, null, 2)}
-              disabled
-              rows={4}
-              className="w-full px-4 py-2.5 rounded-2xl border border-divider bg-divider/20 text-text-secondary cursor-not-allowed text-sm font-mono resize-none"
-            />
-          </div>
-        )}
-
         <Button
           type="submit"
           disabled={registerMutation.isPending || !inviteData}
@@ -154,17 +128,6 @@ export default function FormInviteRegister({
           }}
         />
       </form>
-
-      <div className="mt-6 pt-6 border-t border-divider text-left text-sm text-text-secondary">
-        {t("guest.invite.hasAccount")}{" "}
-        <Link
-          to="/login"
-          preload={false}
-          className="text-primary-main font-bold hover:underline"
-        >
-          {t("guest.invite.loginLink")}
-        </Link>
-      </div>
     </>
   );
 }

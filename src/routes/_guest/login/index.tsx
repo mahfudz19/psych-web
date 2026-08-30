@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useLoginMutation } from "../-api/auth.query";
-import { AuthSplitLayout } from "../-components/AuthSplitLayout";
 import PassworfField from "../-components/PassworfField";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
@@ -23,7 +22,7 @@ function Login() {
   };
 
   return (
-    <AuthSplitLayout layoutKey="login" imagePosition="left">
+    <>
       <div className="mb-10">
         <div className="inline-block px-3 py-1 bg-primary-main text-primary-contrast font-black text-xs tracking-widest rounded-md mb-6">
           {t("guest.login.badge")}
@@ -61,6 +60,7 @@ function Login() {
               preload={false}
               tabIndex={-1}
               className="text-primary-main font-bold hover:underline text-sm"
+              viewTransition
             >
               {t("guest.login.forgotPassword")}
             </Link>
@@ -87,6 +87,6 @@ function Login() {
           {t("guest.login.registerLink")}
         </Link>
       </div>
-    </AuthSplitLayout>
+    </>
   );
 }

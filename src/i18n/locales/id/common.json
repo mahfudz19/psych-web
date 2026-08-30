@@ -131,6 +131,10 @@
       "title": "Mulai Perjalanan Pengembangan Diri Anda.",
       "subtitle": "Bergabung dengan ribuan profesional lainnya. Ikuti tes psikologi yang tervalidasi dan temukan potensi terbaik Anda."
     },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Masukkan email Anda dan kami akan mengirimkan tautan untuk mereset password Anda."
+    },
     "registerOrganization": {
       "title": "Bangun Ekosistem Evaluasi Perusahaan Anda.",
       "subtitle": "Kelola anggota, tugaskan psikotes, dan pantau perkembangan tim Anda dalam satu dasbor terpusat yang komprehensif."

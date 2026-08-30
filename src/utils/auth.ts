@@ -9,19 +9,11 @@ import {
   ORGANIZATION_ROLE_HIERARCHY,
 } from "../constants/organization-roles";
 
-/**
- * Cek apakah user perlu membuat organization
- * Kondisi: accountType = ORGANIZATION tapi organizationId = null
- * atau user memiliki role ORGANIZATION tapi tidak punya organizationId
- * @param user - User object yang akan dicek
- * @returns boolean - true jika user perlu membuat organization
- */
 export function needsOrganizationCreation(
   user: User | null | undefined,
 ): boolean {
   if (!user) return false;
 
-  // is super admin
   if (user.roles?.includes?.("SUPERADMIN")) return false;
 
   const isOrganizationAccountType =
@@ -34,11 +26,6 @@ export function needsOrganizationCreation(
   );
 }
 
-/**
- * Cek apakah user memiliki organisasi yang valid
- * @param user - User object yang akan dicek
- * @returns boolean - true jika user punya organizationId
- */
 export function hasOrganization(user: User | null | undefined): boolean {
   return !!user?.organizationId;
 }
@@ -108,18 +95,18 @@ export function isAdminOrOwner(user: User | null | undefined): boolean {
   );
 }
 
-export function getRedirectPathByRole(user: User | null | undefined): string {
+export function getRedirectPathByRole(user: User | null | undefined) {
   if (!user) {
-    return "/login";
+    return "/login" as const;
   }
 
   if (needsOrganizationCreation(user)) {
-    return "/create-organization";
+    return "/create-organization" as const;
   }
 
   if (isOrganizationUser(user)) {
-    return "/dashboard";
+    return "/dashboard" as const;
   }
 
-  return "/portal";
+  return "/portal" as const;
 }

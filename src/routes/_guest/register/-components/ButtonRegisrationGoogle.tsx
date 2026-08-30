@@ -172,10 +172,10 @@ function ButtonRegisrationGoogle({ fieldName, inviteToken }: Props) {
             />
           </div>
         </div>
-        <span className="text-xs text-text-disabled text-center mt-2 max-w-xs">
+        <p className="w-full text-center text-xs">
           Dengan mendaftar, Anda menyetujui Syarat & Ketentuan serta Kebijakan
           Privasi kami.
-        </span>
+        </p>
       </div>
     </Dialog>
   );

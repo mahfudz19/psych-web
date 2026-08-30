@@ -131,6 +131,10 @@
       "title": "Start Your Self-Development Journey.",
       "subtitle": "Join thousands of other professionals. Take validated psychological tests and discover your best potential."
     },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter the email address associated with your account."
+    },
     "registerOrganization": {
       "title": "Build Your Company's Evaluation Ecosystem.",
       "subtitle": "Manage members, assign psychological tests, and monitor your team's progress in one comprehensive centralized dashboard."

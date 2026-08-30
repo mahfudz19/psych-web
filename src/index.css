@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 
 /* 1. VARIANT DARK MODE TAILWIND V4 */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -148,5 +149,10 @@
       background-color 0.2s ease,
       color 0.2s ease;
     -webkit-font-smoothing: antialiased;
+  }
+
+  button,
+  a {
+    cursor: pointer;
   }
 }

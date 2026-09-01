@@ -1,0 +1,89 @@
+@keyframes slide-in-up {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes slide-out-up {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+@keyframes slide-in-down {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes slide-out-down {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+@keyframes slide-in-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes slide-out-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+@keyframes slide-in-right {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes slide-out-right {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animateSlideInLeft {
+  animation: slide-in-left 400ms ease-in-out forwards;
+}
+.animateSlideOutLeft {
+  animation: slide-out-left 400ms ease-in-out forwards;
+}
+.animateSlideInRight {
+  animation: slide-in-right 400ms ease-in-out forwards;
+}
+.animateSlideOutRight {
+  animation: slide-out-right 400ms ease-in-out forwards;
+}
+.animateSlideInUp {
+  animation: slide-in-up 400ms ease-in-out forwards;
+}
+.animateSlideOutUp {
+  animation: slide-out-up 400ms ease-in-out forwards;
+}
+.animateSlideInDown {
+  animation: slide-in-down 400ms ease-in-out forwards;
+}
+.animateSlideOutDown {
+  animation: slide-out-down 400ms ease-in-out forwards;
+}

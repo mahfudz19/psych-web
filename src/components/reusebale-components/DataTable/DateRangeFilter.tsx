@@ -1,6 +1,5 @@
-import { Calendar } from "lucide-react";
-import { useEffect, useState } from "react";
-import Popover from "../../ui/Popover";
+import { Calendar, X } from "lucide-react";
+import InputDate from "../../ui/InputDate";
 
 export default function DateRangeFilter({
   title,
@@ -8,104 +7,74 @@ export default function DateRangeFilter({
   onChange,
 }: {
   title: string;
-  currentValue: string; // Format: "2026-08-01,2026-08-31"
+  currentValue: string;
   onChange: (val: string) => void;
 }) {
-  const [startValue = "", endValue = ""] = currentValue
-    ? currentValue.split(",")
-    : ["", ""];
+  const inputValue = currentValue ? currentValue.replace(",", "/") : "";
 
-  const [localStart, setLocalStart] = useState(startValue);
-  const [localEnd, setLocalEnd] = useState(endValue);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
 
-  // Sinkronisasi dengan URL
-  useEffect(() => {
-    const [s = "", e = ""] = currentValue ? currentValue.split(",") : ["", ""];
-    setLocalStart(s);
-    setLocalEnd(e);
-  }, [currentValue]);
+    if (!val) {
+      onChange("");
+      return;
+    }
 
-  const hasFilter = Boolean(startValue || endValue);
-
-  const triggerElement = (
-    <div
-      className={`flex items-center justify-between w-full gap-2 px-2 py-1.5 text-xs border rounded-md transition-colors ${
-        hasFilter
-          ? "border-primary-main bg-primary-main/10 text-primary-main font-medium"
-          : "border-gray-300 bg-white hover:bg-gray-50 text-gray-600"
-      }`}
-    >
-      <span className="flex items-center gap-1.5 truncate">
-        <Calendar className="w-3 h-3 shrink-0" />
-        {title}
-      </span>
-    </div>
-  );
+    if (val.includes("/")) {
+      const [startISO, endISO] = val.split("/");
+      const startDate = startISO.split("T")[0];
+      const endDate = endISO ? endISO.split("T")[0] : "";
+      if (startDate && endDate) onChange(`${startDate},${endDate}`);
+    }
+  };
 
   return (
-    <Popover
-      trigger={triggerElement}
-      position="bottom-left"
-      interaction="click"
-    >
-      {(closePopover) => (
-        <div className="w-56 p-1">
-          <div className="flex flex-col gap-3">
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">
-                Dari Tanggal
-              </label>
-              <input
-                type="date"
-                value={localStart}
-                onChange={(e) => setLocalStart(e.target.value)}
-                className="w-full text-xs border border-gray-300 rounded-md px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-main"
-              />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">
-                Sampai Tanggal
-              </label>
-              <input
-                type="date"
-                value={localEnd}
-                onChange={(e) => setLocalEnd(e.target.value)}
-                min={localStart}
-                className="w-full text-xs border border-gray-300 rounded-md px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-main"
-              />
-            </div>
-          </div>
+    <InputDate
+      selectsRange
+      monthsShown={2}
+      value={inputValue}
+      onChange={handleChange}
+      customTrigger={({ value, clear }) => {
+        const hasFilter = Boolean(value);
 
-          <div className="mt-4 flex flex-col gap-2 pt-2 border-t border-gray-100">
-            <button
-              onClick={() => {
-                if (!localStart && !localEnd) {
-                  onChange("");
-                } else {
-                  onChange(`${localStart},${localEnd}`);
-                }
-                closePopover(); // Gunakan fungsi dari Popover
-              }}
-              className="w-full text-xs text-center bg-primary-main text-white hover:bg-primary-dark rounded-md font-medium py-1.5"
-            >
-              Terapkan
-            </button>
+        return (
+          <div
+            className={`min-h-9 flex items-center justify-between w-full gap-2 px-3 py-2 text-xs border rounded-2xl transition-colors cursor-pointer min-w-56 ${
+              hasFilter
+                ? "border-primary-main bg-primary-main/10 text-primary-main font-bold ring-1 ring-primary-main/20"
+                : "border-divider bg-bg-paper hover:bg-divider text-text-primary"
+            }`}
+          >
+            <span className="flex items-center gap-2 truncate">
+              <Calendar className="w-4 h-4 shrink-0" />
+              {hasFilter ? (
+                <span className="truncate">
+                  {value
+                    .split("/")
+                    .map((d) => d.split("T")[0])
+                    .join(" - ")}
+                </span>
+              ) : (
+                <span>{title}</span>
+              )}
+            </span>
+
             {hasFilter && (
               <button
-                onClick={() => {
-                  setLocalStart("");
-                  setLocalEnd("");
+                type="button"
+                className="p-0.5 rounded-full hover:bg-error-main/20 text-error-main"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  clear(e);
                   onChange("");
-                  closePopover(); // Gunakan fungsi dari Popover
                 }}
-                className="w-full text-xs text-center text-red-600 hover:text-red-700 font-medium py-1"
               >
-                Hapus Filter
+                <X className="w-3 h-3" />
               </button>
             )}
           </div>
-        </div>
-      )}
-    </Popover>
+        );
+      }}
+    />
   );
 }

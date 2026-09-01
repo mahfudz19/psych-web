@@ -1,4 +1,11 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ArrowDownUp,
+  ArrowUp,
+  ArrowDown,
+  MoreHorizontal,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import type { PaginationMeta } from "../../../types";
 import IconButton from "../../ui/IconButton";
@@ -29,53 +36,70 @@ const parseFilterString = (filterStr?: string): Record<string, string> => {
   const result: Record<string, string> = {};
   if (!filterStr) return result;
 
-  const fields = filterStr.split(";"); //[cite: 12]
+  const fields = filterStr.split(";");
   fields.forEach((field) => {
-    const firstColonIdx = field.indexOf(":"); //[cite: 12]
-    if (firstColonIdx === -1) return; //[cite: 12]
+    const firstColonIdx = field.indexOf(":");
+    if (firstColonIdx === -1) return;
 
-    const key = field.slice(0, firstColonIdx); //[cite: 12]
-    let value = field.slice(firstColonIdx + 1); //[cite: 12]
+    const key = field.slice(0, firstColonIdx);
+    let value = field.slice(firstColonIdx + 1);
 
-    // Penanganan untuk "in:" (Faceted)[cite: 12]
-    if (value.startsWith("in:")) {
-      value = value.slice(3);
-    }
-    // Penanganan untuk "between:" (Date Range)
-    else if (value.startsWith("between:")) {
-      value = value.slice(8);
-    }
-    result[key] = value; //[cite: 12]
+    if (value.startsWith("in:")) value = value.slice(3);
+    else if (value.startsWith("between:")) value = value.slice(8);
+    result[key] = value;
   });
-  return result; //[cite: 12]
+  return result;
 };
 
 const buildFilterString = (
   filters: Record<string, string>,
 ): string | undefined => {
-  const parts: string[] = []; //[cite: 12]
+  const parts: string[] = [];
   Object.entries(filters).forEach(([key, val]) => {
-    //[cite: 12]
-    if (!val) return; //[cite: 12]
+    if (!val) return;
 
-    // Jika formatnya adalah tanggal rentang (YYYY-MM-DD,YYYY-MM-DD)
     if (
       val.match(/^\d{4}-\d{2}-\d{2},?\d{4}-\d{2}-\d{2}?$/) ||
       val.match(/^,\d{4}-\d{2}-\d{2}$/) ||
       val.match(/^\d{4}-\d{2}-\d{2},$/)
     ) {
       parts.push(`${key}:between:${val}`);
-    }
-    // Jika value memiliki koma (karena multi-select dari faceted)[cite: 12]
-    else if (val.includes(",")) {
-      parts.push(`${key}:in:${val}`); //[cite: 12]
-    }
-    // Filter teks biasa[cite: 12]
-    else {
-      parts.push(`${key}:${val}`); //[cite: 12]
+    } else if (val.includes(",")) {
+      parts.push(`${key}:in:${val}`);
+    } else {
+      parts.push(`${key}:${val}`);
     }
   });
-  return parts.length > 0 ? parts.join(";") : undefined; //[cite: 12]
+  return parts.length > 0 ? parts.join(";") : undefined;
+};
+
+// --- HELPER PAGINATION ---
+const generatePagination = (currentPage: number, totalPages: number) => {
+  if (totalPages <= 5) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+  if (currentPage <= 3) {
+    return [1, 2, 3, 4, "...", totalPages];
+  }
+  if (currentPage >= totalPages - 2) {
+    return [
+      1,
+      "...",
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+      totalPages,
+    ];
+  }
+  return [
+    1,
+    "...",
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    "...",
+    totalPages,
+  ];
 };
 
 export function DataTable<T>({
@@ -93,77 +117,69 @@ export function DataTable<T>({
   );
 
   const emitCleanState = (newState: UserListParams) => {
-    //[cite: 12]
     const cleanState: UserListParams = {
-      //[cite: 12]
-      ...newState, //[cite: 12]
-      search: newState.search === "" ? undefined : newState.search, //[cite: 12]
-      sortBy: newState.sortBy === "" ? undefined : newState.sortBy, //[cite: 12]
-      sortOrder: newState.sortOrder === "" ? undefined : newState.sortOrder, //[cite: 12]
-      filter: newState.filter === "" ? undefined : newState.filter, //[cite: 12]
-    }; //[cite: 12]
-    onStateChange(cleanState); //[cite: 12]
-  }; //[cite: 12]
+      ...newState,
+      search: newState.search === "" ? undefined : newState.search,
+      sortBy: newState.sortBy === "" ? undefined : newState.sortBy,
+      sortOrder: newState.sortOrder === "" ? undefined : newState.sortOrder,
+      filter: newState.filter === "" ? undefined : newState.filter,
+    };
+    onStateChange(cleanState);
+  };
 
   useEffect(() => {
-    //[cite: 12]
     const timer = setTimeout(() => {
-      //[cite: 12]
       if (searchInput !== (state.search || "")) {
-        //[cite: 12]
-        emitCleanState({ ...state, search: searchInput, page: 1 }); //[cite: 12]
-      } //[cite: 12]
-    }, 500); //[cite: 12]
-    return () => clearTimeout(timer); //[cite: 12]
-  }, [searchInput, state]); //[cite: 12]
+        emitCleanState({ ...state, search: searchInput, page: 1 });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchInput, state]);
 
   useEffect(() => {
-    //[cite: 12]
     const timer = setTimeout(() => {
-      //[cite: 12]
-      const currentFilterStr = state.filter || ""; //[cite: 12]
-      const newFilterStr = buildFilterString(localFilters) || ""; //[cite: 12]
+      const currentFilterStr = state.filter || "";
+      const newFilterStr = buildFilterString(localFilters) || "";
 
       if (currentFilterStr !== newFilterStr) {
-        //[cite: 12]
-        emitCleanState({ ...state, filter: newFilterStr, page: 1 }); //[cite: 12]
-      } //[cite: 12]
-    }, 500); //[cite: 12]
-    return () => clearTimeout(timer); //[cite: 12]
-  }, [localFilters, state]); //[cite: 12]
+        emitCleanState({ ...state, filter: newFilterStr, page: 1 });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [localFilters, state]);
 
   const handleSort = (accessorKey: string, isSortable?: boolean) => {
-    //[cite: 12]
-    if (!isSortable) return; //[cite: 12]
-    let newOrder: "asc" | "desc" = "asc"; //[cite: 12]
+    if (!isSortable) return;
+    let newOrder: "asc" | "desc" = "asc";
     if (state.sortBy === accessorKey) {
-      //[cite: 12]
-      newOrder = state.sortOrder === "asc" ? "desc" : "asc"; //[cite: 12]
-    } //[cite: 12]
+      newOrder = state.sortOrder === "asc" ? "desc" : "asc";
+    }
     emitCleanState({
-      //[cite: 12]
-      ...state, //[cite: 12]
-      sortBy: accessorKey, //[cite: 12]
-      sortOrder: newOrder, //[cite: 12]
-      page: 1, //[cite: 12]
-    }); //[cite: 12]
-  }; //[cite: 12]
+      ...state,
+      sortBy: accessorKey,
+      sortOrder: newOrder,
+      page: 1,
+    });
+  };
 
   const handleFilterChange = (key: string, value: string) => {
-    //[cite: 12]
-    setLocalFilters((prev) => ({ ...prev, [key]: value })); //[cite: 12]
-  }; //[cite: 12]
+    setLocalFilters((prev) => ({ ...prev, [key]: value }));
+  };
 
   return (
-    <div className="flex flex-col gap-4 w-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-      <div className="flex justify-between items-center p-4 border-b border-gray-200">
-        <Input
-          type="text"
-          placeholder="Cari global..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-        />
-        <div className="flex items-center gap-2 text-sm text-gray-600">
+    <div className="flex flex-col w-full bg-bg-paper rounded-3xl shadow-sm border border-divider overflow-hidden">
+      {/* --- TOOLBAR UTAMA --- */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 border-b border-divider">
+        <div className="w-full sm:w-72">
+          <Input
+            type="text"
+            placeholder="Cari global..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="w-full"
+          />
+        </div>
+        <div className="flex items-center gap-2 text-sm text-text-secondary shrink-0">
           <span>Tampilkan</span>
           <select
             value={state.limit || 10}
@@ -174,7 +190,7 @@ export function DataTable<T>({
                 page: 1,
               })
             }
-            className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none"
+            className="border border-divider rounded-lg px-2 py-1.5 text-sm focus:outline-none bg-transparent hover:bg-divider/10 transition-colors cursor-pointer"
           >
             {[5, 10, 25, 50, 100].map((size) => (
               <option key={size} value={size}>
@@ -186,38 +202,52 @@ export function DataTable<T>({
         </div>
       </div>
 
+      {/* --- AREA TABEL --- */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">
-          <thead className="bg-gray-50 text-gray-600 text-xs border-b border-gray-200">
-            <tr className="uppercase">
+          {/* Header Tabel Bersih */}
+          <thead className="bg-bg-paper text-text-secondary text-xs border-b border-divider">
+            {/* Baris 1: Nama Kolom & Sortir */}
+            <tr className="uppercase tracking-wider">
               {columns.map((col, idx) => (
                 <th
                   key={idx}
                   onClick={() =>
                     handleSort(col.accessorKey as string, col.sortable)
                   }
-                  className={`px-6 py-3 font-semibold tracking-wider ${col.sortable ? "cursor-pointer hover:bg-gray-100 select-none" : ""}`}
+                  className={`px-6 py-4 font-bold ${
+                    col.sortable
+                      ? "cursor-pointer hover:bg-divider/20 select-none transition-colors"
+                      : ""
+                  }`}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     {col.header}
                     {col.sortable && state.sortBy === col.accessorKey && (
-                      <span className="text-primary-main text-xs">
-                        {state.sortOrder === "asc" ? "▲" : "▼"}
+                      <span className="text-primary-main">
+                        {state.sortOrder === "asc" ? (
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        ) : (
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        )}
                       </span>
-                    )}{" "}
+                    )}
                     {col.sortable && state.sortBy !== col.accessorKey && (
-                      <span className="text-gray-300 text-xs">↕</span>
-                    )}{" "}
-                  </div>{" "}
+                      <span className="text-text-disabled opacity-40">
+                        <ArrowDownUp className="w-3.5 h-3.5" />
+                      </span>
+                    )}
+                  </div>
                 </th>
-              ))}{" "}
+              ))}
             </tr>
 
-            <tr className="border-t border-gray-100 bg-gray-50/50">
+            {/* Baris 2: Filter per Kolom (Dikembalikan ke sini) */}
+            <tr className="border-t border-divider bg-divider/10">
               {columns.map((col, idx) => (
                 <th
                   key={`filter-${idx}`}
-                  className="px-3 py-2 font-normal align-top"
+                  className="px-3 py-2 font-normal align-top min-w-48"
                 >
                   {col.filterType === "text" && (
                     <Input
@@ -230,7 +260,7 @@ export function DataTable<T>({
                           e.target.value,
                         )
                       }
-                      className="w-full text-xs py-1 h-7.5"
+                      size="sm"
                     />
                   )}
                   {col.filterType === "faceted" && col.filterOptions && (
@@ -245,7 +275,6 @@ export function DataTable<T>({
                       }
                     />
                   )}
-                  {/* TAMPILKAN FILTER TANGGAL */}
                   {col.filterType === "date-range" && (
                     <DateRangeFilter
                       title="Rentang"
@@ -262,21 +291,26 @@ export function DataTable<T>({
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-divider">
             {isLoading ? (
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="px-6 py-10 text-center text-gray-500"
+                  className="px-6 py-12 text-center text-text-secondary"
                 >
-                  <span className="animate-pulse">Memuat data...</span>
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <span className="w-6 h-6 border-2 border-primary-main border-t-transparent rounded-full animate-spin"></span>
+                    <span className="text-sm font-medium animate-pulse">
+                      Memuat data...
+                    </span>
+                  </div>
                 </td>
               </tr>
             ) : data?.length === 0 ? (
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="px-6 py-10 text-center text-gray-500"
+                  className="px-6 py-12 text-center text-text-secondary"
                 >
                   Tidak ada data yang ditemukan.
                 </td>
@@ -285,10 +319,13 @@ export function DataTable<T>({
               data?.map((row, rowIndex) => (
                 <tr
                   key={rowIndex}
-                  className="hover:bg-gray-50/50 transition-colors"
+                  className="hover:bg-divider/10 transition-colors group"
                 >
                   {columns.map((col, colIndex) => (
-                    <td key={colIndex} className="px-6 py-4 whitespace-nowrap">
+                    <td
+                      key={colIndex}
+                      className="px-6 py-4 whitespace-nowrap text-text-primary"
+                    >
                       {col.cell
                         ? col.cell(row)
                         : ((row[
@@ -303,21 +340,24 @@ export function DataTable<T>({
         </table>
       </div>
 
+      {/* --- AREA PAGINASI RESPONSIVE --- */}
       {meta && (
-        <div className="flex items-center justify-between p-4 border-t border-gray-200 bg-gray-50">
-          <div className="text-sm text-gray-600">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 border-t border-divider bg-bg-paper">
+          <div className="text-sm text-text-secondary text-center md:text-left">
             Menampilkan{" "}
-            <span className="font-medium">
+            <span className="font-bold text-text-primary">
               {(meta.page - 1) * meta.limit + 1}
             </span>{" "}
             hingga{" "}
-            <span className="font-medium">
+            <span className="font-bold text-text-primary">
               {Math.min(meta.page * meta.limit, meta.total)}
             </span>{" "}
-            dari <span className="font-medium">{meta.total}</span> entitas
+            dari{" "}
+            <span className="font-bold text-text-primary">{meta.total}</span>{" "}
+            entitas
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <IconButton
               disabled={meta.page <= 1}
               variant="outlined"
@@ -328,6 +368,46 @@ export function DataTable<T>({
             >
               <ChevronLeft className="w-4 h-4" />
             </IconButton>
+
+            {/* Desktop Page Numbers */}
+            <div className="hidden sm:flex items-center gap-1">
+              {generatePagination(meta.page, meta.totalPages).map(
+                (pageNum, idx) => {
+                  if (pageNum === "...") {
+                    return (
+                      <div
+                        key={`ellipsis-${idx}`}
+                        className="px-2 text-text-disabled"
+                      >
+                        <MoreHorizontal className="w-4 h-4" />
+                      </div>
+                    );
+                  }
+                  const isActive = pageNum === meta.page;
+                  return (
+                    <button
+                      key={`page-${pageNum}`}
+                      onClick={() =>
+                        emitCleanState({ ...state, page: pageNum as number })
+                      }
+                      className={`min-w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
+                        isActive
+                          ? "bg-primary-main text-white"
+                          : "text-text-secondary hover:bg-divider/20 hover:text-text-primary"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                },
+              )}
+            </div>
+
+            {/* Mobile Page Indicator (Hanya muncul di layar HP) */}
+            <div className="flex sm:hidden items-center justify-center px-4 text-sm font-medium text-text-primary">
+              {meta.page} / {meta.totalPages}
+            </div>
+
             <IconButton
               disabled={meta.page >= meta.totalPages}
               variant="outlined"

@@ -31,8 +31,8 @@ function UsersPage() {
       filterType: "text",
       cell: (row) => (
         <div>
-          <p className="font-medium text-gray-900">{row.fullName}</p>
-          <p className="text-xs text-gray-500">{row.email}</p>
+          <p className="font-medium">{row.fullName}</p>
+          <p className="text-xs">{row.email}</p>
         </div>
       ),
     },
@@ -76,7 +76,6 @@ function UsersPage() {
       header: "Kode Referral",
       accessorKey: "referralCode",
       sortable: false,
-      // Tanpa filterType, cell header bawah akan kosong
     },
     {
       header: "Tanggal Daftar",
@@ -95,8 +94,8 @@ function UsersPage() {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Manajemen Pengguna</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-2xl font-bold">Manajemen Pengguna</h1>
+        <p className="text-sm">
           Kelola akses, profil, dan status anggota platform.
         </p>
       </div>

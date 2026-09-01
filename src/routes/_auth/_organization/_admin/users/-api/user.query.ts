@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import * as api from "./user.api";
+import toast from "../../../../../../components/ui/Toast";
 
 export const userKeys = {
   all: ["users"] as const,
@@ -13,7 +14,12 @@ export const userKeys = {
 export function useUsersQuery(params: api.UserListParams) {
   return useQuery({
     queryKey: userKeys.list(params),
-    queryFn: () => api.getUsers(params),
+    queryFn: () =>
+      api
+        .getUsers(params)
+        .catch((error) =>
+          toast.error(error?.data?.message || "Gagal mengambil data pengguna"),
+        ),
   });
 }
 

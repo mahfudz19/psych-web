@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import PassworfField from "../../-components/PassworfField";
 import Popover from "../../../../components/ui/Popover";
+import useMediaQuery from "../../../../components/utility/useMediaQuery";
 
 export const requirements = (password: string) => {
   return {
@@ -31,6 +32,8 @@ export default function PasswordFields({
 }: PasswordFieldsProps) {
   const { t } = useTranslation();
 
+  const sm = !useMediaQuery("sm");
+
   const listRequirements = [
     { key: "minLength", lable: t("guest.register.passwordReqMinLength") },
     { key: "maxLength", lable: t("guest.register.passwordReqMaxLength") },
@@ -53,7 +56,7 @@ export default function PasswordFields({
 
         <Popover
           interaction="focus"
-          position="top-right"
+          position={sm ? "top-center" : "right-center"}
           classNames={{ trigger: "w-full" }}
           trigger={
             <>

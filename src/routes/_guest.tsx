@@ -1,15 +1,7 @@
-import {
-  createFileRoute,
-  Outlet,
-  redirect,
-  useLocation,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { getRedirectPathByRole } from "../utils/auth";
 import * as authApi from "./_guest/-api/auth.api";
-import {
-  AuthSplitLayout,
-  type AuthSplitLayoutProps,
-} from "./_guest/-components/AuthSplitLayout";
+import { AuthSplitLayout } from "./_guest/-components/AuthSplitLayout";
 
 export const Route = createFileRoute("/_guest")({
   beforeLoad: async ({ context: { queryClient, auth } }) => {
@@ -36,31 +28,8 @@ export const Route = createFileRoute("/_guest")({
 });
 
 function GuestLayout() {
-  const location = useLocation();
-  const path = location.pathname;
-
-  let layoutKey: AuthSplitLayoutProps["layoutKey"] = "login";
-  let imagePosition: "left" | "right" = "left";
-
-  if (path.includes("/register/invite")) {
-    layoutKey = "registerInvite";
-    imagePosition = "right";
-  } else if (path.includes("/register/verify-email")) {
-    layoutKey = "registerIndividual";
-    imagePosition = "left";
-  } else if (path.includes("/register")) {
-    layoutKey = "registerIndividual";
-    imagePosition = "right";
-  } else if (
-    path.includes("/reset-password") ||
-    path.includes("/forgot-password")
-  ) {
-    layoutKey = "resetPassword";
-    imagePosition = "left";
-  }
-
   return (
-    <AuthSplitLayout layoutKey={layoutKey} imagePosition={imagePosition}>
+    <AuthSplitLayout>
       <Outlet />
     </AuthSplitLayout>
   );

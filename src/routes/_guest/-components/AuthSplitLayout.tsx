@@ -1,24 +1,42 @@
+import { useMatches } from "@tanstack/react-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import LanguageSwitcher from "../../../components/layout/Topbar/LanguageSwitcher";
 import DarkMode from "../../../components/layout/Topbar/DarkMode";
+import LanguageSwitcher from "../../../components/layout/Topbar/LanguageSwitcher";
 
-export interface AuthSplitLayoutProps {
-  children: React.ReactNode;
-  layoutKey:
-    | "login"
-    | "registerIndividual"
-    | "registerOrganization"
-    | "registerInvite"
-    | "resetPassword";
-  imagePosition?: "left" | "right";
-}
+type layoutKey =
+  | "login"
+  | "registerIndividual"
+  | "registerOrganization"
+  | "registerInvite"
+  | "resetPassword";
+type imagePosition = "left" | "right";
 
-export function AuthSplitLayout({
-  children,
-  layoutKey,
-  imagePosition = "left",
-}: AuthSplitLayoutProps) {
+export function AuthSplitLayout({ children }: { children: React.ReactNode }) {
+  const matches = useMatches();
+  const currentMatch = matches[matches.length - 1];
+  const path = currentMatch?.pathname || "";
+
+  let layoutKey: layoutKey = "login";
+  let imagePosition: imagePosition = "left";
+
+  if (path.includes("/register/invite")) {
+    layoutKey = "registerInvite";
+    imagePosition = "right";
+  } else if (path.includes("/register/verify-email")) {
+    layoutKey = "registerIndividual";
+    imagePosition = "left";
+  } else if (path.includes("/register")) {
+    layoutKey = "registerIndividual";
+    imagePosition = "right";
+  } else if (
+    path.includes("/reset-password") ||
+    path.includes("/forgot-password")
+  ) {
+    layoutKey = "resetPassword";
+    imagePosition = "left";
+  }
+
   const { t } = useTranslation();
 
   return (

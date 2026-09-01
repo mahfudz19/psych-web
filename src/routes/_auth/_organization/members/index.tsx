@@ -254,8 +254,8 @@ function OrganizationMembersPage() {
             <div className="text-xs text-text-secondary">
               {t("organization.members.pagination.info", {
                 from: (meta.page - 1) * meta.limit + 1,
-                to: Math.min(meta.page * meta.limit, meta.totalElements),
-                total: meta.totalElements,
+                to: Math.min(meta.page * meta.limit, meta.total),
+                total: meta.total,
               })}
             </div>
 

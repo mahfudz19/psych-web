@@ -25,10 +25,18 @@ export default function MenuCore({
 
           setTimeout(() => {
             if (menuRef.current) {
-              const firstItem = menuRef.current.querySelector<HTMLElement>(
-                '[role="menuitem"]:not(:disabled), button:not(:disabled), a[href]',
+              const activeItem = menuRef.current.querySelector<HTMLElement>(
+                '.active, [aria-selected="true"], [aria-current="page"], [data-active="true"]',
               );
-              firstItem?.focus();
+
+              if (activeItem && !activeItem.hasAttribute("disabled")) {
+                activeItem.focus();
+              } else {
+                const firstItem = menuRef.current.querySelector<HTMLElement>(
+                  '[role="menuitem"]:not(:disabled), button:not(:disabled), a[href]',
+                );
+                firstItem?.focus();
+              }
             }
           }, 50);
         },

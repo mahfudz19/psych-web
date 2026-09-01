@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import Menu from "../../../components/ui/Menu";
 import Button from "../../ui/Button";
 import MenuItem from "../../ui/Menu/MenuItem";
+import Skeleton from "../../ui/Skeleton";
 
 const LANGUAGES = [
   { code: "id", label: "Indonesia", flag: "🇮🇩" },
@@ -18,6 +19,9 @@ function LanguageSwitcher() {
   return (
     <Menu
       position="bottom-right"
+      skeleton={
+        <Skeleton height={46.28} className="w-16 sm:w-16" variant="rounded" />
+      }
       widthClass="w-44"
       trigger={
         <Button
@@ -52,23 +56,11 @@ function LanguageSwitcher() {
             return (
               <MenuItem
                 key={lang.code}
-                // 1. Pindahkan bendera ke prop `icon` bawaan komponen Anda
-                icon={<span className="text-xl leading-none">{lang.flag}</span>}
-                onClick={() => {
-                  i18n.changeLanguage(lang.code);
-                  close();
-                }}
-                className={
-                  isActive
-                    ? "text-primary-main bg-primary-main/10 font-bold"
-                    : "text-text-secondary hover:bg-gray-100 font-medium"
+                iconStart={
+                  <span className="text-xl leading-none">{lang.flag}</span>
                 }
-              >
-                {/* 2. Bungkus teks dan centang menggunakan flex & justify-between */}
-                <span className="flex items-center justify-between w-full">
-                  <span>{lang.label}</span>
-
-                  {isActive && (
+                iconEnd={
+                  isActive ? (
                     <svg
                       className="w-4 h-4 shrink-0"
                       fill="none"
@@ -82,8 +74,15 @@ function LanguageSwitcher() {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                  )}
-                </span>
+                  ) : undefined
+                }
+                onClick={() => {
+                  i18n.changeLanguage(lang.code);
+                  close();
+                }}
+                active={isActive}
+              >
+                {lang.label}
               </MenuItem>
             );
           })}

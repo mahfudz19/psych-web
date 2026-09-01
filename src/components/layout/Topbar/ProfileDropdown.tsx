@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useLogoutMutation } from "../../../routes/_guest/-api/auth.query";
 import Menu from "../../ui/Menu";
@@ -6,6 +6,7 @@ import Button from "../../ui/Button";
 import MenuDivider from "../../ui/Menu/MenuDivider";
 import MenuHeader from "../../ui/Menu/MenuHeader";
 import MenuItem from "../../ui/Menu/MenuItem";
+import Skeleton from "../../ui/Skeleton";
 
 export interface ProfileDropdownProps {
   fullName: string;
@@ -29,10 +30,16 @@ function ProfileDropdown(props: ProfileDropdownProps) {
       .substring(0, 2)
       .toUpperCase();
 
+  const routerState = useRouterState();
+  const currentPath = routerState.location.pathname;
+
   return (
     <Menu
       position="bottom-right"
       widthClass="w-64"
+      skeleton={
+        <Skeleton height={46.28} className="w-16 sm:w-40" variant="rounded" />
+      }
       trigger={
         <Button
           size="sm"
@@ -91,7 +98,12 @@ function ProfileDropdown(props: ProfileDropdownProps) {
 
           <div className="flex flex-col gap-0.5 p-1">
             <MenuItem
-              icon={
+              active={currentPath === "/profile"}
+              onClick={() => {
+                close();
+                navigate({ to: "/profile" });
+              }}
+              iconStart={
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -106,16 +118,17 @@ function ProfileDropdown(props: ProfileDropdownProps) {
                   />
                 </svg>
               }
-              onClick={() => {
-                close();
-                navigate({ to: "/profile" });
-              }}
             >
               {t("topbar.profileSettings")}
             </MenuItem>
 
             <MenuItem
-              icon={
+              active={currentPath === "/billing"}
+              onClick={() => {
+                close();
+                navigate({ to: "/billing" });
+              }}
+              iconStart={
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -130,10 +143,6 @@ function ProfileDropdown(props: ProfileDropdownProps) {
                   />
                 </svg>
               }
-              onClick={() => {
-                close();
-                navigate({ to: "/billing" });
-              }}
             >
               {t("sidebar.billing")}
             </MenuItem>
@@ -143,7 +152,14 @@ function ProfileDropdown(props: ProfileDropdownProps) {
 
           <div className="p-1">
             <MenuItem
-              icon={
+              rippleColor="error"
+              className="text-error-main hover:bg-error-main/10 hover:text-error-main focus:bg-error-main/10 focus:text-error-main disabled:opacity-50"
+              onClick={() => {
+                if (logout.isPending) return;
+                close();
+                logout.mutate();
+              }}
+              iconStart={
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -158,13 +174,6 @@ function ProfileDropdown(props: ProfileDropdownProps) {
                   />
                 </svg>
               }
-              rippleColor="error"
-              className="text-error-main hover:bg-error-main/10 hover:text-error-main focus:bg-error-main/10 focus:text-error-main disabled:opacity-50"
-              onClick={() => {
-                if (logout.isPending) return;
-                close();
-                logout.mutate();
-              }}
             >
               {logout.isPending ? t("topbar.loggingOut") : t("topbar.logout")}
             </MenuItem>

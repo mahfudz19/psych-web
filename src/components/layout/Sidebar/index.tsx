@@ -71,7 +71,6 @@ export function Sidebar() {
 
   return (
     <>
-      {/* OVERLAY BACKDROP UNTUK MOBILE */}
       {isMobileOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40 lg:hidden backdrop-blur-sm transition-opacity"
@@ -80,7 +79,6 @@ export function Sidebar() {
         />
       )}
 
-      {/* CONTAINER SIDEBAR */}
       <aside
         className={twMerge(
           "fixed lg:static inset-y-0 left-0 z-50",
@@ -91,7 +89,6 @@ export function Sidebar() {
           "w-64",
         )}
       >
-        {/* LOGO AREA */}
         <div className="h-16 flex items-center justify-center px-4 border-b border-divider shrink-0">
           <h1 className="font-extrabold text-primary-main tracking-tight whitespace-nowrap overflow-hidden transition-all duration-300">
             <span
@@ -105,7 +102,6 @@ export function Sidebar() {
           </h1>
         </div>
 
-        {/* NAVIGASI MENU */}
         <nav
           className={`flex-1 px-3 py-6 space-y-1 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
         >
@@ -216,7 +212,6 @@ export function Sidebar() {
           ))}
         </nav>
 
-        {/* FOOTER SIDEBAR */}
         <div className="p-4 border-t border-divider shrink-0 overflow-hidden">
           <p
             className={`text-xs text-text-disabled font-medium whitespace-nowrap transition-all duration-300 text-center ${isMini ? "lg:opacity-0 lg:hidden" : ""}`}

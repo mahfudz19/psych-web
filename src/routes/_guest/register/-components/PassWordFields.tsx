@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import PassworfField from "../../-components/PassworfField";
-import Popover from "../../../../components/ui/Popover";
+import Tooltip from "../../../../components/ui/Tooltip";
 import useMediaQuery from "../../../../components/utility/useMediaQuery";
 
 export const requirements = (password: string) => {
@@ -54,8 +54,7 @@ export default function PasswordFields({
           {t("guest.register.passwordLabel")}
         </label>
 
-        <Popover
-          interaction="focus"
+        <Tooltip
           position={sm ? "top-center" : "right-center"}
           classNames={{ trigger: "w-full" }}
           trigger={
@@ -93,7 +92,7 @@ export default function PasswordFields({
               ))}
             </ul>
           </div>
-        </Popover>
+        </Tooltip>
         {unfulfilledRequirements.length > 0 && (
           <>
             {unfulfilledRequirements.map(({ key, lable }) => (

@@ -1,4 +1,4 @@
-import { useRef, type HTMLAttributes } from "react";
+import { useRef, useState, type HTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 
 export type DialogProps = {
@@ -7,6 +7,7 @@ export type DialogProps = {
   className?: HTMLAttributes<HTMLDialogElement>["className"];
   dismissible?: boolean;
   scroll?: "paper" | "body";
+  isDynamic?: boolean;
 };
 
 function Dialog(props: DialogProps) {
@@ -16,15 +17,23 @@ function Dialog(props: DialogProps) {
     className,
     dismissible = true,
     scroll = "body",
+    isDynamic = false,
   } = props;
 
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const [isMounted, setIsMounted] = useState(!isDynamic);
 
   const openDialog = () => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+
+    if (isDynamic) setIsMounted(true);
+
     const dialog = dialogRef.current;
     if (!dialog) return;
 
-    dialog.showModal();
+    if (!dialog.open) dialog.showModal();
 
     requestAnimationFrame(() =>
       requestAnimationFrame(() => dialog.setAttribute("data-state", "open")),
@@ -37,7 +46,12 @@ function Dialog(props: DialogProps) {
 
     dialog.removeAttribute("data-state");
 
-    setTimeout(() => dialog.close(), 200);
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+
+    closeTimeoutRef.current = setTimeout(() => {
+      dialog.close();
+      if (isDynamic) setIsMounted(false);
+    }, 200);
   };
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
@@ -56,8 +70,11 @@ function Dialog(props: DialogProps) {
     } else if (e.target === dialog) closeDialog();
   };
 
-  const renderChildren =
-    typeof children === "function" ? children(closeDialog) : children;
+  const renderChildren = isMounted
+    ? typeof children === "function"
+      ? children(closeDialog)
+      : children
+    : null;
 
   return (
     <>

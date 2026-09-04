@@ -4,7 +4,7 @@ import DialogCoreStatic from "./DialogCore";
 
 const DialogCoreDynamic = lazy(() => import("./DialogCore"));
 
-export type DialogWrapperProps = DialogProps & {
+export type DialogWrapperProps = Omit<DialogProps, "isDynamic"> & {
   isDynamic?: boolean;
   skeleton?: React.ReactNode;
 };
@@ -19,10 +19,10 @@ export default function Dialog({
   if (isDynamic) {
     return (
       <Suspense fallback={skeleton}>
-        <Component {...props} />
+        <Component isDynamic={isDynamic} {...props} />
       </Suspense>
     );
   }
 
-  return <Component {...props} />;
+  return <Component isDynamic={isDynamic} {...props} />;
 }

@@ -22,9 +22,7 @@ export default function DateRangeFilter({
 
     if (val.includes("/")) {
       const [startISO, endISO] = val.split("/");
-      const startDate = startISO.split("T")[0];
-      const endDate = endISO ? endISO.split("T")[0] : "";
-      if (startDate && endDate) onChange(`${startDate},${endDate}`);
+      if (startISO && endISO) onChange(`${startISO},${endISO}`);
     }
   };
 
@@ -32,6 +30,8 @@ export default function DateRangeFilter({
     <InputDate
       selectsRange
       monthsShown={2}
+      showTimeSelect
+      isClearable
       value={inputValue}
       onChange={handleChange}
       customTrigger={({ value, clear }) => {

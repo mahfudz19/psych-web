@@ -35,7 +35,7 @@ function ProfileDropdown(props: ProfileDropdownProps) {
 
   return (
     <Menu
-      position="bottom-right"
+      position="bottom-end"
       widthClass="w-64"
       skeleton={
         <Skeleton height={46.28} className="w-16 sm:w-40" variant="rounded" />

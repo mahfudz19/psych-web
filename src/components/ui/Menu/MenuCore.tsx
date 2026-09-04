@@ -11,7 +11,7 @@ import { twMerge } from "tailwind-merge";
 
 export default function MenuCore({
   trigger,
-  position = "bottom-right",
+  position = "bottom-end",
   widthClass = "w-64",
   children,
 }: MenuProps) {
@@ -44,7 +44,7 @@ export default function MenuCore({
     : trigger;
 
   return (
-    <Popover trigger={triggerWithFocus} position={position} interaction="click">
+    <Popover trigger={triggerWithFocus} anchor={position} interaction="click">
       {(close) => {
         const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
           if (!menuRef.current) return;

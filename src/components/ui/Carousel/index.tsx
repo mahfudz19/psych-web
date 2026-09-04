@@ -41,8 +41,8 @@ const Carousel: React.FC<CarouselProps> = (props) => {
         className={twMerge("w-full flex items-start", classNames?.container)}
         style={{
           transform: `translateX(-${activeIndex * 100}%)`,
-          height: noAutoHeight ? "auto" : childHeights[activeIndex],
-          transition: `transform 300ms ease-in-out${childHeights[activeIndex] ? ", height 300ms ease-in-out" : ""}`,
+          height: noAutoHeight ? "auto" : childHeights.current[activeIndex],
+          transition: `transform 300ms ease-in-out${childHeights.current[activeIndex] ? ", height 300ms ease-in-out" : ""}`,
         }}
       >
         {Children.map(children, (child, index) => (
@@ -51,7 +51,7 @@ const Carousel: React.FC<CarouselProps> = (props) => {
             className={twMerge("w-full shrink-0", classNames?.child)}
             ref={(element) => {
               if (element)
-                childHeights[index] = Math.ceil(
+                childHeights.current[index] = Math.ceil(
                   element.getBoundingClientRect().height,
                 );
             }}

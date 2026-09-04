@@ -1,12 +1,13 @@
-import { useUsersQuery } from "../-api/user.query";
-import { Route } from "../index";
 import { useNavigate } from "@tanstack/react-router";
+import type { UserListParams } from "../-api/user.api";
+import { useUsersQuery } from "../-api/user.query";
+import type { Users } from "../-api/user.type";
 import {
   DataTable,
   type ColumnDef,
 } from "../../../../../../components/reusebale-components/DataTable";
-import type { Users } from "../-api/user.type";
-import type { UserListParams } from "../-api/user.api";
+import { Route } from "../index";
+import DetailUser from "./DetailUser";
 
 function UsersPage() {
   const tableState = Route.useSearch();
@@ -88,6 +89,12 @@ function UsersPage() {
           month: "short",
           year: "numeric",
         }),
+    },
+    {
+      header: "",
+      accessorKey: "actions",
+      className: "w-4 text-right px-4",
+      cell: (row) => <DetailUser user={row} key={`user-detail-${row.id}`} />,
     },
   ];
 

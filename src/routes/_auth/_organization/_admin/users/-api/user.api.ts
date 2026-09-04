@@ -14,3 +14,7 @@ export interface UserListParams {
 export async function getUsers(params: UserListParams) {
   return api.get<Users[]>(`${BASE}`, { params });
 }
+
+export async function getUserById(userId: string) {
+  return api.get<Users>(`${BASE}/${userId}/detail`);
+}

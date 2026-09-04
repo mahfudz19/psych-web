@@ -25,4 +25,5 @@ export interface Users {
   createdAt: string;
   updatedAt: string;
   accountType: "INDIVIDUAL" | "ORGANIZATION";
+  referralEarnings: number;
 }

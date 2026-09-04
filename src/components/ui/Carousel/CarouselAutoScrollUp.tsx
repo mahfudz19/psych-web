@@ -40,10 +40,10 @@ const CarouselAutoScrollUp: React.FC<CarouselProps> = (props) => {
           transform: `translateX(-${activeIndex * 100}%)`,
           height: noAutoHeight
             ? "auto"
-            : childHeights[activeIndex]
-              ? `${childHeights[activeIndex]}px`
+            : childHeights.current[activeIndex]
+              ? `${childHeights.current[activeIndex]}px`
               : "auto",
-          transition: `transform 300ms ease-in-out${childHeights[activeIndex] ? ", height 300ms ease-in-out" : ""}`,
+          transition: `transform 300ms ease-in-out${childHeights.current[activeIndex] ? ", height 300ms ease-in-out" : ""}`,
         }}
       >
         {Children.map(children, (child, index) => (
@@ -52,7 +52,7 @@ const CarouselAutoScrollUp: React.FC<CarouselProps> = (props) => {
             className={twMerge("w-full shrink-0", classNames?.child)}
             ref={(element) => {
               if (element)
-                childHeights[index] = Math.ceil(
+                childHeights.current[index] = Math.ceil(
                   element.getBoundingClientRect().height,
                 );
             }}

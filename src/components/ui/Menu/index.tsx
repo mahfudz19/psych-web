@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, type ReactNode } from "react";
 import MenuCoreStatic from "./MenuCore";
-import type { PopoverPosition } from "../Popover";
+import type { AnchorPosition } from "../Popover";
 
 const MenuCoreDynamic = lazy(() => import("./MenuCore"));
 
@@ -8,7 +8,7 @@ export type MenuProps = {
   isDynamic?: boolean;
   skeleton?: React.ReactNode;
   trigger: ReactNode;
-  position?: PopoverPosition;
+  position?: AnchorPosition;
   widthClass?: string;
   children: (close: () => void) => ReactNode;
 };

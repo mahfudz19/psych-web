@@ -2747,7 +2747,7 @@ const InputDate = forwardRef<DateInputRef, InputDateProps>((props, ref) => {
 
   return (
     <Popover
-      position="bottom-left"
+      anchor="bottom-end"
       interaction="click"
       classNames={{ popover: "p-0 overflow-hidden bg-bg-paper min-w-[24rem]" }}
       trigger={

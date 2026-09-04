@@ -23,34 +23,10 @@ export function useUsersQuery(params: api.UserListParams) {
   });
 }
 
-// /**
-//  * Hook untuk mengambil detail satu User berdasarkan ID
-//  */
-// export function useUserDetailQuery(userId: string) {
-//   return useQuery({
-//     queryKey: userKeys.detail(userId),
-//     queryFn: () => api.getUserById(userId),
-//     // Praktik Terbaik: 'enabled' mencegah query berjalan jika userId masih kosong/undefined
-//     enabled: !!userId,
-//   });
-// }
-
-// // ============================================================================
-// // MUTATIONS (Untuk proses POST, PUT, DELETE / Write)
-// // ============================================================================
-
-// /**
-//  * Contoh Hook Mutation untuk menghapus User
-//  */
-// export function useDeleteUserMutation() {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: (userId: string) => api.deleteUser(userId),
-//     onSuccess: () => {
-//       // Praktik Terbaik: Invalidasi cache list agar tabel/daftar otomatis ter-refresh (fetch ulang)
-//       // tanpa harus me-refresh halaman browser
-//       queryClient.invalidateQueries({ queryKey: userKeys.lists() });
-//     },
-//   });
-// }
+export function useUserDetailQuery(userId: string) {
+  return useQuery({
+    queryKey: userKeys.detail(userId),
+    queryFn: () => api.getUserById(userId),
+    enabled: !!userId,
+  });
+}

@@ -46,11 +46,7 @@ export default function FacetedFilter({
   );
 
   return (
-    <Popover
-      trigger={triggerElement}
-      position="bottom-left"
-      interaction="click"
-    >
+    <Popover trigger={triggerElement} anchor="bottom-end" interaction="click">
       {(closePopover) => (
         <div className="w-56 p-1.5">
           <div className="flex flex-col gap-0.5 max-h-60 overflow-y-auto pr-1">

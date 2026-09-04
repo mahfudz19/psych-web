@@ -6,13 +6,14 @@ import {
   ArrowDown,
   MoreHorizontal,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type HTMLAttributes } from "react";
 import type { PaginationMeta } from "../../../types";
 import IconButton from "../../ui/IconButton";
 import Input from "../../ui/Input";
 import FacetedFilter from "./FacetedFilter";
 import type { UserListParams } from "../../../routes/_auth/_organization/_admin/users/-api/user.api";
 import DateRangeFilter from "./DateRangeFilter";
+import { twMerge } from "tailwind-merge";
 
 export interface ColumnDef<T> {
   header: string;
@@ -21,6 +22,8 @@ export interface ColumnDef<T> {
   cell?: (row: T) => React.ReactNode;
   filterType?: "text" | "faceted" | "date-range";
   filterOptions?: { label: string; value: string }[];
+  className?: HTMLAttributes<T>["className"];
+  style?: HTMLAttributes<T>["style"];
 }
 
 interface DataTableProps<T> {
@@ -32,45 +35,55 @@ interface DataTableProps<T> {
   onStateChange: (newState: UserListParams) => void;
 }
 
-const parseFilterString = (filterStr?: string): Record<string, string> => {
+const parseFilterString = (
+  filterParams?: string | string[],
+): Record<string, string> => {
   const result: Record<string, string> = {};
-  if (!filterStr) return result;
+  if (!filterParams) return result;
 
-  const fields = filterStr.split(";");
+  const fields = Array.isArray(filterParams) ? filterParams : [filterParams];
+
   fields.forEach((field) => {
     const firstColonIdx = field.indexOf(":");
     if (firstColonIdx === -1) return;
 
     const key = field.slice(0, firstColonIdx);
-    let value = field.slice(firstColonIdx + 1);
+    const remainder = field.slice(firstColonIdx + 1);
+    const secondColonIdx = remainder.indexOf(":");
 
-    if (value.startsWith("in:")) value = value.slice(3);
-    else if (value.startsWith("between:")) value = value.slice(8);
+    if (secondColonIdx === -1) {
+      result[key] = remainder;
+      return;
+    }
+
+    const value = remainder.slice(secondColonIdx + 1);
     result[key] = value;
   });
+
   return result;
 };
 
 const buildFilterString = (
   filters: Record<string, string>,
-): string | undefined => {
+): string[] | undefined => {
   const parts: string[] = [];
-  Object.entries(filters).forEach(([key, val]) => {
-    if (!val) return;
 
-    if (
-      val.match(/^\d{4}-\d{2}-\d{2},?\d{4}-\d{2}-\d{2}?$/) ||
-      val.match(/^,\d{4}-\d{2}-\d{2}$/) ||
-      val.match(/^\d{4}-\d{2}-\d{2},$/)
-    ) {
+  Object.entries(filters).forEach(([key, val]) => {
+    if (!val || val.trim() === "") return;
+
+    const isDateRange =
+      /^\d{4}-\d{2}-\d{2}(T[^,]*)?,\d{4}-\d{2}-\d{2}(T[^,]*)?$/.test(val);
+
+    if (isDateRange) {
       parts.push(`${key}:between:${val}`);
     } else if (val.includes(",")) {
       parts.push(`${key}:in:${val}`);
     } else {
-      parts.push(`${key}:${val}`);
+      parts.push(`${key}:contains:${val}`);
     }
   });
-  return parts.length > 0 ? parts.join(";") : undefined;
+
+  return parts.length > 0 ? parts : undefined;
 };
 
 // --- HELPER PAGINATION ---
@@ -113,18 +126,22 @@ export function DataTable<T>({
   const [searchInput, setSearchInput] = useState(state.search || "");
 
   const [localFilters, setLocalFilters] = useState<Record<string, string>>(() =>
-    parseFilterString(state.filter),
+    parseFilterString(state.filter as string | string[]),
   );
 
-  const emitCleanState = (newState: UserListParams) => {
-    const cleanState: UserListParams = {
+  const emitCleanState = (newState: any) => {
+    const cleanState = {
       ...newState,
       search: newState.search === "" ? undefined : newState.search,
       sortBy: newState.sortBy === "" ? undefined : newState.sortBy,
       sortOrder: newState.sortOrder === "" ? undefined : newState.sortOrder,
-      filter: newState.filter === "" ? undefined : newState.filter,
+      filter:
+        !newState.filter ||
+        (Array.isArray(newState.filter) && newState.filter.length === 0)
+          ? undefined
+          : newState.filter,
     };
-    onStateChange(cleanState);
+    onStateChange(cleanState as UserListParams);
   };
 
   useEffect(() => {
@@ -138,11 +155,19 @@ export function DataTable<T>({
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const currentFilterStr = state.filter || "";
-      const newFilterStr = buildFilterString(localFilters) || "";
+      const currentFilterArr = Array.isArray(state.filter)
+        ? state.filter
+        : state.filter
+          ? [state.filter]
+          : [];
+
+      const newFilterArr = buildFilterString(localFilters) || [];
+
+      const currentFilterStr = JSON.stringify([...currentFilterArr].sort());
+      const newFilterStr = JSON.stringify([...newFilterArr].sort());
 
       if (currentFilterStr !== newFilterStr) {
-        emitCleanState({ ...state, filter: newFilterStr, page: 1 });
+        emitCleanState({ ...state, filter: newFilterArr, page: 1 });
       }
     }, 500);
     return () => clearTimeout(timer);
@@ -163,7 +188,14 @@ export function DataTable<T>({
   };
 
   const handleFilterChange = (key: string, value: string) => {
-    setLocalFilters((prev) => ({ ...prev, [key]: value }));
+    setLocalFilters((prev) => {
+      if (value === "") {
+        const newFilters = { ...prev };
+        delete newFilters[key];
+        return newFilters;
+      }
+      return { ...prev, [key]: value };
+    });
   };
 
   return (
@@ -205,9 +237,7 @@ export function DataTable<T>({
       {/* --- AREA TABEL --- */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">
-          {/* Header Tabel Bersih */}
           <thead className="bg-bg-paper text-text-secondary text-xs border-b border-divider">
-            {/* Baris 1: Nama Kolom & Sortir */}
             <tr className="uppercase tracking-wider">
               {columns.map((col, idx) => (
                 <th
@@ -215,11 +245,14 @@ export function DataTable<T>({
                   onClick={() =>
                     handleSort(col.accessorKey as string, col.sortable)
                   }
-                  className={`px-6 py-4 font-bold ${
+                  className={twMerge(
+                    "px-6 py-4 font-bold whitespace-nowrap", // <-- Tambahkan whitespace-nowrap agar judul kolom tidak patah
                     col.sortable
                       ? "cursor-pointer hover:bg-divider/20 select-none transition-colors"
-                      : ""
-                  }`}
+                      : "",
+                    col.className,
+                  )}
+                  style={col.style}
                 >
                   <div className="flex items-center gap-2">
                     {col.header}
@@ -242,12 +275,16 @@ export function DataTable<T>({
               ))}
             </tr>
 
-            {/* Baris 2: Filter per Kolom (Dikembalikan ke sini) */}
             <tr className="border-t border-divider bg-divider/10">
               {columns.map((col, idx) => (
                 <th
                   key={`filter-${idx}`}
-                  className="px-3 py-2 font-normal align-top min-w-48"
+                  className={twMerge(
+                    "px-3 py-2 font-normal align-top",
+                    col.filterType ? "min-w-48" : "",
+                    col.className,
+                  )}
+                  style={col.style}
                 >
                   {col.filterType === "text" && (
                     <Input
@@ -324,7 +361,14 @@ export function DataTable<T>({
                   {columns.map((col, colIndex) => (
                     <td
                       key={colIndex}
-                      className="px-6 py-4 whitespace-nowrap text-text-primary"
+                      className={twMerge(
+                        "px-6 py-4 text-text-primary",
+                        col.className?.includes("w-1")
+                          ? "whitespace-nowrap"
+                          : "",
+                        col.className,
+                      )}
+                      style={col.style}
                     >
                       {col.cell
                         ? col.cell(row)

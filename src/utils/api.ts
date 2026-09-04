@@ -231,7 +231,6 @@ function buildURL(url: string, params?: Record<string, any>): string {
     let values: any[] = [];
 
     if (Array.isArray(val)) {
-      key = `${key}[]`;
       values = val;
     } else {
       values = [val];

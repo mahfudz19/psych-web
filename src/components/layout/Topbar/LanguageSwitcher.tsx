@@ -18,7 +18,7 @@ function LanguageSwitcher() {
 
   return (
     <Menu
-      position="bottom-right"
+      position="bottom-end"
       skeleton={
         <Skeleton height={46.28} className="w-16 sm:w-16" variant="rounded" />
       }

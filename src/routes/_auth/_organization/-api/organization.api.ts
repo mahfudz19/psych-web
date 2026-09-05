@@ -55,20 +55,14 @@ export async function uploadOrganizationLogo({
 }
 
 export async function getMembers(orgId: string, params?: MembersListParams) {
-  const queryParams = new URLSearchParams();
+  const endpoint = `${BASE}/${orgId}/members`;
 
-  if (params?.page) queryParams.append("page", params.page.toString());
-  if (params?.limit) queryParams.append("limit", params.limit.toString());
-  if (params?.search) queryParams.append("search", params.search);
-  if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
-  if (params?.sortOrder) queryParams.append("sortOrder", params.sortOrder);
-  if (params?.role) queryParams.append("role", params.role);
-  if (params?.status) queryParams.append("status", params.status);
+  return await api.get<OrganizationMember[]>(endpoint, { params });
+}
 
-  const queryString = queryParams.toString();
-  const endpoint = `${BASE}/${orgId}/members${queryString ? `?${queryString}` : ""}`;
-
-  return await api.get<OrganizationMember[]>(endpoint);
+export async function getMemberById(orgId: string, memberId: string) {
+  const endpoint = `${BASE}/${orgId}/members/${memberId}`;
+  return await api.get<OrganizationMember>(endpoint);
 }
 
 export function kickMember(orgId: string, memberId: string) {
@@ -81,4 +75,8 @@ export function leaveOrganization(orgId: string) {
 
 export function joinOrganization(orgId: string) {
   return api.patch<User>(`${BASE}/${orgId}/members/join`);
+}
+
+export function generateInviteCode() {
+  return api.post<User>(`${BASE}/invite-code`);
 }

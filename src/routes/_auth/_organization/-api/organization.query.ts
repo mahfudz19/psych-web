@@ -4,25 +4,21 @@ import type {
   CreateOrganizationRequest,
   UpdateOrganizationRequest,
 } from "../../../../types/organization";
-import {
-  createOrganization,
-  deleteOrganization,
-  getOrganization,
-  updateOrganization,
-  uploadOrganizationLogo,
-} from "./organization.api";
+import * as apiOrganization from "./organization.api";
 import { useTranslation } from "react-i18next";
+import { authStore } from "../../../../utils/authStore";
 
 export const organizationKeys = {
   all: ["organization"] as const,
   detail: (orgId: string) =>
     [...organizationKeys.all, "detail", orgId] as const,
+  inviteCode: () => [...organizationKeys.all, "inviteCode"] as const,
 };
 
 export function useOrganizationQuery(orgId?: string | null) {
   return useQuery({
     queryKey: organizationKeys.detail(orgId!),
-    queryFn: () => getOrganization(orgId!),
+    queryFn: () => apiOrganization.getOrganization(orgId!),
     enabled: !!orgId,
     staleTime: 1000 * 60 * 5, // 5 menit
     retry: false,
@@ -33,7 +29,8 @@ export function useCreateOrganizationMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateOrganizationRequest) => createOrganization(data),
+    mutationFn: (data: CreateOrganizationRequest) =>
+      apiOrganization.createOrganization(data),
     onSuccess: (response) => {
       // Invalidate user profile karena organizationId berubah
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
@@ -60,7 +57,7 @@ export function useUpdateOrganizationMutation() {
     }: {
       orgId: string;
       data: UpdateOrganizationRequest;
-    }) => updateOrganization({ orgId, data }),
+    }) => apiOrganization.updateOrganization({ orgId, data }),
     onSuccess: (response) => {
       toast.success(t("organization.create.success"));
 
@@ -87,7 +84,7 @@ export function useDeleteOrganizationMutation() {
     }: {
       orgId: string;
       confirmation: "DELETE_MY_ORGANIZATION";
-    }) => deleteOrganization({ orgId, confirmation }),
+    }) => apiOrganization.deleteOrganization({ orgId, confirmation }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
       queryClient.removeQueries({ queryKey: organizationKeys.all });
@@ -100,7 +97,7 @@ export function useUploadOrganizationLogoMutation() {
 
   return useMutation({
     mutationFn: ({ orgId, file }: { orgId: string; file: File }) =>
-      uploadOrganizationLogo({ orgId, file }),
+      apiOrganization.uploadOrganizationLogo({ orgId, file }),
     onSuccess: ({ data }, { orgId }) => {
       toast.success("Logo berhasil diunggah");
 
@@ -111,6 +108,27 @@ export function useUploadOrganizationLogoMutation() {
     },
     onError: () => {
       toast.error("Gagal mengunggah logo");
+    },
+  });
+}
+
+export function useGenerateInviteCodeMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => apiOrganization.generateInviteCode(),
+    onSuccess: (res) => {
+      const current = authStore.get();
+      if (current.user && res.data?.inviteCode) {
+        authStore.set({
+          user: { ...current.user, inviteCode: res.data.inviteCode },
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      toast.success("Kode undangan berhasil dibuat");
+    },
+    onError: () => {
+      toast.error("Gagal membuat kode undangan");
     },
   });
 }

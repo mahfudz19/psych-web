@@ -206,7 +206,7 @@ function DetailUser({ user }: { user: Users }) {
       className="text-left p-0 overflow-hidden sm:max-w-lg" // Hapus padding default agar header menempel
       isDynamic={true} // Manfaatkan fitur lazy load yang baru kita buat
       trigger={(openDialog) => (
-        <IconButton variant="text" size="sm" onClick={() => openDialog()}>
+        <IconButton variant="text" size="sm" onClick={openDialog}>
           <Eye size={16} />
         </IconButton>
       )}

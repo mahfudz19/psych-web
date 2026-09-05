@@ -49,137 +49,31 @@ export type SubscriptionTier = "free" | "premium" | "enterprise";
  * Tipe data untuk Status Akun
  * Menentukan status aktif/non-aktif user
  */
-export type UserStatus = "active" | "inactive" | "suspended";
+export type UserStatus =
+  "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING" | "DELETED";
 
 /**
  * Interface untuk User Entity sesuai backend
  * Merepresentasikan struktur data user dari database
  */
 export interface User {
-  /** Unique identifier untuk user */
   id: string;
-
-  /** Email address user */
   email: string;
-
-  /** Nama lengkap user */
   fullName: string;
-
-  /** URL profile picture (nullable) */
   profilePicture: string | null;
-
-  /** Nomor telepon (nullable) */
   phone: string | null;
-
-  /** Bio/deskripsi singkat user (nullable) */
   bio: string | null;
-
-  /** Tanggal lahir format YYYY-MM-DD (nullable) */
-  dateOfBirth: string | null;
-
-  /** Gender user (nullable) */
-  gender: string | null;
-
-  // === AUTH PROVIDER ===
-  /** Provider autentikasi: 'google', 'facebook', 'local' */
-  provider: "google" | "facebook" | "local";
-
-  /** External provider ID (nullable untuk local auth) */
-  providerId: string | null;
-
-  // === SYSTEM ROLES ===
-  /** Array of system roles: ['USER'] atau ['ORGANIZATION'] atau ['SUPERADMIN'] */
   roles: string[];
-
-  /** Tipe akun: INDIVIDUAL atau ORGANIZATION */
   accountType: AccountType;
-
-  // === ORGANIZATION RELATIONSHIP ===
-  /** Foreign Key ke organizations (nullable untuk INDIVIDUAL) */
   organizationId: string | null;
-
-  /** Role user dalam organisasi (nullable) */
-  organizationRole: OrganizationRole | null;
-
-  /** Nama organisasi (denormalized, nullable) */
+  organizationRole: string | null;
   organizationName: string | null;
-
-  // === SUBSCRIPTION & MONETIZATION ===
-  /** Tier subscription user */
   subscriptionTier: SubscriptionTier;
-
-  /** Tanggal expiry subscription (ISO 8601, nullable) */
-  subscriptionExpiry: string | null;
-
-  /** Persentase revenue share (0-100, nullable) */
-  revenueSharePercentage: number | null;
-
-  // === REFERRAL SYSTEM ===
-  /** Kode referral unik user */
   referralCode: string | null;
-
-  /** ID user yang mereferensikan user ini (nullable) */
-  referredBy: string | null;
-
-  /** Array of IDs user yang direferensikan oleh user ini */
-  referralIds: string[];
-
-  /** Total jumlah referrals (denormalized) */
-  totalReferrals: number | null;
-
-  /** Jumlah referrals yang berhasil completed registration */
-  successfulReferrals: number | null;
-
-  /** Total earnings dari referrals */
-  referralEarnings: number | null;
-
-  /** Timestamp kapan user ini direferensikan (nullable) */
-  referredAt: string | null;
-
-  /** Riwayat kode referral yang diarsipkan */
-  referralCodeHistory?: ReferralHistoryEntry[];
-
-  // === ORGANIZATION INVITATION ===
-  /** Kode undangan unik untuk user ini */
   inviteCode: string | null;
-
-  /** ID user yang mengundang ke organisasi (nullable) */
-  invitedBy: string | null;
-
-  /** ID organisasi yang diinvite (nullable) */
-  invitedOrganizationId: string | null;
-
-  /** Status undangan */
-  invitationStatus: InvitationStatus | null;
-
-  /** Timestamp kapan undangan dikirim */
-  invitationSentAt: string | null;
-
-  /** Timestamp kapan undangan diterima (nullable) */
-  invitationAcceptedAt: string | null;
-
-  /** Role yang ditawarkan dalam undangan (nullable) */
-  invitationRole: string | null;
-
-  // === ACCOUNT STATUS ===
-  /** Status akun user */
   status: UserStatus;
-
-  /** Timestamp terakhir login (nullable) */
   lastLoginAt: string | null;
-
-  /** Jumlah percobaan login gagal */
-  loginAttempts: number | null;
-
-  // === TIMESTAMPS ===
-  /** Timestamp pembuatan akun */
   createdAt: string;
-
-  /** Timestamp terakhir update */
-  updatedAt: string;
-
-  /** Timestamp penghapusan akun (soft delete, nullable) */
-  deletedAt: string | null;
 }
 
 /**

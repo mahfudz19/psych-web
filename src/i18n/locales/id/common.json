@@ -10,6 +10,16 @@
     "sort": {
       "asc": "Naik (A-Z)",
       "desc": "Turun (Z-A)"
+    },
+    "table": {
+      "searchPlaceholder": "Cari global...",
+      "show": "Tampilkan",
+      "rows": "baris",
+      "filterPlaceholder": "Saring...",
+      "range": "Rentang",
+      "loading": "Memuat data...",
+      "noData": "Tidak ada data yang ditemukan.",
+      "showing": "Menampilkan {{from}} hingga {{to}} dari {{total}} entitas"
     }
   },
   "sidebar": {
@@ -201,6 +211,16 @@
       "title": "Manajemen Anggota",
       "subtitle": "Kelola akses tim, undang rekan kerja, atau cabut hak akses dari organisasi Anda.",
       "inviteButton": "Undang Anggota",
+      "inviteModal": {
+        "title": "Undang ke Organisasi",
+        "subtitle": "Pilih metode undangan yang ingin Anda gunakan. Tautan akan disalin ke clipboard Anda.",
+        "useInviteCode": "Gunakan Kode Undangan Khusus",
+        "useOrgId": "Gunakan ID Organisasi",
+        "orgIdDescription": "Link berisi `?token=...` (Base64 encoded)",
+        "toastSuccess": "Tautan undangan via {{type}} siap dibagikan.",
+        "typeInviteCode": "Kode Undangan Khusus",
+        "typeOrganization": "Organisasi"
+      },
       "searchPlaceholder": "Cari nama atau email...",
       "sortByName": "Nama",
       "sortByEmail": "Email",

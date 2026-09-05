@@ -2,7 +2,9 @@ import { useRef, useState, type HTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 
 export type DialogProps = {
-  trigger?: (openDialog: () => void) => React.ReactNode;
+  trigger?: (
+    openDialog: (e?: React.MouseEvent | Element | Event) => void,
+  ) => React.ReactNode;
   children: React.ReactNode | ((closeDialog: () => void) => React.ReactNode);
   className?: HTMLAttributes<HTMLDialogElement>["className"];
   dismissible?: boolean;
@@ -21,23 +23,50 @@ function Dialog(props: DialogProps) {
   } = props;
 
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [isMounted, setIsMounted] = useState(!isDynamic);
 
-  const openDialog = () => {
+  const openDialog = (e?: React.MouseEvent | Element | Event) => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
 
     if (isDynamic) setIsMounted(true);
 
-    const dialog = dialogRef.current;
-    if (!dialog) return;
+    let triggerEl: Element | null = null;
+    if (e) {
+      if ("currentTarget" in e && e.currentTarget instanceof Element) {
+        triggerEl = e.currentTarget;
+      } else if (e instanceof Element) {
+        triggerEl = e;
+      }
+    }
 
-    if (!dialog.open) dialog.showModal();
+    setTimeout(() => {
+      const dialog = dialogRef.current;
+      if (!dialog) return;
 
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => dialog.setAttribute("data-state", "open")),
-    );
+      if (!dialog.open) dialog.showModal();
+
+      const contentEl = scroll === "paper" ? dialog : innerRef.current;
+
+      if (contentEl && triggerEl) {
+        const contentRect = contentEl.getBoundingClientRect();
+        const triggerRect = triggerEl.getBoundingClientRect();
+
+        const triggerCenterX = triggerRect.left + triggerRect.width / 2;
+        const triggerCenterY = triggerRect.top + triggerRect.height / 2;
+
+        const originX = triggerCenterX - contentRect.left;
+        const originY = triggerCenterY - contentRect.top;
+
+        contentEl.style.transformOrigin = `${originX}px ${originY}px`;
+      } else if (contentEl) {
+        contentEl.style.transformOrigin = "center center";
+      }
+
+      requestAnimationFrame(() => dialog.setAttribute("data-state", "open"));
+    }, 0);
   };
 
   const closeDialog = () => {
@@ -51,7 +80,7 @@ function Dialog(props: DialogProps) {
     closeTimeoutRef.current = setTimeout(() => {
       dialog.close();
       if (isDynamic) setIsMounted(false);
-    }, 200);
+    }, 300);
   };
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
@@ -89,16 +118,16 @@ function Dialog(props: DialogProps) {
         onClick={handleBackdropClick}
         className={twMerge(
           "group fixed inset-0 m-auto",
-          "transition-all duration-200 ease-out",
+          "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
           "opacity-0 data-[state=open]:opacity-100",
           "backdrop:bg-black/40 backdrop:backdrop-blur-xs",
-          "backdrop:transition-all backdrop:duration-200 backdrop:ease-out",
+          "backdrop:transition-all backdrop:duration-300 backdrop:ease-out",
           "backdrop:opacity-0 data-[state=open]:backdrop:opacity-100",
 
           scroll === "paper" && [
             "bg-bg-paper border border-divider rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl",
             "max-h-[calc(100dvh-4rem)] overflow-y-auto",
-            "scale-95 data-[state=open]:scale-100",
+            "scale-50 data-[state=open]:scale-100",
             className,
           ],
 
@@ -111,12 +140,13 @@ function Dialog(props: DialogProps) {
       >
         {scroll === "body" ? (
           <div
+            ref={innerRef}
             className={twMerge(
               "bg-bg-paper border border-divider rounded-3xl max-w-md w-full shadow-2xl relative",
               "my-auto shrink-0",
 
-              "transition-all duration-200 ease-out",
-              "scale-95 group-data-[state=open]:scale-100",
+              "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+              "scale-75 group-data-[state=open]:scale-100",
               className,
             )}
           >

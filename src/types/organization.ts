@@ -123,6 +123,7 @@ export interface OrganizationMember {
 export interface MembersListParams {
   page?: number;
   limit?: number;
+  filter?: string | string[];
   search?: string;
   sortBy?: "fullName" | "email" | "role" | "joinedAt" | "createdAt";
   sortOrder?: "asc" | "desc";

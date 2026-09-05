@@ -25,10 +25,10 @@ export default function FacetedFilter({
 
   const triggerElement = (
     <div
-      className={`min-h-9 flex cursor-pointer items-center justify-between w-full gap-2 px-3 py-1.5 text-xs border rounded-xl transition-all select-none ${
+      className={`min-h-9 flex items-center justify-between w-full gap-2 px-3 py-2 text-xs border rounded-2xl transition-colors cursor-pointer min-w-56 ${
         selectedValues.size > 0
-          ? "border-primary-main bg-primary-main/5 text-primary-main ring-1 ring-primary-main/20"
-          : "border-divider bg-bg-paper hover:border-gray-400 text-text-secondary"
+          ? "border-primary-main bg-primary-main/10 text-primary-main font-bold ring-1 ring-primary-main/20"
+          : "border-divider bg-bg-paper hover:bg-divider text-text-primary"
       }`}
     >
       <span className="flex items-center gap-2 truncate font-medium">

@@ -10,6 +10,16 @@
     "sort": {
       "asc": "Ascending (A-Z)",
       "desc": "Descending (Z-A)"
+    },
+    "table": {
+      "searchPlaceholder": "Search...",
+      "show": "Show",
+      "rows": "rows",
+      "filterPlaceholder": "Filter...",
+      "range": "Range",
+      "loading": "Loading data...",
+      "noData": "No data found.",
+      "showing": "Showing {{from}} to {{to}} of {{total}} entries"
     }
   },
   "sidebar": {
@@ -201,6 +211,16 @@
       "title": "Member Management",
       "subtitle": "Manage team access, invite colleagues, or revoke access from your organization.",
       "inviteButton": "Invite Member",
+      "inviteModal": {
+        "title": "Invite to Organization",
+        "subtitle": "Choose the invitation method you want to use. The link will be copied to your clipboard.",
+        "useInviteCode": "Use Special Invitation Code",
+        "useOrgId": "Use Organization ID",
+        "orgIdDescription": "Link contains `?token=...` (Base64 encoded)",
+        "toastSuccess": "Invitation link via {{type}} is ready to share.",
+        "typeInviteCode": "Special Invitation Code",
+        "typeOrganization": "Organization"
+      },
       "searchPlaceholder": "Search by name or email...",
       "sortByName": "Name",
       "sortByEmail": "Email",

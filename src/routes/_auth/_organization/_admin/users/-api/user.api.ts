@@ -1,9 +1,10 @@
+import type { BaseListParams } from "../../../../../../components/reusebale-components/DataTable";
 import { api } from "../../../../../../utils/api";
 import type { Users } from "./user.type";
 
 const BASE = "/api/v1/users";
 
-export interface UserListParams {
+export interface UserListParams extends BaseListParams {
   page?: number;
   limit?: number;
   search?: string;

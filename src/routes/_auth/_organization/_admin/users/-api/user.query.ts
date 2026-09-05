@@ -11,7 +11,7 @@ export const userKeys = {
   detail: (id: string) => [...userKeys.details(), id] as const,
 };
 
-export function useUsersQuery(params: api.UserListParams) {
+export function useGetUsers(params: api.UserListParams) {
   return useQuery({
     queryKey: userKeys.list(params),
     queryFn: () =>

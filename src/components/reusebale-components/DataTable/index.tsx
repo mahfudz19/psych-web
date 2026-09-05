@@ -7,13 +7,22 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { useEffect, useState, type HTMLAttributes } from "react";
+import { useTranslation } from "react-i18next";
 import type { PaginationMeta } from "../../../types";
 import IconButton from "../../ui/IconButton";
 import Input from "../../ui/Input";
 import FacetedFilter from "./FacetedFilter";
-import type { UserListParams } from "../../../routes/_auth/_organization/_admin/users/-api/user.api";
 import DateRangeFilter from "./DateRangeFilter";
 import { twMerge } from "tailwind-merge";
+
+export interface BaseListParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  filter?: string | string[];
+  sortBy?: string;
+  sortOrder?: "asc" | "desc" | "" | string;
+}
 
 export interface ColumnDef<T> {
   header: string;
@@ -26,13 +35,13 @@ export interface ColumnDef<T> {
   style?: HTMLAttributes<T>["style"];
 }
 
-interface DataTableProps<T> {
+interface DataTableProps<T, TState extends BaseListParams = BaseListParams> {
   columns: ColumnDef<T>[];
   data?: T[] | null;
   meta?: PaginationMeta | null;
   isLoading?: boolean;
-  state: UserListParams;
-  onStateChange: (newState: UserListParams) => void;
+  state: TState;
+  onStateChange: (newState: TState) => void;
 }
 
 const parseFilterString = (
@@ -115,14 +124,15 @@ const generatePagination = (currentPage: number, totalPages: number) => {
   ];
 };
 
-export function DataTable<T>({
+export function DataTable<T, TState extends BaseListParams = BaseListParams>({
   columns,
   data,
   meta,
   isLoading,
   state,
   onStateChange,
-}: DataTableProps<T>) {
+}: DataTableProps<T, TState>) {
+  const { t } = useTranslation();
   const [searchInput, setSearchInput] = useState(state.search || "");
 
   const [localFilters, setLocalFilters] = useState<Record<string, string>>(() =>
@@ -141,13 +151,13 @@ export function DataTable<T>({
           ? undefined
           : newState.filter,
     };
-    onStateChange(cleanState as UserListParams);
+    onStateChange(cleanState as TState);
   };
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchInput !== (state.search || "")) {
-        emitCleanState({ ...state, search: searchInput, page: 1 });
+        emitCleanState({ ...state, search: searchInput, page: undefined });
       }
     }, 500);
     return () => clearTimeout(timer);
@@ -167,7 +177,7 @@ export function DataTable<T>({
       const newFilterStr = JSON.stringify([...newFilterArr].sort());
 
       if (currentFilterStr !== newFilterStr) {
-        emitCleanState({ ...state, filter: newFilterArr, page: 1 });
+        emitCleanState({ ...state, filter: newFilterArr, page: undefined });
       }
     }, 500);
     return () => clearTimeout(timer);
@@ -183,7 +193,7 @@ export function DataTable<T>({
       ...state,
       sortBy: accessorKey,
       sortOrder: newOrder,
-      page: 1,
+      page: undefined,
     });
   };
 
@@ -205,21 +215,21 @@ export function DataTable<T>({
         <div className="w-full sm:w-72">
           <Input
             type="text"
-            placeholder="Cari global..."
+            placeholder={t("common.table.searchPlaceholder")}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full"
           />
         </div>
         <div className="flex items-center gap-2 text-sm text-text-secondary shrink-0">
-          <span>Tampilkan</span>
+          <span>{t("common.table.show")}</span>
           <select
             value={state.limit || 10}
             onChange={(e) =>
               emitCleanState({
                 ...state,
                 limit: Number(e.target.value),
-                page: 1,
+                page: undefined,
               })
             }
             className="border border-divider rounded-lg px-2 py-1.5 text-sm focus:outline-none bg-transparent hover:bg-divider/10 transition-colors cursor-pointer"
@@ -230,7 +240,7 @@ export function DataTable<T>({
               </option>
             ))}
           </select>
-          <span>baris</span>
+          <span>{t("common.table.rows")}</span>
         </div>
       </div>
 
@@ -246,7 +256,7 @@ export function DataTable<T>({
                     handleSort(col.accessorKey as string, col.sortable)
                   }
                   className={twMerge(
-                    "px-6 py-4 font-bold whitespace-nowrap", // <-- Tambahkan whitespace-nowrap agar judul kolom tidak patah
+                    "px-6 py-4 font-bold whitespace-nowrap",
                     col.sortable
                       ? "cursor-pointer hover:bg-divider/20 select-none transition-colors"
                       : "",
@@ -289,7 +299,7 @@ export function DataTable<T>({
                   {col.filterType === "text" && (
                     <Input
                       type="text"
-                      placeholder={`Saring...`}
+                      placeholder={t("common.table.filterPlaceholder")}
                       value={localFilters[col.accessorKey as string] || ""}
                       onChange={(e) =>
                         handleFilterChange(
@@ -314,7 +324,7 @@ export function DataTable<T>({
                   )}
                   {col.filterType === "date-range" && (
                     <DateRangeFilter
-                      title="Rentang"
+                      title={t("common.table.range")}
                       currentValue={
                         localFilters[col.accessorKey as string] || ""
                       }
@@ -338,7 +348,7 @@ export function DataTable<T>({
                   <div className="flex flex-col items-center justify-center gap-2">
                     <span className="w-6 h-6 border-2 border-primary-main border-t-transparent rounded-full animate-spin"></span>
                     <span className="text-sm font-medium animate-pulse">
-                      Memuat data...
+                      {t("common.table.loading")}
                     </span>
                   </div>
                 </td>
@@ -349,7 +359,7 @@ export function DataTable<T>({
                   colSpan={columns.length}
                   className="px-6 py-12 text-center text-text-secondary"
                 >
-                  Tidak ada data yang ditemukan.
+                  {t("common.table.noData")}
                 </td>
               </tr>
             ) : (
@@ -388,17 +398,11 @@ export function DataTable<T>({
       {meta && (
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 border-t border-divider bg-bg-paper">
           <div className="text-sm text-text-secondary text-center md:text-left">
-            Menampilkan{" "}
-            <span className="font-bold text-text-primary">
-              {(meta.page - 1) * meta.limit + 1}
-            </span>{" "}
-            hingga{" "}
-            <span className="font-bold text-text-primary">
-              {Math.min(meta.page * meta.limit, meta.total)}
-            </span>{" "}
-            dari{" "}
-            <span className="font-bold text-text-primary">{meta.total}</span>{" "}
-            entitas
+            {t("common.table.showing", {
+              from: (meta.page - 1) * meta.limit + 1,
+              to: Math.min(meta.page * meta.limit, meta.total),
+              total: meta.total,
+            })}
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2">

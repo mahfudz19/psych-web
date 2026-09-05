@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import type { UserListParams } from "../-api/user.api";
-import { useUsersQuery } from "../-api/user.query";
+import { useGetUsers } from "../-api/user.query";
 import type { Users } from "../-api/user.type";
 import {
   DataTable,
@@ -12,7 +12,7 @@ import DetailUser from "./DetailUser";
 function UsersPage() {
   const tableState = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  const { data: response, isLoading, isFetching } = useUsersQuery(tableState);
+  const { data: response, isLoading, isFetching } = useGetUsers(tableState);
 
   const handleStateChange = (newState: UserListParams) => {
     navigate({
@@ -99,7 +99,7 @@ function UsersPage() {
   ];
 
   return (
-    <div className="p-6">
+    <>
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Manajemen Pengguna</h1>
         <p className="text-sm">
@@ -107,7 +107,7 @@ function UsersPage() {
         </p>
       </div>
 
-      <DataTable<Users>
+      <DataTable<Users, UserListParams>
         columns={userColumns}
         data={response?.data || []}
         meta={response?.meta}
@@ -115,7 +115,7 @@ function UsersPage() {
         state={tableState}
         onStateChange={handleStateChange}
       />
-    </div>
+    </>
   );
 }
 

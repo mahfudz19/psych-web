@@ -103,9 +103,7 @@ function ButtonRegisrationGoogle({ fieldName, inviteToken }: Props) {
   return (
     <Dialog
       skeleton={<Skeleton height={44} width="100%" variant="rounded" />}
-      trigger={(openDialog) => (
-        <CustomGoogleButton onClick={() => openDialog()} />
-      )}
+      trigger={(openDialog) => <CustomGoogleButton onClick={openDialog} />}
       className="p-6"
     >
       <div className="flex flex-col gap-5">

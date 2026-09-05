@@ -411,7 +411,13 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
               variant="outlined"
               size="sm"
               onClick={() =>
-                emitCleanState({ ...state, page: (state.page || 1) - 1 })
+                emitCleanState({
+                  ...state,
+                  page:
+                    (state.page || 1) - 1 <= 1
+                      ? undefined
+                      : (state.page || 1) - 1,
+                })
               }
             >
               <ChevronLeft className="w-4 h-4" />
@@ -436,7 +442,11 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
                     <button
                       key={`page-${pageNum}`}
                       onClick={() =>
-                        emitCleanState({ ...state, page: pageNum as number })
+                        emitCleanState({
+                          ...state,
+                          page:
+                            Number(pageNum) === 1 ? undefined : Number(pageNum),
+                        })
                       }
                       className={`min-w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
                         isActive

@@ -1,4 +1,12 @@
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "@tanstack/react-router";
+import Tabs from "../../../components/ui/Tabs";
+import Tab from "../../../components/ui/Tabs/Tab";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/profile",
@@ -7,8 +15,26 @@ export const Route = createFileRoute(
 });
 
 function ProfileLayout() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const currentTab = location.pathname.includes("/profile/referral")
+    ? "referral"
+    : location.pathname.includes("/profile/sessions")
+      ? "sessions"
+      : "info";
+
+  const handleTabChange = (val: string) => {
+    const pathMap: Record<string, string> = {
+      referral: "/profile/referral",
+      sessions: "/profile/sessions",
+      info: "/profile",
+    };
+    navigate({ to: pathMap[val] || "/profile" });
+  };
+
   return (
-    <div className="space-y-6 animate-in fade-in duration-300 pt-4 max-w-4xl w-full mx-auto">
+    <div className="space-y-6 animate-in fade-in duration-300 max-w-4xl w-full mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-text-primary tracking-tight">
@@ -27,31 +53,11 @@ function ProfileLayout() {
       </div>
 
       {/* NAVIGASI TAB */}
-      <div className="flex items-center gap-6 border-b border-divider">
-        <Link
-          to="/profile"
-          activeOptions={{ exact: true }}
-          activeProps={{ className: "border-primary-main text-primary-main" }}
-          inactiveProps={{
-            className:
-              "border-transparent text-text-secondary hover:text-text-primary",
-          }}
-          className="py-3 text-sm font-bold border-b-2 transition-all"
-        >
-          Informasi Profil
-        </Link>
-        <Link
-          to="/profile/referral"
-          activeProps={{ className: "border-primary-main text-primary-main" }}
-          inactiveProps={{
-            className:
-              "border-transparent text-text-secondary hover:text-text-primary",
-          }}
-          className="py-3 text-sm font-bold border-b-2 transition-all"
-        >
-          Referral & Afiliasi
-        </Link>
-      </div>
+      <Tabs value={currentTab} onChange={handleTabChange}>
+        <Tab value="info" label="Informasi Profil" />
+        <Tab value="referral" label="Referral & Afiliasi" />
+        <Tab value="sessions" label="Sesi Login" />
+      </Tabs>
 
       <Outlet />
     </div>

@@ -76,6 +76,29 @@ export interface User {
   createdAt: string;
 }
 
+export interface DeviceInfo {
+  userAgent?: string;
+  browser?: string;
+  browserVersion?: string;
+  os?: string;
+  osVersion?: string;
+  ip?: string;
+  location?: string;
+  timezone?: string;
+  lastActive?: string;
+}
+
+export interface Session {
+  id: string;
+  deviceId?: string;
+  deviceInfo?: DeviceInfo;
+  status: "active" | "revoked" | "expired" | "rotated";
+  createdAt: string;
+  lastActive?: string;
+  expiresAt: string;
+  isCurrentSession: boolean;
+}
+
 /**
  * Interface untuk API Response wrapper
  * Format standar response dari backend

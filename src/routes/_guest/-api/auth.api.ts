@@ -1,4 +1,5 @@
-import type { User } from "../../../types/user";
+import type { BaseListParams } from "../../../components/reusebale-components/DataTable";
+import type { Session, User } from "../../../types/user";
 import { api } from "../../../utils/api";
 import { removeEmptyValues } from "../../../utils/removeEmptyValues";
 
@@ -14,6 +15,10 @@ type Auth = {
 
 export function me() {
   return api.get<User>(`${BASE}/me`);
+}
+
+export function getSessions(params: BaseListParams) {
+  return api.get<Session[]>(`${BASE}/sessions`, { params });
 }
 
 export function login(data: { email: string; password: string }) {
@@ -48,9 +53,8 @@ export function googleRegister(data: GoogleRegisterRequest) {
   return api.post<Auth>(`${BASE}/google/register`, removeEmptyValues(data));
 }
 
-export function logout(refreshTokenId?: string[]) {
-  const payload =
-    refreshTokenId && refreshTokenId.length > 0 ? { refreshTokenId } : {};
+export function logout(targetSessionId?: string) {
+  const payload = targetSessionId ? { targetSessionId } : {};
 
   return api.post(`${BASE}/logout`, payload);
 }

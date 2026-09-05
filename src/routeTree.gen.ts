@@ -36,6 +36,7 @@ import { Route as GuestRegisterOrganizationIndexRouteImport } from './routes/_gu
 import { Route as GuestRegisterVerifyEmailIndexRouteImport } from './routes/_guest/register/verify-email/index'
 import { Route as AuthExamExamTestIdIndexRouteImport } from './routes/_auth/_exam/exam/$testId/index'
 import { Route as AuthOrganizationAndIndividuProfileReferralIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/referral/index'
+import { Route as AuthOrganizationAndIndividuProfileSessionsIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/sessions/index'
 import { Route as AuthOrganizationAdminSettingsAppIndexRouteImport } from './routes/_auth/_organization/_admin/settings-app/index'
 import { Route as AuthOrganizationAdminUsersIndexRouteImport } from './routes/_auth/_organization/_admin/users/index'
 import { Route as GuestRegisterInviteTokenIndexRouteImport } from './routes/_guest/register/invite/$token/index'
@@ -183,6 +184,12 @@ const AuthOrganizationAndIndividuProfileReferralIndexRoute =
     path: '/referral/',
     getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
   } as any)
+const AuthOrganizationAndIndividuProfileSessionsIndexRoute =
+  AuthOrganizationAndIndividuProfileSessionsIndexRouteImport.update({
+    id: '/sessions/',
+    path: '/sessions/',
+    getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
+  } as any)
 const AuthOrganizationAdminSettingsAppIndexRoute =
   AuthOrganizationAdminSettingsAppIndexRouteImport.update({
     id: '/_admin/settings-app/',
@@ -230,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
   '/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
   '/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
+  '/profile/sessions/': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
   '/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
@@ -256,6 +264,7 @@ export interface FileRoutesByTo {
   '/register/verify-email': typeof GuestRegisterVerifyEmailIndexRoute
   '/exam/$testId': typeof AuthExamExamTestIdIndexRoute
   '/profile/referral': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
+  '/profile/sessions': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
   '/settings-app': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/users': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token': typeof GuestRegisterInviteTokenIndexRoute
@@ -290,6 +299,7 @@ export interface FileRoutesById {
   '/_guest/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
   '/_auth/_exam/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
   '/_auth/_organization-and-individu/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
+  '/_auth/_organization-and-individu/profile/sessions/': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
   '/_auth/_organization/_admin/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/_auth/_organization/_admin/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/_guest/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
@@ -319,6 +329,7 @@ export interface FileRouteTypes {
     | '/register/verify-email/'
     | '/exam/$testId/'
     | '/profile/referral/'
+    | '/profile/sessions/'
     | '/settings-app/'
     | '/users/'
     | '/register/invite/$token/'
@@ -345,6 +356,7 @@ export interface FileRouteTypes {
     | '/register/verify-email'
     | '/exam/$testId'
     | '/profile/referral'
+    | '/profile/sessions'
     | '/settings-app'
     | '/users'
     | '/register/invite/$token'
@@ -378,6 +390,7 @@ export interface FileRouteTypes {
     | '/_guest/register/verify-email/'
     | '/_auth/_exam/exam/$testId/'
     | '/_auth/_organization-and-individu/profile/referral/'
+    | '/_auth/_organization-and-individu/profile/sessions/'
     | '/_auth/_organization/_admin/settings-app/'
     | '/_auth/_organization/_admin/users/'
     | '/_guest/register/invite/$token/'
@@ -582,6 +595,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationAndIndividuProfileReferralIndexRouteImport
       parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
     }
+    '/_auth/_organization-and-individu/profile/sessions/': {
+      id: '/_auth/_organization-and-individu/profile/sessions/'
+      path: '/sessions'
+      fullPath: '/profile/sessions/'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileSessionsIndexRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
+    }
     '/_auth/_organization/_admin/settings-app/': {
       id: '/_auth/_organization/_admin/settings-app/'
       path: '/settings-app'
@@ -664,6 +684,7 @@ const AuthOrganizationRouteWithChildren =
 interface AuthOrganizationAndIndividuProfileRouteChildren {
   AuthOrganizationAndIndividuProfileIndexRoute: typeof AuthOrganizationAndIndividuProfileIndexRoute
   AuthOrganizationAndIndividuProfileReferralIndexRoute: typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
+  AuthOrganizationAndIndividuProfileSessionsIndexRoute: typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
 }
 
 const AuthOrganizationAndIndividuProfileRouteChildren: AuthOrganizationAndIndividuProfileRouteChildren =
@@ -672,6 +693,8 @@ const AuthOrganizationAndIndividuProfileRouteChildren: AuthOrganizationAndIndivi
       AuthOrganizationAndIndividuProfileIndexRoute,
     AuthOrganizationAndIndividuProfileReferralIndexRoute:
       AuthOrganizationAndIndividuProfileReferralIndexRoute,
+    AuthOrganizationAndIndividuProfileSessionsIndexRoute:
+      AuthOrganizationAndIndividuProfileSessionsIndexRoute,
   }
 
 const AuthOrganizationAndIndividuProfileRouteWithChildren =

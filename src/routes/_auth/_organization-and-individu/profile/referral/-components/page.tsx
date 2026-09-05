@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useReferralStatsQuery } from "../-api/referral.query";
 import type { ReferralStats } from "../../../../../../types/user";
-import { authStore } from "../../../../../../utils/authStore";
 import HandleRegenerate from "./HandleRegenerate";
 
 const ActiveCode = ({ activeCode }: { activeCode?: string }) => {
@@ -36,10 +35,8 @@ const ActiveCode = ({ activeCode }: { activeCode?: string }) => {
 
 const NoRewards = ({ stats }: { stats?: ReferralStats }) => {
   const { t } = useTranslation();
-  const { user } = authStore.get();
 
-  const referralEarnings =
-    stats?.referralEarnings ?? user?.referralEarnings ?? 0;
+  const referralEarnings = stats?.referralEarnings ?? 0;
 
   return (
     <p className="text-xs font-bold text-success-main mt-0.5 truncate">
@@ -52,7 +49,6 @@ const NoRewards = ({ stats }: { stats?: ReferralStats }) => {
 
 export function ReferralPage() {
   const { t } = useTranslation();
-  const { user } = authStore.get();
 
   const { data, isLoading: isLoadingStats } = useReferralStatsQuery();
   const stats = data?.data;
@@ -102,7 +98,7 @@ export function ReferralPage() {
             {t("referral.stats.totalReferredLabel")}
           </p>
           <p className="text-xl font-extrabold text-text-primary mt-0.5">
-            {stats?.totalReferrals ?? user?.totalReferrals ?? 0}{" "}
+            {stats?.totalReferrals ?? 0}{" "}
             <span className="text-xs font-normal text-text-secondary">
               {t("referral.stats.peopleSuffix")}
             </span>

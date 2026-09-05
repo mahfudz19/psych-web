@@ -14,6 +14,7 @@ const HandleRegenerate = () => {
 
   return (
     <Dialog
+      className="p-5"
       trigger={(openDialog) => (
         <Button
           onClick={openDialog}

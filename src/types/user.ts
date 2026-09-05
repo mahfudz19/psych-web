@@ -66,7 +66,7 @@ export interface User {
   roles: string[];
   accountType: AccountType;
   organizationId: string | null;
-  organizationRole: string | null;
+  organizationRole: OrganizationRole | null;
   organizationName: string | null;
   subscriptionTier: SubscriptionTier;
   referralCode: string | null;

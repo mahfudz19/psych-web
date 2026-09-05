@@ -1,25 +1,23 @@
 import { useNavigate } from "@tanstack/react-router";
-import {
-  useGetSessions,
-  useRevokeSessionMutation,
-} from "../-api/sessions.query";
-import { Route } from "../index";
+import { Laptop, Smartphone } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { useGetSessions } from "../-api/sessions.query";
 import {
   DataTable,
   type BaseListParams,
   type ColumnDef,
 } from "../../../../../../components/reusebale-components/DataTable";
 import type { Session } from "../../../../../../types/user";
-import IconButton from "../../../../../../components/ui/IconButton";
-import { Laptop, LogOut, Smartphone } from "lucide-react";
+import { Route } from "../index";
+import Revoke from "./Revoke";
 
 function SessionPage() {
+  const { t } = useTranslation();
   const tableState = Route.useSearch();
 
   const navigate = useNavigate({ from: Route.fullPath });
   const { data: response, isLoading, isFetching } = useGetSessions(tableState);
 
-  const revokeMutation = useRevokeSessionMutation();
   const handleStateChange = (newState: BaseListParams) => {
     navigate({
       search: (prev) => {
@@ -32,7 +30,7 @@ function SessionPage() {
 
   const columns: ColumnDef<Session>[] = [
     {
-      header: "Perangkat & Browser",
+      header: t("profile.sessions.columns.device"),
       accessorKey: "deviceInfo",
       filterType: "text",
       cell: (row) => {
@@ -47,12 +45,12 @@ function SessionPage() {
             <div>
               <div className="flex items-center gap-2">
                 <p className="font-semibold text-text-primary">
-                  {row.deviceInfo?.os || "Perangkat Tidak Dikenal"} •{" "}
+                  {row.deviceInfo?.os || t("profile.sessions.unknownDevice")} •{" "}
                   {row.deviceInfo?.browser || "Browser"}
                 </p>
                 {row.isCurrentSession && (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-success-main/10 text-success-main border border-success-main/20">
-                    Sesi Ini
+                    {t("profile.sessions.currentSession")}
                   </span>
                 )}
               </div>
@@ -67,7 +65,7 @@ function SessionPage() {
       },
     },
     {
-      header: "Lokasi & IP",
+      header: t("profile.sessions.columns.locationIp"),
       accessorKey: "ip",
       filterType: "text",
       cell: (row) => (
@@ -76,13 +74,13 @@ function SessionPage() {
             {row.deviceInfo?.ip || "-"}
           </p>
           <p className="text-xs text-text-secondary">
-            {row.deviceInfo?.location || "Lokasi tidak diketahui"}
+            {row.deviceInfo?.location || t("profile.sessions.unknownLocation")}
           </p>
         </div>
       ),
     },
     {
-      header: "Terakhir Aktif",
+      header: t("profile.sessions.columns.lastActive"),
       accessorKey: "lastActive",
       sortable: true,
       filterType: "date-range",
@@ -95,7 +93,7 @@ function SessionPage() {
       ),
     },
     {
-      header: "Status",
+      header: t("profile.sessions.columns.status"),
       accessorKey: "status",
       filterType: "faceted",
       filterOptions: [
@@ -120,31 +118,14 @@ function SessionPage() {
       header: "",
       accessorKey: "actions",
       className: "w-4 text-right px-4",
-      cell: (row) =>
-        !row.isCurrentSession && (
-          <IconButton
-            size="sm"
-            variant="text"
-            color="error"
-            title="Akhiri Sesi"
-            loading={
-              revokeMutation.isPending &&
-              revokeMutation.variables?.[0] === row.id
-            }
-            onClick={() => revokeMutation.mutate(row.id)}
-          >
-            <LogOut className="w-4 h-4" />
-          </IconButton>
-        ),
+      cell: (row) => !row.isCurrentSession && <Revoke data={row} />,
     },
   ];
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Manajemen Pengguna</h1>
-        <p className="text-sm">
-          Kelola akses, profil, dan status anggota platform.
-        </p>
+        <h1 className="text-2xl font-bold">{t("profile.sessions.title")}</h1>
+        <p className="text-sm">{t("profile.sessions.subtitle")}</p>
       </div>
 
       <DataTable<Session, BaseListParams>

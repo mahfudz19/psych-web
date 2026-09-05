@@ -5,6 +5,7 @@ import {
   useLocation,
   useNavigate,
 } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import Tabs from "../../../components/ui/Tabs";
 import Tab from "../../../components/ui/Tabs/Tab";
 
@@ -15,6 +16,7 @@ export const Route = createFileRoute(
 });
 
 function ProfileLayout() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -38,25 +40,25 @@ function ProfileLayout() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-text-primary tracking-tight">
-            Pengaturan Akun
+            {t("profile.title")}
           </h1>
           <p className="text-sm text-text-secondary mt-1">
-            Kelola informasi identitas personal dan program afiliasi Anda.
+            {t("profile.subtitle")}
           </p>
         </div>
         <Link
           to="/portal"
           className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold text-text-secondary bg-divider/20 hover:bg-divider/40 transition-colors w-fit"
         >
-          &larr; Kembali ke Portal
+          {t("profile.backToPortal")}
         </Link>
       </div>
 
       {/* NAVIGASI TAB */}
       <Tabs value={currentTab} onChange={handleTabChange}>
-        <Tab value="info" label="Informasi Profil" />
-        <Tab value="referral" label="Referral & Afiliasi" />
-        <Tab value="sessions" label="Sesi Login" />
+        <Tab value="info" label={t("profile.tabs.info")} />
+        <Tab value="referral" label={t("profile.tabs.referral")} />
+        <Tab value="sessions" label={t("profile.tabs.sessions")} />
       </Tabs>
 
       <Outlet />

@@ -291,5 +291,33 @@
       "ownerCannotDelete": "Silakan transfer ownership terlebih dahulu sebelum menghapus organisasi",
       "invalidConfirmation": "Teks konfirmasi tidak cocok"
     }
+  },
+  "profile": {
+    "title": "Pengaturan Akun",
+    "subtitle": "Kelola informasi identitas personal, program afiliasi, dan sesi login aktif Anda.",
+    "backToPortal": "← Kembali ke Portal",
+    "tabs": {
+      "info": "Informasi Profil",
+      "referral": "Referral & Afiliasi",
+      "sessions": "Sesi Login"
+    },
+    "sessions": {
+      "title": "Sesi Login & Perangkat",
+      "subtitle": "Kelola daftar perangkat yang sedang aktif mengakses akun Anda.",
+      "columns": {
+        "device": "Perangkat & Browser",
+        "locationIp": "Lokasi & IP",
+        "lastActive": "Terakhir Aktif",
+        "status": "Status"
+      },
+      "unknownDevice": "Perangkat Tidak Dikenal",
+      "unknownLocation": "Lokasi tidak diketahui",
+      "currentSession": "Sesi Ini",
+      "revokeTitle": "Akhiri Sesi Login?",
+      "revokeSubtitle": "Perangkat berikut akan dikeluarkan dari akun Anda:",
+      "revokeButton": "Akhiri Sesi",
+      "revokeAction": "Akhiri Sesi",
+      "cancel": "Batal"
+    }
   }
 }

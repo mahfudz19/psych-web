@@ -291,5 +291,33 @@
       "ownerCannotDelete": "Please transfer ownership before deleting the organization",
       "invalidConfirmation": "Confirmation text does not match"
     }
+  },
+  "profile": {
+    "title": "Account Settings",
+    "subtitle": "Manage your personal identity information, affiliate program, and active login sessions.",
+    "backToPortal": "← Back to Portal",
+    "tabs": {
+      "info": "Profile Info",
+      "referral": "Referral & Affiliate",
+      "sessions": "Login Sessions"
+    },
+    "sessions": {
+      "title": "Login Sessions & Devices",
+      "subtitle": "Manage active devices accessing your account.",
+      "columns": {
+        "device": "Device & Browser",
+        "locationIp": "Location & IP",
+        "lastActive": "Last Active",
+        "status": "Status"
+      },
+      "unknownDevice": "Unknown Device",
+      "unknownLocation": "Unknown Location",
+      "currentSession": "Current Session",
+      "revokeTitle": "End Login Session?",
+      "revokeSubtitle": "The following device will be logged out of your account:",
+      "revokeButton": "End Session",
+      "revokeAction": "End Session",
+      "cancel": "Cancel"
+    }
   }
 }

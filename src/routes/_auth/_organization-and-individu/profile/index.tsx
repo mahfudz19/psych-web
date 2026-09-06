@@ -1,6 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { authStore } from "../../../../utils/authStore";
+import { useUpdateProfileMutation } from "./-api/profile.query";
+import Input from "../../../../components/ui/Input";
+import Label from "../../../../components/ui/Label";
+import InputDate from "../../../../components/ui/InputDate";
+import toast from "../../../../components/ui/Toast";
+import Button from "../../../../components/ui/Button";
+import Textarea from "../../../../components/ui/Textarea";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/profile/",
@@ -10,42 +16,45 @@ export const Route = createFileRoute(
 
 function ProfileInfoPage() {
   const { user } = authStore.get();
-  const [isSaving, setIsSaving] = useState(false);
+  const updateProfileMutation = useUpdateProfileMutation();
 
-  // Status tipe pengguna
-  const isB2B = Boolean(user?.organizationId);
-
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
-      alert("Informasi profil berhasil diperbarui.");
-    }, 600);
+    const data = new FormData(e.currentTarget);
+
+    const fullName = (data.get("fullName") as string)?.trim();
+    const phone = (data.get("phone") as string)?.trim();
+    const gender = data.get("gender") as "male" | "female";
+    const rawDob = data.get("dateOfBirth") as string;
+    const bio = (data.get("bio") as string)?.trim();
+
+    if (!fullName) return toast.error("Nama lengkap wajib diisi");
+    const dateOfBirth = rawDob ? rawDob.split("T")[0] : undefined;
+
+    updateProfileMutation.mutate({
+      fullName,
+      phone,
+      gender,
+      dateOfBirth,
+      bio,
+    });
   };
+
+  const isB2B = Boolean(user?.organizationId);
 
   return (
     <form onSubmit={handleSave} className="space-y-6">
+      {/* HEADER PROFILE */}
       <div className="p-6 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
         <div className="flex items-center gap-5">
-          <div className="relative">
-            <div className="w-16 h-16 rounded-2xl bg-primary-main/10 text-primary-main border border-primary-main/20 flex items-center justify-center text-2xl font-black uppercase shadow-sm">
-              {user?.fullName?.charAt(0) || "U"}
-            </div>
-            <span
-              className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-success-main border-2 border-bg-paper flex items-center justify-center text-[9px] text-white font-bold"
-              title="Akun Terverifikasi"
-            >
-              ✓
-            </span>
+          <div className="w-16 h-16 rounded-2xl bg-primary-main/10 text-primary-main border border-primary-main/20 flex items-center justify-center text-2xl font-black uppercase shadow-sm">
+            {user?.fullName?.charAt(0) || "U"}
           </div>
 
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-extrabold text-text-primary tracking-tight">
-                {user?.fullName || "Pengguna Aktif"}
-              </h2>
-            </div>
+            <h2 className="text-xl font-extrabold text-text-primary tracking-tight">
+              {user?.fullName || "Pengguna Aktif"}
+            </h2>
             <p className="text-xs font-medium text-text-secondary flex items-center gap-2">
               <span>{user?.email || "user@psycorp.test"}</span>
               <span>•</span>
@@ -58,7 +67,6 @@ function ProfileInfoPage() {
           </div>
         </div>
 
-        {/* Badge Status Akun */}
         <div className="flex items-center gap-3">
           <div className="px-3.5 py-2 rounded-2xl bg-bg-default border border-divider text-left">
             <p className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">
@@ -71,132 +79,109 @@ function ProfileInfoPage() {
         </div>
       </div>
 
-      {/* 2. GRID FORMULIR DATA PERSONAL & DEMOGRAFI */}
+      {/* FORM INPUTS */}
       <div className="p-6 rounded-3xl bg-bg-paper border border-divider shadow-sm space-y-6">
-        <div className="border-b border-divider pb-4 flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">
-              Informasi Utama Kandidat
-            </h3>
-            <p className="text-xs text-text-secondary mt-0.5">
-              Data ini digunakan untuk verifikasi ketersesuaian profil pada
-              laporan psikogram Anda.
-            </p>
-          </div>
+        <div className="border-b border-divider pb-4">
+          <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">
+            Informasi Utama Kandidat
+          </h3>
+          <p className="text-xs text-text-secondary mt-0.5">
+            Data ini digunakan untuk verifikasi ketersesuaian profil pada
+            laporan psikogram Anda.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-left">
           {/* Nama Lengkap */}
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-text-secondary uppercase tracking-wider">
-              Nama Lengkap (Sesuai Identitas)
-            </label>
-            <input
-              type="text"
+            <Label htmlFor="fullName">Nama Lengkap *</Label>
+            <Input
+              id="fullName"
+              name="fullName"
               defaultValue={user?.fullName || ""}
-              className="w-full px-4 py-2.5 rounded-xl bg-bg-default border border-divider text-sm text-text-primary font-medium focus:ring-2 focus:ring-primary-main/20 focus:border-primary-main outline-none transition-all"
               placeholder="Masukkan nama lengkap"
+              className="w-full"
+              required
             />
           </div>
 
           {/* Email (Readonly) */}
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-text-secondary uppercase tracking-wider flex items-center justify-between">
-              <span>Alamat Email</span>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="email">Alamat Email</Label>
               <span className="text-[10px] text-text-disabled lowercase">
                 (tidak dapat diubah)
               </span>
-            </label>
-            <input
+            </div>
+            <Input
+              id="email"
               type="email"
               disabled
               defaultValue={user?.email || ""}
-              className="w-full px-4 py-2.5 rounded-xl bg-divider/10 border border-divider text-sm text-text-disabled font-medium cursor-not-allowed"
+              className="w-full bg-divider/10 cursor-not-allowed"
             />
           </div>
 
-          {/* Nomor Telepon / WhatsApp */}
+          {/* Nomor Telepon */}
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-text-secondary uppercase tracking-wider">
-              Nomor WhatsApp / Telepon
-            </label>
-            <input
+            <Label htmlFor="phone">Nomor WhatsApp / Telepon</Label>
+            <Input
+              id="phone"
               type="tel"
-              defaultValue="+62 812-3456-7890"
-              className="w-full px-4 py-2.5 rounded-xl bg-bg-default border border-divider text-sm text-text-primary font-medium focus:ring-2 focus:ring-primary-main/20 focus:border-primary-main outline-none transition-all"
+              name="phone"
+              defaultValue={user?.phone || ""}
               placeholder="Contoh: 08123456789"
+              className="w-full"
             />
           </div>
 
-          {/* Tingkat Pendidikan / Posisi Terakhir */}
+          {/* Jenis Kelamin */}
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-text-secondary uppercase tracking-wider">
-              Pendidikan Terakhir
-            </label>
+            <Label htmlFor="gender">Jenis Kelamin</Label>
             <select
-              defaultValue="S1"
-              className="w-full px-4 py-2.5 rounded-xl bg-bg-default border border-divider text-sm text-text-primary font-medium focus:ring-2 focus:ring-primary-main/20 focus:border-primary-main outline-none transition-all cursor-pointer"
+              id="gender"
+              name="gender"
+              defaultValue={user?.gender || "male"}
+              className="w-full px-4 py-2.5 rounded-2xl bg-bg-default border border-divider text-sm text-text-primary font-medium focus:ring-2 focus:ring-primary-main/20 focus:border-primary-main outline-none transition-all cursor-pointer"
             >
-              <option value="SMA">SMA / Sederajat</option>
-              <option value="D3">Diploma (D3)</option>
-              <option value="S1">Sarjana (S1 / D4)</option>
-              <option value="S2">Magister (S2)</option>
-              <option value="S3">Doktor (S3)</option>
+              <option value="male">Laki-laki</option>
+              <option value="female">Perempuan</option>
             </select>
           </div>
-        </div>
-      </div>
 
-      {/* 3. PREFERENSI & NOTIFIKASI ASESMEN */}
-      <div className="p-6 rounded-3xl bg-bg-paper border border-divider shadow-sm space-y-4">
-        <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider border-b border-divider pb-3">
-          Preferensi Hasil Asesmen
-        </h3>
-
-        <div className="space-y-3">
-          <label className="flex items-center justify-between p-3.5 rounded-2xl border border-divider bg-bg-default cursor-pointer hover:border-primary-main/40 transition-all">
-            <div>
-              <p className="text-xs font-bold text-text-primary">
-                Notifikasi Hasil Tes via WhatsApp
-              </p>
-              <p className="text-[11px] text-text-secondary">
-                Terima pemberitahuan langsung saat laporan hasil psikotes Anda
-                selesai diproses.
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              defaultChecked
-              className="w-4 h-4 accent-primary-main rounded cursor-pointer"
+          {/* Tanggal Lahir */}
+          <div className="space-y-1.5">
+            <Label htmlFor="dateOfBirth">Tanggal Lahir</Label>
+            <InputDate
+              id="dateOfBirth"
+              name="dateOfBirth"
+              value={user?.dateOfBirth || ""}
+              className="w-full"
             />
-          </label>
+          </div>
 
-          <label className="flex items-center justify-between p-3.5 rounded-2xl border border-divider bg-bg-default cursor-pointer hover:border-primary-main/40 transition-all">
-            <div>
-              <p className="text-xs font-bold text-text-primary">
-                Bahasa Laporan Psikogram Default
-              </p>
-              <p className="text-[11px] text-text-secondary">
-                Pilih bahasa pengantar untuk rangkuman dan sertifikat hasil tes
-                Anda.
-              </p>
-            </div>
-            <span className="text-xs font-bold text-primary-main bg-primary-main/10 px-3 py-1 rounded-lg">
-              Bahasa Indonesia
-            </span>
-          </label>
+          {/* Bio */}
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label htmlFor="bio">Bio</Label>
+            <Textarea
+              id="bio"
+              name="bio"
+              defaultValue={user?.bio || ""}
+              rows={3}
+              placeholder="Tuliskan bio singkat..."
+              className="w-full"
+            />
+          </div>
         </div>
       </div>
 
-      {/* 4. TOMBOL AKSI UTAMA */}
+      {/* SUBMIT BUTTON */}
       <div className="flex items-center justify-end gap-3 pt-2">
-        <button
-          type="submit"
-          disabled={isSaving}
-          className="px-6 py-2.5 rounded-xl text-xs font-bold bg-primary-main text-primary-contrast shadow-sm hover:opacity-90 transition-all disabled:opacity-50"
-        >
-          {isSaving ? "Menyimpan..." : "Simpan Perubahan Profil"}
-        </button>
+        <Button type="submit" disabled={updateProfileMutation.isPending}>
+          {updateProfileMutation.isPending
+            ? "Menyimpan..."
+            : "Simpan Perubahan Profil"}
+        </Button>
       </div>
     </form>
   );

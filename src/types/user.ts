@@ -62,7 +62,9 @@ export interface User {
   fullName: string;
   profilePicture: string | null;
   phone: string | null;
-  bio: string | null;
+  bio?: string;
+  dateOfBirth?: string;
+  gender?: "male" | "female";
   roles: string[];
   accountType: AccountType;
   organizationId: string | null;

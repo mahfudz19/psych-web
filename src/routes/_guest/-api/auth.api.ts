@@ -2,6 +2,7 @@ import type { BaseListParams } from "../../../components/reusebale-components/Da
 import type { Session, User } from "../../../types/user";
 import { api } from "../../../utils/api";
 import { removeEmptyValues } from "../../../utils/removeEmptyValues";
+import type { UpdateProfileRequest } from "../../_auth/_organization-and-individu/profile/-api/profile.type";
 
 export const BASE = "/api/v1/auth";
 
@@ -15,6 +16,10 @@ type Auth = {
 
 export function me() {
   return api.get<User>(`${BASE}/me`);
+}
+
+export function updateProfile(data: UpdateProfileRequest) {
+  return api.put<User>(`${BASE}/me`, data);
 }
 
 export function getSessions(params: BaseListParams) {

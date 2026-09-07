@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next";
+import { useAuthStore } from "../../../utils/authStore";
 import DarkMode from "./DarkMode";
+import LanguageSwitcher from "./LanguageSwitcher";
 import ProfileDropdown from "./ProfileDropdown";
 import ToggleSidebar from "./ToggleSidebar";
-import LanguageSwitcher from "./LanguageSwitcher";
-import { authStore } from "../../../utils/authStore";
 
 export function Topbar() {
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
   const { t } = useTranslation();
 
   return (

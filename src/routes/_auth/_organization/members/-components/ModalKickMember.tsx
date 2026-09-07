@@ -4,9 +4,9 @@ import { useKickMemberMutation } from "../-api/organization.query";
 import Button from "../../../../../components/ui/Button";
 import Dialog from "../../../../../components/ui/DIalog";
 import IconButton from "../../../../../components/ui/IconButton";
-import type { OrganizationMember } from "../../../../../types";
 import toast from "../../../../../components/ui/Toast";
-import { authStore } from "../../../../../utils/authStore";
+import type { OrganizationMember } from "../../../../../types";
+import { useAuthStore } from "../../../../../utils/authStore";
 
 export default function ModalKickMember({
   orgId,
@@ -16,7 +16,7 @@ export default function ModalKickMember({
   member: OrganizationMember;
 }) {
   const { t } = useTranslation();
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
 
   const kickMutation = useKickMemberMutation(orgId || "");
   const isLoading = kickMutation.isPending;

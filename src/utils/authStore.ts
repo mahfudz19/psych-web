@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from "react";
 import type { User } from "../types/user";
 
 type AuthState = {
@@ -8,9 +9,7 @@ type AuthState = {
 const loadState = (): AuthState => {
   try {
     const stored = localStorage.getItem("psych_auth_state");
-    if (stored) {
-      return JSON.parse(stored);
-    }
+    if (stored) return JSON.parse(stored);
   } catch (error) {
     console.error("Gagal membaca auth state", error);
   }
@@ -18,6 +17,7 @@ const loadState = (): AuthState => {
 };
 
 let state: AuthState = loadState();
+const listeners = new Set<() => void>();
 
 export const authStore = {
   get: () => state,
@@ -25,12 +25,22 @@ export const authStore = {
   set: (newState: Partial<AuthState>) => {
     state = { ...state, ...newState };
     localStorage.setItem("psych_auth_state", JSON.stringify(state));
+    listeners.forEach((cb) => cb());
   },
 
   clear: () => {
     state = { user: null, accessToken: null };
     localStorage.removeItem("psych_auth_state");
+    listeners.forEach((cb) => cb());
+  },
+
+  subscribe: (cb: () => void) => {
+    listeners.add(cb);
+    return () => listeners.delete(cb);
   },
 
   isAuthenticated: () => !!state.accessToken && !!state.user,
 };
+
+export const useAuthStore = () =>
+  useSyncExternalStore(authStore.subscribe, authStore.get);

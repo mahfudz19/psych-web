@@ -1,15 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
-import { authStore } from "../../../../utils/authStore";
 import {
-  ShieldAlert,
-  Building2,
-  Users,
   Activity,
-  CreditCard,
+  Building2,
   ClipboardList,
+  CreditCard,
+  ShieldAlert,
   User as UserIcon,
+  Users,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { useAuthStore } from "../../../../utils/authStore";
 import ModalInvite from "../members/-components/ModalInvite";
 
 export const Route = createFileRoute("/_auth/_organization/dashboard/")({
@@ -51,7 +51,7 @@ function DashboardOverview() {
   const { t } = useTranslation();
 
   // 1. Ambil data user dari memory state (sangat cepat, tanpa loading)
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
 
   // 2. DERIVED STATE: Deteksi Role secara presisi
   const isSuperAdmin = user?.roles?.includes("SUPERADMIN") ?? false;

@@ -1,16 +1,16 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useLogoutMutation } from "../../../routes/_guest/-api/auth.query";
-import Menu from "../../ui/Menu";
+import { useAuthStore } from "../../../utils/authStore";
 import Button from "../../ui/Button";
+import Menu from "../../ui/Menu";
 import MenuDivider from "../../ui/Menu/MenuDivider";
 import MenuHeader from "../../ui/Menu/MenuHeader";
 import MenuItem from "../../ui/Menu/MenuItem";
 import Skeleton from "../../ui/Skeleton";
-import { authStore } from "../../../utils/authStore";
 
 const Avatar = () => {
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
 
   const getInitials = (name: string) =>
     name
@@ -34,7 +34,7 @@ const Avatar = () => {
 };
 
 function ProfileDropdown() {
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
   if (!user) return;
 
   const { fullName, accountType, email, subscriptionTier, status } = user;

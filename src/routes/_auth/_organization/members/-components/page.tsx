@@ -11,7 +11,7 @@ import type {
   MembersListParams,
   OrganizationMember,
 } from "../../../../../types";
-import { authStore } from "../../../../../utils/authStore";
+import { useAuthStore } from "../../../../../utils/authStore";
 import { Route } from "../index";
 import ModalMemberDetail from "./ModalMemberDetail";
 
@@ -28,7 +28,7 @@ function getRoleBadgeClass(organizationRole?: string) {
 
 function OrganizationMembersPage() {
   const { t } = useTranslation();
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
   const orgId = user?.organizationId;
 
   const tableState = Route.useSearch();

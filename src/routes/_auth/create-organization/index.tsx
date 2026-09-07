@@ -5,7 +5,7 @@ import type { User } from "../../../types/user";
 import { needsOrganizationCreation } from "../../../utils/auth";
 import toast from "../../../components/ui/Toast";
 import Button from "../../../components/ui/Button";
-import { authStore } from "../../../utils/authStore";
+import { authStore, useAuthStore } from "../../../utils/authStore";
 import { useCreateOrganizationMutation } from "../_organization/-api/organization.query";
 import { me } from "../../_guest/-api/auth.api";
 
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_auth/create-organization/")({
 function CreateOrganizationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
   const { mutateAsync: createOrganization, isPending: isCreating } =
     useCreateOrganizationMutation();
 

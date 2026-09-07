@@ -6,7 +6,7 @@ import InputDate from "../../../../components/ui/InputDate";
 import Label from "../../../../components/ui/Label";
 import Textarea from "../../../../components/ui/Textarea";
 import toast from "../../../../components/ui/Toast";
-import { authStore } from "../../../../utils/authStore";
+import { useAuthStore } from "../../../../utils/authStore";
 import { useAvatarUploadMutation } from "./-api/avatar.query";
 import { useUpdateProfileMutation } from "./-api/profile.query";
 
@@ -17,7 +17,7 @@ export const Route = createFileRoute(
 });
 
 const ChangeAvatar = () => {
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
   const avatarMutation = useAvatarUploadMutation();
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,11 +79,11 @@ const ChangeAvatar = () => {
 };
 
 const FormInputs = () => {
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
 
   const updateProfileMutation = useUpdateProfileMutation();
 
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSave = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
 
@@ -216,7 +216,7 @@ const FormInputs = () => {
 };
 
 function ProfileInfoPage() {
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
 
   const isB2B = Boolean(user?.organizationId);
 

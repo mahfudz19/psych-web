@@ -14,8 +14,6 @@ export function useUpdateProfileMutation() {
       if (data) authStore.set({ user: data });
       toast.success("Profil berhasil diperbarui");
     },
-    onError: () => {
-      toast.error("Gagal memperbarui profil");
-    },
+    onError: () => toast.error("Gagal memperbarui profil"),
   });
 }

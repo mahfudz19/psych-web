@@ -8,15 +8,15 @@ import {
   X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useGenerateInviteCodeMutation } from "../../-api/organization.query";
 import Button from "../../../../../components/ui/Button";
 import Dialog from "../../../../../components/ui/DIalog";
 import IconButton from "../../../../../components/ui/IconButton";
 import toast from "../../../../../components/ui/Toast";
-import { authStore } from "../../../../../utils/authStore";
-import { useGenerateInviteCodeMutation } from "../../-api/organization.query";
+import { useAuthStore } from "../../../../../utils/authStore";
 
 const InviteCode = () => {
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
   const { t } = useTranslation();
   const generateMutation = useGenerateInviteCodeMutation();
 
@@ -111,7 +111,7 @@ export type invitePayload = {
 };
 
 const ModalInvite = () => {
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
   const { t } = useTranslation();
 
   const handleCopyInviteLink = (organizationId?: string | null) => {

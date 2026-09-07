@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useOrganizationQuery } from "../../-api/organization.query";
 import { isOrganizationOwner } from "../../../../../utils/auth";
-import { authStore } from "../../../../../utils/authStore";
+import { useAuthStore } from "../../../../../utils/authStore";
 import DeleteOrganizationModal from "./DeleteOrganizationModal";
 import UpdateOrganizationForm from "./UpdateOrganizationForm";
 
 function OrganizationSettingsPage() {
   const { t } = useTranslation();
-  const { user } = authStore.get();
+  const { user } = useAuthStore();
   const orgId = user?.organizationId;
 
   const { data, isLoading, isError } = useOrganizationQuery(orgId);

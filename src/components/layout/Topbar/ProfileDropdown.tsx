@@ -7,20 +7,10 @@ import MenuDivider from "../../ui/Menu/MenuDivider";
 import MenuHeader from "../../ui/Menu/MenuHeader";
 import MenuItem from "../../ui/Menu/MenuItem";
 import Skeleton from "../../ui/Skeleton";
+import { authStore } from "../../../utils/authStore";
 
-export interface ProfileDropdownProps {
-  fullName: string;
-  accountType: string;
-  email: string;
-  subscriptionTier: string;
-  status: string;
-}
-
-function ProfileDropdown(props: ProfileDropdownProps) {
-  const { fullName, accountType, email, subscriptionTier, status } = props;
-  const { t } = useTranslation();
-  const logout = useLogoutMutation();
-  const navigate = useNavigate();
+const Avatar = () => {
+  const { user } = authStore.get();
 
   const getInitials = (name: string) =>
     name
@@ -29,6 +19,29 @@ function ProfileDropdown(props: ProfileDropdownProps) {
       .join("")
       .substring(0, 2)
       .toUpperCase();
+
+  return user?.profilePicture ? (
+    <img
+      src={user?.profilePicture}
+      alt={getInitials(user?.fullName ?? "U")}
+      className="w-8 h-8 rounded-full object-cover shadow-sm"
+    />
+  ) : (
+    <div className="w-8 h-8 rounded-full bg-primary-main text-primary-contrast flex items-center justify-center text-xs font-bold shadow-sm">
+      {getInitials(user?.fullName ?? "U")}
+    </div>
+  );
+};
+
+function ProfileDropdown() {
+  const { user } = authStore.get();
+  if (!user) return;
+
+  const { fullName, accountType, email, subscriptionTier, status } = user;
+
+  const { t } = useTranslation();
+  const logout = useLogoutMutation();
+  const navigate = useNavigate();
 
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
@@ -44,11 +57,7 @@ function ProfileDropdown(props: ProfileDropdownProps) {
         <Button
           size="sm"
           variant="text"
-          startIcon={
-            <div className="w-7 h-7 rounded-full bg-primary-main text-primary-contrast flex items-center justify-center text-xs font-bold shadow-sm">
-              {getInitials(fullName)}
-            </div>
-          }
+          startIcon={<Avatar />}
           endIcon={
             <svg
               className="w-4 h-4 transition-transform duration-200 hidden sm:block group-data-[state=open]:rotate-180"
@@ -80,12 +89,17 @@ function ProfileDropdown(props: ProfileDropdownProps) {
       {(close) => (
         <div className="flex flex-col pb-1">
           <MenuHeader>
-            <p className="text-sm font-bold text-text-primary truncate">
-              {fullName}
-            </p>
-            <p className="text-xs text-text-secondary truncate mt-0.5">
-              {email}
-            </p>
+            <div className="flex gap-2 items-center">
+              <Avatar />
+              <div>
+                <p className="text-sm font-bold text-text-primary truncate">
+                  {fullName}
+                </p>
+                <p className="text-xs text-text-secondary truncate mt-0.5">
+                  {email}
+                </p>
+              </div>
+            </div>
             <div className="flex gap-2 mt-3">
               <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase bg-info-main/10 text-info-main">
                 Tier: {subscriptionTier}

@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { authStore } from "../../../../utils/authStore";
-import { useUpdateProfileMutation } from "./-api/profile.query";
-import Input from "../../../../components/ui/Input";
-import Label from "../../../../components/ui/Label";
-import InputDate from "../../../../components/ui/InputDate";
-import toast from "../../../../components/ui/Toast";
+import { Camera, Loader2 } from "lucide-react";
 import Button from "../../../../components/ui/Button";
+import Input from "../../../../components/ui/Input";
+import InputDate from "../../../../components/ui/InputDate";
+import Label from "../../../../components/ui/Label";
 import Textarea from "../../../../components/ui/Textarea";
+import toast from "../../../../components/ui/Toast";
+import { authStore } from "../../../../utils/authStore";
+import { useAvatarUploadMutation } from "./-api/avatar.query";
+import { useUpdateProfileMutation } from "./-api/profile.query";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/profile/",
@@ -14,8 +16,71 @@ export const Route = createFileRoute(
   component: ProfileInfoPage,
 });
 
-function ProfileInfoPage() {
+const ChangeAvatar = () => {
   const { user } = authStore.get();
+  const avatarMutation = useAvatarUploadMutation();
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) return toast.error("Maksimal 2MB");
+    if (!file.type.startsWith("image/"))
+      return toast.error("File harus berupa gambar");
+
+    const objectUrl = URL.createObjectURL(file);
+
+    avatarMutation.mutate(file, {
+      onSettled: () => URL.revokeObjectURL(objectUrl),
+      onError: () => toast.error("Gagal memperbarui foto profil"),
+    });
+  };
+
+  const displayImage = user?.profilePicture;
+
+  return (
+    <label
+      className="w-16 h-16 rounded-2xl bg-primary-main/10 text-primary-main border border-primary-main/20 flex items-center justify-center text-2xl font-black uppercase shadow-sm cursor-pointer relative overflow-hidden group"
+      aria-label="Ubah foto profil"
+    >
+      {displayImage ? (
+        <img
+          src={displayImage}
+          alt={user?.fullName || "Avatar"}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        user?.fullName?.charAt(0) || "U"
+      )}
+
+      <div
+        className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity ${
+          avatarMutation.isPending
+            ? "opacity-100"
+            : "opacity-0 group-hover:opacity-100"
+        }`}
+      >
+        {avatarMutation.isPending ? (
+          <Loader2 className="w-5 h-5 text-white animate-spin" />
+        ) : (
+          <Camera className="w-5 h-5 text-white" />
+        )}
+      </div>
+
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleAvatarChange}
+        className="hidden"
+        disabled={avatarMutation.isPending}
+      />
+    </label>
+  );
+};
+
+const FormInputs = () => {
+  const { user } = authStore.get();
+
   const updateProfileMutation = useUpdateProfileMutation();
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
@@ -40,45 +105,8 @@ function ProfileInfoPage() {
     });
   };
 
-  const isB2B = Boolean(user?.organizationId);
-
   return (
     <form onSubmit={handleSave} className="space-y-6">
-      {/* HEADER PROFILE */}
-      <div className="p-6 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
-        <div className="flex items-center gap-5">
-          <div className="w-16 h-16 rounded-2xl bg-primary-main/10 text-primary-main border border-primary-main/20 flex items-center justify-center text-2xl font-black uppercase shadow-sm">
-            {user?.fullName?.charAt(0) || "U"}
-          </div>
-
-          <div className="space-y-1">
-            <h2 className="text-xl font-extrabold text-text-primary tracking-tight">
-              {user?.fullName || "Pengguna Aktif"}
-            </h2>
-            <p className="text-xs font-medium text-text-secondary flex items-center gap-2">
-              <span>{user?.email || "user@psycorp.test"}</span>
-              <span>•</span>
-              <span className="font-mono text-primary-main font-semibold">
-                {isB2B
-                  ? `Org ID: ${user?.organizationId}`
-                  : "Kandidat Terverifikasi"}
-              </span>
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="px-3.5 py-2 rounded-2xl bg-bg-default border border-divider text-left">
-            <p className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">
-              Status Identitas
-            </p>
-            <p className="text-xs font-bold text-success-main flex items-center gap-1 mt-0.5">
-              <span>🛡️</span> Siap Mengikuti Tes
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* FORM INPUTS */}
       <div className="p-6 rounded-3xl bg-bg-paper border border-divider shadow-sm space-y-6">
         <div className="border-b border-divider pb-4">
@@ -184,5 +212,50 @@ function ProfileInfoPage() {
         </Button>
       </div>
     </form>
+  );
+};
+
+function ProfileInfoPage() {
+  const { user } = authStore.get();
+
+  const isB2B = Boolean(user?.organizationId);
+
+  return (
+    <div className="space-y-6">
+      {/* HEADER PROFILE */}
+      <div className="p-6 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+        <div className="flex items-center gap-5">
+          <ChangeAvatar />
+
+          <div className="space-y-1">
+            <h2 className="text-xl font-extrabold text-text-primary tracking-tight">
+              {user?.fullName || "Pengguna Aktif"}
+            </h2>
+            <p className="text-xs font-medium text-text-secondary flex items-center gap-2">
+              <span>{user?.email || "user@psycorp.test"}</span>
+              <span>•</span>
+              <span className="font-mono text-primary-main font-semibold">
+                {isB2B
+                  ? `Org ID: ${user?.organizationId}`
+                  : "Kandidat Terverifikasi"}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="px-3.5 py-2 rounded-2xl bg-bg-default border border-divider text-left">
+            <p className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">
+              Status Identitas
+            </p>
+            <p className="text-xs font-bold text-success-main flex items-center gap-1 mt-0.5">
+              <span>🛡️</span> Siap Mengikuti Tes
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <FormInputs />
+    </div>
   );
 }

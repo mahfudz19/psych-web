@@ -1,11 +1,13 @@
 import { useTranslation } from "react-i18next";
 import DarkMode from "./DarkMode";
-import ProfileDropdown, { type ProfileDropdownProps } from "./ProfileDropdown";
+import ProfileDropdown from "./ProfileDropdown";
 import ToggleSidebar from "./ToggleSidebar";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { authStore } from "../../../utils/authStore";
 
-export function Topbar(props: ProfileDropdownProps) {
-  const { t } = useTranslation(); // Inisialisasi translasi
+export function Topbar() {
+  const { user } = authStore.get();
+  const { t } = useTranslation();
 
   return (
     <header className="h-16 bg-bg-paper border-b border-divider flex items-center justify-between px-4 lg:px-8 sticky top-0 z-10 shadow-sm transition-all">
@@ -15,7 +17,7 @@ export function Topbar(props: ProfileDropdownProps) {
         <span className="text-sm font-medium text-text-secondary hidden sm:inline-block pl-2 lg:pl-0">
           {t("topbar.welcome")},{" "}
           <strong className="text-text-primary font-bold">
-            {props.fullName?.split(" ")[0] || "A"}
+            {user?.fullName?.split(" ")[0] || "A"}
           </strong>
         </span>
       </div>
@@ -24,7 +26,7 @@ export function Topbar(props: ProfileDropdownProps) {
         <LanguageSwitcher />
         <DarkMode />
         <div className="h-6 w-px bg-divider mx-1 hidden sm:block"></div>
-        <ProfileDropdown {...props} />
+        <ProfileDropdown />
       </div>
     </header>
   );

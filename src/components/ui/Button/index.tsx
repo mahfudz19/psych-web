@@ -20,6 +20,8 @@ const baseClass = [
   "justify-center",
   "transition",
   "font-semibold",
+  "border-2",
+  "border-transparent",
 ];
 
 const disabledClass = [
@@ -109,55 +111,54 @@ const outlinedVariant = cva(
     ...baseClass,
     ...interactionClass,
     "shadow",
-    "outline-2",
-    "outline",
-    "-outline-offset-1",
+    "border-2",
+    "bg-transparent",
     ...disabledClass,
     // focus
-    "focus-visible:outline-2",
-    "focus-visible:outline",
+    "focus-visible:ring-2",
+    "focus-visible:ring-offset-1",
     "disabled:shadow-none",
     "disabled:text-neutral-400",
-    "disabled:outline-neutral-400",
+    "disabled:border-neutral-400",
     "dark:disabled:shadow-none",
     "dark:disabled:text-neutral-400",
-    "dark:disabled:outline-neutral-400",
+    "dark:disabled:border-neutral-400",
   ],
   {
     variants: {
       color: {
         primary: [
-          "outline-primary-main dark:outline-primary-dark",
+          "border-primary-main dark:border-primary-dark",
           "text-primary-main",
           "focus:ring-primary-main",
         ],
         secondary: [
-          "outline-secondary-main dark:outline-secondary-dark",
+          "border-secondary-main dark:border-secondary-dark",
           "text-secondary-main",
           "focus:ring-secondary-main",
         ],
         success: [
-          "outline-success-main dark:outline-success-dark",
+          "border-success-main dark:border-success-dark",
           "text-success-main",
           "focus:ring-success-main",
         ],
         error: [
-          "outline-error-main dark:outline-error-dark",
+          "border-error-main dark:border-error-dark",
           "text-error-main",
           "focus:ring-error-main",
         ],
         warning: [
-          "outline-warning-main dark:outline-warning-dark",
+          "border-warning-main dark:border-warning-dark",
           "text-warning-main",
           "focus:ring-warning-main",
         ],
         info: [
-          "outline-info-main dark:outline-info-dark",
+          "border-info-main dark:border-info-dark",
           "text-info-main",
           "focus:ring-info-main",
         ],
         white: [
-          "outline-gray-500 dark:outline-white",
+          "border-gray-500 dark:border-white",
           "text-gray-500 dark:text-white",
           "focus:ring-gray-500 dark:focus:ring-white",
         ],
@@ -246,16 +247,16 @@ export const switchVariant = (
   };
   const sizeMap: Record<size, { default: string[]; icon: string[] }> = {
     sm: {
-      default: ["text-xs", "px-3 py-2", "px-4"],
-      icon: ["text-xs", "p-2", "rounded-full"],
+      default: ["text-xs", "px-3 py-2"],
+      icon: ["text-sm", "w-8 h-8", "rounded-full"],
     },
     md: {
-      default: ["text-sm", "px-4 py-2.5", "leading-6", "px-6"],
-      icon: ["text-sm", "p-3", "rounded-full"],
+      default: ["text-sm", "px-4 py-2.5", "leading-6"],
+      icon: ["text-base", "w-10 h-10", "rounded-full"],
     },
     lg: {
-      default: ["text-base", "p-2.5", "px-9"],
-      icon: ["text-md", "px-6 py-3", "rounded-full"],
+      default: ["text-base", "px-6 py-3"],
+      icon: ["text-lg", "w-12 h-12", "rounded-full"],
     },
   };
 

@@ -5,7 +5,7 @@ import ButtonRegisrationGoogle from "../../../-components/ButtonRegisrationGoogl
 import PasswordFields, {
   requirements,
 } from "../../../-components/PassWordFields";
-import type { RegisterRequest } from "../../../../-api/auth.api";
+import type { RegisterRequest } from "../../../../-api/auth.type";
 import Button from "../../../../../../components/ui/Button";
 import Input from "../../../../../../components/ui/Input";
 import type { ApiResponse } from "../../../../../../types";

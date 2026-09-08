@@ -3,16 +3,14 @@ import type { Session, User } from "../../../types/user";
 import { api } from "../../../utils/api";
 import { removeEmptyValues } from "../../../utils/removeEmptyValues";
 import type { UpdateProfileRequest } from "../../_auth/_organization-and-individu/profile/-api/profile.type";
+import type {
+  Auth,
+  ChangePasswordRequest,
+  GoogleRegisterRequest,
+  RegisterRequest,
+} from "./auth.type";
 
 export const BASE = "/api/v1/auth";
-
-type Auth = {
-  user?: User;
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: 900;
-  tokenType: "Bearer";
-};
 
 export function me() {
   return api.get<User>(`${BASE}/me`);
@@ -34,26 +32,10 @@ export function googleLogin(data: { token: string }) {
   return api.post<Auth>(`${BASE}/google/login`, data);
 }
 
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  fullName: string;
-  referralCode?: string;
-  inviteCode?: string;
-  invitedBy?: string;
-  invitedOrganizationId?: string;
-  accountType: User["accountType"];
-}
 export function register(data: RegisterRequest) {
   return api.post<User>(`${BASE}/register`, removeEmptyValues(data));
 }
 
-export interface GoogleRegisterRequest extends Omit<
-  RegisterRequest,
-  "email" | "password" | "fullName"
-> {
-  token: string;
-}
 export function googleRegister(data: GoogleRegisterRequest) {
   return api.post<Auth>(`${BASE}/google/register`, removeEmptyValues(data));
 }
@@ -78,4 +60,8 @@ export function forgotPassword(email: string) {
 
 export function resetPassword(token: string, newPassword: string) {
   return api.post(`${BASE}/reset-password`, { token, newPassword });
+}
+
+export function changePassword(data: ChangePasswordRequest) {
+  return api.put(`${BASE}/password`, data);
 }

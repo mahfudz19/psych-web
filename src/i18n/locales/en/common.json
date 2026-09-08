@@ -299,7 +299,8 @@
     "tabs": {
       "info": "Profile Info",
       "referral": "Referral & Affiliate",
-      "sessions": "Login Sessions"
+      "sessions": "Login Sessions",
+      "change-password": "Ganti Password"
     },
     "sessions": {
       "title": "Login Sessions & Devices",

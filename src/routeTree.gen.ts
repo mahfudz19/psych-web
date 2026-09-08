@@ -35,6 +35,7 @@ import { Route as AuthOrganizationSettingsIndexRouteImport } from './routes/_aut
 import { Route as GuestRegisterOrganizationIndexRouteImport } from './routes/_guest/register/organization/index'
 import { Route as GuestRegisterVerifyEmailIndexRouteImport } from './routes/_guest/register/verify-email/index'
 import { Route as AuthExamExamTestIdIndexRouteImport } from './routes/_auth/_exam/exam/$testId/index'
+import { Route as AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/change-password/index'
 import { Route as AuthOrganizationAndIndividuProfileReferralIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/referral/index'
 import { Route as AuthOrganizationAndIndividuProfileSessionsIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/sessions/index'
 import { Route as AuthOrganizationAdminSettingsAppIndexRouteImport } from './routes/_auth/_organization/_admin/settings-app/index'
@@ -178,6 +179,12 @@ const AuthExamExamTestIdIndexRoute = AuthExamExamTestIdIndexRouteImport.update({
   path: '/exam/$testId/',
   getParentRoute: () => AuthExamRoute,
 } as any)
+const AuthOrganizationAndIndividuProfileChangePasswordIndexRoute =
+  AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport.update({
+    id: '/change-password/',
+    path: '/change-password/',
+    getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
+  } as any)
 const AuthOrganizationAndIndividuProfileReferralIndexRoute =
   AuthOrganizationAndIndividuProfileReferralIndexRouteImport.update({
     id: '/referral/',
@@ -236,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/register/organization/': typeof GuestRegisterOrganizationIndexRoute
   '/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
   '/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
+  '/profile/change-password/': typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
   '/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/profile/sessions/': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
   '/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
@@ -263,6 +271,7 @@ export interface FileRoutesByTo {
   '/register/organization': typeof GuestRegisterOrganizationIndexRoute
   '/register/verify-email': typeof GuestRegisterVerifyEmailIndexRoute
   '/exam/$testId': typeof AuthExamExamTestIdIndexRoute
+  '/profile/change-password': typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
   '/profile/referral': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/profile/sessions': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
   '/settings-app': typeof AuthOrganizationAdminSettingsAppIndexRoute
@@ -298,6 +307,7 @@ export interface FileRoutesById {
   '/_guest/register/organization/': typeof GuestRegisterOrganizationIndexRoute
   '/_guest/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
   '/_auth/_exam/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
+  '/_auth/_organization-and-individu/profile/change-password/': typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
   '/_auth/_organization-and-individu/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/_auth/_organization-and-individu/profile/sessions/': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
   '/_auth/_organization/_admin/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
@@ -328,6 +338,7 @@ export interface FileRouteTypes {
     | '/register/organization/'
     | '/register/verify-email/'
     | '/exam/$testId/'
+    | '/profile/change-password/'
     | '/profile/referral/'
     | '/profile/sessions/'
     | '/settings-app/'
@@ -355,6 +366,7 @@ export interface FileRouteTypes {
     | '/register/organization'
     | '/register/verify-email'
     | '/exam/$testId'
+    | '/profile/change-password'
     | '/profile/referral'
     | '/profile/sessions'
     | '/settings-app'
@@ -389,6 +401,7 @@ export interface FileRouteTypes {
     | '/_guest/register/organization/'
     | '/_guest/register/verify-email/'
     | '/_auth/_exam/exam/$testId/'
+    | '/_auth/_organization-and-individu/profile/change-password/'
     | '/_auth/_organization-and-individu/profile/referral/'
     | '/_auth/_organization-and-individu/profile/sessions/'
     | '/_auth/_organization/_admin/settings-app/'
@@ -588,6 +601,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthExamExamTestIdIndexRouteImport
       parentRoute: typeof AuthExamRoute
     }
+    '/_auth/_organization-and-individu/profile/change-password/': {
+      id: '/_auth/_organization-and-individu/profile/change-password/'
+      path: '/change-password'
+      fullPath: '/profile/change-password/'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
+    }
     '/_auth/_organization-and-individu/profile/referral/': {
       id: '/_auth/_organization-and-individu/profile/referral/'
       path: '/referral'
@@ -683,6 +703,7 @@ const AuthOrganizationRouteWithChildren =
 
 interface AuthOrganizationAndIndividuProfileRouteChildren {
   AuthOrganizationAndIndividuProfileIndexRoute: typeof AuthOrganizationAndIndividuProfileIndexRoute
+  AuthOrganizationAndIndividuProfileChangePasswordIndexRoute: typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
   AuthOrganizationAndIndividuProfileReferralIndexRoute: typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   AuthOrganizationAndIndividuProfileSessionsIndexRoute: typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
 }
@@ -691,6 +712,8 @@ const AuthOrganizationAndIndividuProfileRouteChildren: AuthOrganizationAndIndivi
   {
     AuthOrganizationAndIndividuProfileIndexRoute:
       AuthOrganizationAndIndividuProfileIndexRoute,
+    AuthOrganizationAndIndividuProfileChangePasswordIndexRoute:
+      AuthOrganizationAndIndividuProfileChangePasswordIndexRoute,
     AuthOrganizationAndIndividuProfileReferralIndexRoute:
       AuthOrganizationAndIndividuProfileReferralIndexRoute,
     AuthOrganizationAndIndividuProfileSessionsIndexRoute:

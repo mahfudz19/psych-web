@@ -299,7 +299,8 @@
     "tabs": {
       "info": "Informasi Profil",
       "referral": "Referral & Afiliasi",
-      "sessions": "Sesi Login"
+      "sessions": "Sesi Login",
+      "change-password": "Change Password"
     },
     "sessions": {
       "title": "Sesi Login & Perangkat",

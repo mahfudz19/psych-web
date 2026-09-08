@@ -15,24 +15,27 @@ export const Route = createFileRoute(
   component: ProfileLayout,
 });
 
+const PROFILE_TABS = [
+  { value: "info", path: "/profile" },
+  { value: "referral", path: "/profile/referral" },
+  { value: "sessions", path: "/profile/sessions" },
+  { value: "change-password", path: "/profile/change-password" },
+] as const;
+
 function ProfileLayout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const currentTab = location.pathname.includes("/profile/referral")
-    ? "referral"
-    : location.pathname.includes("/profile/sessions")
-      ? "sessions"
-      : "info";
+  const currentTab =
+    PROFILE_TABS.slice()
+      .sort((a, b) => b.path.length - a.path.length)
+      .find((tab) => location.pathname.startsWith(tab.path))?.value || "info";
 
   const handleTabChange = (val: string) => {
-    const pathMap: Record<string, string> = {
-      referral: "/profile/referral",
-      sessions: "/profile/sessions",
-      info: "/profile",
-    };
-    navigate({ to: pathMap[val] || "/profile" });
+    const targetPath =
+      PROFILE_TABS.find((tab) => tab.value === val)?.path || "/profile";
+    navigate({ to: targetPath });
   };
 
   return (
@@ -54,11 +57,15 @@ function ProfileLayout() {
         </Link>
       </div>
 
-      {/* NAVIGASI TAB */}
+      {/* 3. Render secara iteratif */}
       <Tabs value={currentTab} onChange={handleTabChange}>
-        <Tab value="info" label={t("profile.tabs.info")} />
-        <Tab value="referral" label={t("profile.tabs.referral")} />
-        <Tab value="sessions" label={t("profile.tabs.sessions")} />
+        {PROFILE_TABS.map((tab) => (
+          <Tab
+            key={tab.value}
+            value={tab.value}
+            label={t(`profile.tabs.${tab.value}`)}
+          />
+        ))}
       </Tabs>
 
       <Outlet />

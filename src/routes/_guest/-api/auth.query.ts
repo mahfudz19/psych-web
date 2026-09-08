@@ -4,6 +4,11 @@ import toast from "../../../components/ui/Toast";
 import * as api from "./auth.api";
 import { getRedirectPathByRole } from "../../../utils/auth";
 import { authStore } from "../../../utils/authStore";
+import type {
+  ChangePasswordRequest,
+  GoogleRegisterRequest,
+  RegisterRequest,
+} from "./auth.type";
 
 export function useLoginMutation() {
   const router = useRouter();
@@ -56,7 +61,7 @@ export function useGoogleLoginMutation() {
 
 export function useRegisterMutation() {
   return useMutation({
-    mutationFn: (credentials: api.RegisterRequest) => api.register(credentials),
+    mutationFn: (credentials: RegisterRequest) => api.register(credentials),
     onSuccess: () => toast.success("Register success"),
     onError: () => toast.error("Register failed"),
   });
@@ -67,7 +72,7 @@ export function useGoogleRegisterMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (credentials: api.GoogleRegisterRequest) =>
+    mutationFn: (credentials: GoogleRegisterRequest) =>
       api.googleRegister(credentials),
     onSuccess: ({ data }) => {
       toast.success("Email verified successfully");
@@ -158,5 +163,20 @@ export function useResetPasswordMutation() {
         error?.message ||
           "Gagal mereset kata sandi. Tautan mungkin kedaluwarsa.",
       ),
+  });
+}
+
+export function useChangePasswordMutation() {
+  return useMutation({
+    mutationFn: (data: ChangePasswordRequest) => api.changePassword(data),
+    onSuccess: (response: any) =>
+      toast.success(response?.message || "Kata sandi berhasil diperbarui"),
+    onError: (error: any) => {
+      toast.error(
+        error?.message ||
+          error?.response?.data?.message ||
+          "Gagal mengubah kata sandi",
+      );
+    },
   });
 }

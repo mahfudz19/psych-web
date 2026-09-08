@@ -1,4 +1,32 @@
 {
+  "components":{
+    "dialogDelete": {
+      "cancel": "BATAL",
+      "yes": "YA",
+      "deleted": "DIHAPUS",
+      "cancelled": "DIBATALKAN",
+      "successMessage": "Proses penghapusan berhasil",
+      "cancelMessage": "Proses penghapusan dibatalkan",
+      "ok": "OK"
+    },
+    "imageEditor": {
+      "deleteConfirm": "Apa anda yakin ingin menghapus ini!!",
+      "editTitle": "Edit Avatar",
+      "errorGeneric": "Terjadi kesalahan"
+    },
+    "imageEditorModal": {
+      "dragInstruction": "Geser gambar untuk mengatur posisi",
+      "zoom": "Zoom",
+      "rotation": "Rotasi",
+      "flip": "Flip",
+      "cancel": "Batal",
+      "save": "Simpan"
+    },
+    "imageEditorMain": {
+      "sizeLimitError": "Batas gambar hanya {{limit}} MB, gambar yang di upload {{current}} MB",
+      "dropInstruction": "Drag & drop gambar atau klik untuk upload"
+    }
+  },
   "common": {
     "cancel": "Batal",
     "save": "Simpan",
@@ -319,6 +347,57 @@
       "revokeButton": "Akhiri Sesi",
       "revokeAction": "Akhiri Sesi",
       "cancel": "Batal"
+    },
+    "form": {
+      "avatar": {
+        "change": "Ubah foto profil",
+        "deleteSuccess": "Foto profil berhasil dihapus",
+        "deleteError": "Gagal menghapus foto profil",
+        "maxSize": "Maksimal 2MB",
+        "invalidFormat": "File harus berupa gambar",
+        "updateError": "Gagal memperbarui foto profil"
+      },
+      "activeUser": "Pengguna Aktif",
+      "accountType": "Tipe Akun",
+      "b2b": "B2B ({{id}})",
+      "individual": "Kandidat Individu",
+      "status": "Status",
+      "statusReady": "🛡️ Siap Tes",
+      "mainInfo": {
+        "title": "Informasi Utama Kandidat",
+        "subtitle": "Data ini digunakan untuk verifikasi ketersesuaian profil pada laporan psikogram Anda."
+      },
+      "fields": {
+        "fullName": "Nama Lengkap *",
+        "fullNamePlaceholder": "Masukkan nama lengkap",
+        "email": "Alamat Email",
+        "emailHelp": "(tidak dapat diubah)",
+        "phone": "Nomor WhatsApp / Telepon",
+        "phonePlaceholder": "Contoh: 08123456789",
+        "gender": "Jenis Kelamin",
+        "male": "Laki-laki",
+        "female": "Perempuan",
+        "dob": "Tanggal Lahir",
+        "bio": "Bio",
+        "bioPlaceholder": "Tuliskan bio singkat..."
+      },
+      "validation": {
+        "fullNameRequired": "Nama lengkap wajib diisi"
+      },
+      "buttons": {
+        "saving": "Menyimpan...",
+        "submit": "Simpan Perubahan Profil"
+      }
+    },
+    "changePassword": {
+      "title": "Ubah Kata Sandi",
+      "subtitle": "Pastikan menggunakan kata sandi yang kuat dan belum pernah Anda gunakan di situs lain.",
+      "oldPasswordLabel": "Kata Sandi Saat Ini *",
+      "oldPasswordPlaceholder": "Masukkan kata sandi lama",
+      "mismatchError": "Konfirmasi kata sandi baru tidak cocok!",
+      "minLengthError": "Kata sandi baru minimal 8 karakter!",
+      "saving": "Menyimpan...",
+      "submit": "Perbarui Kata Sandi"
     }
   }
 }

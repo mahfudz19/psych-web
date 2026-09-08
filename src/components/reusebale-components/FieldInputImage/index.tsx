@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Dialog from "../../ui/Dialog";
 import toast from "../../ui/Toast";
 import ImageEditor, { ImageEditorModal } from "../ImageEditor";
@@ -37,10 +38,10 @@ function FieldInputImage({
   message?: string;
   limitSize?: number;
 }) {
+  const { t } = useTranslation();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [load, setLoad] = useState(false);
 
-  // Konversi maxWidth prop menjadi Tailwind class untuk disuntikkan ke Dialog baru
   const maxWidthClass =
     {
       xs: "max-w-xs",
@@ -52,18 +53,15 @@ function FieldInputImage({
 
   return (
     <>
-      {/* 1. Dialog Utama (Untuk Edit Image) */}
       <Dialog
-        dismissible={!load} // Mencegah dialog tertutup saat proses loading
+        dismissible={!load}
         scroll="paper"
         className={`${fullWidth ? "w-full" : ""} ${maxWidthClass}`}
         trigger={(openEditDialog) => (
-          /* 2. Dialog Delete (Bersarang di dalam trigger Edit) */
           <DialogDelete
-            body={"Apa anda yakin ingin menghapus ini!!"}
+            body={t("components.imageEditor.deleteConfirm")}
             runFunction={async () => await onSave("", null, null)}
             trigger={(openDeleteDialog) => (
-              /* 3. Komponen Inti yang akan memanggil open() yang sesuai */
               <ImageEditor
                 width={width ?? 170}
                 height={height ?? 170}
@@ -76,13 +74,10 @@ function FieldInputImage({
                 onImageSelect={(imageData) => {
                   if (imageData) {
                     setSelectedImage(imageData);
-                    openEditDialog(); // Panggil trigger Dialog Edit
+                    openEditDialog();
                   } else {
-                    if (confirmDeleteImage) {
-                      openDeleteDialog(); // Panggil trigger Dialog Delete
-                    } else {
-                      onSave("", null, null);
-                    }
+                    if (confirmDeleteImage) openDeleteDialog();
+                    else onSave("", null, null);
                   }
                 }}
               />
@@ -90,12 +85,12 @@ function FieldInputImage({
           />
         )}
       >
-        {/* Render Props untuk konten dalam Dialog Edit */}
         {(closeDialog) => (
           <div className="flex flex-col w-full">
-            {/* Header Pengganti prop 'title' dan 'closeButtom' */}
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold">Edit Avatar</h2>
+              <h2 className="text-xl font-bold">
+                {t("components.imageEditor.editTitle")}
+              </h2>
               <button
                 type="button"
                 disabled={load}
@@ -120,9 +115,13 @@ function FieldInputImage({
                   try {
                     setLoad(true);
                     await onSave(...p);
-                    closeDialog(); // Tutup lewat argumen render prop
+                    closeDialog();
                   } catch (error: any) {
-                    toast.error(error?.message || error || "Terjadi kesalahan");
+                    toast.error(
+                      error?.message ||
+                        error ||
+                        t("components.imageEditor.errorGeneric"),
+                    );
                   } finally {
                     setLoad(false);
                   }
@@ -137,7 +136,6 @@ function FieldInputImage({
         )}
       </Dialog>
 
-      {/* Helper Text tetap di luar struktur Dialog */}
       {helperText && (
         <div
           className={`mt-1 text-sm ${error ? "text-error-main" : "text-text-secondary"}`}

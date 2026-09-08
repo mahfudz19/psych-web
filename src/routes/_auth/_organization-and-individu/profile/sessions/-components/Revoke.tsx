@@ -67,7 +67,6 @@ function Revoke({ data }: { data: Session }) {
               onClick={() => handleRevoke(closeDialog)}
             >
               {t("profile.sessions.revokeButton")}
-              Akhiri Sesi
             </Button>
           </div>
         </>

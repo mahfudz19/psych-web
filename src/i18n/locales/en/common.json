@@ -1,4 +1,32 @@
 {
+  "components":{
+    "dialogDelete": {
+      "cancel": "CANCEL",
+      "yes": "YES",
+      "deleted": "DELETED",
+      "cancelled": "CANCELLED",
+      "successMessage": "Deletion process successful",
+      "cancelMessage": "Deletion process cancelled",
+      "ok": "OK"
+    },
+    "imageEditor": {
+      "deleteConfirm": "Are you sure you want to delete this?!",
+      "editTitle": "Edit Avatar",
+      "errorGeneric": "An error occurred"
+    },
+    "imageEditorModal": {
+      "dragInstruction": "Drag image to adjust position",
+      "zoom": "Zoom",
+      "rotation": "Rotation",
+      "flip": "Flip",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "imageEditorMain": {
+      "sizeLimitError": "Image limit is only {{limit}} MB, uploaded image is {{current}} MB",
+      "dropInstruction": "Drag & drop image or click to upload"
+    }
+  },
   "common": {
     "cancel": "Cancel",
     "save": "Save",
@@ -319,6 +347,57 @@
       "revokeButton": "End Session",
       "revokeAction": "End Session",
       "cancel": "Cancel"
+    },
+    "form": {
+      "avatar": {
+        "change": "Change profile picture",
+        "deleteSuccess": "Profile picture deleted successfully",
+        "deleteError": "Failed to delete profile picture",
+        "maxSize": "Maximum 2MB",
+        "invalidFormat": "File must be an image",
+        "updateError": "Failed to update profile picture"
+      },
+      "activeUser": "Active User",
+      "accountType": "Account Type",
+      "b2b": "B2B ({{id}})",
+      "individual": "Individual Candidate",
+      "status": "Status",
+      "statusReady": "🛡️ Ready to Test",
+      "mainInfo": {
+        "title": "Main Candidate Information",
+        "subtitle": "This data is used to verify profile suitability on your psychogram report."
+      },
+      "fields": {
+        "fullName": "Full Name *",
+        "fullNamePlaceholder": "Enter full name",
+        "email": "Email Address",
+        "emailHelp": "(cannot be changed)",
+        "phone": "WhatsApp / Phone Number",
+        "phonePlaceholder": "Example: +1234567890",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "dob": "Date of Birth",
+        "bio": "Bio",
+        "bioPlaceholder": "Write a short bio..."
+      },
+      "validation": {
+        "fullNameRequired": "Full name is required"
+      },
+      "buttons": {
+        "saving": "Saving...",
+        "submit": "Save Profile Changes"
+      }
+    },
+    "changePassword": {
+      "title": "Change Password",
+      "subtitle": "Make sure to use a strong password that you haven't used on other sites.",
+      "oldPasswordLabel": "Current Password *",
+      "oldPasswordPlaceholder": "Enter current password",
+      "mismatchError": "New passwords do not match!",
+      "minLengthError": "New password must be at least 8 characters!",
+      "saving": "Saving...",
+      "submit": "Update Password"
     }
   }
 }

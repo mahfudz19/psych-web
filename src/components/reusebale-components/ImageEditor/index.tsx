@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   FlipHorizontal,
@@ -32,6 +33,7 @@ interface ImageEditorModalProps {
 }
 
 export function ImageEditorModal(props: ImageEditorModalProps) {
+  const { t } = useTranslation();
   const {
     width = 256,
     height = 256,
@@ -59,21 +61,16 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Calculate minimum scale to fit image width to container width
   const getMinScale = () => {
     if (!naturalDimensions.width || !naturalDimensions.height) return 0.5;
-
-    // Minimum scale when image width fits container width
     return Math.min(width / naturalDimensions.width, 1);
   };
 
-  // Calculate container scale to fit width
   const getContainerScale = () => {
     if (!containerWidth) return 1;
     return Math.min(1, containerWidth / width);
   };
 
-  // Constrain position to keep image within reasonable bounds
   const constrainPosition = (
     newPosition: { x: number; y: number },
     currentScale: number,
@@ -81,11 +78,9 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
     if (!naturalDimensions.width || !naturalDimensions.height)
       return newPosition;
 
-    // Calculate scaled dimensions
     const scaledWidth = naturalDimensions.width * currentScale;
     const scaledHeight = naturalDimensions.height * currentScale;
 
-    // Calculate maximum allowed offset (allow some movement but keep image visible)
     const maxOffsetX = Math.max(0, (scaledWidth - width) / 2);
     const maxOffsetY = Math.max(0, (scaledHeight - height) / 2);
 
@@ -95,7 +90,6 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
     };
   };
 
-  // Reset transformations when image changes
   useEffect(() => {
     if (image) {
       setScale(1);
@@ -104,7 +98,6 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
     }
   }, [image]);
 
-  // Update container width on mount and resize
   useEffect(() => {
     const updateWidth = () => {
       if (containerRef.current)
@@ -115,7 +108,6 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  // Handle image dragging for positioning
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!image) return;
     setIsDragging(true);
@@ -135,7 +127,6 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
     setIsDragging(false);
   };
 
-  // Handle touch events for mobile
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!image) return;
     setIsDragging(true);
@@ -156,15 +147,12 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
 
   const handleTouchEnd = () => setIsDragging(false);
 
-  // Rotation handlers
   const rotateLeft = () => setRotation((prev) => prev - 90);
   const rotateRight = () => setRotation((prev) => prev + 90);
 
-  // Zoom handlers
   const zoomIn = () => {
     const newScale = Math.min(scale + 0.1, 3);
     setScale(newScale);
-    // Constrain position when scale changes
     setPosition(constrainPosition(position, newScale));
   };
 
@@ -172,11 +160,9 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
     const minScale = getMinScale();
     const newScale = Math.max(scale - 0.1, minScale);
     setScale(newScale);
-    // Constrain position when scale changes
     setPosition(constrainPosition(position, newScale));
   };
 
-  // Load image and get natural dimensions
   useEffect(() => {
     if (image && imageRef.current) {
       const img = imageRef.current;
@@ -186,13 +172,11 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
           height: img.naturalHeight,
         });
 
-      // If already loaded
       if (img.complete) handleLoad();
       else img.onload = handleLoad;
     }
   }, [image]);
 
-  // Generate final avatar
   const generateAvatar = () => {
     if (
       !image ||
@@ -206,13 +190,9 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Save context state
     ctx.save();
 
-    // Create clipping path for shape
     if (shape === "circle") {
       ctx.beginPath();
       ctx.arc(
@@ -245,18 +225,13 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
       ctx.clip();
     }
 
-    // Move to center of canvas
     ctx.translate(canvas.width / 2, canvas.height / 2);
-
-    // Rotate
     ctx.rotate((rotation * Math.PI) / 180);
 
-    // Apply flip transformations
     const scaleX = flipHorizontal ? -1 : 1;
     const scaleY = flipVertical ? -1 : 1;
     ctx.scale(scaleX * scale, scaleY * scale);
 
-    // Calculate dimensions to maintain aspect ratio (cover)
     const img = imageRef.current;
     const imgRatio = img.naturalWidth / img.naturalHeight;
     const canvasRatio = canvas.width / canvas.height;
@@ -271,8 +246,6 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
       drawHeight = drawWidth / imgRatio;
     }
 
-    // Draw image with position offset and proper dimensions
-    // Adjust position.x and position.y for flip to keep image position consistent
     const posX = flipHorizontal ? -position.x / scale : position.x / scale;
     const posY = flipVertical ? -position.y / scale : position.y / scale;
 
@@ -284,11 +257,9 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
       drawHeight,
     );
 
-    // Restore context state
     ctx.restore();
   };
 
-  // Update canvas when image or transformations change
   useEffect(() => {
     if (
       image &&
@@ -298,7 +269,6 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
     ) {
       generateAvatar();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     image,
     scale,
@@ -310,7 +280,6 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
     flipVertical,
   ]);
 
-  // Constrain position when image dimensions are loaded
   useEffect(() => {
     if (naturalDimensions.width > 0) {
       const minScale = getMinScale();
@@ -319,10 +288,8 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
       }
       setPosition(constrainPosition(position, scale));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [naturalDimensions]);
 
-  // Handle save button click
   const handleSave = async () => {
     if (!canvasRef.current) return;
     const dataUrl = canvasRef.current.toDataURL("image/png");
@@ -343,7 +310,6 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
       className="flex flex-col items-stretch w-full space-y-2 mx-auto"
       ref={containerRef}
     >
-      {/* Preview area */}
       <div
         className={`relative overflow-hidden mx-auto outline outline-offset-4 outline-divider ${
           shape === "circle"
@@ -386,12 +352,13 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
       {showControls && (
         <>
           <p className="text-xs text-gray-500 text-center">
-            Geser gambar untuk mengatur posisi
+            {t("components.imageEditorModal.dragInstruction")}
           </p>
 
-          {/* Zoom controls */}
           <div>
-            <span className="text-sm font-medium">Zoom</span>
+            <span className="text-sm font-medium">
+              {t("components.imageEditorModal.zoom")}
+            </span>
             <div className="flex gap-1 items-center">
               <IconButton
                 variant="text"
@@ -425,9 +392,10 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
             </div>
           </div>
 
-          {/* Rotation controls */}
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Rotasi</span>
+            <span className="text-sm font-medium">
+              {t("components.imageEditorModal.rotation")}
+            </span>
             <div className="flex space-x-2">
               <IconButton size="sm" variant="text" onClick={rotateLeft}>
                 <RotateCcw size={16} />
@@ -438,9 +406,10 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
             </div>
           </div>
 
-          {/* Flip control */}
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Flip</span>
+            <span className="text-sm font-medium">
+              {t("components.imageEditorModal.flip")}
+            </span>
             <div className="flex space-x-2">
               <IconButton
                 variant="text"
@@ -461,27 +430,26 @@ export function ImageEditorModal(props: ImageEditorModalProps) {
             </div>
           </div>
 
-          {/* Action buttons */}
           <div className="flex justify-center gap-2 pt-4">
             {onCancel && (
               <Button
                 variant="text"
                 disabled={load}
-                startIcon={<X fontSize={14} />}
+                startIcon={<X size={14} />}
                 onClick={onCancel}
                 color="error"
               >
-                Batal
+                {t("components.imageEditorModal.cancel")}
               </Button>
             )}
             <Button
               variant="outlined"
               loading={load}
               disabled={load}
-              startIcon={<Save fontSize={16} />}
+              startIcon={<Save size={16} />}
               onClick={handleSave}
             >
-              Image
+              {t("components.imageEditorModal.save")}
             </Button>
           </div>
         </>
@@ -560,6 +528,7 @@ const convertBytesToMB = (bytes: number): string => {
 };
 
 export default function ImageEditor(props: ImageEditorProps) {
+  const { t } = useTranslation();
   const {
     width = 256,
     height = 256,
@@ -575,16 +544,16 @@ export default function ImageEditor(props: ImageEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
 
-  // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (disabled) return;
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > limitSize) {
         setError(
-          `Batas gambar hanya ${convertBytesToMB(limitSize)} MB, gambar yang di upload ${convertBytesToMB(
-            file.size,
-          )} Mb`,
+          t("components.imageEditorMain.sizeLimitError", {
+            limit: convertBytesToMB(limitSize),
+            current: convertBytesToMB(file.size),
+          }),
         );
         setTimeout(() => setError(""), 5000);
         return;
@@ -596,7 +565,6 @@ export default function ImageEditor(props: ImageEditorProps) {
       };
       reader.readAsDataURL(file);
 
-      // Reset file input value to allow selecting the same file again
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
@@ -607,7 +575,6 @@ export default function ImageEditor(props: ImageEditorProps) {
     onImageSelect("");
   };
 
-  // Handle drag and drop
   const handleDragOver = (e: React.DragEvent) => {
     if (disabled) return;
     e.preventDefault();
@@ -628,9 +595,10 @@ export default function ImageEditor(props: ImageEditorProps) {
     if (file && file.type.startsWith("image/")) {
       if (file.size > limitSize) {
         setError(
-          `Batas gambar hanya ${convertBytesToMB(limitSize)} MB, gambar yang di upload ${convertBytesToMB(
-            file.size,
-          )} Mb`,
+          t("components.imageEditorMain.sizeLimitError", {
+            limit: convertBytesToMB(limitSize),
+            current: convertBytesToMB(file.size),
+          }),
         );
         setTimeout(() => setError(""), 5000);
         return;
@@ -642,7 +610,6 @@ export default function ImageEditor(props: ImageEditorProps) {
       };
       reader.readAsDataURL(file);
 
-      // Reset file input value
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
@@ -665,10 +632,9 @@ export default function ImageEditor(props: ImageEditorProps) {
           onClick={handleClear}
           className="absolute top-2 right-2 z-10 bg-background-paper p-0.5"
         >
-          <Trash fontSize={18} />
+          <Trash size={18} />
         </IconButton>
       )}
-      {/* Upload area */}
       <div
         className={twMerge(
           "relative inline-block w-full overflow-hidden outline-dashed outline-2 outline-offset-4 cursor-pointer hover:outline-primary-main transition-colors text-text-secondary max-w-full",
@@ -703,7 +669,7 @@ export default function ImageEditor(props: ImageEditorProps) {
           >
             <Upload className="w-10 h-10 mb-2" />
             <p className="text-sm text-center">
-              Drag & drop gambar atau klik untuk upload
+              {t("components.imageEditorMain.dropInstruction")}
             </p>
             {message && <p className="text-xs mt-1.5 text-center">{message}</p>}
           </div>

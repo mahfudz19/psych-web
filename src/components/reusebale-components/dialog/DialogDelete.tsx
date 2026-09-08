@@ -1,5 +1,5 @@
-// ** React Imports
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import toast from "../../ui/Toast";
 import Dialog from "../../ui/Dialog";
 import { AlertCircle, Check, X } from "lucide-react";
@@ -7,7 +7,6 @@ import Button from "../../ui/Button";
 
 interface Props {
   body: string;
-  // Mengadopsi standar baru: mengganti open/close dengan trigger
   trigger: (
     openDialog: (e?: React.MouseEvent | Element | Event) => void,
   ) => React.ReactNode;
@@ -25,7 +24,8 @@ const DialogDelete = ({
   secondRunFunction,
   refetch,
 }: Props) => {
-  // Menggabungkan alur dua dialog menjadi dua langkah ('confirm' dan 'result') dalam satu dialog
+  const { t } = useTranslation();
+
   const [step, setStep] = useState<"confirm" | "result">("confirm");
   const [userInput, setUserInput] = useState<"yes" | "cancel">("yes");
   const [loading, setLoading] = useState(false);
@@ -37,7 +37,7 @@ const DialogDelete = ({
         await runFunction();
       }
       setUserInput(value);
-      setStep("result"); // Langsung pindah ke tampilan hasil tanpa menutup dialog
+      setStep("result");
     } catch (error: any) {
       const text =
         error?.response?.data?.message ||
@@ -61,7 +61,6 @@ const DialogDelete = ({
     }
   };
 
-  // Membungkus trigger bawaan agar kita bisa me-reset state setiap kali dialog dibuka
   const wrappedTrigger = (
     openDialog: (e?: React.MouseEvent | Element | Event) => void,
   ) => {
@@ -73,13 +72,8 @@ const DialogDelete = ({
   };
 
   return (
-    <Dialog
-      trigger={wrappedTrigger}
-      dismissible={!loading} // Cegah user menutup saat loading
-      isDynamic={true} // Secara eksplisit memanggil dynamic import[cite: 2]
-    >
+    <Dialog trigger={wrappedTrigger} dismissible={!loading} isDynamic={true}>
       {(closeDialog) => (
-        // Memindahkan event listener Enter key dari document global ke container dialog agar lebih aman
         <div
           className="focus:outline-none"
           tabIndex={-1}
@@ -87,7 +81,8 @@ const DialogDelete = ({
             if (step === "confirm" && e.key === "Enter") {
               const activeElement = document.activeElement as HTMLElement;
               const isCancelButton =
-                activeElement?.textContent?.trim().toUpperCase() === "CANCEL";
+                activeElement?.textContent?.trim().toUpperCase() ===
+                t("components.dialogDelete.cancel");
               if (!isCancelButton) handleConfirmation("yes");
             } else if (step === "result" && e.key === "Enter") {
               handleFinish(closeDialog);
@@ -100,7 +95,7 @@ const DialogDelete = ({
                 <div className="flex items-center justify-center">
                   <div className="max-w-[85%] text-center">
                     <AlertCircle
-                      fontSize={88}
+                      size={88}
                       className="inline my-8 text-warning"
                     />
                     <div>{body}</div>
@@ -114,7 +109,7 @@ const DialogDelete = ({
                   disabled={loading}
                   onClick={() => handleConfirmation("cancel")}
                 >
-                  CANCEL
+                  {t("components.dialogDelete.cancel")}
                 </Button>
                 <Button
                   variant="contained"
@@ -122,7 +117,7 @@ const DialogDelete = ({
                   disabled={loading}
                   onClick={() => handleConfirmation("yes")}
                 >
-                  YES
+                  {t("components.dialogDelete.yes")}
                 </Button>
               </div>
             </>
@@ -131,18 +126,20 @@ const DialogDelete = ({
               <div className="mt-8">
                 <div className="flex flex-col items-center">
                   {userInput === "yes" && (
-                    <Check className="text-success" fontSize={88} />
+                    <Check className="text-success" size={88} />
                   )}
                   {userInput === "cancel" && (
-                    <X className="text-error" fontSize={88} />
+                    <X className="text-error" size={88} />
                   )}
                   <h4 className="mb-2">
-                    {userInput === "yes" ? "DELETED" : "CANCELLED"}
+                    {userInput === "yes"
+                      ? t("components.dialogDelete.deleted")
+                      : t("components.dialogDelete.cancelled")}
                   </h4>
                   <p>
                     {userInput === "yes"
-                      ? "Proses penghapusan berhasil"
-                      : "Proses penghapusan dibatalkan"}
+                      ? t("components.dialogDelete.successMessage")
+                      : t("components.dialogDelete.cancelMessage")}
                   </p>
                 </div>
               </div>
@@ -152,7 +149,7 @@ const DialogDelete = ({
                   color="success"
                   onClick={() => handleFinish(closeDialog)}
                 >
-                  OK
+                  {t("components.dialogDelete.ok")}
                 </Button>
               </div>
             </>

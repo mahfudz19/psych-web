@@ -8,10 +8,31 @@ import Tab from "../../components/ui/Tabs/Tab";
 import TabContent from "../../components/ui/Tabs/TabContent";
 
 export const Route = createFileRoute("/example-page/")({
-  component: ButtonShowcase,
+  component,
 });
 
-export default function ButtonShowcase() {
+function component() {
+  const [menu, setMenu] = useState("button");
+  const menus = ["button", "tabs"] as const;
+  return (
+    <div className="flex">
+      <div className="max-w-2xl flex-0">
+        {menus.map((v) => (
+          <Button key={v} onClick={() => setMenu(v)}>
+            {v}
+          </Button>
+        ))}
+
+        <div className="col-span-4 flex-1">
+          {menu === "button" && <ButtonShowcase />}
+          {menu === "tabs" && <TabsPage />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ButtonShowcase() {
   const COLORS = [
     "primary",
     "secondary",

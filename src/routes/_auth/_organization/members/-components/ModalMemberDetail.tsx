@@ -1,6 +1,6 @@
 import { Calendar, Eye, LoaderCircle, Mail, X } from "lucide-react";
 import { useMemberByIdQuery } from "../-api/organization.query";
-import Dialog from "../../../../../components/ui/DIalog";
+import Dialog from "../../../../../components/ui/Dialog";
 import IconButton from "../../../../../components/ui/IconButton";
 import type { OrganizationMember } from "../../../../../types";
 

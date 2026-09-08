@@ -60,21 +60,21 @@ export interface User {
   id: string;
   email: string;
   fullName: string;
-  profilePicture: string | null;
-  phone: string | null;
+  profilePicture?: string | null;
+  phone?: string | null;
   bio?: string;
   dateOfBirth?: string;
   gender?: "male" | "female";
   roles: string[];
   accountType: AccountType;
-  organizationId: string | null;
-  organizationRole: OrganizationRole | null;
-  organizationName: string | null;
+  organizationId?: string | null;
+  organizationRole?: OrganizationRole | null;
+  organizationName?: string | null;
   subscriptionTier: SubscriptionTier;
-  referralCode: string | null;
-  inviteCode: string | null;
+  referralCode?: string | null;
+  inviteCode?: string | null;
   status: UserStatus;
-  lastLoginAt: string | null;
+  lastLoginAt?: string | null;
   createdAt: string;
 }
 

@@ -1,7 +1,7 @@
 import { LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Button from "../../../../../../components/ui/Button";
-import Dialog from "../../../../../../components/ui/DIalog";
+import Dialog from "../../../../../../components/ui/Dialog";
 import IconButton from "../../../../../../components/ui/IconButton";
 import { useRevokeSessionMutation } from "../-api/sessions.query";
 import type { Session } from "../../../../../../types/user";

@@ -10,7 +10,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useGenerateInviteCodeMutation } from "../../-api/organization.query";
 import Button from "../../../../../components/ui/Button";
-import Dialog from "../../../../../components/ui/DIalog";
+import Dialog from "../../../../../components/ui/Dialog";
 import IconButton from "../../../../../components/ui/IconButton";
 import toast from "../../../../../components/ui/Toast";
 import { useAuthStore } from "../../../../../utils/authStore";

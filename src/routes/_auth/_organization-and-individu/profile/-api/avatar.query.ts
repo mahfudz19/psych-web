@@ -1,12 +1,29 @@
 import { useMutation } from "@tanstack/react-query";
+import toast from "../../../../../components/ui/Toast";
+import type { User } from "../../../../../types/user";
 import { api } from "../../../../../utils/api";
 import { authStore } from "../../../../../utils/authStore";
-import toast from "../../../../../components/ui/Toast";
 import { updateProfile } from "../../../../_guest/-api/auth.api";
 
-// ponytail: single-file upload only, add progress tracking when needed
+const uploadAvatar = async ({
+  file,
+  user,
+}: {
+  file: File | null;
+  user: User | null;
+}) => {
+  if (!file) {
+    const { data } = await updateProfile({
+      profilePicture: "",
+      bio: user?.bio,
+      dateOfBirth: user?.dateOfBirth,
+      fullName: user?.fullName,
+      gender: user?.gender,
+      phone: user?.phone ?? "",
+    });
+    return data;
+  }
 
-const uploadAvatar = async (file: File) => {
   type Res = { uploadUrl: string; fileKey: string; bucket: string };
 
   // Langkah 1: Minta Signed URL dari backend
@@ -17,7 +34,7 @@ const uploadAvatar = async (file: File) => {
     visibility: "PUBLIC",
   });
   if (!urlData) throw new Error("Gagal mendapatkan URL unggah");
-  // Langkah 2: Upload ke GCS — fetch MURNI, tanpa Bearer token!
+
   const gcsResponse = await fetch(urlData.uploadUrl, {
     method: "PUT",
     headers: { "Content-Type": file.type },
@@ -26,21 +43,30 @@ const uploadAvatar = async (file: File) => {
 
   if (!gcsResponse.ok) throw new Error("Gagal mengunggah ke penyimpanan awan");
 
-  // Langkah 3: Update profil dengan URL permanen
-  const { data: user } = await updateProfile({
+  const { data } = await updateProfile({
     profilePicture: urlData.fileKey ?? undefined,
+    bio: user?.bio,
+    dateOfBirth: user?.dateOfBirth,
+    fullName: user?.fullName,
+    gender: user?.gender,
+    phone: user?.phone ?? "",
   });
 
-  return user;
+  return data;
 };
 
 export function useAvatarUploadMutation() {
   return useMutation({
     mutationFn: uploadAvatar,
-    onSuccess: (user) => {
+    onSuccess: (user, variables) => {
       if (user) authStore.set({ user });
-      toast.success("Foto profil berhasil diperbarui");
+
+      if (variables === null) toast.success("Foto profil berhasil dihapus");
+      else toast.success("Foto profil berhasil diperbarui");
     },
-    onError: () => toast.error("Gagal mengunggah foto profil"),
+    onError: (_, variables) => {
+      if (variables === null) toast.error("Gagal menghapus foto profil");
+      else toast.error("Gagal mengunggah foto profil");
+    },
   });
 }

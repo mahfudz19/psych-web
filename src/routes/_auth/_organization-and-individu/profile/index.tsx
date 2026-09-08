@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Camera, Loader2 } from "lucide-react";
+import FieldInputImage from "../../../../components/reusebale-components/FieldInputImage";
 import Button from "../../../../components/ui/Button";
 import Input from "../../../../components/ui/Input";
 import InputDate from "../../../../components/ui/InputDate";
@@ -20,9 +20,17 @@ const ChangeAvatar = () => {
   const { user } = useAuthStore();
   const avatarMutation = useAvatarUploadMutation();
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleAvatarChange = (file: File | null) => {
+    if (!file) {
+      avatarMutation.mutate(
+        { file: null, user },
+        {
+          onSuccess: () => toast.success("Foto profil berhasil dihapus"),
+          onError: () => toast.error("Gagal menghapus foto profil"),
+        },
+      );
+      return;
+    }
 
     if (file.size > 2 * 1024 * 1024) return toast.error("Maksimal 2MB");
     if (!file.type.startsWith("image/"))
@@ -30,51 +38,27 @@ const ChangeAvatar = () => {
 
     const objectUrl = URL.createObjectURL(file);
 
-    avatarMutation.mutate(file, {
-      onSettled: () => URL.revokeObjectURL(objectUrl),
-      onError: () => toast.error("Gagal memperbarui foto profil"),
-    });
+    avatarMutation.mutate(
+      { file, user },
+      {
+        onSettled: () => URL.revokeObjectURL(objectUrl),
+        onError: () => toast.error("Gagal memperbarui foto profil"),
+      },
+    );
   };
 
   const displayImage = user?.profilePicture;
 
   return (
-    <label
-      className="w-16 h-16 rounded-2xl bg-primary-main/10 text-primary-main border border-primary-main/20 flex items-center justify-center text-2xl font-black uppercase shadow-sm cursor-pointer relative overflow-hidden group"
-      aria-label="Ubah foto profil"
-    >
-      {displayImage ? (
-        <img
-          src={displayImage}
-          alt={user?.fullName || "Avatar"}
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        user?.fullName?.charAt(0) || "U"
-      )}
-
-      <div
-        className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity ${
-          avatarMutation.isPending
-            ? "opacity-100"
-            : "opacity-0 group-hover:opacity-100"
-        }`}
-      >
-        {avatarMutation.isPending ? (
-          <Loader2 className="w-5 h-5 text-white animate-spin" />
-        ) : (
-          <Camera className="w-5 h-5 text-white" />
-        )}
-      </div>
-
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleAvatarChange}
-        className="hidden"
-        disabled={avatarMutation.isPending}
-      />
-    </label>
+    <FieldInputImage
+      defaultImage={displayImage}
+      onSave={(_, data) => handleAvatarChange(data)}
+      width={255}
+      height={255}
+      limitSize={2 * 1024 * 1024}
+      shape="rounded"
+      error={Boolean(avatarMutation.error)}
+    />
   );
 };
 
@@ -221,41 +205,42 @@ function ProfileInfoPage() {
   const isB2B = Boolean(user?.organizationId);
 
   return (
-    <div className="space-y-6">
-      {/* HEADER PROFILE */}
-      <div className="p-6 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
-        <div className="flex items-center gap-5">
+    <div className="flex flex-col md:flex-row gap-6 md:items-start">
+      {/* KOLOM KIRI: Kartu Identitas & Avatar (Sidebar Profil) */}
+      <div className="w-full md:w-1/3 flex flex-col gap-6">
+        <div className="p-6 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col items-center text-center">
           <ChangeAvatar />
 
-          <div className="space-y-1">
+          <div className="mt-4 space-y-1">
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">
               {user?.fullName || "Pengguna Aktif"}
             </h2>
-            <p className="text-xs font-medium text-text-secondary flex items-center gap-2">
-              <span>{user?.email || "user@psycorp.test"}</span>
-              <span>•</span>
-              <span className="font-mono text-primary-main font-semibold">
-                {isB2B
-                  ? `Org ID: ${user?.organizationId}`
-                  : "Kandidat Terverifikasi"}
-              </span>
+            <p className="text-sm font-medium text-text-secondary">
+              {user?.email || "user@psycorp.test"}
             </p>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <div className="px-3.5 py-2 rounded-2xl bg-bg-default border border-divider text-left">
-            <p className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">
-              Status Identitas
-            </p>
-            <p className="text-xs font-bold text-success-main flex items-center gap-1 mt-0.5">
-              <span>🛡️</span> Siap Mengikuti Tes
-            </p>
+          <div className="mt-6 w-full pt-6 border-t border-divider flex flex-col gap-3">
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-text-secondary font-medium">Tipe Akun</span>
+              <span className="font-mono text-primary-main font-semibold">
+                {isB2B ? `B2B (${user?.organizationId})` : "Kandidat Individu"}
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-text-secondary font-medium">Status</span>
+              <span className="font-bold text-success-main flex items-center gap-1">
+                🛡️ Siap Tes
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      <FormInputs />
+      {/* KOLOM KANAN: Form Inputs (Mengambil sisa ruang) */}
+      <div className="w-full md:w-2/3">
+        <FormInputs />
+      </div>
     </div>
   );
 }

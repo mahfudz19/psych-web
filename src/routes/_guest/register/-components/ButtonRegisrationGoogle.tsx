@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { useGoogleRegisterMutation } from "../../-api/auth.query";
 import Button from "../../../../components/ui/Button";
-import Dialog from "../../../../components/ui/DIalog";
+import Dialog from "../../../../components/ui/Dialog";
 import Skeleton from "../../../../components/ui/Skeleton";
 import Input from "../../../../components/ui/Input";
 import toast from "../../../../components/ui/Toast";

@@ -2,7 +2,7 @@ import { LoaderCircle, Trash } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useKickMemberMutation } from "../-api/organization.query";
 import Button from "../../../../../components/ui/Button";
-import Dialog from "../../../../../components/ui/DIalog";
+import Dialog from "../../../../../components/ui/Dialog";
 import IconButton from "../../../../../components/ui/IconButton";
 import toast from "../../../../../components/ui/Toast";
 import type { OrganizationMember } from "../../../../../types";

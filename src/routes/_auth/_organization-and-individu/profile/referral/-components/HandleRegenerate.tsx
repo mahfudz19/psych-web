@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import Dialog from "../../../../../../components/ui/DIalog";
+import Dialog from "../../../../../../components/ui/Dialog";
 import Button from "../../../../../../components/ui/Button";
 import { useRegenerateMutation } from "../-api/referral.query";
 

@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import IconButton from "../../../../../../components/ui/IconButton";
 import type { Users } from "../-api/user.type";
-import Dialog from "../../../../../../components/ui/DIalog";
+import Dialog from "../../../../../../components/ui/Dialog";
 import { useUserDetailQuery } from "../-api/user.query";
 
 // Helper untuk format tanggal

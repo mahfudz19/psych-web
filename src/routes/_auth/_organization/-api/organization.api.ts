@@ -4,7 +4,6 @@ import type {
   CreateOrganizationRequest,
   CreateOrganizationResponse,
   UpdateOrganizationRequest,
-  DeleteOrganizationRequest,
   MembersListParams,
   OrganizationMember,
   OrganizationDetailResponse,
@@ -36,16 +35,8 @@ export async function updateOrganization({
   return api.patch<CreateOrganizationResponse>(`${BASE}/${orgId}/update`, data);
 }
 
-export async function deleteOrganization({
-  orgId,
-  confirmation,
-}: {
-  orgId: string;
-  confirmation: DeleteOrganizationRequest["confirmation"];
-}) {
-  return api.delete(`${BASE}/${orgId}/delete`, {
-    body: JSON.stringify({ confirmation }),
-  });
+export async function deleteOrganization(orgId: string) {
+  return api.delete<User>(`${BASE}/${orgId}/delete`);
 }
 
 export async function uploadOrganizationLogo({

@@ -85,14 +85,6 @@ export interface UpdateOrganizationRequest {
 }
 
 /**
- * Interface untuk request delete organisasi
- * Memerlukan confirmation text
- */
-export interface DeleteOrganizationRequest {
-  confirmation: "DELETE_MY_ORGANIZATION";
-}
-
-/**
  * Interface untuk item organisasi di list response
  */
 export interface OrganizationListItem {

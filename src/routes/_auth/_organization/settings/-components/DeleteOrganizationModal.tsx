@@ -1,12 +1,10 @@
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import Dialog from "../../../../../components/ui/Dialog";
-import Button from "../../../../../components/ui/Button";
 import { useDeleteOrganizationMutation } from "../../-api/organization.query";
+import Button from "../../../../../components/ui/Button";
+import Dialog from "../../../../../components/ui/Dialog";
 import toast from "../../../../../components/ui/Toast";
-import { useNavigate } from "@tanstack/react-router";
-import { me } from "../../../../_guest/-api/auth.api";
-import { authStore } from "../../../../../utils/authStore";
 
 interface Props {
   orgId: string | null | undefined;
@@ -28,13 +26,7 @@ export default function DeleteOrganizationModal({ orgId }: Props) {
     if (!orgId) return;
 
     try {
-      await deleteOrganization({
-        orgId,
-        confirmation: "DELETE_MY_ORGANIZATION",
-      });
-      const { data: updatedUser } = await me();
-      authStore.set({ user: updatedUser });
-
+      await deleteOrganization(orgId);
       toast.success(t("organization.settings.deleteSuccess"));
       navigate({ to: "/login", replace: true });
     } catch (error: any) {

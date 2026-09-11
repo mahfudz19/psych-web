@@ -94,16 +94,11 @@ export function useDeleteOrganizationMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      orgId,
-      confirmation,
-    }: {
-      orgId: string;
-      confirmation: "DELETE_MY_ORGANIZATION";
-    }) => apiOrganization.deleteOrganization({ orgId, confirmation }),
-    onSuccess: () => {
+    mutationFn: apiOrganization.deleteOrganization,
+    onSuccess: ({ data }) => {
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
       queryClient.removeQueries({ queryKey: organizationKeys.all });
+      authStore.set({ user: data });
     },
   });
 }

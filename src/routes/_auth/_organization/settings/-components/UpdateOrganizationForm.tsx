@@ -1,11 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useUpdateOrganizationMutation } from "../../-api/organization.query";
 import Button from "../../../../../components/ui/Button";
-import type { Organization } from "../../../../../types";
 import Input from "../../../../../components/ui/Input";
 import Textarea from "../../../../../components/ui/Textarea";
+import type { OrganizationDetailResponse } from "../../../../../types";
 
-function UpdateOrganizationForm(props: { organization: Organization }) {
+function UpdateOrganizationForm(props: {
+  organization: OrganizationDetailResponse;
+}) {
   const { organization } = props;
   const { t } = useTranslation();
 

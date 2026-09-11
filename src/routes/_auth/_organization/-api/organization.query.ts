@@ -8,6 +8,7 @@ import * as apiOrganization from "./organization.api";
 import { useTranslation } from "react-i18next";
 import { authStore } from "../../../../utils/authStore";
 import type { BaseListParams } from "../../../../components/reusebale-components/DataTable";
+import { memberKeys } from "../members/-api/organization.query";
 
 export const organizationKeys = {
   all: ["organization"] as const,
@@ -141,5 +142,28 @@ export function useGenerateInviteCodeMutation() {
     onError: () => {
       toast.error("Gagal membuat kode undangan");
     },
+  });
+}
+
+export function useChangeRoleOrganization(orgId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      memberId,
+      role,
+    }: {
+      memberId: string;
+      role: "member" | "admin";
+    }) => apiOrganization.changeRoleOrganization(orgId, memberId, role),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: organizationKeys.detail(orgId),
+      });
+      toast.success("Peran anggota berhasil diperbarui.");
+    },
+    onError: (err: any) =>
+      toast.error(err?.data?.message || "Gagal memperbarui peran."),
   });
 }

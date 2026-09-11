@@ -7,6 +7,7 @@ import type {
   MembersListParams,
   OrganizationMember,
   OrganizationDetailResponse,
+  OrganizationMemberDetail,
 } from "../../../../types/organization";
 import type { User } from "../../../../types/user";
 import { api } from "../../../../utils/api";
@@ -58,12 +59,21 @@ export async function getMembers(orgId: string, params?: MembersListParams) {
 }
 
 export async function getMemberById(orgId: string, memberId: string) {
-  const endpoint = `${BASE}/${orgId}/members/${memberId}`;
-  return await api.get<OrganizationMember>(endpoint);
+  const endpoint = `${BASE}/${orgId}/members/${memberId}/detail`;
+  return await api.get<OrganizationMemberDetail>(endpoint);
 }
 
 export function kickMember(orgId: string, memberId: string) {
   return api.delete(`${BASE}/${orgId}/members/${memberId}/kick`);
+}
+
+export function changeRoleOrganization(
+  orgId: string,
+  memberId: string,
+  role: "member" | "admin",
+) {
+  const url = `${BASE}/${orgId}/members/${memberId}/role`;
+  return api.patch<User>(url, { role });
 }
 
 export function leaveOrganization(orgId: string) {

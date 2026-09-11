@@ -141,6 +141,24 @@ export interface OrganizationMember {
   createdAt: string;
   updatedAt: string;
 }
+export interface OrganizationMemberDetail {
+  id: string;
+  email: string;
+  fullName: string;
+  profilePicture?: string;
+  phone?: string;
+  bio?: string;
+  gender?: string;
+  organizationRole: "owner" | "admin" | "member";
+  status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING" | "DELETED";
+  accountType?: "INDIVIDUAL" | "ORGANIZATION";
+  subscriptionTier?: string;
+  invitationStatus?: "pending" | "accepted" | "declined" | "expired";
+  invitationRole?: "owner" | "admin" | "member";
+  lastLoginAt?: string;
+  createdAt: string;
+}
+
 export interface MembersListParams {
   page?: number;
   limit?: number;

@@ -73,7 +73,7 @@ export function changeRoleOrganization(
   role: "member" | "admin",
 ) {
   const url = `${BASE}/${orgId}/members/${memberId}/role`;
-  return api.patch<User>(url, { role });
+  return api.patch<OrganizationMember>(url, { role });
 }
 
 export function leaveOrganization(orgId: string) {

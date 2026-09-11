@@ -5,6 +5,7 @@ import {
   CreditCard,
   Group,
   History,
+  Info,
   LayoutDashboard,
   Settings,
   ShieldAlert,
@@ -62,7 +63,13 @@ export const menuConfig: NavGroup[] = [
   },
   {
     groupLabelKey: "sidebar.organization",
+    roles: ["ORGANIZATION"],
     items: [
+      {
+        titleKey: "sidebar.organization-info",
+        path: "/organization-info",
+        icon: <Info className="w-4 h-4 shrink-0" />,
+      },
       {
         titleKey: "sidebar.teamMembers",
         path: "/members",

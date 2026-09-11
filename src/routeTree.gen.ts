@@ -31,6 +31,7 @@ import { Route as AuthOrganizationAndIndividuBillingIndexRouteImport } from './r
 import { Route as AuthOrganizationAndIndividuProfileIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/index'
 import { Route as AuthOrganizationDashboardIndexRouteImport } from './routes/_auth/_organization/dashboard/index'
 import { Route as AuthOrganizationMembersIndexRouteImport } from './routes/_auth/_organization/members/index'
+import { Route as AuthOrganizationOrganizationInfoIndexRouteImport } from './routes/_auth/_organization/organization-info/index'
 import { Route as AuthOrganizationSettingsIndexRouteImport } from './routes/_auth/_organization/settings/index'
 import { Route as GuestRegisterOrganizationIndexRouteImport } from './routes/_guest/register/organization/index'
 import { Route as GuestRegisterVerifyEmailIndexRouteImport } from './routes/_guest/register/verify-email/index'
@@ -157,6 +158,12 @@ const AuthOrganizationMembersIndexRoute =
     path: '/members/',
     getParentRoute: () => AuthOrganizationRoute,
   } as any)
+const AuthOrganizationOrganizationInfoIndexRoute =
+  AuthOrganizationOrganizationInfoIndexRouteImport.update({
+    id: '/organization-info/',
+    path: '/organization-info/',
+    getParentRoute: () => AuthOrganizationRoute,
+  } as any)
 const AuthOrganizationSettingsIndexRoute =
   AuthOrganizationSettingsIndexRouteImport.update({
     id: '/settings/',
@@ -246,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/profile/': typeof AuthOrganizationAndIndividuProfileIndexRoute
   '/dashboard/': typeof AuthOrganizationDashboardIndexRoute
   '/members/': typeof AuthOrganizationMembersIndexRoute
+  '/organization-info/': typeof AuthOrganizationOrganizationInfoIndexRoute
   '/settings/': typeof AuthOrganizationSettingsIndexRoute
   '/register/organization/': typeof GuestRegisterOrganizationIndexRoute
   '/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
@@ -275,6 +283,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthOrganizationAndIndividuProfileIndexRoute
   '/dashboard': typeof AuthOrganizationDashboardIndexRoute
   '/members': typeof AuthOrganizationMembersIndexRoute
+  '/organization-info': typeof AuthOrganizationOrganizationInfoIndexRoute
   '/settings': typeof AuthOrganizationSettingsIndexRoute
   '/register/organization': typeof GuestRegisterOrganizationIndexRoute
   '/register/verify-email': typeof GuestRegisterVerifyEmailIndexRoute
@@ -312,6 +321,7 @@ export interface FileRoutesById {
   '/_auth/_organization-and-individu/profile/': typeof AuthOrganizationAndIndividuProfileIndexRoute
   '/_auth/_organization/dashboard/': typeof AuthOrganizationDashboardIndexRoute
   '/_auth/_organization/members/': typeof AuthOrganizationMembersIndexRoute
+  '/_auth/_organization/organization-info/': typeof AuthOrganizationOrganizationInfoIndexRoute
   '/_auth/_organization/settings/': typeof AuthOrganizationSettingsIndexRoute
   '/_guest/register/organization/': typeof GuestRegisterOrganizationIndexRoute
   '/_guest/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
@@ -344,6 +354,7 @@ export interface FileRouteTypes {
     | '/profile/'
     | '/dashboard/'
     | '/members/'
+    | '/organization-info/'
     | '/settings/'
     | '/register/organization/'
     | '/register/verify-email/'
@@ -373,6 +384,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/dashboard'
     | '/members'
+    | '/organization-info'
     | '/settings'
     | '/register/organization'
     | '/register/verify-email'
@@ -409,6 +421,7 @@ export interface FileRouteTypes {
     | '/_auth/_organization-and-individu/profile/'
     | '/_auth/_organization/dashboard/'
     | '/_auth/_organization/members/'
+    | '/_auth/_organization/organization-info/'
     | '/_auth/_organization/settings/'
     | '/_guest/register/organization/'
     | '/_guest/register/verify-email/'
@@ -586,6 +599,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationMembersIndexRouteImport
       parentRoute: typeof AuthOrganizationRoute
     }
+    '/_auth/_organization/organization-info/': {
+      id: '/_auth/_organization/organization-info/'
+      path: '/organization-info'
+      fullPath: '/organization-info/'
+      preLoaderRoute: typeof AuthOrganizationOrganizationInfoIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
+    }
     '/_auth/_organization/settings/': {
       id: '/_auth/_organization/settings/'
       path: '/settings'
@@ -704,6 +724,7 @@ const AuthIndividuRouteWithChildren = AuthIndividuRoute._addFileChildren(
 interface AuthOrganizationRouteChildren {
   AuthOrganizationDashboardIndexRoute: typeof AuthOrganizationDashboardIndexRoute
   AuthOrganizationMembersIndexRoute: typeof AuthOrganizationMembersIndexRoute
+  AuthOrganizationOrganizationInfoIndexRoute: typeof AuthOrganizationOrganizationInfoIndexRoute
   AuthOrganizationSettingsIndexRoute: typeof AuthOrganizationSettingsIndexRoute
   AuthOrganizationAdminOrganizationsIndexRoute: typeof AuthOrganizationAdminOrganizationsIndexRoute
   AuthOrganizationAdminSettingsAppIndexRoute: typeof AuthOrganizationAdminSettingsAppIndexRoute
@@ -713,6 +734,8 @@ interface AuthOrganizationRouteChildren {
 const AuthOrganizationRouteChildren: AuthOrganizationRouteChildren = {
   AuthOrganizationDashboardIndexRoute: AuthOrganizationDashboardIndexRoute,
   AuthOrganizationMembersIndexRoute: AuthOrganizationMembersIndexRoute,
+  AuthOrganizationOrganizationInfoIndexRoute:
+    AuthOrganizationOrganizationInfoIndexRoute,
   AuthOrganizationSettingsIndexRoute: AuthOrganizationSettingsIndexRoute,
   AuthOrganizationAdminOrganizationsIndexRoute:
     AuthOrganizationAdminOrganizationsIndexRoute,

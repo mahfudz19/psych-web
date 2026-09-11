@@ -125,7 +125,7 @@ function Dialog(props: DialogProps) {
           "backdrop:opacity-0 data-[state=open]:backdrop:opacity-100",
 
           scroll === "paper" && [
-            "bg-bg-paper border border-divider rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl",
+            "bg-bg-paper border border-divider rounded-3xl max-w-md w-full shadow-2xl",
             "max-h-[calc(100dvh-4rem)] overflow-y-auto",
             "scale-50 data-[state=open]:scale-100",
             className,

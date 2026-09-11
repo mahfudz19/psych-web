@@ -32,10 +32,10 @@ export function useGetOrganizations(params: BaseListParams) {
   });
 }
 
-export function useOrganizationQuery(orgId?: string | null) {
+export function useOrganizationQuery(orgId: string) {
   return useQuery({
-    queryKey: organizationKeys.detail(orgId!),
-    queryFn: () => apiOrganization.getOrganization(orgId!),
+    queryKey: organizationKeys.detail(orgId),
+    queryFn: () => apiOrganization.getOrganization(orgId),
     enabled: !!orgId,
     staleTime: 1000 * 60 * 5, // 5 menit
     retry: false,
@@ -96,6 +96,19 @@ export function useDeleteOrganizationMutation() {
 
   return useMutation({
     mutationFn: apiOrganization.deleteOrganization,
+    onSuccess: ({ data }) => {
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      queryClient.removeQueries({ queryKey: organizationKeys.all });
+      authStore.set({ user: data });
+    },
+  });
+}
+
+export function useLeaveOrganization() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: apiOrganization.leaveOrganization,
     onSuccess: ({ data }) => {
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
       queryClient.removeQueries({ queryKey: organizationKeys.all });

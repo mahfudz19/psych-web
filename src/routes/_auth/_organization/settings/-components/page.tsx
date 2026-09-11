@@ -10,6 +10,14 @@ function OrganizationSettingsPage() {
   const { user } = useAuthStore();
   const orgId = user?.organizationId;
 
+  if (!orgId) {
+    return (
+      <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center bg-bg-default text-text-secondary">
+        {t("common.processing")}
+      </div>
+    );
+  }
+
   const { data, isLoading, isError } = useOrganizationQuery(orgId);
 
   const organization = data?.data;

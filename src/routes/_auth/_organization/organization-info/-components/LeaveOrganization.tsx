@@ -1,26 +1,23 @@
-import { useNavigate } from "@tanstack/react-router";
+import { LogOut } from "lucide-react";
+import Button from "../../../../../components/ui/Button";
+import { useLeaveOrganization } from "../../-api/organization.query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDeleteOrganizationMutation } from "../../-api/organization.query";
-import Button from "../../../../../components/ui/Button";
-import Dialog from "../../../../../components/ui/Dialog";
+import { useNavigate } from "@tanstack/react-router";
 import toast from "../../../../../components/ui/Toast";
+import Dialog from "../../../../../components/ui/Dialog";
 import Input from "../../../../../components/ui/Input";
 
-interface Props {
-  orgId: string | null | undefined;
-}
-
-export default function DeleteOrganizationModal({ orgId }: Props) {
+function LeaveOrganization({ orgId }: { orgId: string }) {
   const [confirmation, setConfirmation] = useState("");
 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { mutateAsync: deleteOrganization, isPending: isLoading } =
-    useDeleteOrganizationMutation();
+    useLeaveOrganization();
 
-  const expectedConfirmation = "DELETE_MY_ORGANIZATION";
+  const expectedConfirmation = "LEAVE_MY_ORGANIZATION";
   const isValid = confirmation === expectedConfirmation;
 
   const onConfirm = async () => {
@@ -46,13 +43,14 @@ export default function DeleteOrganizationModal({ orgId }: Props) {
     <Dialog
       trigger={(openDialog) => (
         <Button
-          color="error"
-          variant="outlined"
           onClick={openDialog}
           disabled={isLoading}
-          size="lg"
+          variant="outlined"
+          color="error"
+          size="sm"
+          startIcon={<LogOut className="w-4 h-4" />}
         >
-          {t("organization.settings.deleteButton")}
+          Keluar Organisasi
         </Button>
       )}
       className="p-6"
@@ -79,10 +77,11 @@ export default function DeleteOrganizationModal({ orgId }: Props) {
               </svg>
             </div>
             <h3 className="text-xl font-extrabold text-text-primary mb-2">
-              {t("organization.delete.title")}
+              Leave Organization
             </h3>
             <p className="text-text-secondary text-sm leading-relaxed">
-              {t("organization.delete.warning")}
+              Are you sure you want to leave this organization? All data will be
+              permanently removed and cannot be recovered.
             </p>
           </div>
 
@@ -128,7 +127,7 @@ export default function DeleteOrganizationModal({ orgId }: Props) {
               loading={isLoading}
               className="flex-1"
             >
-              {t("organization.delete.confirmButton")}
+              Leave Organization
             </Button>
           </div>
         </>
@@ -136,3 +135,5 @@ export default function DeleteOrganizationModal({ orgId }: Props) {
     </Dialog>
   );
 }
+
+export default LeaveOrganization;

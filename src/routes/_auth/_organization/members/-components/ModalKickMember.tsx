@@ -58,6 +58,7 @@ export default function ModalKickMember({
           )}
         </IconButton>
       )}
+      className="p-6"
       scroll="paper"
       dismissible={!isLoading}
     >

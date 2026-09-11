@@ -201,7 +201,7 @@ function ContentDetail({ member, orgId }: Props) {
 export default function ModalMemberDetail(props: Props) {
   return (
     <Dialog
-      className="text-left max-w-sm"
+      className="p-6 text-left max-w-sm"
       trigger={(openDialog) => (
         <IconButton
           variant="text"

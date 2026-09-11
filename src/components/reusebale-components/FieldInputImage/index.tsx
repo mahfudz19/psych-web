@@ -56,7 +56,7 @@ function FieldInputImage({
       <Dialog
         dismissible={!load}
         scroll="paper"
-        className={`${fullWidth ? "w-full" : ""} ${maxWidthClass}`}
+        className={`p-6 ${fullWidth ? "w-full" : ""} ${maxWidthClass}`}
         trigger={(openEditDialog) => (
           <DialogDelete
             body={t("components.imageEditor.deleteConfirm")}

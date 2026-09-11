@@ -1,10 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "../../../../../../components/ui/Toast";
-import {
-  getReferralStats,
-  regenerateReferralCode,
-  type RegenerateReferralRequest,
-} from "./referral.api";
+import * as apiReferral from "./referral.api";
 
 export const referralKeys = {
   all: ["referral"] as const,
@@ -15,7 +11,7 @@ export const referralKeys = {
 export function useReferralStatsQuery() {
   return useQuery({
     queryKey: referralKeys.stats(),
-    queryFn: getReferralStats,
+    queryFn: apiReferral.getReferralStats,
     staleTime: 1000 * 60 * 5, // 5 menit
     retry: false,
   });
@@ -25,8 +21,8 @@ export function useRegenerateMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: RegenerateReferralRequest) =>
-      regenerateReferralCode(data),
+    mutationFn: (data: apiReferral.RegenerateReferralRequest) =>
+      apiReferral.regenerateReferralCode(data),
     onSuccess: () => {
       toast.success("Kode referral berhasil diperbarui");
       queryClient.invalidateQueries({ queryKey: referralKeys.all });

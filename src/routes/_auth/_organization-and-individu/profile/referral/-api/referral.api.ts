@@ -17,7 +17,3 @@ export function getReferralStats() {
 export function regenerateReferralCode(data: RegenerateReferralRequest) {
   return api.post<RegenerateReferralResponse>(`${BASE}/regenerate`, data);
 }
-
-export function getReferralHistory() {
-  return api.get<ReferralStats>(`${BASE}/history`);
-}

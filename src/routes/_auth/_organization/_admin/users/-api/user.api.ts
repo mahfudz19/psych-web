@@ -4,15 +4,7 @@ import type { Users } from "./user.type";
 
 const BASE = "/api/v1/users";
 
-export interface UserListParams extends BaseListParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  filter?: string;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc" | "";
-}
-export async function getUsers(params: UserListParams) {
+export async function getUsers(params: BaseListParams) {
   return api.get<Users[]>(`${BASE}`, { params });
 }
 

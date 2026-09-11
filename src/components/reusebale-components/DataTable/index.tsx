@@ -21,7 +21,7 @@ export interface BaseListParams {
   search?: string;
   filter?: string | string[];
   sortBy?: string;
-  sortOrder?: "asc" | "desc" | "" | string;
+  sortOrder?: "asc" | "desc";
 }
 
 export interface ColumnDef<T> {

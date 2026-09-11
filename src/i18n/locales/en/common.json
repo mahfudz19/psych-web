@@ -63,7 +63,10 @@
     "inviteNew": "Invite New",
     "organizationSettings": "Organization Settings",
     "system": "System",
-    "adminPanel": "Super Admin Panel"
+    "adminPanel": "Super Admin Panel",
+    "users": "User Management",
+    "organizations": "Organizations Management",
+    "settingsApp": "App Setting"
   },
   "topbar": {
     "welcome": "Welcome",

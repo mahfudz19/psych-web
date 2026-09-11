@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import * as api from "./user.api";
 import toast from "../../../../../../components/ui/Toast";
+import type { BaseListParams } from "../../../../../../components/reusebale-components/DataTable";
 
 export const userKeys = {
   all: ["users"] as const,
@@ -11,7 +12,7 @@ export const userKeys = {
   detail: (id: string) => [...userKeys.details(), id] as const,
 };
 
-export function useGetUsers(params: api.UserListParams) {
+export function useGetUsers(params: BaseListParams) {
   return useQuery({
     queryKey: userKeys.list(params),
     queryFn: () =>

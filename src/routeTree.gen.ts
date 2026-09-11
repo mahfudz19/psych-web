@@ -38,6 +38,7 @@ import { Route as AuthExamExamTestIdIndexRouteImport } from './routes/_auth/_exa
 import { Route as AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/change-password/index'
 import { Route as AuthOrganizationAndIndividuProfileReferralIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/referral/index'
 import { Route as AuthOrganizationAndIndividuProfileSessionsIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/sessions/index'
+import { Route as AuthOrganizationAdminOrganizationsIndexRouteImport } from './routes/_auth/_organization/_admin/organizations/index'
 import { Route as AuthOrganizationAdminSettingsAppIndexRouteImport } from './routes/_auth/_organization/_admin/settings-app/index'
 import { Route as AuthOrganizationAdminUsersIndexRouteImport } from './routes/_auth/_organization/_admin/users/index'
 import { Route as GuestRegisterInviteTokenIndexRouteImport } from './routes/_guest/register/invite/$token/index'
@@ -197,6 +198,12 @@ const AuthOrganizationAndIndividuProfileSessionsIndexRoute =
     path: '/sessions/',
     getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
   } as any)
+const AuthOrganizationAdminOrganizationsIndexRoute =
+  AuthOrganizationAdminOrganizationsIndexRouteImport.update({
+    id: '/_admin/organizations/',
+    path: '/organizations/',
+    getParentRoute: () => AuthOrganizationRoute,
+  } as any)
 const AuthOrganizationAdminSettingsAppIndexRoute =
   AuthOrganizationAdminSettingsAppIndexRouteImport.update({
     id: '/_admin/settings-app/',
@@ -246,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/profile/change-password/': typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
   '/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/profile/sessions/': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
+  '/organizations/': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
@@ -274,6 +282,7 @@ export interface FileRoutesByTo {
   '/profile/change-password': typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
   '/profile/referral': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/profile/sessions': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
+  '/organizations': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/settings-app': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/users': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token': typeof GuestRegisterInviteTokenIndexRoute
@@ -310,6 +319,7 @@ export interface FileRoutesById {
   '/_auth/_organization-and-individu/profile/change-password/': typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
   '/_auth/_organization-and-individu/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/_auth/_organization-and-individu/profile/sessions/': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
+  '/_auth/_organization/_admin/organizations/': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/_auth/_organization/_admin/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/_auth/_organization/_admin/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/_guest/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
@@ -341,6 +351,7 @@ export interface FileRouteTypes {
     | '/profile/change-password/'
     | '/profile/referral/'
     | '/profile/sessions/'
+    | '/organizations/'
     | '/settings-app/'
     | '/users/'
     | '/register/invite/$token/'
@@ -369,6 +380,7 @@ export interface FileRouteTypes {
     | '/profile/change-password'
     | '/profile/referral'
     | '/profile/sessions'
+    | '/organizations'
     | '/settings-app'
     | '/users'
     | '/register/invite/$token'
@@ -404,6 +416,7 @@ export interface FileRouteTypes {
     | '/_auth/_organization-and-individu/profile/change-password/'
     | '/_auth/_organization-and-individu/profile/referral/'
     | '/_auth/_organization-and-individu/profile/sessions/'
+    | '/_auth/_organization/_admin/organizations/'
     | '/_auth/_organization/_admin/settings-app/'
     | '/_auth/_organization/_admin/users/'
     | '/_guest/register/invite/$token/'
@@ -622,6 +635,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationAndIndividuProfileSessionsIndexRouteImport
       parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
     }
+    '/_auth/_organization/_admin/organizations/': {
+      id: '/_auth/_organization/_admin/organizations/'
+      path: '/organizations'
+      fullPath: '/organizations/'
+      preLoaderRoute: typeof AuthOrganizationAdminOrganizationsIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
+    }
     '/_auth/_organization/_admin/settings-app/': {
       id: '/_auth/_organization/_admin/settings-app/'
       path: '/settings-app'
@@ -685,6 +705,7 @@ interface AuthOrganizationRouteChildren {
   AuthOrganizationDashboardIndexRoute: typeof AuthOrganizationDashboardIndexRoute
   AuthOrganizationMembersIndexRoute: typeof AuthOrganizationMembersIndexRoute
   AuthOrganizationSettingsIndexRoute: typeof AuthOrganizationSettingsIndexRoute
+  AuthOrganizationAdminOrganizationsIndexRoute: typeof AuthOrganizationAdminOrganizationsIndexRoute
   AuthOrganizationAdminSettingsAppIndexRoute: typeof AuthOrganizationAdminSettingsAppIndexRoute
   AuthOrganizationAdminUsersIndexRoute: typeof AuthOrganizationAdminUsersIndexRoute
 }
@@ -693,6 +714,8 @@ const AuthOrganizationRouteChildren: AuthOrganizationRouteChildren = {
   AuthOrganizationDashboardIndexRoute: AuthOrganizationDashboardIndexRoute,
   AuthOrganizationMembersIndexRoute: AuthOrganizationMembersIndexRoute,
   AuthOrganizationSettingsIndexRoute: AuthOrganizationSettingsIndexRoute,
+  AuthOrganizationAdminOrganizationsIndexRoute:
+    AuthOrganizationAdminOrganizationsIndexRoute,
   AuthOrganizationAdminSettingsAppIndexRoute:
     AuthOrganizationAdminSettingsAppIndexRoute,
   AuthOrganizationAdminUsersIndexRoute: AuthOrganizationAdminUsersIndexRoute,

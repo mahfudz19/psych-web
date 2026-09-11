@@ -7,13 +7,29 @@ import type {
 import * as apiOrganization from "./organization.api";
 import { useTranslation } from "react-i18next";
 import { authStore } from "../../../../utils/authStore";
+import type { BaseListParams } from "../../../../components/reusebale-components/DataTable";
 
 export const organizationKeys = {
   all: ["organization"] as const,
+  lists: () => [...organizationKeys.all, "list"] as const,
+  list: (filters: Record<string, any>) =>
+    [...organizationKeys.lists(), { filters }] as const,
   detail: (orgId: string) =>
     [...organizationKeys.all, "detail", orgId] as const,
   inviteCode: () => [...organizationKeys.all, "inviteCode"] as const,
 };
+
+export function useGetOrganizations(params: BaseListParams) {
+  return useQuery({
+    queryKey: organizationKeys.list(params),
+    queryFn: () =>
+      apiOrganization
+        .getOrganizations(params)
+        .catch((error) =>
+          toast.error(error?.data?.message || "Gagal mengambil data pengguna"),
+        ),
+  });
+}
 
 export function useOrganizationQuery(orgId?: string | null) {
   return useQuery({

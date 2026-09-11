@@ -3,6 +3,7 @@ import {
   Building2,
   ClipboardList,
   CreditCard,
+  Group,
   History,
   LayoutDashboard,
   Settings,
@@ -88,6 +89,11 @@ export const menuConfig: NavGroup[] = [
             titleKey: "sidebar.users",
             path: "/users",
             icon: <Users className="w-4 h-4 shrink-0" />,
+          },
+          {
+            titleKey: "sidebar.organizations",
+            path: "/organizations",
+            icon: <Group className="w-4 h-4 shrink-0" />,
           },
           // settings-app
           {

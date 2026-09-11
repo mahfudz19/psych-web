@@ -63,7 +63,10 @@
     "inviteNew": "Undang Baru",
     "organizationSettings": "Pengaturan Organisasi",
     "system": "Sistem",
-    "adminPanel": "Super Admin Panel"
+    "adminPanel": "Super Admin Panel",
+    "users": "Manajemen Pengguna",
+    "organizations": "Manajemen Organisasi",
+    "settingsApp": "Manajemen Aplikasi"
   },
   "topbar": {
     "welcome": "Selamat datang",

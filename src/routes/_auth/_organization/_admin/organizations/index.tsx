@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import OrganizationsPage from "./-components/page";
 import type { BaseListParams } from "../../../../../components/reusebale-components/DataTable";
-import UsersPage from "./-components/page";
 
-export const Route = createFileRoute("/_auth/_organization/_admin/users/")({
+export const Route = createFileRoute(
+  "/_auth/_organization/_admin/organizations/",
+)({
   validateSearch: (search: Record<string, unknown>): BaseListParams => {
     return {
       page: search.page ? Number(search.page) : undefined,
@@ -13,5 +15,5 @@ export const Route = createFileRoute("/_auth/_organization/_admin/users/")({
       filter: search.filter as string | undefined,
     };
   },
-  component: UsersPage,
+  component: OrganizationsPage,
 });

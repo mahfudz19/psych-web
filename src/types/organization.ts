@@ -30,6 +30,35 @@ export interface Organization {
   updatedAt: string;
 }
 
+export interface OrganizationDetailResponse {
+  id: string;
+  name: string;
+  description?: string;
+  website?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  logo?: string;
+  ownerId?: string;
+  plan: string;
+  status: boolean;
+  seats: number;
+  seatsUsed: number;
+  createdAt: string;
+  updatedAt: string;
+  members: MemberSummary[];
+}
+
+export interface MemberSummary {
+  id: string;
+  fullName: string;
+  email: string;
+  profilePicture?: string;
+  organizationRole: "owner" | "admin" | "member";
+  status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING" | "DELETED";
+  lastLoginAt?: string;
+}
+
 /**
  * Interface untuk request membuat organisasi baru
  */

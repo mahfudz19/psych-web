@@ -1,9 +1,9 @@
 import { useNavigate } from "@tanstack/react-router";
-import type { UserListParams } from "../-api/user.api";
 import { useGetUsers } from "../-api/user.query";
 import type { Users } from "../-api/user.type";
 import {
   DataTable,
+  type BaseListParams,
   type ColumnDef,
 } from "../../../../../../components/reusebale-components/DataTable";
 import { Route } from "../index";
@@ -14,7 +14,7 @@ function UsersPage() {
   const navigate = useNavigate({ from: Route.fullPath });
   const { data: response, isLoading, isFetching } = useGetUsers(tableState);
 
-  const handleStateChange = (newState: UserListParams) => {
+  const handleStateChange = (newState: BaseListParams) => {
     navigate({
       search: (prev) => {
         const nextSearch = { ...prev, ...newState };
@@ -107,7 +107,7 @@ function UsersPage() {
         </p>
       </div>
 
-      <DataTable<Users, UserListParams>
+      <DataTable<Users, BaseListParams>
         columns={userColumns}
         data={response?.data || []}
         meta={response?.meta}

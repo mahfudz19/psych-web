@@ -1,3 +1,4 @@
+import type { BaseListParams } from "../../../../components/reusebale-components/DataTable";
 import type {
   Organization,
   CreateOrganizationRequest,
@@ -6,14 +7,19 @@ import type {
   DeleteOrganizationRequest,
   MembersListParams,
   OrganizationMember,
+  OrganizationDetailResponse,
 } from "../../../../types/organization";
 import type { User } from "../../../../types/user";
 import { api } from "../../../../utils/api";
 
 const BASE = "/api/v1/organizations";
 
+export async function getOrganizations(params: BaseListParams) {
+  return api.get<Organization[]>(BASE, { params });
+}
+
 export async function getOrganization(orgId: string) {
-  return api.get<Organization>(`${BASE}/${orgId}/detail`);
+  return api.get<OrganizationDetailResponse>(`${BASE}/${orgId}/detail`);
 }
 
 export async function createOrganization(data: CreateOrganizationRequest) {

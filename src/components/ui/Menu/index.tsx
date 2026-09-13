@@ -11,6 +11,7 @@ export type MenuProps = {
   position?: AnchorPosition;
   widthClass?: string;
   children: (close: () => void) => ReactNode;
+  classNames?: { trigger?: string; popover?: string };
 };
 
 export default function Menu({

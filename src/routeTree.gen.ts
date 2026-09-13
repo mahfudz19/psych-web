@@ -41,6 +41,7 @@ import { Route as AuthOrganizationAndIndividuProfileReferralIndexRouteImport } f
 import { Route as AuthOrganizationAndIndividuProfileSessionsIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/sessions/index'
 import { Route as AuthOrganizationAdminOrganizationsIndexRouteImport } from './routes/_auth/_organization/_admin/organizations/index'
 import { Route as AuthOrganizationAdminSettingsAppIndexRouteImport } from './routes/_auth/_organization/_admin/settings-app/index'
+import { Route as AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport } from './routes/_auth/_organization/_admin/subscription-plan-management/index'
 import { Route as AuthOrganizationAdminUsersIndexRouteImport } from './routes/_auth/_organization/_admin/users/index'
 import { Route as GuestRegisterInviteTokenIndexRouteImport } from './routes/_guest/register/invite/$token/index'
 import { Route as AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport } from './routes/_auth/_organization-and-individu/joint/invite/$token/index'
@@ -217,6 +218,12 @@ const AuthOrganizationAdminSettingsAppIndexRoute =
     path: '/settings-app/',
     getParentRoute: () => AuthOrganizationRoute,
   } as any)
+const AuthOrganizationAdminSubscriptionPlanManagementIndexRoute =
+  AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport.update({
+    id: '/_admin/subscription-plan-management/',
+    path: '/subscription-plan-management/',
+    getParentRoute: () => AuthOrganizationRoute,
+  } as any)
 const AuthOrganizationAdminUsersIndexRoute =
   AuthOrganizationAdminUsersIndexRouteImport.update({
     id: '/_admin/users/',
@@ -263,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/profile/sessions/': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
   '/organizations/': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
+  '/subscription-plan-management/': typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
   '/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
   '/joint/invite/$token/': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
@@ -293,6 +301,7 @@ export interface FileRoutesByTo {
   '/profile/sessions': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
   '/organizations': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/settings-app': typeof AuthOrganizationAdminSettingsAppIndexRoute
+  '/subscription-plan-management': typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
   '/users': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token': typeof GuestRegisterInviteTokenIndexRoute
   '/joint/invite/$token': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
@@ -331,6 +340,7 @@ export interface FileRoutesById {
   '/_auth/_organization-and-individu/profile/sessions/': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
   '/_auth/_organization/_admin/organizations/': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/_auth/_organization/_admin/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
+  '/_auth/_organization/_admin/subscription-plan-management/': typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
   '/_auth/_organization/_admin/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/_guest/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
   '/_auth/_organization-and-individu/joint/invite/$token/': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
@@ -364,6 +374,7 @@ export interface FileRouteTypes {
     | '/profile/sessions/'
     | '/organizations/'
     | '/settings-app/'
+    | '/subscription-plan-management/'
     | '/users/'
     | '/register/invite/$token/'
     | '/joint/invite/$token/'
@@ -394,6 +405,7 @@ export interface FileRouteTypes {
     | '/profile/sessions'
     | '/organizations'
     | '/settings-app'
+    | '/subscription-plan-management'
     | '/users'
     | '/register/invite/$token'
     | '/joint/invite/$token'
@@ -431,6 +443,7 @@ export interface FileRouteTypes {
     | '/_auth/_organization-and-individu/profile/sessions/'
     | '/_auth/_organization/_admin/organizations/'
     | '/_auth/_organization/_admin/settings-app/'
+    | '/_auth/_organization/_admin/subscription-plan-management/'
     | '/_auth/_organization/_admin/users/'
     | '/_guest/register/invite/$token/'
     | '/_auth/_organization-and-individu/joint/invite/$token/'
@@ -669,6 +682,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationAdminSettingsAppIndexRouteImport
       parentRoute: typeof AuthOrganizationRoute
     }
+    '/_auth/_organization/_admin/subscription-plan-management/': {
+      id: '/_auth/_organization/_admin/subscription-plan-management/'
+      path: '/subscription-plan-management'
+      fullPath: '/subscription-plan-management/'
+      preLoaderRoute: typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
+    }
     '/_auth/_organization/_admin/users/': {
       id: '/_auth/_organization/_admin/users/'
       path: '/users'
@@ -728,6 +748,7 @@ interface AuthOrganizationRouteChildren {
   AuthOrganizationSettingsIndexRoute: typeof AuthOrganizationSettingsIndexRoute
   AuthOrganizationAdminOrganizationsIndexRoute: typeof AuthOrganizationAdminOrganizationsIndexRoute
   AuthOrganizationAdminSettingsAppIndexRoute: typeof AuthOrganizationAdminSettingsAppIndexRoute
+  AuthOrganizationAdminSubscriptionPlanManagementIndexRoute: typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
   AuthOrganizationAdminUsersIndexRoute: typeof AuthOrganizationAdminUsersIndexRoute
 }
 
@@ -741,6 +762,8 @@ const AuthOrganizationRouteChildren: AuthOrganizationRouteChildren = {
     AuthOrganizationAdminOrganizationsIndexRoute,
   AuthOrganizationAdminSettingsAppIndexRoute:
     AuthOrganizationAdminSettingsAppIndexRoute,
+  AuthOrganizationAdminSubscriptionPlanManagementIndexRoute:
+    AuthOrganizationAdminSubscriptionPlanManagementIndexRoute,
   AuthOrganizationAdminUsersIndexRoute: AuthOrganizationAdminUsersIndexRoute,
 }
 

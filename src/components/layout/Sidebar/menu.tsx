@@ -3,6 +3,7 @@ import {
   Building2,
   ClipboardList,
   CreditCard,
+  DollarSign,
   Group,
   History,
   Info,
@@ -101,6 +102,11 @@ export const menuConfig: NavGroup[] = [
             titleKey: "sidebar.organizations",
             path: "/organizations",
             icon: <Group className="w-4 h-4 shrink-0" />,
+          },
+          {
+            titleKey: "sidebar.subscription-plan",
+            path: "/subscription-plan-management",
+            icon: <DollarSign className="w-4 h-4 shrink-0" />,
           },
           // settings-app
           {

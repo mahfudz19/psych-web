@@ -1,11 +1,11 @@
-import type { ReactNode } from "react";
+import type { MouseEventHandler, ReactNode } from "react";
 import type { color } from "../Type";
 import Ripple from "../Ripple";
 import { twMerge } from "tailwind-merge";
 
 export interface MenuItemProps {
   children: ReactNode;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   className?: string;
   iconStart?: ReactNode;
   iconEnd?: ReactNode;

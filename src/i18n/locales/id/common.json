@@ -67,7 +67,8 @@
     "organization-info": "Info Organisasi",
     "users": "Manajemen Pengguna",
     "organizations": "Manajemen Organisasi",
-    "settingsApp": "Manajemen Aplikasi"
+    "settingsApp": "Manajemen Aplikasi",
+    "subscription-plan": "Paket Berlangganan"
   },
   "topbar": {
     "welcome": "Selamat datang",

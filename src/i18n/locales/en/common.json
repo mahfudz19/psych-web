@@ -67,7 +67,8 @@
     "organization-info": "Organization Info",
     "users": "User Management",
     "organizations": "Organizations Management",
-    "settingsApp": "App Setting"
+    "settingsApp": "App Setting",
+    "subscription-plan": "Subscription Plan"
   },
   "topbar": {
     "welcome": "Welcome",

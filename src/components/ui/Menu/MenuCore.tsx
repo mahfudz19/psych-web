@@ -13,6 +13,7 @@ export default function MenuCore({
   trigger,
   position = "bottom-end",
   widthClass = "w-64",
+  classNames,
   children,
 }: MenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -44,7 +45,12 @@ export default function MenuCore({
     : trigger;
 
   return (
-    <Popover trigger={triggerWithFocus} anchor={position} interaction="click">
+    <Popover
+      trigger={triggerWithFocus}
+      anchor={position}
+      classNames={classNames}
+      interaction="click"
+    >
       {(close) => {
         const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
           if (!menuRef.current) return;

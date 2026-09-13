@@ -11,8 +11,6 @@ export interface Users {
   organizationId: string | null;
   organizationRole: string;
   organizationName: string;
-  subscriptionTier: string;
-  subscriptionExpiry: number | null;
   referralCode: string;
   totalReferrals: number;
   successfulReferrals: number;

@@ -37,7 +37,7 @@ function ProfileDropdown() {
   const { user } = useAuthStore();
   if (!user) return;
 
-  const { fullName, accountType, email, subscriptionTier, status } = user;
+  const { fullName, accountType, email } = user;
 
   const { t } = useTranslation();
   const logout = useLogoutMutation();
@@ -99,14 +99,6 @@ function ProfileDropdown() {
                   {email}
                 </p>
               </div>
-            </div>
-            <div className="flex gap-2 mt-3">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase bg-info-main/10 text-info-main">
-                Tier: {subscriptionTier}
-              </span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase bg-success-main/10 text-success-main">
-                {status}
-              </span>
             </div>
           </MenuHeader>
 

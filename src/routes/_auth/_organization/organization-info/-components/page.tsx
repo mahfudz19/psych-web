@@ -98,7 +98,7 @@ function OrganizationInfoPage() {
 
         <div className="flex items-center gap-2 self-start md:self-center">
           <span className="px-3 py-2.5 rounded-xl text-xs font-bold uppercase bg-primary-main/10 text-primary-main border border-primary-main/20">
-            {org.plan} Plan
+            {`org.plan`} Plan
           </span>
           <LeaveOrganization orgId={org.id} />
         </div>

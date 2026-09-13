@@ -101,7 +101,7 @@ const ContentDetailUser = ({ id }: { id: string }) => {
           <InfoCard
             icon={<CreditCard />}
             label="Tingkat Langganan"
-            value={user.subscriptionTier}
+            value={`user.subscriptionTier`}
             className="capitalize"
           />
           <InfoCard

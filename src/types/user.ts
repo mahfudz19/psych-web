@@ -70,7 +70,6 @@ export interface User {
   organizationId?: string | null;
   organizationRole?: OrganizationRole | null;
   organizationName?: string | null;
-  subscriptionTier: SubscriptionTier;
   referralCode?: string | null;
   inviteCode?: string | null;
   status: UserStatus;

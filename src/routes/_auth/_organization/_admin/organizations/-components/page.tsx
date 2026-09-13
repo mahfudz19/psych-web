@@ -72,11 +72,6 @@ function OrganizationsPage() {
       ),
     },
     {
-      header: "Seats",
-      accessorKey: "seats",
-      cell: (row) => `${row.seatsUsed} / ${row.seats}`,
-    },
-    {
       header: "Tanggal Dibuat",
       accessorKey: "createdAt",
       sortable: true,

@@ -87,9 +87,6 @@ function ContentDetail({ id }: { id: string }) {
           >
             {org.status ? "Aktif" : "Nonaktif"}
           </span>
-          <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 uppercase">
-            {org.plan}
-          </span>
         </div>
       </div>
 

@@ -20,11 +20,9 @@ export interface Organization {
   phone: string | null;
   email: string | null;
   ownerId: string;
-  plan: OrganizationPlan;
   status: boolean;
   trialStartsAt: string | null;
   trialEndsAt: string | null;
-  seats: number;
   seatsUsed: number;
   createdAt: string;
   updatedAt: string;
@@ -40,7 +38,6 @@ export interface OrganizationDetailResponse {
   address?: string;
   logo?: string;
   ownerId?: string;
-  plan: string;
   status: boolean;
   seats: number;
   seatsUsed: number;
@@ -152,7 +149,6 @@ export interface OrganizationMemberDetail {
   organizationRole: "owner" | "admin" | "member";
   status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING" | "DELETED";
   accountType?: "INDIVIDUAL" | "ORGANIZATION";
-  subscriptionTier?: string;
   invitationStatus?: "pending" | "accepted" | "declined" | "expired";
   invitationRole?: "owner" | "admin" | "member";
   lastLoginAt?: string;

@@ -70,16 +70,14 @@ export const getTransformOrigin = (anchor: AnchorPosition) => {
 const calculatePosition = (
   anchor: AnchorPosition,
   anchorRect: DOMRect,
-  popoverRect: DOMRect,
+  popoverWidth: number,
+  popoverHeight: number,
   gap = 8,
   onlyShowUpOrDown?: boolean,
   onlyShowCenterBody?: boolean,
 ) => {
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
-
-  const scaledWidth = popoverRect.width;
-  const scaledHeight = popoverRect.height;
 
   let top: number | undefined;
   let left = 0;
@@ -88,16 +86,16 @@ const calculatePosition = (
   let transformOrigin: string | undefined = getTransformOrigin(anchor);
 
   if (onlyShowCenterBody) {
-    let l = (viewportWidth - scaledWidth) / 2;
-    let t = (viewportHeight - scaledHeight) / 2;
+    let l = (viewportWidth - popoverWidth) / 2;
+    let t = (viewportHeight - popoverHeight) / 2;
 
     if (l < 10) l = 10;
-    else if (l + scaledWidth > viewportWidth)
-      l = viewportWidth - scaledWidth - 10;
+    else if (l + popoverWidth > viewportWidth)
+      l = viewportWidth - popoverWidth - 10;
 
     if (t < 10) t = 10;
-    else if (t + scaledHeight > viewportHeight)
-      t = viewportHeight - scaledHeight - 10;
+    else if (t + popoverHeight > viewportHeight)
+      t = viewportHeight - popoverHeight - 10;
 
     return { top: t, left: l, transformOrigin: "center center" };
   }
@@ -106,41 +104,41 @@ const calculatePosition = (
     const spaceBelow = viewportHeight - anchorRect.bottom;
     const spaceAbove = anchorRect.top;
 
-    if (spaceBelow >= scaledHeight || spaceBelow >= spaceAbove) {
+    if (spaceBelow >= popoverHeight || spaceBelow >= spaceAbove) {
       top = anchorRect.bottom + gap;
       transformOrigin = getTransformOrigin("bottom");
-      if (scaledHeight > spaceBelow) maxHeight = spaceBelow - gap;
+      if (popoverHeight > spaceBelow) maxHeight = spaceBelow - gap;
     } else {
       transformOrigin = getTransformOrigin("top");
-      top = anchorRect.top - scaledHeight - gap;
-      if (scaledHeight > spaceAbove) maxHeight = spaceAbove - gap;
+      top = anchorRect.top - popoverHeight - gap;
+      if (popoverHeight > spaceAbove) maxHeight = spaceAbove - gap;
     }
 
-    left = anchorRect.left + anchorRect.width / 2 - scaledWidth / 2;
+    left = anchorRect.left + anchorRect.width / 2 - popoverWidth / 2;
 
     if (left < 10) left = 10;
-    else if (left + scaledWidth > viewportWidth - 10)
-      left = viewportWidth - scaledWidth - 10;
+    else if (left + popoverWidth > viewportWidth - 10)
+      left = viewportWidth - popoverWidth - 10;
 
     return { top, left, maxHeight, transformOrigin, bottom };
   }
 
   switch (anchor) {
     case "top":
-      top = anchorRect.top - scaledHeight - gap;
-      left = anchorRect.left + anchorRect.width / 2 - scaledWidth / 2;
+      top = anchorRect.top - popoverHeight - gap;
+      left = anchorRect.left + anchorRect.width / 2 - popoverWidth / 2;
       break;
     case "top-start":
-      top = anchorRect.top - scaledHeight - gap;
+      top = anchorRect.top - popoverHeight - gap;
       left = anchorRect.left;
       break;
     case "top-end":
-      top = anchorRect.top - scaledHeight - gap;
-      left = anchorRect.right - scaledWidth;
+      top = anchorRect.top - popoverHeight - gap;
+      left = anchorRect.right - popoverWidth;
       break;
     case "bottom":
       top = anchorRect.bottom + gap;
-      left = anchorRect.left + anchorRect.width / 2 - scaledWidth / 2;
+      left = anchorRect.left + anchorRect.width / 2 - popoverWidth / 2;
       break;
     case "bottom-start":
       top = anchorRect.bottom + gap;
@@ -148,22 +146,22 @@ const calculatePosition = (
       break;
     case "bottom-end":
       top = anchorRect.bottom + gap;
-      left = anchorRect.right - scaledWidth;
+      left = anchorRect.right - popoverWidth;
       break;
     case "left":
-      top = anchorRect.top + anchorRect.height / 2 - scaledHeight / 2;
-      left = anchorRect.left - scaledWidth - gap;
+      top = anchorRect.top + anchorRect.height / 2 - popoverHeight / 2;
+      left = anchorRect.left - popoverWidth - gap;
       break;
     case "left-start":
       top = anchorRect.top;
-      left = anchorRect.left - scaledWidth - gap;
+      left = anchorRect.left - popoverWidth - gap;
       break;
     case "left-end":
-      top = anchorRect.bottom - scaledHeight;
-      left = anchorRect.left - scaledWidth - gap;
+      top = anchorRect.bottom - popoverHeight;
+      left = anchorRect.left - popoverWidth - gap;
       break;
     case "right":
-      top = anchorRect.top + anchorRect.height / 2 - scaledHeight / 2;
+      top = anchorRect.top + anchorRect.height / 2 - popoverHeight / 2;
       left = anchorRect.right + gap;
       break;
     case "right-start":
@@ -171,21 +169,21 @@ const calculatePosition = (
       left = anchorRect.right + gap;
       break;
     case "right-end":
-      top = anchorRect.bottom - scaledHeight;
+      top = anchorRect.bottom - popoverHeight;
       left = anchorRect.right + gap;
       break;
     default:
       top = anchorRect.bottom + gap;
-      left = anchorRect.left + anchorRect.width / 2 - scaledWidth / 2;
+      left = anchorRect.left + anchorRect.width / 2 - popoverWidth / 2;
   }
 
   if (left < 10) left = 10;
-  else if (left + scaledWidth > viewportWidth - 10)
-    left = viewportWidth - scaledWidth - 10;
+  else if (left + popoverWidth > viewportWidth - 10)
+    left = viewportWidth - popoverWidth - 10;
 
   if (top < 10) top = 10;
-  else if (top + scaledHeight > viewportHeight - 10)
-    top = viewportHeight - scaledHeight - 10;
+  else if (top + popoverHeight > viewportHeight - 10)
+    top = viewportHeight - popoverHeight - 10;
 
   return { top, left, maxHeight, transformOrigin, bottom };
 };
@@ -204,61 +202,65 @@ export default function Popover({
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
 
-  // Kalkulasi posisi diekstrak ke fungsi terpisah agar dapat dipanggil instan
   const updatePosition = useCallback(() => {
     const triggerEl = triggerRef.current;
     const dialogEl = dialogRef.current;
-    if (!triggerEl || !dialogEl) return;
+    const innerEl = innerRef.current;
+    if (!triggerEl || !dialogEl || !innerEl) return;
 
     if (followWidthAnchor) {
       dialogEl.style.width = `${triggerEl.offsetWidth}px`;
     }
 
     const anchorRect = triggerEl.getBoundingClientRect();
-    const popoverRect = dialogEl.getBoundingClientRect();
+    const popoverWidth = innerEl.offsetWidth;
+    const popoverHeight = innerEl.offsetHeight;
 
     const pos = calculatePosition(
       anchor,
       anchorRect,
-      popoverRect,
+      popoverWidth,
+      popoverHeight,
       gap,
       onlyShowUpOrDown,
       onlyShowCenterBody,
     );
 
+    // Posisi top/left diterapkan di level dialog
     dialogEl.style.margin = "0";
     dialogEl.style.left = `${pos.left}px`;
-    if (typeof pos.top === "number") dialogEl.style.top = `${pos.top}px`;
-    if (typeof pos.bottom === "number")
-      dialogEl.style.bottom = `${pos.bottom}px`;
+    dialogEl.style.top = typeof pos.top === "number" ? `${pos.top}px` : "auto";
+    dialogEl.style.bottom =
+      typeof pos.bottom === "number" ? `${pos.bottom}px` : "auto";
     if (typeof pos.maxHeight === "number")
       dialogEl.style.maxHeight = `${pos.maxHeight}px`;
     if (pos.transformOrigin)
-      dialogEl.style.transformOrigin = pos.transformOrigin;
+      innerEl.style.transformOrigin = pos.transformOrigin;
   }, [anchor, gap, followWidthAnchor, onlyShowUpOrDown, onlyShowCenterBody]);
 
   const openPopover = () => {
     const dialog = dialogRef.current;
-    if (!dialog) return;
+    const inner = innerRef.current;
+    if (!dialog || !inner) return;
 
     setIsOpen(true);
     dialog.showModal();
 
-    // 1. Terapkan koordinat posisi LANGSUNG sebelum browser melakukan repaint
     updatePosition();
 
-    // 2. Jalankan animasi opacity & scale setelah posisi terpasang presisi
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => dialog.setAttribute("data-state", "open"));
-    });
+    void inner.offsetWidth;
+
+    inner.setAttribute("data-state", "open");
   };
 
   const closePopover = () => {
     const dialog = dialogRef.current;
-    if (!dialog) return;
+    const inner = innerRef.current;
+    if (!dialog || !inner) return;
 
-    dialog.removeAttribute("data-state");
+    inner.removeAttribute("data-state");
 
     setTimeout(() => {
       dialog.close();
@@ -306,15 +308,21 @@ export default function Popover({
           if (e.target === dialogRef.current) closePopover();
         }}
         className={twMerge(
-          "fixed p-0 border-0 bg-transparent overflow-visible backdrop:bg-transparent",
-          "transition-[opacity,transform] duration-150 ease-out",
-          "opacity-0 scale-95 pointer-events-none",
-          "data-[state=open]:opacity-100 data-[state=open]:scale-100 data-[state=open]:pointer-events-auto",
+          "fixed p-0 m-0 border-0 bg-transparent overflow-visible backdrop:bg-transparent",
           classNames?.popover,
         )}
       >
-        <div className="bg-bg-paper border border-divider rounded-3xl p-2 shadow-xl">
-          {typeof children === "function" ? children(closePopover) : children}
+        <div
+          ref={innerRef}
+          className={twMerge(
+            "transition-all duration-150 ease-out transform",
+            "opacity-0 scale-95 pointer-events-none",
+            "data-[state=open]:opacity-100 data-[state=open]:scale-100 data-[state=open]:pointer-events-auto",
+          )}
+        >
+          <div className="bg-bg-paper border border-divider rounded-3xl p-2 shadow-xl">
+            {typeof children === "function" ? children(closePopover) : children}
+          </div>
         </div>
       </dialog>
     </>

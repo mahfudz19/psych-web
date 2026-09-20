@@ -1,5 +1,6 @@
-import { Filter, Check } from "lucide-react";
-import Popover from "../../ui/Popover";
+import { Check, Filter } from "lucide-react";
+import Menu from "../../ui/Menu";
+import MenuItem from "../../ui/Menu/MenuItem";
 
 interface FacetedFilterProps {
   title: string;
@@ -46,18 +47,16 @@ export default function FacetedFilter({
   );
 
   return (
-    <Popover trigger={triggerElement} anchor="bottom-end" interaction="click">
+    <Menu trigger={triggerElement} position="bottom-start">
       {(closePopover) => (
-        <div className="w-56 p-1.5">
-          <div className="flex flex-col gap-0.5 max-h-60 overflow-y-auto pr-1">
-            {options.map((opt) => {
-              const isSelected = selectedValues.has(opt.value);
-              return (
-                <label
-                  key={opt.value}
-                  className="relative flex items-center gap-3 px-2 py-2 hover:bg-divider/20 rounded-xl cursor-pointer transition-colors group"
-                >
-                  {/* Custom Checkbox Design */}
+        <div className="p-1.5 flex flex-col gap-0.5 max-h-60 overflow-y-auto">
+          {options.map((opt) => {
+            const isSelected = selectedValues.has(opt.value);
+            return (
+              <MenuItem
+                key={opt.value}
+                onClick={() => handleSelect(opt.value)}
+                iconStart={
                   <div
                     className={`flex items-center justify-center w-4 h-4 rounded transition-colors ${
                       isSelected
@@ -69,35 +68,28 @@ export default function FacetedFilter({
                       <Check className="w-3 h-3" strokeWidth={3} />
                     )}
                   </div>
-
-                  {/* Teks Label */}
-                  <span
-                    className={`text-sm flex-1 truncate transition-colors ${
-                      isSelected
-                        ? "font-bold text-text-primary"
-                        : "font-medium text-text-secondary"
-                    }`}
-                  >
-                    {opt.label}
-                  </span>
-
-                  {/* Hidden Native Input */}
-                  <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={() => handleSelect(opt.value)}
-                    className="hidden"
-                  />
-                </label>
-              );
-            })}
-          </div>
+                }
+                className="relative flex items-center gap-3 px-2 py-2 hover:bg-divider/20 rounded-xl cursor-pointer transition-colors group"
+              >
+                {/* Teks Label */}
+                <span
+                  className={`text-sm flex-1 truncate transition-colors ${
+                    isSelected
+                      ? "font-bold text-text-primary"
+                      : "font-medium text-text-secondary"
+                  }`}
+                >
+                  {opt.label}
+                </span>
+              </MenuItem>
+            );
+          })}
 
           {/* Area Tombol Aksi */}
           {selectedValues.size > 0 && (
-            <div className="mt-2 pt-2 border-t border-divider px-1 pb-1">
-              <button
-                type="button"
+            <>
+              <div className="mt-2 pt-2 border-t border-divider px-1 pb-1" />
+              <MenuItem
                 onClick={() => {
                   onChange("");
                   closePopover();
@@ -105,11 +97,11 @@ export default function FacetedFilter({
                 className="w-full py-2 text-xs font-bold text-error-main hover:bg-error-main/10 rounded-xl transition-colors"
               >
                 Hapus Filter
-              </button>
-            </div>
+              </MenuItem>
+            </>
           )}
         </div>
       )}
-    </Popover>
+    </Menu>
   );
 }

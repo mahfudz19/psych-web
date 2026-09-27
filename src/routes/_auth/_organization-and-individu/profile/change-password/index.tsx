@@ -25,7 +25,7 @@ function ChangePasswordPage() {
 
   const passwordsMatch = password === confirmPassword;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const form = e.currentTarget;

@@ -1,9 +1,8 @@
 import type { BaseListParams } from "../../../../../../components/reusebale-components/DataTable";
 import { api } from "../../../../../../utils/api";
 import type {
-  CreateSubscriptionPlanRequest,
+  PayloadSubscriptionPlanRequest,
   SubscriptionPlan,
-  UpdateSubscriptionPlanRequest,
 } from "./subscriptionPlan.type";
 
 const BASE = "/api/v1/subscription-plans";
@@ -12,13 +11,13 @@ export function getSubscriptionPlans(params?: BaseListParams) {
   return api.get<SubscriptionPlan[]>(BASE, { params });
 }
 
-export function createSubscriptionPlan(data: CreateSubscriptionPlanRequest) {
+export function createSubscriptionPlan(data: PayloadSubscriptionPlanRequest) {
   return api.post<SubscriptionPlan>(BASE, data);
 }
 
 export function updateSubscriptionPlan(
   id: string,
-  data: UpdateSubscriptionPlanRequest,
+  data: Partial<PayloadSubscriptionPlanRequest>,
 ) {
   return api.patch<SubscriptionPlan>(`${BASE}/${id}`, data);
 }

@@ -6,10 +6,7 @@ import {
   getSubscriptionPlans,
   updateSubscriptionPlan,
 } from "./subscriptionPlan.api";
-import type {
-  CreateSubscriptionPlanRequest,
-  UpdateSubscriptionPlanRequest,
-} from "./subscriptionPlan.type";
+import type { PayloadSubscriptionPlanRequest } from "./subscriptionPlan.type";
 import type { BaseListParams } from "../../../../../../components/reusebale-components/DataTable";
 
 export const subscriptionPlanKeys = {
@@ -36,7 +33,7 @@ export function useCreateSubscriptionPlanMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateSubscriptionPlanRequest) =>
+    mutationFn: (data: PayloadSubscriptionPlanRequest) =>
       createSubscriptionPlan(data),
     onSuccess: (res) => {
       toast.success(res?.message || "Subscription plan berhasil dibuat");
@@ -57,7 +54,7 @@ export function useUpdateSubscriptionPlanMutation() {
       data,
     }: {
       id: string;
-      data: UpdateSubscriptionPlanRequest;
+      data: Partial<PayloadSubscriptionPlanRequest>;
     }) => updateSubscriptionPlan(id, data),
     onSuccess: (res) => {
       toast.success(res?.message || "Subscription plan berhasil diperbarui");

@@ -10,22 +10,15 @@ export interface SubscriptionPlan {
   maxSeats: number | null;
   createdAt: string;
   updatedAt: string;
+  recommended: boolean;
 }
 
-export interface CreateSubscriptionPlanRequest {
+export interface PayloadSubscriptionPlanRequest {
   name: string;
   code: string;
   price: number;
   durationDays: number;
   targetAudience: TargetAudience;
   maxSeats?: number | null;
-}
-
-export interface UpdateSubscriptionPlanRequest {
-  name?: string;
-  code?: string;
-  price?: number;
-  durationDays?: number;
-  targetAudience?: TargetAudience;
-  maxSeats?: number | null;
+  recommended: boolean;
 }

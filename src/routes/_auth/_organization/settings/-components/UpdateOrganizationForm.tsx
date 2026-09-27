@@ -13,7 +13,7 @@ function UpdateOrganizationForm(props: {
 
   const updateMutation = useUpdateOrganizationMutation();
 
-  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdate = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const orgId = organization.id;

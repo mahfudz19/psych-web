@@ -29,7 +29,7 @@ function SubscriptionPlanForm({
 
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -42,6 +42,7 @@ function SubscriptionPlanForm({
       durationDays: Number(formData.get("durationDays")),
       targetAudience: formData.get("targetAudience") as TargetAudience,
       maxSeats: maxSeatsVal ? Number(maxSeatsVal) : null,
+      recommended: formData.get("recommended") === "on",
     };
 
     if (isEdit && subscriptionPlan) {
@@ -58,6 +59,19 @@ function SubscriptionPlanForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-left">
+      <div className="flex items-center gap-2 pt-1">
+        <input
+          id="recommended"
+          name="recommended"
+          type="checkbox"
+          defaultChecked={subscriptionPlan?.recommended}
+          className="w-4 h-4 rounded border-divider text-primary-main focus:ring-primary-main/20 accent-primary-main cursor-pointer"
+        />
+        <Label htmlFor="recommended" className="cursor-pointer font-medium">
+          Rekomendasikan Paket Ini
+        </Label>
+      </div>
+
       {/* NAME */}
       <div>
         <Label htmlFor="name" className="mb-1.5">

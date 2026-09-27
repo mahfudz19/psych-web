@@ -1,17 +1,20 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "../../../../../components/ui/Toast";
 import {
-  getSubscriptionPlans,
-  checkout,
-  getTransaction,
-  cancelTransaction,
-  getTransactionStatus,
   cancelActiveSubscription,
+  cancelTransaction,
+  checkout,
+  getSubscriptionPlans,
+  getTransaction,
+  getTransactionStatus,
 } from "./billing.api";
 import type { CheckoutRequest } from "./billing.type";
-import toast from "../../../../../components/ui/Toast";
 
-import { getTransactionHistory } from "./billing.api";
+import { useTranslation } from "react-i18next";
 import type { BaseListParams } from "../../../../../components/reusebale-components/DataTable";
+import { authStore } from "../../../../../utils/authStore";
+import { me } from "../../../../_guest/-api/auth.api";
+import { getTransactionHistory } from "./billing.api";
 
 export const useGetTransactionHistory = (params?: BaseListParams) => {
   return useQuery({
@@ -28,11 +31,16 @@ export const useGetSubscriptionPlans = () => {
 };
 
 export const useCheckout = () => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CheckoutRequest) => checkout(data),
-    onError: ({ message }) => {
-      toast.error(message);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transactions", "status"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions", "history"] });
+      toast.success(t("billing.checkoutSuccess", "Tagihan berhasil dibuat!"));
     },
+    onError: ({ message }) => toast.error(message),
   });
 };
 
@@ -43,20 +51,40 @@ export const useGetTransaction = (
     refetchInterval?: number | false | ((query: any) => number | false);
   },
 ) => {
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: ["transaction", referenceId],
     queryFn: () => getTransaction(referenceId),
     enabled: !!referenceId && (options?.enabled ?? true),
-    refetchInterval: options?.refetchInterval,
+    refetchInterval: (query) => {
+      const status = query.state.data?.data?.status;
+      if (status === "PAID" || status === "EXPIRED" || status === "FAILED") {
+        if (status === "PAID") {
+          me().then(({ data: updatedUser }) => {
+            if (updatedUser) authStore.set({ user: updatedUser });
+          });
+        }
+        queryClient.invalidateQueries({ queryKey: ["transactions", "status"] });
+        return false;
+      }
+      return 5000;
+    },
   });
 };
 
 export const useCancelTransaction = () => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (referenceId: string) => cancelTransaction(referenceId),
-    onError: ({ message }) => {
-      toast.error(message);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transactions", "status"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions", "history"] });
+      toast.success(
+        t("billing.cancelSuccess", "Transaksi sebelumnya berhasil dibatalkan."),
+      );
     },
+    onError: ({ message }) => toast.error(message),
   });
 };
 
@@ -72,11 +100,13 @@ export const useCancelActiveSubscription = () => {
   return useMutation({
     mutationFn: cancelActiveSubscription,
     onSuccess: () => {
+      me().then(({ data: updatedUser }) => {
+        if (updatedUser) authStore.set({ user: updatedUser });
+      });
       queryClient.invalidateQueries({ queryKey: ["transactions", "status"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions", "history"] });
       toast.success("Langganan berhasil dibatalkan.");
     },
-    onError: ({ message }) => {
-      toast.error(message);
-    },
+    onError: ({ message }) => toast.error(message),
   });
 };

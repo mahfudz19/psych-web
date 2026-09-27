@@ -1,5 +1,5 @@
+import { useNavigate } from "@tanstack/react-router";
 import { CheckCircle2, Clock, Eye, X, XCircle } from "lucide-react";
-import { useState } from "react";
 import { useGetTransactionHistory } from "../../-api/billing.query";
 import type { TransactionHistoryItem } from "../../-api/billing.type";
 import {
@@ -9,12 +9,34 @@ import {
 } from "../../../../../../components/reusebale-components/DataTable";
 import Dialog from "../../../../../../components/ui/Dialog";
 import IconButton from "../../../../../../components/ui/IconButton";
+import { Route } from "../index";
 
 const HistoryContent = () => {
-  const [tableState, setTableState] = useState<BaseListParams>({
-    page: 1,
-    limit: 10,
-  });
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  const tableState: BaseListParams = {
+    page: search.page ?? 1,
+    limit: search.limit ?? 10,
+    search: search.search,
+    sortBy: search.sortBy,
+    sortOrder: search.sortOrder,
+    filter: search.filter,
+  };
+
+  const handleStateChange = (
+    updater: BaseListParams | ((prev: BaseListParams) => BaseListParams),
+  ) => {
+    const nextState =
+      typeof updater === "function" ? updater(tableState) : updater;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        ...nextState,
+      }),
+      replace: true,
+    });
+  };
 
   const { data: historyRes, isLoading: isLoadingHistory } =
     useGetTransactionHistory(tableState);
@@ -278,7 +300,7 @@ const HistoryContent = () => {
       meta={historyRes?.meta}
       isLoading={isLoadingHistory}
       state={tableState}
-      onStateChange={setTableState}
+      onStateChange={handleStateChange}
     />
   );
 };

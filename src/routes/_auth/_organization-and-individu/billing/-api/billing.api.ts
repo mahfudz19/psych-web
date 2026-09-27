@@ -1,7 +1,7 @@
 import type { BaseListParams } from "../../../../../components/reusebale-components/DataTable";
 import { api } from "../../../../../utils/api";
+import type { SubscriptionPlan } from "../../../_organization/_admin/subscription-plan-management/-api/subscriptionPlan.type";
 import type {
-  SubscriptionPlan,
   CheckoutRequest,
   TransactionDetail,
   TransactionHistoryItem,
@@ -11,7 +11,9 @@ import type {
 export const BASE_URL = "/api/v1";
 
 export const getSubscriptionPlans = async () => {
-  return api.get<SubscriptionPlan[]>(`${BASE_URL}/subscription-plans/store`);
+  return api.get<Omit<SubscriptionPlan, "createdAt" | "updatedAt">[]>(
+    `${BASE_URL}/subscription-plans/store`,
+  );
 };
 
 export const checkout = async (data: CheckoutRequest) => {

@@ -37,7 +37,7 @@ function ResetPasswordPage() {
     );
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newPassword) return;
     mutation.mutate({ token, newPassword });

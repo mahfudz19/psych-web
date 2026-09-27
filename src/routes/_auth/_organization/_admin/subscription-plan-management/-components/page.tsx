@@ -18,12 +18,7 @@ function DialogCreate() {
     <Dialog
       isDynamic={true}
       trigger={(openDialog) => (
-        <Button
-          onClick={(e) => {
-            openDialog(e);
-          }}
-          startIcon={<Plus size={16} />}
-        >
+        <Button onClick={openDialog} startIcon={<Plus size={16} />}>
           Subscription Plan
         </Button>
       )}
@@ -35,11 +30,7 @@ function DialogCreate() {
               Add Subscription Plan
             </h3>
           </div>
-          <SubscriptionPlanForm
-            onSuccessCallback={() => {
-              close();
-            }}
-          />
+          <SubscriptionPlanForm onSuccessCallback={() => close()} />
         </div>
       )}
     </Dialog>
@@ -64,10 +55,7 @@ function SubscriptionPlanManagement() {
 
   const handleStateChange = (newState: BaseListParams) => {
     navigate({
-      search: (prev) => {
-        const nextSearch = { ...prev, ...newState };
-        return nextSearch;
-      },
+      search: (prev) => ({ ...prev, ...newState }),
       replace: true,
     });
   };

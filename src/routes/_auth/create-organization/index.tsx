@@ -31,7 +31,7 @@ function CreateOrganizationPage() {
   const { mutateAsync: createOrganization, isPending: isCreating } =
     useCreateOrganizationMutation();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 

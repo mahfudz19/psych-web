@@ -1,3 +1,5 @@
+import type { SubscriptionPlan } from "../../../_organization/_admin/subscription-plan-management/-api/subscriptionPlan.type";
+
 export type TransactionStatus = "PENDING" | "PAID" | "EXPIRED" | "FAILED";
 export type SubscriptionStatus =
   "ACTIVE" | "CANCELED" | "EXPIRED" | "PAYMENT_PENDING";
@@ -9,16 +11,6 @@ export interface SubscriptionDetail {
   startDate: string;
   endDate: string;
   canceledAt?: string | null;
-}
-
-export interface SubscriptionPlan {
-  id: string;
-  name: string;
-  code: string;
-  price: number;
-  durationDays: number;
-  targetAudience: TargetAudience;
-  maxSeats: number;
 }
 
 export interface CheckoutRequest {
@@ -66,7 +58,7 @@ export interface TransactionStatusResponse {
   activeSubscription: {
     startDate: string;
     endDate: string;
-    plan: SubscriptionPlan;
+    plan: Omit<SubscriptionPlan, "createdAt" | "updatedAt">;
   };
   hasActiveSubscription: boolean;
   hasPendingTransaction: boolean;

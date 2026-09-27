@@ -100,6 +100,11 @@ function ProfileDropdown() {
                 </p>
               </div>
             </div>
+            {import.meta.env.DEV && (
+              <span className="font-mono text-xs">
+                {user.subscription?.planId}
+              </span>
+            )}
           </MenuHeader>
 
           <div className="flex flex-col gap-0.5 p-1">

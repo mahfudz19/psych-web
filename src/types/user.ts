@@ -75,6 +75,12 @@ export interface User {
   status: UserStatus;
   lastLoginAt?: string | null;
   createdAt: string;
+  subscription?: {
+    endDate: string;
+    isPremium: string;
+    startDate: string;
+    planId: string;
+  };
 }
 
 export interface DeviceInfo {

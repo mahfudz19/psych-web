@@ -18,6 +18,7 @@ import { Route as AuthOrganizationAndIndividuRouteImport } from './routes/_auth/
 import { Route as GuestIndexRouteImport } from './routes/_guest/index'
 import { Route as ExamplePageIndexRouteImport } from './routes/example-page/index'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
+import { Route as AuthOrganizationAndIndividuBillingRouteImport } from './routes/_auth/_organization-and-individu/billing'
 import { Route as AuthOrganizationAndIndividuProfileRouteImport } from './routes/_auth/_organization-and-individu/profile'
 import { Route as AuthCreateOrganizationIndexRouteImport } from './routes/_auth/create-organization/index'
 import { Route as GuestForgotPasswordIndexRouteImport } from './routes/_guest/forgot-password/index'
@@ -36,6 +37,7 @@ import { Route as AuthOrganizationSettingsIndexRouteImport } from './routes/_aut
 import { Route as GuestRegisterOrganizationIndexRouteImport } from './routes/_guest/register/organization/index'
 import { Route as GuestRegisterVerifyEmailIndexRouteImport } from './routes/_guest/register/verify-email/index'
 import { Route as AuthExamExamTestIdIndexRouteImport } from './routes/_auth/_exam/exam/$testId/index'
+import { Route as AuthOrganizationAndIndividuBillingHistoryIndexRouteImport } from './routes/_auth/_organization-and-individu/billing/history/index'
 import { Route as AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/change-password/index'
 import { Route as AuthOrganizationAndIndividuProfileReferralIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/referral/index'
 import { Route as AuthOrganizationAndIndividuProfileSessionsIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/sessions/index'
@@ -86,6 +88,12 @@ const InviteTokenRoute = InviteTokenRouteImport.update({
   path: '/invite/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthOrganizationAndIndividuBillingRoute =
+  AuthOrganizationAndIndividuBillingRouteImport.update({
+    id: '/billing',
+    path: '/billing',
+    getParentRoute: () => AuthOrganizationAndIndividuRoute,
+  } as any)
 const AuthOrganizationAndIndividuProfileRoute =
   AuthOrganizationAndIndividuProfileRouteImport.update({
     id: '/profile',
@@ -137,9 +145,9 @@ const AuthIndividuTestIndexRoute = AuthIndividuTestIndexRouteImport.update({
 } as any)
 const AuthOrganizationAndIndividuBillingIndexRoute =
   AuthOrganizationAndIndividuBillingIndexRouteImport.update({
-    id: '/billing/',
-    path: '/billing/',
-    getParentRoute: () => AuthOrganizationAndIndividuRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthOrganizationAndIndividuBillingRoute,
   } as any)
 const AuthOrganizationAndIndividuProfileIndexRoute =
   AuthOrganizationAndIndividuProfileIndexRouteImport.update({
@@ -188,6 +196,12 @@ const AuthExamExamTestIdIndexRoute = AuthExamExamTestIdIndexRouteImport.update({
   path: '/exam/$testId/',
   getParentRoute: () => AuthExamRoute,
 } as any)
+const AuthOrganizationAndIndividuBillingHistoryIndexRoute =
+  AuthOrganizationAndIndividuBillingHistoryIndexRouteImport.update({
+    id: '/history/',
+    path: '/history/',
+    getParentRoute: () => AuthOrganizationAndIndividuBillingRoute,
+  } as any)
 const AuthOrganizationAndIndividuProfileChangePasswordIndexRoute =
   AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport.update({
     id: '/change-password/',
@@ -247,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/': typeof GuestIndexRoute
   '/invite/$token': typeof InviteTokenRoute
   '/example-page/': typeof ExamplePageIndexRoute
+  '/billing': typeof AuthOrganizationAndIndividuBillingRouteWithChildren
   '/profile': typeof AuthOrganizationAndIndividuProfileRouteWithChildren
   '/create-organization/': typeof AuthCreateOrganizationIndexRoute
   '/forgot-password/': typeof GuestForgotPasswordIndexRoute
@@ -265,6 +280,7 @@ export interface FileRoutesByFullPath {
   '/register/organization/': typeof GuestRegisterOrganizationIndexRoute
   '/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
   '/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
+  '/billing/history/': typeof AuthOrganizationAndIndividuBillingHistoryIndexRoute
   '/profile/change-password/': typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
   '/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/profile/sessions/': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
@@ -296,6 +312,7 @@ export interface FileRoutesByTo {
   '/register/organization': typeof GuestRegisterOrganizationIndexRoute
   '/register/verify-email': typeof GuestRegisterVerifyEmailIndexRoute
   '/exam/$testId': typeof AuthExamExamTestIdIndexRoute
+  '/billing/history': typeof AuthOrganizationAndIndividuBillingHistoryIndexRoute
   '/profile/change-password': typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
   '/profile/referral': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/profile/sessions': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
@@ -317,6 +334,7 @@ export interface FileRoutesById {
   '/invite/$token': typeof InviteTokenRoute
   '/_guest/': typeof GuestIndexRoute
   '/example-page/': typeof ExamplePageIndexRoute
+  '/_auth/_organization-and-individu/billing': typeof AuthOrganizationAndIndividuBillingRouteWithChildren
   '/_auth/_organization-and-individu/profile': typeof AuthOrganizationAndIndividuProfileRouteWithChildren
   '/_auth/create-organization/': typeof AuthCreateOrganizationIndexRoute
   '/_guest/forgot-password/': typeof GuestForgotPasswordIndexRoute
@@ -335,6 +353,7 @@ export interface FileRoutesById {
   '/_guest/register/organization/': typeof GuestRegisterOrganizationIndexRoute
   '/_guest/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
   '/_auth/_exam/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
+  '/_auth/_organization-and-individu/billing/history/': typeof AuthOrganizationAndIndividuBillingHistoryIndexRoute
   '/_auth/_organization-and-individu/profile/change-password/': typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
   '/_auth/_organization-and-individu/profile/referral/': typeof AuthOrganizationAndIndividuProfileReferralIndexRoute
   '/_auth/_organization-and-individu/profile/sessions/': typeof AuthOrganizationAndIndividuProfileSessionsIndexRoute
@@ -351,6 +370,7 @@ export interface FileRouteTypes {
     | '/'
     | '/invite/$token'
     | '/example-page/'
+    | '/billing'
     | '/profile'
     | '/create-organization/'
     | '/forgot-password/'
@@ -369,6 +389,7 @@ export interface FileRouteTypes {
     | '/register/organization/'
     | '/register/verify-email/'
     | '/exam/$testId/'
+    | '/billing/history/'
     | '/profile/change-password/'
     | '/profile/referral/'
     | '/profile/sessions/'
@@ -400,6 +421,7 @@ export interface FileRouteTypes {
     | '/register/organization'
     | '/register/verify-email'
     | '/exam/$testId'
+    | '/billing/history'
     | '/profile/change-password'
     | '/profile/referral'
     | '/profile/sessions'
@@ -420,6 +442,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/_guest/'
     | '/example-page/'
+    | '/_auth/_organization-and-individu/billing'
     | '/_auth/_organization-and-individu/profile'
     | '/_auth/create-organization/'
     | '/_guest/forgot-password/'
@@ -438,6 +461,7 @@ export interface FileRouteTypes {
     | '/_guest/register/organization/'
     | '/_guest/register/verify-email/'
     | '/_auth/_exam/exam/$testId/'
+    | '/_auth/_organization-and-individu/billing/history/'
     | '/_auth/_organization-and-individu/profile/change-password/'
     | '/_auth/_organization-and-individu/profile/referral/'
     | '/_auth/_organization-and-individu/profile/sessions/'
@@ -521,6 +545,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InviteTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/_organization-and-individu/billing': {
+      id: '/_auth/_organization-and-individu/billing'
+      path: '/billing'
+      fullPath: '/billing'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuBillingRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuRoute
+    }
     '/_auth/_organization-and-individu/profile': {
       id: '/_auth/_organization-and-individu/profile'
       path: '/profile'
@@ -586,10 +617,10 @@ declare module '@tanstack/react-router' {
     }
     '/_auth/_organization-and-individu/billing/': {
       id: '/_auth/_organization-and-individu/billing/'
-      path: '/billing'
+      path: '/'
       fullPath: '/billing/'
       preLoaderRoute: typeof AuthOrganizationAndIndividuBillingIndexRouteImport
-      parentRoute: typeof AuthOrganizationAndIndividuRoute
+      parentRoute: typeof AuthOrganizationAndIndividuBillingRoute
     }
     '/_auth/_organization-and-individu/profile/': {
       id: '/_auth/_organization-and-individu/profile/'
@@ -646,6 +677,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/exam/$testId/'
       preLoaderRoute: typeof AuthExamExamTestIdIndexRouteImport
       parentRoute: typeof AuthExamRoute
+    }
+    '/_auth/_organization-and-individu/billing/history/': {
+      id: '/_auth/_organization-and-individu/billing/history/'
+      path: '/history'
+      fullPath: '/billing/history/'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuBillingHistoryIndexRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuBillingRoute
     }
     '/_auth/_organization-and-individu/profile/change-password/': {
       id: '/_auth/_organization-and-individu/profile/change-password/'
@@ -770,6 +808,24 @@ const AuthOrganizationRouteChildren: AuthOrganizationRouteChildren = {
 const AuthOrganizationRouteWithChildren =
   AuthOrganizationRoute._addFileChildren(AuthOrganizationRouteChildren)
 
+interface AuthOrganizationAndIndividuBillingRouteChildren {
+  AuthOrganizationAndIndividuBillingIndexRoute: typeof AuthOrganizationAndIndividuBillingIndexRoute
+  AuthOrganizationAndIndividuBillingHistoryIndexRoute: typeof AuthOrganizationAndIndividuBillingHistoryIndexRoute
+}
+
+const AuthOrganizationAndIndividuBillingRouteChildren: AuthOrganizationAndIndividuBillingRouteChildren =
+  {
+    AuthOrganizationAndIndividuBillingIndexRoute:
+      AuthOrganizationAndIndividuBillingIndexRoute,
+    AuthOrganizationAndIndividuBillingHistoryIndexRoute:
+      AuthOrganizationAndIndividuBillingHistoryIndexRoute,
+  }
+
+const AuthOrganizationAndIndividuBillingRouteWithChildren =
+  AuthOrganizationAndIndividuBillingRoute._addFileChildren(
+    AuthOrganizationAndIndividuBillingRouteChildren,
+  )
+
 interface AuthOrganizationAndIndividuProfileRouteChildren {
   AuthOrganizationAndIndividuProfileIndexRoute: typeof AuthOrganizationAndIndividuProfileIndexRoute
   AuthOrganizationAndIndividuProfileChangePasswordIndexRoute: typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
@@ -795,17 +851,17 @@ const AuthOrganizationAndIndividuProfileRouteWithChildren =
   )
 
 interface AuthOrganizationAndIndividuRouteChildren {
+  AuthOrganizationAndIndividuBillingRoute: typeof AuthOrganizationAndIndividuBillingRouteWithChildren
   AuthOrganizationAndIndividuProfileRoute: typeof AuthOrganizationAndIndividuProfileRouteWithChildren
-  AuthOrganizationAndIndividuBillingIndexRoute: typeof AuthOrganizationAndIndividuBillingIndexRoute
   AuthOrganizationAndIndividuJointInviteTokenIndexRoute: typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
 }
 
 const AuthOrganizationAndIndividuRouteChildren: AuthOrganizationAndIndividuRouteChildren =
   {
+    AuthOrganizationAndIndividuBillingRoute:
+      AuthOrganizationAndIndividuBillingRouteWithChildren,
     AuthOrganizationAndIndividuProfileRoute:
       AuthOrganizationAndIndividuProfileRouteWithChildren,
-    AuthOrganizationAndIndividuBillingIndexRoute:
-      AuthOrganizationAndIndividuBillingIndexRoute,
     AuthOrganizationAndIndividuJointInviteTokenIndexRoute:
       AuthOrganizationAndIndividuJointInviteTokenIndexRoute,
   }

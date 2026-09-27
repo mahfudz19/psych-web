@@ -1,10 +1,23 @@
+export type TransactionStatus = "PENDING" | "PAID" | "EXPIRED" | "FAILED";
+export type SubscriptionStatus =
+  "ACTIVE" | "CANCELED" | "EXPIRED" | "PAYMENT_PENDING";
+
+export type TargetAudience = "ORGANIZATION" | "INDIVIDU";
+
+export interface SubscriptionDetail {
+  status: SubscriptionStatus;
+  startDate: string;
+  endDate: string;
+  canceledAt?: string | null;
+}
+
 export interface SubscriptionPlan {
   id: string;
   name: string;
   code: string;
   price: number;
   durationDays: number;
-  targetAudience: "ORGANIZATION" | "INDIVIDU";
+  targetAudience: TargetAudience;
   maxSeats: number;
 }
 
@@ -31,8 +44,31 @@ export interface AvailableEwallet {
 export interface TransactionDetail {
   referenceId: string;
   checkoutUrl: string;
-  status: "PENDING" | "PAID" | "EXPIRED" | "FAILED";
+  status: TransactionStatus;
   availableBanks: AvailableBank[];
   availableQrCodes: AvailableQrCode[];
   availableEwallets: AvailableEwallet[];
+}
+
+export interface TransactionHistoryItem {
+  referenceId: string;
+  planId?: string | null;
+  amount: number;
+  paymentMethod?: string | null;
+  status: TransactionStatus;
+  createdAt: string;
+  paidAt?: string | null;
+  expiredAt?: string | null;
+  subscription?: SubscriptionDetail | null;
+}
+
+export interface TransactionStatusResponse {
+  activeSubscription: {
+    startDate: string;
+    endDate: string;
+    plan: SubscriptionPlan;
+  };
+  hasActiveSubscription: boolean;
+  hasPendingTransaction: boolean;
+  pendingReferenceId: string | null;
 }

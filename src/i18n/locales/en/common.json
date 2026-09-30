@@ -68,6 +68,7 @@
     "users": "User Management",
     "organizations": "Organizations Management",
     "settingsApp": "App Setting",
+    "transactions": "Transaksi",
     "subscription-plan": "Subscription Plan"
   },
   "topbar": {

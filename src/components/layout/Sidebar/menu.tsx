@@ -1,4 +1,5 @@
 import {
+  BanknoteArrowUp,
   BrainCircuit,
   Building2,
   ClipboardList,
@@ -107,6 +108,11 @@ export const menuConfig: NavGroup[] = [
             titleKey: "sidebar.subscription-plan",
             path: "/subscription-plan-management",
             icon: <DollarSign className="w-4 h-4 shrink-0" />,
+          },
+          {
+            titleKey: "sidebar.transactions",
+            path: "/transactions",
+            icon: <BanknoteArrowUp className="w-4 h-4 shrink-0" />,
           },
           // settings-app
           {

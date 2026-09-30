@@ -10,6 +10,10 @@ export const userKeys = {
     [...userKeys.lists(), { filters }] as const,
   details: () => [...userKeys.all, "detail"] as const,
   detail: (id: string) => [...userKeys.details(), id] as const,
+  sessions: (id: string, params?: BaseListParams) =>
+    [...userKeys.detail(id), "sessions", params] as const,
+  transactions: (id: string, params?: BaseListParams) =>
+    [...userKeys.detail(id), "transactions", params] as const,
 };
 
 export function useGetUsers(params: BaseListParams) {
@@ -28,6 +32,28 @@ export function useUserDetailQuery(userId: string) {
   return useQuery({
     queryKey: userKeys.detail(userId),
     queryFn: () => api.getUserById(userId),
+    enabled: !!userId,
+  });
+}
+
+export function useSessionsByUserIdQuery(
+  userId: string,
+  params?: BaseListParams,
+) {
+  return useQuery({
+    queryKey: userKeys.sessions(userId, params),
+    queryFn: () => api.getSessionsByUserId(userId, params),
+    enabled: !!userId,
+  });
+}
+
+export function useTransactionsByUserQuery(
+  userId: string,
+  params?: BaseListParams,
+) {
+  return useQuery({
+    queryKey: userKeys.transactions(userId, params),
+    queryFn: () => api.getTransactionsByUser(userId, params),
     enabled: !!userId,
   });
 }

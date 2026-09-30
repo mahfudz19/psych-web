@@ -44,9 +44,11 @@ import { Route as AuthOrganizationAndIndividuProfileSessionsIndexRouteImport } f
 import { Route as AuthOrganizationAdminOrganizationsIndexRouteImport } from './routes/_auth/_organization/_admin/organizations/index'
 import { Route as AuthOrganizationAdminSettingsAppIndexRouteImport } from './routes/_auth/_organization/_admin/settings-app/index'
 import { Route as AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport } from './routes/_auth/_organization/_admin/subscription-plan-management/index'
+import { Route as AuthOrganizationAdminTransactionsIndexRouteImport } from './routes/_auth/_organization/_admin/transactions/index'
 import { Route as AuthOrganizationAdminUsersIndexRouteImport } from './routes/_auth/_organization/_admin/users/index'
 import { Route as GuestRegisterInviteTokenIndexRouteImport } from './routes/_guest/register/invite/$token/index'
 import { Route as AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport } from './routes/_auth/_organization-and-individu/joint/invite/$token/index'
+import { Route as AuthOrganizationAdminUsersUserIdIndexRouteImport } from './routes/_auth/_organization/_admin/users/$userId/index'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
@@ -238,6 +240,12 @@ const AuthOrganizationAdminSubscriptionPlanManagementIndexRoute =
     path: '/subscription-plan-management/',
     getParentRoute: () => AuthOrganizationRoute,
   } as any)
+const AuthOrganizationAdminTransactionsIndexRoute =
+  AuthOrganizationAdminTransactionsIndexRouteImport.update({
+    id: '/_admin/transactions/',
+    path: '/transactions/',
+    getParentRoute: () => AuthOrganizationRoute,
+  } as any)
 const AuthOrganizationAdminUsersIndexRoute =
   AuthOrganizationAdminUsersIndexRouteImport.update({
     id: '/_admin/users/',
@@ -255,6 +263,12 @@ const AuthOrganizationAndIndividuJointInviteTokenIndexRoute =
     id: '/joint/invite/$token/',
     path: '/joint/invite/$token/',
     getParentRoute: () => AuthOrganizationAndIndividuRoute,
+  } as any)
+const AuthOrganizationAdminUsersUserIdIndexRoute =
+  AuthOrganizationAdminUsersUserIdIndexRouteImport.update({
+    id: '/_admin/users/$userId/',
+    path: '/users/$userId/',
+    getParentRoute: () => AuthOrganizationRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -287,9 +301,11 @@ export interface FileRoutesByFullPath {
   '/organizations/': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/subscription-plan-management/': typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
+  '/transactions/': typeof AuthOrganizationAdminTransactionsIndexRoute
   '/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
   '/joint/invite/$token/': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
+  '/users/$userId/': typeof AuthOrganizationAdminUsersUserIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof GuestIndexRoute
@@ -319,9 +335,11 @@ export interface FileRoutesByTo {
   '/organizations': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/settings-app': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/subscription-plan-management': typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
+  '/transactions': typeof AuthOrganizationAdminTransactionsIndexRoute
   '/users': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token': typeof GuestRegisterInviteTokenIndexRoute
   '/joint/invite/$token': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
+  '/users/$userId': typeof AuthOrganizationAdminUsersUserIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -360,9 +378,11 @@ export interface FileRoutesById {
   '/_auth/_organization/_admin/organizations/': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/_auth/_organization/_admin/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/_auth/_organization/_admin/subscription-plan-management/': typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
+  '/_auth/_organization/_admin/transactions/': typeof AuthOrganizationAdminTransactionsIndexRoute
   '/_auth/_organization/_admin/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/_guest/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
   '/_auth/_organization-and-individu/joint/invite/$token/': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
+  '/_auth/_organization/_admin/users/$userId/': typeof AuthOrganizationAdminUsersUserIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -396,9 +416,11 @@ export interface FileRouteTypes {
     | '/organizations/'
     | '/settings-app/'
     | '/subscription-plan-management/'
+    | '/transactions/'
     | '/users/'
     | '/register/invite/$token/'
     | '/joint/invite/$token/'
+    | '/users/$userId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -428,9 +450,11 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/settings-app'
     | '/subscription-plan-management'
+    | '/transactions'
     | '/users'
     | '/register/invite/$token'
     | '/joint/invite/$token'
+    | '/users/$userId'
   id:
     | '__root__'
     | '/_auth'
@@ -468,9 +492,11 @@ export interface FileRouteTypes {
     | '/_auth/_organization/_admin/organizations/'
     | '/_auth/_organization/_admin/settings-app/'
     | '/_auth/_organization/_admin/subscription-plan-management/'
+    | '/_auth/_organization/_admin/transactions/'
     | '/_auth/_organization/_admin/users/'
     | '/_guest/register/invite/$token/'
     | '/_auth/_organization-and-individu/joint/invite/$token/'
+    | '/_auth/_organization/_admin/users/$userId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -727,6 +753,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport
       parentRoute: typeof AuthOrganizationRoute
     }
+    '/_auth/_organization/_admin/transactions/': {
+      id: '/_auth/_organization/_admin/transactions/'
+      path: '/transactions'
+      fullPath: '/transactions/'
+      preLoaderRoute: typeof AuthOrganizationAdminTransactionsIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
+    }
     '/_auth/_organization/_admin/users/': {
       id: '/_auth/_organization/_admin/users/'
       path: '/users'
@@ -747,6 +780,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/joint/invite/$token/'
       preLoaderRoute: typeof AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport
       parentRoute: typeof AuthOrganizationAndIndividuRoute
+    }
+    '/_auth/_organization/_admin/users/$userId/': {
+      id: '/_auth/_organization/_admin/users/$userId/'
+      path: '/users/$userId'
+      fullPath: '/users/$userId/'
+      preLoaderRoute: typeof AuthOrganizationAdminUsersUserIdIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
     }
   }
 }
@@ -787,7 +827,9 @@ interface AuthOrganizationRouteChildren {
   AuthOrganizationAdminOrganizationsIndexRoute: typeof AuthOrganizationAdminOrganizationsIndexRoute
   AuthOrganizationAdminSettingsAppIndexRoute: typeof AuthOrganizationAdminSettingsAppIndexRoute
   AuthOrganizationAdminSubscriptionPlanManagementIndexRoute: typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
+  AuthOrganizationAdminTransactionsIndexRoute: typeof AuthOrganizationAdminTransactionsIndexRoute
   AuthOrganizationAdminUsersIndexRoute: typeof AuthOrganizationAdminUsersIndexRoute
+  AuthOrganizationAdminUsersUserIdIndexRoute: typeof AuthOrganizationAdminUsersUserIdIndexRoute
 }
 
 const AuthOrganizationRouteChildren: AuthOrganizationRouteChildren = {
@@ -802,7 +844,11 @@ const AuthOrganizationRouteChildren: AuthOrganizationRouteChildren = {
     AuthOrganizationAdminSettingsAppIndexRoute,
   AuthOrganizationAdminSubscriptionPlanManagementIndexRoute:
     AuthOrganizationAdminSubscriptionPlanManagementIndexRoute,
+  AuthOrganizationAdminTransactionsIndexRoute:
+    AuthOrganizationAdminTransactionsIndexRoute,
   AuthOrganizationAdminUsersIndexRoute: AuthOrganizationAdminUsersIndexRoute,
+  AuthOrganizationAdminUsersUserIdIndexRoute:
+    AuthOrganizationAdminUsersUserIdIndexRoute,
 }
 
 const AuthOrganizationRouteWithChildren =

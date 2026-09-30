@@ -5,6 +5,7 @@ export type SubscriptionStatus =
   "ACTIVE" | "CANCELED" | "EXPIRED" | "PAYMENT_PENDING";
 
 export type TargetAudience = "ORGANIZATION" | "INDIVIDU";
+export type SubscriberType = "USER" | "ORGANIZATION";
 
 export interface SubscriptionDetail {
   status: SubscriptionStatus;

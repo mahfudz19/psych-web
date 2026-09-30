@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useGetUsers } from "../-api/user.query";
 import type { Users } from "../-api/user.type";
 import {
@@ -7,7 +7,8 @@ import {
   type ColumnDef,
 } from "../../../../../../components/reusebale-components/DataTable";
 import { Route } from "../index";
-import DetailUser from "./DetailUser";
+import IconButton from "../../../../../../components/ui/IconButton";
+import { Eye } from "lucide-react";
 
 function UsersPage() {
   const tableState = Route.useSearch();
@@ -94,7 +95,13 @@ function UsersPage() {
       header: "",
       accessorKey: "actions",
       className: "w-4 text-right px-4",
-      cell: (row) => <DetailUser user={row} key={`user-detail-${row.id}`} />,
+      cell: (row) => (
+        <Link to={`${row.id}`}>
+          <IconButton variant="text" size="sm" color="info">
+            <Eye size={16} />
+          </IconButton>
+        </Link>
+      ),
     },
   ];
 

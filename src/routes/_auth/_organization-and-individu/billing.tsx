@@ -103,7 +103,7 @@ function BillingLayout() {
 }
 
 const AdminContact = () => {
-  const WA_NUMBER = "6281234567890";
+  const WA_NUMBER = "6281937093667";
   const WA_MESSAGE = encodeURIComponent(
     "Halo Admin, saya mengalami kendala pada halaman pembayaran. Mohon bantuannya.",
   );

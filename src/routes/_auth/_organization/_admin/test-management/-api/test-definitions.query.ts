@@ -190,9 +190,8 @@ export function useCreateTestSectionMutation(testId: string) {
         queryKey: testDefinitionKeys.detail(testId),
       });
     },
-    onError: (error: any) => {
-      toast.error(error?.data?.message || "Gagal membuat section");
-    },
+    onError: (error: any) =>
+      toast.error(error?.data?.message || "Gagal membuat section"),
   });
 }
 

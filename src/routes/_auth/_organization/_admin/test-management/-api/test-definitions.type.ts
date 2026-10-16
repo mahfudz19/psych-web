@@ -119,10 +119,21 @@ export interface TestSection {
   scaleIds?: string[];
 }
 
-export type TestSectionCreatePayload = Omit<
-  TestSection,
-  "id" | "testId" | "createdAt" | "updatedAt"
->;
+export type TestSectionCreatePayload = {
+  code?: string;
+  order: number;
+  name: string;
+  instructions: string;
+  examples: unknown[];
+  showExamplesFirst: boolean;
+  timeLimitSeconds: number | null;
+  itemCount: number;
+  navigationPolicy: NavigationPolicy;
+  defaultItemType: string;
+  stimulusPhase: Record<string, unknown> | null;
+  config: Record<string, unknown>;
+  status: SectionStatus;
+};
 
 export type TestSectionUpdatePayload = Omit<TestSectionCreatePayload, "code">;
 

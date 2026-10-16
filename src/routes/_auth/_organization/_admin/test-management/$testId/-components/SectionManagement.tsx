@@ -1,15 +1,20 @@
+import { Edit, Plus, Trash, X } from "lucide-react";
 import { useState } from "react";
-import type { ReactNode } from "react";
-import { Plus, Trash, Edit, X } from "lucide-react";
 import {
-  useGetTestSections,
+  useCreateTestSectionMutation,
   useDeleteTestSectionMutation,
+  useGetTestSections,
 } from "../../-api/test-definitions.query";
-import Button from "../../../../../../../components/ui/Button";
-import IconButton from "../../../../../../../components/ui/IconButton";
 import DialogConfirmAction from "../../../../../../../components/reusebale-components/dialog/DialogConfirmAction";
+import Alert from "../../../../../../../components/ui/Alert";
+import AlertDescription from "../../../../../../../components/ui/Alert/AlertDescription";
+import AlertTitle from "../../../../../../../components/ui/Alert/AlertTitle";
+import Button from "../../../../../../../components/ui/Button";
+import Dialog from "../../../../../../../components/ui/Dialog";
+import IconButton from "../../../../../../../components/ui/IconButton";
 import type { SectionFormInitial, SectionPayload } from "./SectionForm";
 import SectionForm from "./SectionForm";
+import type { TestSectionCreatePayload } from "../../-api/test-definitions.type";
 
 type FormState =
   | { mode: "create" }
@@ -25,34 +30,6 @@ function formatTime(seconds?: number | null) {
   return `${seconds} dtk (${m} mnt${s ? ` ${s} dtk` : ""})`;
 }
 
-/**
- * Overlay sederhana supaya komponen ini tidak bergantung pada API modal lain.
- * Ganti dengan komponen Modal/Dialog milik proyek jika sudah ada.
- */
-function FormOverlay({
-  title,
-  onClose,
-  children,
-}: {
-  title: string;
-  onClose: () => void;
-  children: ReactNode;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-2xl rounded-2xl bg-white dark:bg-gray-900 shadow-xl overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-          <h4 className="text-lg font-semibold">{title}</h4>
-          <IconButton size="sm" variant="text" onClick={onClose}>
-            <X size={18} />
-          </IconButton>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
-
 export default function SectionManagement({
   testId,
   isLocked,
@@ -60,9 +37,9 @@ export default function SectionManagement({
   testId: string;
   isLocked: boolean;
 }) {
-  // Semua hook harus dipanggil sebelum early return.
   const { data, isLoading } = useGetTestSections(testId);
   const deleteMutation = useDeleteTestSectionMutation(testId);
+  const createMutation = useCreateTestSectionMutation(testId);
   const [formState, setFormState] = useState<FormState>(null);
 
   if (isLoading) return <div>Memuat sections...</div>;
@@ -72,37 +49,37 @@ export default function SectionManagement({
   );
   const nextOrder = Math.max(0, ...sections.map((s) => s.order ?? 0)) + 1;
 
-  // ---------------------------------------------------------------------
-  // SUBMIT: untuk sementara hanya console.log.
-  // Nanti ganti isi fungsi ini dengan createMutation / updateMutation.
-  // ---------------------------------------------------------------------
-  const handleFormSubmit = (payload: SectionPayload) => {
+  const handleFormSubmit = (payload: TestSectionCreatePayload) => {
     const isEdit = formState?.mode === "edit";
     const sectionId = formState?.mode === "edit" ? formState.section.id : null;
 
-    console.group("[SectionForm] submit");
-    console.log("Collection tujuan :", "test_sections");
-    console.log(
-      "Request           :",
-      `${isEdit ? "PUT" : "POST"} /api/v1/admin/tests/${testId}/sections${
-        sectionId ? `/${sectionId}` : ""
-      }`,
-    );
-    console.log("Body (payload)    :", payload);
-    console.log("Body (JSON)       :\n" + JSON.stringify(payload, null, 2));
-    console.log("Dari URL, bukan body :", {
-      testId: `${testId} -> test_definitions._id`,
-      ...(sectionId ? { sectionId: `${sectionId} -> test_sections._id` } : {}),
-    });
-    console.log("Diisi server      :", {
-      testVersion: "disalin dari test_definitions.version",
-      scaleIds: "otomatis dari test_scales.sectionId",
-      createdAt: "waktu simpan",
-      updatedAt: "waktu simpan",
-    });
-    console.groupEnd();
-
-    setFormState(null);
+    if (isEdit) {
+      console.group("[SectionForm] submit");
+      console.log("Collection tujuan :", "test_sections");
+      console.log(
+        "Request           :",
+        `/api/v1/admin/tests/${testId}/sections${
+          sectionId ? `/${sectionId}` : ""
+        }`,
+      );
+      console.log("Body (payload)    :", payload);
+      console.log("Body (JSON)       :\n" + JSON.stringify(payload, null, 2));
+      console.log("Dari URL, bukan body :", {
+        testId: `${testId} -> test_definitions._id`,
+        ...(sectionId
+          ? { sectionId: `${sectionId} -> test_sections._id` }
+          : {}),
+      });
+      console.log("Diisi server      :", {
+        testVersion: "disalin dari test_definitions.version",
+        scaleIds: "otomatis dari test_scales.sectionId",
+        createdAt: "waktu simpan",
+        updatedAt: "waktu simpan",
+      });
+      console.groupEnd();
+    } else {
+      createMutation.mutate(payload, { onSuccess: () => setFormState(null) });
+    }
   };
 
   return (
@@ -110,21 +87,54 @@ export default function SectionManagement({
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">Daftar Section</h3>
         {!isLocked && (
-          <Button
-            startIcon={<Plus size={16} />}
-            size="sm"
-            onClick={() => setFormState({ mode: "create" })}
+          <Dialog
+            maxWidth="4xl"
+            trigger={(openDialog) => (
+              <Button
+                startIcon={<Plus size={16} />}
+                size="sm"
+                onClick={openDialog}
+              >
+                Tambah Section
+              </Button>
+            )}
           >
-            Tambah Section
-          </Button>
+            {(closeDialog) => (
+              <>
+                <div className="flex items-center justify-between px-6 py-4 border-b border-divider">
+                  <h4 className="text-lg font-semibold text-text-primary">
+                    Tambah Section
+                  </h4>
+                  <IconButton
+                    size="sm"
+                    variant="text"
+                    color="error"
+                    onClick={closeDialog}
+                  >
+                    <X size={18} />
+                  </IconButton>
+                </div>
+
+                <SectionForm
+                  key="create"
+                  nextOrder={nextOrder}
+                  onSubmit={handleFormSubmit}
+                  onCancel={() => closeDialog()}
+                />
+              </>
+            )}
+          </Dialog>
         )}
       </div>
 
       {isLocked && (
-        <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
-          Tes ini tidak berstatus DRAFT, sehingga section tidak bisa ditambah,
-          diubah, atau dihapus.
-        </div>
+        <Alert severity="warning" variant="standard">
+          <AlertTitle>Tes ini tidak berstatus DRAFT</AlertTitle>
+          <AlertDescription>
+            Tes ini tidak berstatus DRAFT, sehingga section tidak bisa ditambah,
+            diubah, atau dihapus.
+          </AlertDescription>
+        </Alert>
       )}
 
       <div className="border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
@@ -231,26 +241,6 @@ export default function SectionManagement({
           </tbody>
         </table>
       </div>
-
-      {/* FORM TAMBAH / EDIT */}
-      {formState && (
-        <FormOverlay
-          title={
-            formState.mode === "edit"
-              ? `Edit Section: ${formState.section.name ?? ""}`
-              : "Tambah Section"
-          }
-          onClose={() => setFormState(null)}
-        >
-          <SectionForm
-            key={formState.mode === "edit" ? formState.section.id : "create"}
-            section={formState.mode === "edit" ? formState.section : undefined}
-            nextOrder={nextOrder}
-            onSubmit={handleFormSubmit}
-            onCancel={() => setFormState(null)}
-          />
-        </FormOverlay>
-      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { useGetTestDefinition } from "../../-api/test-definitions.query";
 import Tabs from "../../../../../../../components/ui/Tabs";
 import Tab from "../../../../../../../components/ui/Tabs/Tab";
 import TabContent from "../../../../../../../components/ui/Tabs/TabContent";
+import PageHeader from "../../../../../../../components/reusebale-components/PageHeader";
 
 export default function TestDetailLayout() {
   const { testId } = Route.useParams();
@@ -21,9 +22,15 @@ export default function TestDetailLayout() {
   const { test, stats } = data.data;
 
   return (
-    <div className="p-6 space-y-6">
+    <>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Test Definition", href: "/test-management" },
+          "Detail",
+        ]}
+      />
       {/* Header & Stats */}
-      <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+      <div className="bg-bg-paper mb-6 p-6 rounded-4xl border border-divider shadow-sm">
         <div className="flex justify-between items-start mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -82,52 +89,44 @@ export default function TestDetailLayout() {
       </div>
 
       {/* Tabs Navigation */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
-        <div className="px-4 pt-4 border-b border-gray-200 dark:border-gray-800">
-          <Tabs value={activeTab} onChange={setActiveTab}>
-            <Tab value="sections" label="Sections (Subtes)" />
-            <Tab value="scales" label="Scales (Aspek)" />
-            <Tab value="items" label="Items (Soal)" />
-            <Tab value="norms" label="Norms (Norma)" />
-          </Tabs>
-        </div>
+      <div className="bg-bg-paper p-6 rounded-4xl border border-divider shadow-sm">
+        <Tabs value={activeTab} onChange={setActiveTab}>
+          <Tab value="sections" label="Sections (Subtes)" />
+          <Tab value="scales" label="Scales (Aspek)" />
+          <Tab value="items" label="Items (Soal)" />
+          <Tab value="norms" label="Norms (Norma)" />
+        </Tabs>
+        <TabContent value="sections" activeValue={activeTab}>
+          <SectionManagement
+            testId={testId}
+            isLocked={test.status !== "DRAFT"}
+          />
+        </TabContent>
+        <TabContent value="scales" activeValue={activeTab}>
+          <ScaleManagement testId={testId} isLocked={test.status !== "DRAFT"} />
+        </TabContent>
+        <TabContent value="items" activeValue={activeTab}>
+          <ItemManagement
+            testId={testId}
+            isLocked={test.status !== "DRAFT"}
+            category={test.category}
+          />
 
-        <div className="p-6">
-          <TabContent value="sections" activeValue={activeTab}>
-            <SectionManagement
-              testId={testId}
-              isLocked={test.status !== "DRAFT"}
-            />
-          </TabContent>
-          <TabContent value="scales" activeValue={activeTab}>
-            <ScaleManagement
-              testId={testId}
-              isLocked={test.status !== "DRAFT"}
-            />
-          </TabContent>
-          <TabContent value="items" activeValue={activeTab}>
-            <ItemManagement
-              testId={testId}
-              isLocked={test.status !== "DRAFT"}
-              category={test.category}
-            />
-
-            {/* <ItemManagement
+          {/* <ItemManagement
               testId={testId}
               isLocked={test.status !== "DRAFT"}
               category={test.category}
               sectionId={focusSectionId}
               onSectionChange={setFocusSectionId}
             /> */}
-          </TabContent>
-          <TabContent value="norms" activeValue={activeTab}>
-            <NormManagement
-              testId={testId}
-              isLocked={test.status === "ARCHIVED"}
-            />
-          </TabContent>
-        </div>
+        </TabContent>
+        <TabContent value="norms" activeValue={activeTab}>
+          <NormManagement
+            testId={testId}
+            isLocked={test.status === "ARCHIVED"}
+          />
+        </TabContent>
       </div>
-    </div>
+    </>
   );
 }

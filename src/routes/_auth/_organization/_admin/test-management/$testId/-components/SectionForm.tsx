@@ -7,19 +7,11 @@ import Tabs from "../../../../../../../components/ui/Tabs";
 import Tab from "../../../../../../../components/ui/Tabs/Tab";
 import TabContent from "../../../../../../../components/ui/Tabs/TabContent";
 import Tooltip from "../../../../../../../components/ui/Tooltip";
-
-// ---------------------------------------------------------------------------
-// TIPE
-// ---------------------------------------------------------------------------
+import type { TestSectionCreatePayload } from "../../-api/test-definitions.type";
 
 export type NavigationPolicy = "FREE" | "FORWARD_ONLY";
 export type SectionStatus = "ACTIVE" | "RETIRED";
 
-/**
- * Body request ke collection `test_sections`.
- * - POST /tests/{testId}/sections          -> semua field, termasuk `code`
- * - PUT  /tests/{testId}/sections/{id}     -> tanpa `code` (kode tidak bisa diubah)
- */
 export interface SectionPayload {
   code?: string;
   order: number;
@@ -36,7 +28,6 @@ export interface SectionPayload {
   status: SectionStatus;
 }
 
-/** Data awal untuk mode edit. Semua opsional agar cocok dengan tipe section dari API. */
 export interface SectionFormInitial {
   id?: string;
   code?: string;
@@ -56,16 +47,11 @@ export interface SectionFormInitial {
 
 interface Props {
   section?: SectionFormInitial;
-  /** Urutan yang disarankan untuk section baru (order terakhir + 1). */
   nextOrder: number;
-  onSubmit: (payload: SectionPayload) => void;
+  onSubmit: (payload: TestSectionCreatePayload) => void;
   onCancel: () => void;
   isSubmitting?: boolean;
 }
-
-// ---------------------------------------------------------------------------
-// KONSTANTA
-// ---------------------------------------------------------------------------
 
 const ITEM_TYPES = [
   { value: "SINGLE_CHOICE", label: "Pilihan Tunggal (SINGLE_CHOICE)" },
@@ -86,15 +72,6 @@ const CODE_PATTERN = /^[A-Z0-9_]{1,20}$/;
 const FIELD_CLASS =
   "w-full rounded-2xl border border-divider text-text-primary px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:border-primary-main focus:ring-primary-main/20";
 
-// ---------------------------------------------------------------------------
-// KOMPONEN KECIL
-// ---------------------------------------------------------------------------
-
-/**
- * Label + tooltip. `field` menunjukkan nama field di collection test_sections,
- * supaya terlihat jelas input ini disimpan ke mana.
- * (Sebaiknya dipindah ke komponen bersama, karena TestDefinitionForm punya versi serupa.)
- */
 function FieldLabel({
   htmlFor,
   label,
@@ -152,7 +129,6 @@ function HelpText({ children }: { children: React.ReactNode }) {
   return <p className="mt-1 text-xs text-text-secondary">{children}</p>;
 }
 
-/** Mengurai teks JSON dari textarea. Menambahkan pesan ke `errors` jika tidak valid. */
 function parseJsonField(
   raw: string,
   label: string,
@@ -187,10 +163,6 @@ const toJson = (value: unknown, fallback: string) =>
     ? fallback
     : JSON.stringify(value, null, 2);
 
-// ---------------------------------------------------------------------------
-// FORM
-// ---------------------------------------------------------------------------
-
 export default function SectionForm({
   section,
   nextOrder,
@@ -214,7 +186,6 @@ export default function SectionForm({
 
     const str = (key: string) => String(fd.get(key) ?? "").trim();
 
-    // --- code (hanya saat create) ---
     const code = str("code").toUpperCase();
     if (!isEdit && !CODE_PATTERN.test(code)) {
       errs.push(
@@ -222,7 +193,6 @@ export default function SectionForm({
       );
     }
 
-    // --- field dasar ---
     const name = str("name");
     if (!name) errs.push("Nama section wajib diisi");
 
@@ -231,7 +201,6 @@ export default function SectionForm({
       errs.push("Order wajib diisi, bilangan bulat minimal 1");
     }
 
-    // --- waktu & jumlah soal ---
     const timeRaw = str("timeLimitSeconds");
     const timeLimitSeconds = timeRaw === "" ? null : Number(timeRaw);
     if (
@@ -246,7 +215,6 @@ export default function SectionForm({
       errs.push("Jumlah soal tidak boleh negatif");
     }
 
-    // --- JSON ---
     const examples = parseJsonField(
       str("examples"),
       "Contoh soal",
@@ -255,7 +223,6 @@ export default function SectionForm({
     );
     const config = parseJsonField(str("config"), "Config", "object", errs);
 
-    // --- fase hafalan ---
     let stimulusPhase: Record<string, unknown> | null = null;
     if (useStimulus) {
       const contentType = str("stimulusContentType");
@@ -305,7 +272,6 @@ export default function SectionForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col max-h-[75vh]">
-      {/* TABS */}
       <div className="px-4 pt-4 pb-2 border-b border-divider">
         <Tabs value={activeTab} onChange={setActiveTab}>
           <Tab value="dasar" label="Dasar" />
@@ -315,335 +281,338 @@ export default function SectionForm({
       </div>
 
       <div className="p-4 flex-1 overflow-y-auto">
-        {/* TAB 1: DASAR */}
-        <TabContent value="dasar" activeValue={activeTab} keepMounted>
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <FieldLabel
-                  htmlFor="code"
-                  label="Kode Section"
-                  required={!isEdit}
-                  field="code"
-                  tooltip="Kunci subtes, unik dalam satu tes dan tidak bisa diubah setelah dibuat. Tes tanpa subtes cukup memakai MAIN. Contoh IST: SE, WA, AN."
-                />
-                <Input
-                  id="code"
-                  name="code"
-                  type="text"
-                  defaultValue={section?.code}
-                  placeholder="Contoh: MAIN"
-                  disabled={isEdit}
-                  className="w-full uppercase"
-                />
-                <HelpText>
-                  Huruf besar, angka, underscore. Maksimal 20 karakter.
-                </HelpText>
-              </div>
-              <div>
-                <FieldLabel
-                  htmlFor="order"
-                  label="Urutan"
-                  required
-                  field="order"
-                  tooltip="Urutan pengerjaan subtes. Harus unik dalam satu tes. Subtes dengan urutan 1 dikerjakan pertama."
-                />
-                <Input
-                  id="order"
-                  name="order"
-                  type="number"
-                  min="1"
-                  required
-                  defaultValue={section?.order ?? nextOrder}
-                  className="w-full"
-                />
-              </div>
-            </div>
-
+        <TabContent
+          value="dasar"
+          activeValue={activeTab}
+          keepMounted
+          className="min-h-80.75 space-y-4 mt-0"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <FieldLabel
-                htmlFor="name"
-                label="Nama Section"
-                required
-                field="name"
-                tooltip="Nama subtes yang dilihat peserta. Contoh: Melengkapi Kalimat, Analogi Gambar."
+                htmlFor="code"
+                label="Kode Section"
+                required={!isEdit}
+                field="code"
+                tooltip="Kunci subtes, unik dalam satu tes dan tidak bisa diubah setelah dibuat. Tes tanpa subtes cukup memakai MAIN. Contoh IST: SE, WA, AN."
               />
               <Input
-                id="name"
-                name="name"
+                id="code"
+                name="code"
                 type="text"
+                defaultValue={section?.code}
+                placeholder="Contoh: MAIN"
+                disabled={isEdit}
+                className="w-full uppercase"
+              />
+              <HelpText>
+                Huruf besar, angka, underscore. Maksimal 20 karakter.
+              </HelpText>
+            </div>
+            <div>
+              <FieldLabel
+                htmlFor="order"
+                label="Urutan"
                 required
-                defaultValue={section?.name}
-                placeholder="Contoh: Analogi Gambar"
+                field="order"
+                tooltip="Urutan pengerjaan subtes. Harus unik dalam satu tes. Subtes dengan urutan 1 dikerjakan pertama."
+              />
+              <Input
+                id="order"
+                name="order"
+                type="number"
+                min="1"
+                required
+                defaultValue={section?.order ?? nextOrder}
                 className="w-full"
               />
             </div>
+          </div>
 
+          <div>
+            <FieldLabel
+              htmlFor="name"
+              label="Nama Section"
+              required
+              field="name"
+              tooltip="Nama subtes yang dilihat peserta. Contoh: Melengkapi Kalimat, Analogi Gambar."
+            />
+            <Input
+              id="name"
+              name="name"
+              type="text"
+              required
+              defaultValue={section?.name}
+              placeholder="Contoh: Analogi Gambar"
+              className="w-full"
+            />
+          </div>
+
+          <div>
+            <FieldLabel
+              htmlFor="instructions"
+              label="Instruksi Section"
+              field="instructions"
+              tooltip="Petunjuk khusus subtes ini, tampil sebelum soal pertama."
+            />
+            <textarea
+              id="instructions"
+              name="instructions"
+              defaultValue={section?.instructions ?? ""}
+              rows={4}
+              className={FIELD_CLASS}
+            />
+          </div>
+
+          <div>
+            <FieldLabel
+              htmlFor="status"
+              label="Status Section"
+              field="status"
+              tooltip="ACTIVE = dipakai. RETIRED = disembunyikan tanpa dihapus. Ini bukan status tes (DRAFT/ACTIVE)."
+            />
+            <Select
+              id="status"
+              name="status"
+              defaultValue={section?.status ?? "ACTIVE"}
+              className={FIELD_CLASS}
+            >
+              <option value="ACTIVE">Aktif (ACTIVE)</option>
+              <option value="RETIRED">Dipensiunkan (RETIRED)</option>
+            </Select>
+          </div>
+        </TabContent>
+
+        <TabContent
+          value="waktu"
+          activeValue={activeTab}
+          keepMounted
+          className="min-h-80.75 space-y-4 mt-0"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <FieldLabel
-                htmlFor="instructions"
-                label="Instruksi Section"
-                field="instructions"
-                tooltip="Petunjuk khusus subtes ini, tampil sebelum soal pertama."
+                htmlFor="timeLimitSeconds"
+                label="Batas Waktu (Detik)"
+                field="timeLimitSeconds"
+                tooltip="Batas waktu subtes. Server menutup subtes otomatis saat habis. Kosongkan jika tanpa batas. Isi sesuai manual tes."
               />
-              <textarea
-                id="instructions"
-                name="instructions"
-                defaultValue={section?.instructions ?? ""}
-                rows={4}
-                className={FIELD_CLASS}
+              <Input
+                id="timeLimitSeconds"
+                name="timeLimitSeconds"
+                type="number"
+                min="1"
+                defaultValue={section?.timeLimitSeconds ?? ""}
+                placeholder="Kosong = tanpa batas"
+                className="w-full"
+              />
+              <HelpText>Contoh: 360 detik = 6 menit.</HelpText>
+            </div>
+            <div>
+              <FieldLabel
+                htmlFor="itemCount"
+                label="Jumlah Soal"
+                field="itemCount"
+                tooltip="Jumlah soal yang diharapkan di subtes ini. Dibandingkan dengan soal yang sudah diinput untuk melihat progres."
+              />
+              <Input
+                id="itemCount"
+                name="itemCount"
+                type="number"
+                min="0"
+                defaultValue={section?.itemCount ?? 0}
+                className="w-full"
               />
             </div>
+          </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <FieldLabel
-                htmlFor="status"
-                label="Status Section"
-                field="status"
-                tooltip="ACTIVE = dipakai. RETIRED = disembunyikan tanpa dihapus. Ini bukan status tes (DRAFT/ACTIVE)."
+                htmlFor="navigationPolicy"
+                label="Navigasi"
+                field="navigationPolicy"
+                tooltip="FREE = peserta boleh kembali ke soal sebelumnya. FORWARD_ONLY = hanya maju (umum di IST)."
               />
               <Select
-                id="status"
-                name="status"
-                defaultValue={section?.status ?? "ACTIVE"}
+                id="navigationPolicy"
+                name="navigationPolicy"
+                defaultValue={section?.navigationPolicy ?? "FREE"}
                 className={FIELD_CLASS}
               >
-                <option value="ACTIVE">Aktif (ACTIVE)</option>
-                <option value="RETIRED">Dipensiunkan (RETIRED)</option>
+                <option value="FREE">Bebas (FREE)</option>
+                <option value="FORWARD_ONLY">Hanya Maju (FORWARD_ONLY)</option>
+              </Select>
+            </div>
+            <div>
+              <FieldLabel
+                htmlFor="defaultItemType"
+                label="Tipe Soal Bawaan"
+                field="defaultItemType"
+                tooltip="Menentukan komponen tampilan soal bawaan di subtes ini. Setiap soal tetap menyimpan tipenya sendiri."
+              />
+              <Select
+                id="defaultItemType"
+                name="defaultItemType"
+                defaultValue={section?.defaultItemType ?? "SINGLE_CHOICE"}
+                className={FIELD_CLASS}
+              >
+                {ITEM_TYPES.map((t) => (
+                  <option key={t.value} value={t.value}>
+                    {t.label}
+                  </option>
+                ))}
               </Select>
             </div>
           </div>
         </TabContent>
 
-        {/* TAB 2: WAKTU & NAVIGASI */}
-        <TabContent value="waktu" activeValue={activeTab} keepMounted>
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <FieldLabel
-                  htmlFor="timeLimitSeconds"
-                  label="Batas Waktu (Detik)"
-                  field="timeLimitSeconds"
-                  tooltip="Batas waktu subtes. Server menutup subtes otomatis saat habis. Kosongkan jika tanpa batas. Isi sesuai manual tes."
-                />
-                <Input
-                  id="timeLimitSeconds"
-                  name="timeLimitSeconds"
-                  type="number"
-                  min="1"
-                  defaultValue={section?.timeLimitSeconds ?? ""}
-                  placeholder="Kosong = tanpa batas"
-                  className="w-full"
-                />
-                <HelpText>Contoh: 360 detik = 6 menit.</HelpText>
-              </div>
-              <div>
-                <FieldLabel
-                  htmlFor="itemCount"
-                  label="Jumlah Soal"
-                  field="itemCount"
-                  tooltip="Jumlah soal yang diharapkan di subtes ini. Dibandingkan dengan soal yang sudah diinput untuk melihat progres."
-                />
-                <Input
-                  id="itemCount"
-                  name="itemCount"
-                  type="number"
-                  min="0"
-                  defaultValue={section?.itemCount ?? 0}
-                  className="w-full"
-                />
-              </div>
-            </div>
+        <TabContent
+          value="lanjutan"
+          activeValue={activeTab}
+          keepMounted
+          className="min-h-76.75 space-y-5"
+        >
+          {/* Contoh soal */}
+          <div>
+            <label className="flex items-center gap-2 cursor-pointer text-sm mb-3">
+              <input
+                type="checkbox"
+                name="showExamplesFirst"
+                defaultChecked={section?.showExamplesFirst ?? true}
+                className="w-4 h-4 rounded border-divider text-primary-main focus:ring-primary-main/20 accent-primary-main"
+              />
+              Tampilkan contoh soal sebelum soal pertama
+            </label>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <FieldLabel
-                  htmlFor="navigationPolicy"
-                  label="Navigasi"
-                  field="navigationPolicy"
-                  tooltip="FREE = peserta boleh kembali ke soal sebelumnya. FORWARD_ONLY = hanya maju (umum di IST)."
-                />
-                <Select
-                  id="navigationPolicy"
-                  name="navigationPolicy"
-                  defaultValue={section?.navigationPolicy ?? "FREE"}
-                  className={FIELD_CLASS}
-                >
-                  <option value="FREE">Bebas (FREE)</option>
-                  <option value="FORWARD_ONLY">
-                    Hanya Maju (FORWARD_ONLY)
-                  </option>
-                </Select>
-              </div>
-              <div>
-                <FieldLabel
-                  htmlFor="defaultItemType"
-                  label="Tipe Soal Bawaan"
-                  field="defaultItemType"
-                  tooltip="Menentukan komponen tampilan soal bawaan di subtes ini. Setiap soal tetap menyimpan tipenya sendiri."
-                />
-                <Select
-                  id="defaultItemType"
-                  name="defaultItemType"
-                  defaultValue={section?.defaultItemType ?? "SINGLE_CHOICE"}
-                  className={FIELD_CLASS}
-                >
-                  {ITEM_TYPES.map((t) => (
-                    <option key={t.value} value={t.value}>
-                      {t.label}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-            </div>
+            <FieldLabel
+              htmlFor="examples"
+              label="Contoh Soal (JSON)"
+              field="examples"
+              tooltip="Soal contoh atau latihan sebelum waktu berjalan (IST, CFIT, TIU 5). Array JSON. Kosongkan jika tidak ada."
+            />
+            <textarea
+              id="examples"
+              name="examples"
+              defaultValue={toJson(section?.examples ?? [], "[]")}
+              rows={7}
+              spellCheck={false}
+              className={`${FIELD_CLASS} font-mono`}
+            />
+            <HelpText>
+              Bentuk yang disarankan:{" "}
+              {
+                '[{ content: { text, images: [{ label, url }] }, options: [{ key }], answer: ["3"], explanation }]'
+              }
+            </HelpText>
           </div>
-        </TabContent>
 
-        {/* TAB 3: LANJUTAN */}
-        <TabContent value="lanjutan" activeValue={activeTab} keepMounted>
-          <div className="space-y-5">
-            {/* Contoh soal */}
-            <div>
-              <label className="flex items-center gap-2 cursor-pointer text-sm mb-3">
-                <input
-                  type="checkbox"
-                  name="showExamplesFirst"
-                  defaultChecked={section?.showExamplesFirst ?? true}
-                  className="w-4 h-4 rounded border-divider text-primary-main focus:ring-primary-main/20 accent-primary-main"
-                />
-                Tampilkan contoh soal sebelum soal pertama
-              </label>
-
-              <FieldLabel
-                htmlFor="examples"
-                label="Contoh Soal (JSON)"
-                field="examples"
-                tooltip="Soal contoh atau latihan sebelum waktu berjalan (IST, CFIT, TIU 5). Array JSON. Kosongkan jika tidak ada."
+          {/* Fase hafalan */}
+          <div className="rounded-2xl border border-divider p-4 space-y-4">
+            <label className="flex items-center gap-2 cursor-pointer text-sm font-medium">
+              <input
+                type="checkbox"
+                checked={useStimulus}
+                onChange={(e) => setUseStimulus(e.target.checked)}
+                className="w-4 h-4 rounded border-divider text-primary-main focus:ring-primary-main/20 accent-primary-main"
               />
-              <textarea
-                id="examples"
-                name="examples"
-                defaultValue={toJson(section?.examples ?? [], "[]")}
-                rows={7}
-                spellCheck={false}
-                className={`${FIELD_CLASS} font-mono`}
-              />
-              <HelpText>
-                Bentuk yang disarankan:{" "}
-                {
-                  '[{ content: { text, images: [{ label, url }] }, options: [{ key }], answer: ["3"], explanation }]'
-                }
-              </HelpText>
-            </div>
+              Aktifkan fase hafalan (khusus IST subtes ME)
+            </label>
 
-            {/* Fase hafalan */}
-            <div className="rounded-2xl border border-divider p-4 space-y-4">
-              <label className="flex items-center gap-2 cursor-pointer text-sm font-medium">
-                <input
-                  type="checkbox"
-                  checked={useStimulus}
-                  onChange={(e) => setUseStimulus(e.target.checked)}
-                  className="w-4 h-4 rounded border-divider text-primary-main focus:ring-primary-main/20 accent-primary-main"
-                />
-                Aktifkan fase hafalan (khusus IST subtes ME)
-              </label>
-
-              {useStimulus && (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <FieldLabel
-                        htmlFor="stimulusContentType"
-                        label="Jenis Konten"
-                        required
-                        field="stimulusPhase.contentType"
-                        tooltip="Jenis konten yang dihafal peserta. Contoh: WORD_LIST."
-                      />
-                      <Input
-                        id="stimulusContentType"
-                        name="stimulusContentType"
-                        type="text"
-                        defaultValue={String(
-                          stimulus?.contentType ?? "WORD_LIST",
-                        )}
-                        className="w-full"
-                      />
-                    </div>
-                    <div>
-                      <FieldLabel
-                        htmlFor="stimulusDisplaySeconds"
-                        label="Lama Tampil (Detik)"
-                        required
-                        field="stimulusPhase.displaySeconds"
-                        tooltip="Berapa detik konten ditampilkan sebelum disembunyikan."
-                      />
-                      <Input
-                        id="stimulusDisplaySeconds"
-                        name="stimulusDisplaySeconds"
-                        type="number"
-                        min="1"
-                        defaultValue={Number(stimulus?.displaySeconds ?? 180)}
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
-
-                  <label className="flex items-center gap-2 cursor-pointer text-sm">
-                    <input
-                      type="checkbox"
-                      name="stimulusHideAfter"
-                      defaultChecked={Boolean(stimulus?.hideAfter ?? true)}
-                      className="w-4 h-4 rounded border-divider text-primary-main focus:ring-primary-main/20 accent-primary-main"
-                    />
-                    Sembunyikan konten setelah waktu habis
-                  </label>
-
+            {useStimulus && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <FieldLabel
-                      htmlFor="stimulusContent"
-                      label="Isi Konten (JSON)"
-                      field="stimulusPhase.content"
-                      tooltip="Isi yang dihafal. Contoh daftar kata: { words: [...] }."
+                      htmlFor="stimulusContentType"
+                      label="Jenis Konten"
+                      required
+                      field="stimulusPhase.contentType"
+                      tooltip="Jenis konten yang dihafal peserta. Contoh: WORD_LIST."
                     />
-                    <textarea
-                      id="stimulusContent"
-                      name="stimulusContent"
-                      defaultValue={toJson(
-                        stimulus?.content,
-                        '{\n  "words": []\n}',
+                    <Input
+                      id="stimulusContentType"
+                      name="stimulusContentType"
+                      type="text"
+                      defaultValue={String(
+                        stimulus?.contentType ?? "WORD_LIST",
                       )}
-                      rows={5}
-                      spellCheck={false}
-                      className={`${FIELD_CLASS} font-mono`}
+                      className="w-full"
+                    />
+                  </div>
+                  <div>
+                    <FieldLabel
+                      htmlFor="stimulusDisplaySeconds"
+                      label="Lama Tampil (Detik)"
+                      required
+                      field="stimulusPhase.displaySeconds"
+                      tooltip="Berapa detik konten ditampilkan sebelum disembunyikan."
+                    />
+                    <Input
+                      id="stimulusDisplaySeconds"
+                      name="stimulusDisplaySeconds"
+                      type="number"
+                      min="1"
+                      defaultValue={Number(stimulus?.displaySeconds ?? 180)}
+                      className="w-full"
                     />
                   </div>
                 </div>
-              )}
-            </div>
 
-            {/* Config */}
-            <div>
-              <FieldLabel
-                htmlFor="config"
-                label="Config (JSON)"
-                field="config"
-                tooltip="Konfigurasi unik subtes tanpa mengubah skema. Object JSON. Kosongkan jika tidak ada."
-              />
-              <textarea
-                id="config"
-                name="config"
-                defaultValue={toJson(section?.config ?? {}, "{}")}
-                rows={4}
-                spellCheck={false}
-                className={`${FIELD_CLASS} font-mono`}
-              />
-            </div>
+                <label className="flex items-center gap-2 cursor-pointer text-sm">
+                  <input
+                    type="checkbox"
+                    name="stimulusHideAfter"
+                    defaultChecked={Boolean(stimulus?.hideAfter ?? true)}
+                    className="w-4 h-4 rounded border-divider text-primary-main focus:ring-primary-main/20 accent-primary-main"
+                  />
+                  Sembunyikan konten setelah waktu habis
+                </label>
+
+                <div>
+                  <FieldLabel
+                    htmlFor="stimulusContent"
+                    label="Isi Konten (JSON)"
+                    field="stimulusPhase.content"
+                    tooltip="Isi yang dihafal. Contoh daftar kata: { words: [...] }."
+                  />
+                  <textarea
+                    id="stimulusContent"
+                    name="stimulusContent"
+                    defaultValue={toJson(
+                      stimulus?.content,
+                      '{\n  "words": []\n}',
+                    )}
+                    rows={5}
+                    spellCheck={false}
+                    className={`${FIELD_CLASS} font-mono`}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Config */}
+          <div>
+            <FieldLabel
+              htmlFor="config"
+              label="Config (JSON)"
+              field="config"
+              tooltip="Konfigurasi unik subtes tanpa mengubah skema. Object JSON. Kosongkan jika tidak ada."
+            />
+            <textarea
+              id="config"
+              name="config"
+              defaultValue={toJson(section?.config ?? {}, "{}")}
+              rows={4}
+              spellCheck={false}
+              className={`${FIELD_CLASS} font-mono`}
+            />
           </div>
         </TabContent>
       </div>
 
-      {/* KETERANGAN FIELD OTOMATIS */}
-      <div className="px-4 py-3 border-t border-divider bg-black/2 text-xs text-text-secondary space-y-1">
+      <div className="px-4 py-3 border-t border-divider bg-secondary-main/10 text-xs text-text-secondary space-y-1">
         <p className="font-medium">Tidak diisi di form ini (diatur server):</p>
         <ul className="list-disc pl-4 space-y-0.5">
           <li>
@@ -660,7 +629,6 @@ export default function SectionForm({
         </ul>
       </div>
 
-      {/* ERROR */}
       {errors.length > 0 && (
         <div className="mx-4 mt-3 rounded-xl border border-error-main/40 bg-error-main/5 px-4 py-3 text-sm text-error-main">
           <ul className="list-disc pl-4 space-y-0.5">
@@ -671,7 +639,6 @@ export default function SectionForm({
         </div>
       )}
 
-      {/* FOOTER */}
       <div className="flex items-center justify-end gap-3 p-4 border-t border-divider">
         <Button
           type="button"

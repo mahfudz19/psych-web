@@ -16,9 +16,7 @@ import Tab from "../../../components/ui/Tabs/Tab";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/billing",
-)({
-  component: BillingLayout,
-});
+)({ component: BillingLayout });
 
 const BILLING_TABS = [
   { value: "payment", path: "/billing" },

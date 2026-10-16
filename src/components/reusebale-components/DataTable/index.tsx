@@ -14,6 +14,7 @@ import Input from "../../ui/Input";
 import FacetedFilter from "./FacetedFilter";
 import DateRangeFilter from "./DateRangeFilter";
 import { twMerge } from "tailwind-merge";
+import Select from "../../ui/Select";
 
 export interface BaseListParams {
   page?: number;
@@ -223,7 +224,7 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
         </div>
         <div className="flex items-center gap-2 text-sm text-text-secondary shrink-0">
           <span>{t("common.table.show")}</span>
-          <select
+          <Select
             value={state.limit || 10}
             onChange={(e) =>
               emitCleanState({
@@ -239,7 +240,7 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
                 {size}
               </option>
             ))}
-          </select>
+          </Select>
           <span>{t("common.table.rows")}</span>
         </div>
       </div>

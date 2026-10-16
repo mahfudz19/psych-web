@@ -12,6 +12,7 @@ import Dialog from "../../../../../../components/ui/Dialog";
 import Button from "../../../../../../components/ui/Button";
 import { Plus } from "lucide-react";
 import SubscriptionPlanForm from "./Form";
+import PageHeader from "../../../../../../components/reusebale-components/PageHeader";
 
 function DialogCreate() {
   return (
@@ -149,18 +150,12 @@ function SubscriptionPlanManagement() {
 
   return (
     <>
-      <div className="mb-6 flex justify-between">
-        <div className="">
-          <h1 className="text-2xl font-bold">Katalog Paket Langganan</h1>
-          <p className="text-sm text-gray-500">
-            Kelola opsi paket langganan, harga, dan batasan kursi untuk pengguna
-            & organisasi.
-          </p>
-        </div>
-        <div>
-          <DialogCreate />
-        </div>
-      </div>
+      <PageHeader
+        title="Katalog Paket Langganan"
+        subtitle="Kelola opsi paket langganan, harga, dan batasan kursi untuk pengguna & organisasi."
+        breadcrumbs={["Katalog Paket Langganan"]}
+        other={<DialogCreate />}
+      />
 
       <DataTable<SubscriptionPlan, BaseListParams>
         columns={columns}

@@ -10,6 +10,7 @@ import toast from "../../../../components/ui/Toast";
 import { useAuthStore } from "../../../../utils/authStore";
 import { useAvatarUploadMutation } from "./-api/avatar.query";
 import { useUpdateProfileMutation } from "./-api/profile.query";
+import Select from "../../../../components/ui/Select";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/profile/",
@@ -152,15 +153,14 @@ const FormInputs = () => {
 
           <div className="space-y-1.5">
             <Label htmlFor="gender">{t("profile.form.fields.gender")}</Label>
-            <select
+            <Select
               id="gender"
               name="gender"
               defaultValue={user?.gender || "male"}
-              className="w-full px-4 py-2.5 rounded-2xl bg-bg-default border border-divider text-sm text-text-primary font-medium focus:ring-2 focus:ring-primary-main/20 focus:border-primary-main outline-none transition-all cursor-pointer"
             >
               <option value="male">{t("profile.form.fields.male")}</option>
               <option value="female">{t("profile.form.fields.female")}</option>
-            </select>
+            </Select>
           </div>
 
           <div className="space-y-1.5">

@@ -69,7 +69,8 @@
     "organizations": "Manajemen Organisasi",
     "settingsApp": "Manajemen Aplikasi",
     "transactions": "Transactions",
-    "subscription-plan": "Paket Berlangganan"
+    "subscription-plan": "Paket Berlangganan",
+    "test-management": "Manajemen Tes"
   },
   "topbar": {
     "welcome": "Selamat datang",

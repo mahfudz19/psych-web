@@ -16,6 +16,7 @@ import {
 
 import { Route } from "../index";
 import DetailTransaksi, { HandleCopy } from "./DetailTransaksi";
+import PageHeader from "../../../../../../components/reusebale-components/PageHeader";
 
 function TransactionsPage() {
   const search = Route.useSearch();
@@ -199,13 +200,11 @@ function TransactionsPage() {
 
   return (
     <>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Manajemen Transaksi</h1>
-        <p className="text-sm text-text-secondary">
-          Pantau seluruh transaksi, audit pembayaran Xendit, dan analisa
-          pendapatan platform.
-        </p>
-      </div>
+      <PageHeader
+        title="Manajemen Transaksi"
+        subtitle="Pantau seluruh transaksi, audit pembayaran Xendit, dan analisa pendapatan platform."
+        breadcrumbs={["Manajemen Transaksi"]}
+      />
 
       {/* Ringkasan Laporan Keuangan & Perilaku */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">

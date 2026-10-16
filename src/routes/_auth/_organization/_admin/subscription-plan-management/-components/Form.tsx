@@ -10,6 +10,8 @@ import type {
 import Button from "../../../../../../components/ui/Button";
 import Input from "../../../../../../components/ui/Input";
 import Label from "../../../../../../components/ui/Label";
+import Select from "../../../../../../components/ui/Select";
+import Checkbox from "../../../../../../components/ui/Checkbox";
 
 interface Props {
   subscriptionPlan?: SubscriptionPlan;
@@ -59,18 +61,12 @@ function SubscriptionPlanForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-left">
-      <div className="flex items-center gap-2 pt-1">
-        <input
-          id="recommended"
-          name="recommended"
-          type="checkbox"
-          defaultChecked={subscriptionPlan?.recommended}
-          className="w-4 h-4 rounded border-divider text-primary-main focus:ring-primary-main/20 accent-primary-main cursor-pointer"
-        />
-        <Label htmlFor="recommended" className="cursor-pointer font-medium">
-          Rekomendasikan Paket Ini
-        </Label>
-      </div>
+      <Checkbox
+        id="recommended"
+        name="recommended"
+        defaultChecked={subscriptionPlan?.recommended}
+        label="Rekomendasikan Paket Ini"
+      />
 
       {/* NAME */}
       <div>
@@ -146,19 +142,19 @@ function SubscriptionPlanForm({
         <Label htmlFor="targetAudience" className="mb-1.5">
           Target Pengguna <span className="text-error-main">*</span>
         </Label>
-        <select
+        <Select
           id="targetAudience"
           name="targetAudience"
           required
           defaultValue={subscriptionPlan?.targetAudience || ""}
-          className="w-full rounded-2xl border border-divider bg-bg-default text-text-primary px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:border-primary-main focus:ring-primary-main/20 transition-all"
+          className="w-full"
         >
           <option value="" disabled>
             -- Pilih Target --
           </option>
           <option value="USER">Individu (USER)</option>
           <option value="ORGANIZATION">Organisasi (ORGANIZATION)</option>
-        </select>
+        </Select>
       </div>
 
       {/* MAX SEATS */}

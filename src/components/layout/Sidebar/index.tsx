@@ -1,5 +1,5 @@
-import { Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { Link, useLocation } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { twMerge } from "tailwind-merge";
 import { useSidebar } from "../../../contexts/SidebarContext";
@@ -68,6 +68,26 @@ export function Sidebar() {
         : [...prev, titleKey],
     );
   };
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const activeKeys = dynamicMenu
+      .flatMap((group) => group.items)
+      .filter((item) =>
+        item.children?.some(
+          (child) =>
+            child.path &&
+            (location.pathname === child.path ||
+              location.pathname.startsWith(`${child.path}/`)),
+        ),
+      )
+      .map((item) => item.titleKey);
+
+    if (activeKeys.length > 0) {
+      setExpandedMenus((prev) => Array.from(new Set([...prev, ...activeKeys])));
+    }
+  }, [location.pathname, dynamicMenu]);
 
   return (
     <>

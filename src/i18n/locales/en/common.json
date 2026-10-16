@@ -69,7 +69,8 @@
     "organizations": "Organizations Management",
     "settingsApp": "App Setting",
     "transactions": "Transaksi",
-    "subscription-plan": "Subscription Plan"
+    "subscription-plan": "Subscription Plan",
+    "test-management": "Test Management"
   },
   "topbar": {
     "welcome": "Welcome",

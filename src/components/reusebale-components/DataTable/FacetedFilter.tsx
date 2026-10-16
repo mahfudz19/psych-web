@@ -1,4 +1,5 @@
-import { Check, Filter } from "lucide-react";
+import { Filter } from "lucide-react";
+import Checkbox from "../../ui/Checkbox";
 import Menu from "../../ui/Menu";
 import MenuItem from "../../ui/Menu/MenuItem";
 
@@ -26,10 +27,10 @@ export default function FacetedFilter({
 
   const triggerElement = (
     <div
-      className={`min-h-9 flex items-center justify-between w-full gap-2 px-3 py-2 text-xs border rounded-2xl transition-colors cursor-pointer min-w-56 ${
+      className={`min-h-9 flex items-center justify-between w-full gap-2 px-3 py-2 text-xs border rounded-2xl transition-all font-medium cursor-pointer min-w-56 ${
         selectedValues.size > 0
-          ? "border-primary-main bg-primary-main/10 text-primary-main font-bold ring-1 ring-primary-main/20"
-          : "border-divider bg-bg-paper hover:bg-divider text-text-primary"
+          ? "border-primary-main bg-primary-main/10 text-primary-main ring-2 ring-primary-main/20"
+          : "border-divider bg-bg-paper hover:bg-divider text-text-primary focus:outline-none focus:ring-2 focus:border-primary-main focus:ring-primary-main/20"
       }`}
     >
       <span className="flex items-center gap-2 truncate font-medium">
@@ -39,7 +40,7 @@ export default function FacetedFilter({
 
       {/* Badge Angka Indikator */}
       {selectedValues.size > 0 && (
-        <span className="flex items-center justify-center min-w-5 h-5 px-1 ml-1 text-[10px] font-bold text-white rounded-full bg-primary-main shadow-sm">
+        <span className="flex items-center justify-center min-w-4.5 h-4.5 px-1 ml-1 text-[10px] font-bold text-white rounded-full bg-primary-main shadow-sm">
           {selectedValues.size}
         </span>
       )}
@@ -49,7 +50,7 @@ export default function FacetedFilter({
   return (
     <Menu trigger={triggerElement} position="bottom-start">
       {(closePopover) => (
-        <div className="p-1.5 flex flex-col gap-0.5 max-h-60 overflow-y-auto">
+        <>
           {options.map((opt) => {
             const isSelected = selectedValues.has(opt.value);
             return (
@@ -57,23 +58,17 @@ export default function FacetedFilter({
                 key={opt.value}
                 onClick={() => handleSelect(opt.value)}
                 iconStart={
-                  <div
-                    className={`flex items-center justify-center w-4 h-4 rounded transition-colors ${
-                      isSelected
-                        ? "bg-primary-main border-primary-main text-white"
-                        : "border border-divider bg-transparent group-hover:border-primary-main/50"
-                    }`}
-                  >
-                    {isSelected && (
-                      <Check className="w-3 h-3" strokeWidth={3} />
-                    )}
-                  </div>
+                  <Checkbox
+                    checked={isSelected}
+                    onClick={(e) => e.stopPropagation()}
+                  />
                 }
                 className="relative flex items-center gap-3 px-2 py-2 hover:bg-divider/20 rounded-xl cursor-pointer transition-colors group"
+                classNames={{ iconStart: "flex items-center" }}
               >
                 {/* Teks Label */}
                 <span
-                  className={`text-sm flex-1 truncate transition-colors ${
+                  className={` flex-1 truncate transition-colors ${
                     isSelected
                       ? "font-bold text-text-primary"
                       : "font-medium text-text-secondary"
@@ -100,7 +95,7 @@ export default function FacetedFilter({
               </MenuItem>
             </>
           )}
-        </div>
+        </>
       )}
     </Menu>
   );

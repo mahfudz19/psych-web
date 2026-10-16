@@ -114,6 +114,11 @@ export const menuConfig: NavGroup[] = [
             path: "/transactions",
             icon: <BanknoteArrowUp className="w-4 h-4 shrink-0" />,
           },
+          {
+            titleKey: "sidebar.test-management",
+            path: "/test-management",
+            icon: <BrainCircuit className="w-4 h-4 shrink-0" />,
+          },
           // settings-app
           {
             titleKey: "sidebar.settingsApp",

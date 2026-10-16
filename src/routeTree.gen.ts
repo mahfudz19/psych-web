@@ -44,10 +44,12 @@ import { Route as AuthOrganizationAndIndividuProfileSessionsIndexRouteImport } f
 import { Route as AuthOrganizationAdminOrganizationsIndexRouteImport } from './routes/_auth/_organization/_admin/organizations/index'
 import { Route as AuthOrganizationAdminSettingsAppIndexRouteImport } from './routes/_auth/_organization/_admin/settings-app/index'
 import { Route as AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport } from './routes/_auth/_organization/_admin/subscription-plan-management/index'
+import { Route as AuthOrganizationAdminTestManagementIndexRouteImport } from './routes/_auth/_organization/_admin/test-management/index'
 import { Route as AuthOrganizationAdminTransactionsIndexRouteImport } from './routes/_auth/_organization/_admin/transactions/index'
 import { Route as AuthOrganizationAdminUsersIndexRouteImport } from './routes/_auth/_organization/_admin/users/index'
 import { Route as GuestRegisterInviteTokenIndexRouteImport } from './routes/_guest/register/invite/$token/index'
 import { Route as AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport } from './routes/_auth/_organization-and-individu/joint/invite/$token/index'
+import { Route as AuthOrganizationAdminTestManagementTestIdIndexRouteImport } from './routes/_auth/_organization/_admin/test-management/$testId/index'
 import { Route as AuthOrganizationAdminUsersUserIdIndexRouteImport } from './routes/_auth/_organization/_admin/users/$userId/index'
 
 const AuthRoute = AuthRouteImport.update({
@@ -240,6 +242,12 @@ const AuthOrganizationAdminSubscriptionPlanManagementIndexRoute =
     path: '/subscription-plan-management/',
     getParentRoute: () => AuthOrganizationRoute,
   } as any)
+const AuthOrganizationAdminTestManagementIndexRoute =
+  AuthOrganizationAdminTestManagementIndexRouteImport.update({
+    id: '/_admin/test-management/',
+    path: '/test-management/',
+    getParentRoute: () => AuthOrganizationRoute,
+  } as any)
 const AuthOrganizationAdminTransactionsIndexRoute =
   AuthOrganizationAdminTransactionsIndexRouteImport.update({
     id: '/_admin/transactions/',
@@ -263,6 +271,12 @@ const AuthOrganizationAndIndividuJointInviteTokenIndexRoute =
     id: '/joint/invite/$token/',
     path: '/joint/invite/$token/',
     getParentRoute: () => AuthOrganizationAndIndividuRoute,
+  } as any)
+const AuthOrganizationAdminTestManagementTestIdIndexRoute =
+  AuthOrganizationAdminTestManagementTestIdIndexRouteImport.update({
+    id: '/_admin/test-management/$testId/',
+    path: '/test-management/$testId/',
+    getParentRoute: () => AuthOrganizationRoute,
   } as any)
 const AuthOrganizationAdminUsersUserIdIndexRoute =
   AuthOrganizationAdminUsersUserIdIndexRouteImport.update({
@@ -301,10 +315,12 @@ export interface FileRoutesByFullPath {
   '/organizations/': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/subscription-plan-management/': typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
+  '/test-management/': typeof AuthOrganizationAdminTestManagementIndexRoute
   '/transactions/': typeof AuthOrganizationAdminTransactionsIndexRoute
   '/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
   '/joint/invite/$token/': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
+  '/test-management/$testId/': typeof AuthOrganizationAdminTestManagementTestIdIndexRoute
   '/users/$userId/': typeof AuthOrganizationAdminUsersUserIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -335,10 +351,12 @@ export interface FileRoutesByTo {
   '/organizations': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/settings-app': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/subscription-plan-management': typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
+  '/test-management': typeof AuthOrganizationAdminTestManagementIndexRoute
   '/transactions': typeof AuthOrganizationAdminTransactionsIndexRoute
   '/users': typeof AuthOrganizationAdminUsersIndexRoute
   '/register/invite/$token': typeof GuestRegisterInviteTokenIndexRoute
   '/joint/invite/$token': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
+  '/test-management/$testId': typeof AuthOrganizationAdminTestManagementTestIdIndexRoute
   '/users/$userId': typeof AuthOrganizationAdminUsersUserIdIndexRoute
 }
 export interface FileRoutesById {
@@ -378,10 +396,12 @@ export interface FileRoutesById {
   '/_auth/_organization/_admin/organizations/': typeof AuthOrganizationAdminOrganizationsIndexRoute
   '/_auth/_organization/_admin/settings-app/': typeof AuthOrganizationAdminSettingsAppIndexRoute
   '/_auth/_organization/_admin/subscription-plan-management/': typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
+  '/_auth/_organization/_admin/test-management/': typeof AuthOrganizationAdminTestManagementIndexRoute
   '/_auth/_organization/_admin/transactions/': typeof AuthOrganizationAdminTransactionsIndexRoute
   '/_auth/_organization/_admin/users/': typeof AuthOrganizationAdminUsersIndexRoute
   '/_guest/register/invite/$token/': typeof GuestRegisterInviteTokenIndexRoute
   '/_auth/_organization-and-individu/joint/invite/$token/': typeof AuthOrganizationAndIndividuJointInviteTokenIndexRoute
+  '/_auth/_organization/_admin/test-management/$testId/': typeof AuthOrganizationAdminTestManagementTestIdIndexRoute
   '/_auth/_organization/_admin/users/$userId/': typeof AuthOrganizationAdminUsersUserIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -416,10 +436,12 @@ export interface FileRouteTypes {
     | '/organizations/'
     | '/settings-app/'
     | '/subscription-plan-management/'
+    | '/test-management/'
     | '/transactions/'
     | '/users/'
     | '/register/invite/$token/'
     | '/joint/invite/$token/'
+    | '/test-management/$testId/'
     | '/users/$userId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -450,10 +472,12 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/settings-app'
     | '/subscription-plan-management'
+    | '/test-management'
     | '/transactions'
     | '/users'
     | '/register/invite/$token'
     | '/joint/invite/$token'
+    | '/test-management/$testId'
     | '/users/$userId'
   id:
     | '__root__'
@@ -492,10 +516,12 @@ export interface FileRouteTypes {
     | '/_auth/_organization/_admin/organizations/'
     | '/_auth/_organization/_admin/settings-app/'
     | '/_auth/_organization/_admin/subscription-plan-management/'
+    | '/_auth/_organization/_admin/test-management/'
     | '/_auth/_organization/_admin/transactions/'
     | '/_auth/_organization/_admin/users/'
     | '/_guest/register/invite/$token/'
     | '/_auth/_organization-and-individu/joint/invite/$token/'
+    | '/_auth/_organization/_admin/test-management/$testId/'
     | '/_auth/_organization/_admin/users/$userId/'
   fileRoutesById: FileRoutesById
 }
@@ -753,6 +779,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport
       parentRoute: typeof AuthOrganizationRoute
     }
+    '/_auth/_organization/_admin/test-management/': {
+      id: '/_auth/_organization/_admin/test-management/'
+      path: '/test-management'
+      fullPath: '/test-management/'
+      preLoaderRoute: typeof AuthOrganizationAdminTestManagementIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
+    }
     '/_auth/_organization/_admin/transactions/': {
       id: '/_auth/_organization/_admin/transactions/'
       path: '/transactions'
@@ -780,6 +813,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/joint/invite/$token/'
       preLoaderRoute: typeof AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport
       parentRoute: typeof AuthOrganizationAndIndividuRoute
+    }
+    '/_auth/_organization/_admin/test-management/$testId/': {
+      id: '/_auth/_organization/_admin/test-management/$testId/'
+      path: '/test-management/$testId'
+      fullPath: '/test-management/$testId/'
+      preLoaderRoute: typeof AuthOrganizationAdminTestManagementTestIdIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
     }
     '/_auth/_organization/_admin/users/$userId/': {
       id: '/_auth/_organization/_admin/users/$userId/'
@@ -827,8 +867,10 @@ interface AuthOrganizationRouteChildren {
   AuthOrganizationAdminOrganizationsIndexRoute: typeof AuthOrganizationAdminOrganizationsIndexRoute
   AuthOrganizationAdminSettingsAppIndexRoute: typeof AuthOrganizationAdminSettingsAppIndexRoute
   AuthOrganizationAdminSubscriptionPlanManagementIndexRoute: typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRoute
+  AuthOrganizationAdminTestManagementIndexRoute: typeof AuthOrganizationAdminTestManagementIndexRoute
   AuthOrganizationAdminTransactionsIndexRoute: typeof AuthOrganizationAdminTransactionsIndexRoute
   AuthOrganizationAdminUsersIndexRoute: typeof AuthOrganizationAdminUsersIndexRoute
+  AuthOrganizationAdminTestManagementTestIdIndexRoute: typeof AuthOrganizationAdminTestManagementTestIdIndexRoute
   AuthOrganizationAdminUsersUserIdIndexRoute: typeof AuthOrganizationAdminUsersUserIdIndexRoute
 }
 
@@ -844,9 +886,13 @@ const AuthOrganizationRouteChildren: AuthOrganizationRouteChildren = {
     AuthOrganizationAdminSettingsAppIndexRoute,
   AuthOrganizationAdminSubscriptionPlanManagementIndexRoute:
     AuthOrganizationAdminSubscriptionPlanManagementIndexRoute,
+  AuthOrganizationAdminTestManagementIndexRoute:
+    AuthOrganizationAdminTestManagementIndexRoute,
   AuthOrganizationAdminTransactionsIndexRoute:
     AuthOrganizationAdminTransactionsIndexRoute,
   AuthOrganizationAdminUsersIndexRoute: AuthOrganizationAdminUsersIndexRoute,
+  AuthOrganizationAdminTestManagementTestIdIndexRoute:
+    AuthOrganizationAdminTestManagementTestIdIndexRoute,
   AuthOrganizationAdminUsersUserIdIndexRoute:
     AuthOrganizationAdminUsersUserIdIndexRoute,
 }

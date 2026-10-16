@@ -1,0 +1,42 @@
+steps:
+  # Step 1: Build Docker image dengan env vars Vite
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - build
+      - --build-arg
+      - VITE_BASE_URL=${_VITE_BASE_URL}
+      - --build-arg
+      - VITE_GOOGLE_OAUTH_CLIENT_ID=${_VITE_GOOGLE_OAUTH_CLIENT_ID}
+      - -t
+      - gcr.io/$PROJECT_ID/psych-web-dev:$COMMIT_SHA
+      - .
+
+  # Step 2: Push image ke Container Registry (gcr.io — gratis, bukan Artifact Registry)
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - push
+      - gcr.io/$PROJECT_ID/psych-web-dev:$COMMIT_SHA
+
+  # Step 3: Deploy ke Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - psych-web-dev
+      - --image=gcr.io/$PROJECT_ID/psych-web-dev:$COMMIT_SHA
+      - --region=asia-southeast1
+      - --platform=managed
+      - --allow-unauthenticated
+      - --port=8080
+      - --memory=256Mi
+      - --cpu=1
+      - --min-instances=0
+      - --max-instances=3
+
+substitutions:
+  _VITE_BASE_URL: "https://psych-api-dev-726645884787.asia-southeast1.run.app"
+  _VITE_GOOGLE_OAUTH_CLIENT_ID: "726645884787-rm2tim7unff0nhg3fr6utq3m7jn7fvd0.apps.googleusercontent.com"
+
+options:
+  logging: CLOUD_LOGGING_ONLY

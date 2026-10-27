@@ -8,7 +8,7 @@ function BaseField({
   section,
   nextOrder,
 }: {
-  section: SectionFormInitial;
+  section?: SectionFormInitial;
   nextOrder: number;
 }) {
   const isEdit = Boolean(section);

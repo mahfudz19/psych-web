@@ -60,7 +60,7 @@ const SCALE_TYPES: { value: ScaleType; label: string; hint: string }[] = [
 ];
 
 interface Props {
-  scale: ScaleFormInitial;
+  scale?: ScaleFormInitial;
   sections: SectionOption[];
   compositeMethod: CompositeMethod;
   sourceCodes: string[];

@@ -234,7 +234,6 @@ export default function ScaleManagement({
                 <ScaleForm
                   testId={testId}
                   key="create"
-                  scale={undefined}
                   sections={sections.map((s) => ({
                     id: s.id,
                     code: s.code,

@@ -10,6 +10,7 @@ import TabContent from "../../../../../../../../components/ui/Tabs/TabContent";
 import BaseField from "./BaseFields";
 import ContinueField from "./ContinueFields";
 import TimeField from "./TimeFields";
+import toast from "../../../../../../../../components/ui/Toast";
 
 export type NavigationPolicy = "FREE" | "FORWARD_ONLY";
 export type SectionStatus = "ACTIVE" | "RETIRED";
@@ -175,6 +176,10 @@ export default function SectionForm({
     };
 
     if (isEdit) {
+      if (!(section && section.id)) {
+        toast.error("Invalid request payload structure");
+        return;
+      }
       const sectionId = section?.id;
       updateMutation.mutate(
         { sectionId, payload: { ...payload, id: section.id } },

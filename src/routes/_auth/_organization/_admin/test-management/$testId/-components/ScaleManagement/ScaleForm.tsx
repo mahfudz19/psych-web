@@ -1,4 +1,8 @@
 import { useState } from "react";
+import {
+  useCreateTestScale,
+  useUpdateTestScale,
+} from "../../../-api/test-definitions.query";
 import Button from "../../../../../../../../components/ui/Button";
 import Tabs from "../../../../../../../../components/ui/Tabs";
 import Tab from "../../../../../../../../components/ui/Tabs/Tab";
@@ -6,10 +10,7 @@ import TabContent from "../../../../../../../../components/ui/Tabs/TabContent";
 import BaseField from "./BaseFields";
 import MeasurementFields from "./MeasurementFields";
 import ViewFields from "./ViewFields";
-import {
-  useCreateTestScale,
-  useUpdateTestScale,
-} from "../../../-api/test-definitions.query";
+import toast from "../../../../../../../../components/ui/Toast";
 
 export type ScaleType =
   "DIMENSION" | "FACET" | "SUBTEST" | "VALIDITY" | "COMPOSITE" | "TYPE_POLE";
@@ -204,19 +205,23 @@ export default function ScaleForm({
       role: str("role") as ScaleRole,
       parentScaleId,
       sectionId,
-      order,
+      order: order || undefined,
       description: String(fd.get("description") ?? ""),
-      lowLabel: str("lowLabel") || null,
-      highLabel: str("highLabel") || null,
+      lowLabel: str("lowLabel") || undefined,
+      highLabel: str("highLabel") || undefined,
       rawMin,
       rawMax,
       scoreType: str("scoreType") as ScoreType,
-      composite,
+      composite: composite || undefined,
       isReported: fd.get("isReported") === "on",
       isValidityScale,
-      color,
+      color: color || undefined,
     };
     if (isEdit) {
+      if (!(scale && scale.id)) {
+        toast.error("Invalid request payload structure");
+        return;
+      }
       update.mutate(
         { scaleId: scale.id, payload },
         { onSuccess: () => onCancel() },

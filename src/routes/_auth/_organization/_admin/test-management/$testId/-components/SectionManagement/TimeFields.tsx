@@ -17,7 +17,7 @@ const ITEM_TYPES = [
   { value: "DRAWING", label: "Gambar (DRAWING)" },
 ];
 
-function TimeField({ section }: { section: SectionFormInitial }) {
+function TimeField({ section }: { section?: SectionFormInitial }) {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -20,7 +20,7 @@ const SCORE_TYPES: { value: ScoreType; label: string }[] = [
   { value: "RANK_SUM", label: "Jumlah peringkat (RANK_SUM)" },
 ];
 
-function MeasurementFields({ scale }: { scale: ScaleFormInitial }) {
+function MeasurementFields({ scale }: { scale?: ScaleFormInitial }) {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -14,7 +14,7 @@ function ContinueField({
   useStimulus,
   setUseStimulus,
 }: {
-  section: SectionFormInitial;
+  section?: SectionFormInitial;
   useStimulus: boolean;
   setUseStimulus: React.Dispatch<React.SetStateAction<boolean>>;
 }) {

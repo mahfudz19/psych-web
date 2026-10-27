@@ -18,7 +18,7 @@ function ViewFields({
   isValidityScale,
   setIsValidityScale,
 }: {
-  scale: ScaleFormInitial;
+  scale?: ScaleFormInitial;
   isValidityScale: boolean;
   setIsValidityScale: Dispatch<SetStateAction<boolean>>;
 }) {

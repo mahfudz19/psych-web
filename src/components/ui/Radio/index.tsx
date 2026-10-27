@@ -1,12 +1,17 @@
 import { type VariantProps, cva } from "class-variance-authority";
-import { type InputHTMLAttributes, type JSX, forwardRef } from "react";
+import {
+  type InputHTMLAttributes,
+  type JSX,
+  type ReactNode,
+  forwardRef,
+} from "react";
 import { twMerge } from "tailwind-merge";
 
 const variants = cva(
   [
     "relative",
     "transition-all duration-300 ease-in-out ",
-    "flex items-center justify-center rounded-full border-2",
+    "flex items-center justify-center rounded-full border-2 border-divider",
     "before:absolute before:rounded-full before:transition-transform before:scale-0 peer-checked:before:scale-100",
     "peer-focus-visible:outline peer-focus-visible:outline peer-focus-visible:outline-blue-500 peer-focus-visible:outline-offset-1",
   ],
@@ -36,7 +41,7 @@ const variants = cva(
 );
 
 interface MoreProps {
-  label?: string;
+  label?: string | ReactNode;
   helperText?: string | JSX.Element;
   error?: boolean;
   classNames?: {

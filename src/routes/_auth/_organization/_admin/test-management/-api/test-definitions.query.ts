@@ -3,13 +3,17 @@ import type { BaseListParams } from "../../../../../../components/reusebale-comp
 import toast from "../../../../../../components/ui/Toast";
 import * as testApi from "./test-definitions.api";
 import type {
+  ItemListParams,
   TestDefinitionCreatePayload,
   TestDefinitionUpdatePayload,
+  TestItemCreatePayload,
+  TestItemUpdatePayload,
   TestScaleCreatePayload,
   TestScaleUpdatePayload,
   TestSectionCreatePayload,
   TestSectionUpdatePayload,
 } from "./test-definitions.type";
+import type { NormPayload } from "../$testId/-components/NormTableService/Normform";
 
 // --- QUERY KEYS FACTORY ---
 export const testDefinitionKeys = {
@@ -20,15 +24,43 @@ export const testDefinitionKeys = {
   details: () => [...testDefinitionKeys.all, "detail"] as const,
   detail: (id: string) => [...testDefinitionKeys.details(), id] as const,
 
+  // Sections
   sections: (testId: string) =>
     [...testDefinitionKeys.detail(testId), "sections"] as const,
+  sectionLists: (testId: string) =>
+    [...testDefinitionKeys.sections(testId), "list"] as const,
+  sectionList: (testId: string, params?: BaseListParams) =>
+    [...testDefinitionKeys.sectionLists(testId), { params }] as const,
+  sectionDetails: (testId: string) =>
+    [...testDefinitionKeys.sections(testId), "detail"] as const,
   sectionDetail: (testId: string, sectionId: string) =>
-    [...testDefinitionKeys.sections(testId), sectionId] as const,
+    [...testDefinitionKeys.sectionDetails(testId), sectionId] as const,
 
-  scales: (testId: string, params?: { sectionId?: string }) =>
-    [...testDefinitionKeys.detail(testId), "scales", { params }] as const,
+  // Scales
+  scales: (testId: string) =>
+    [...testDefinitionKeys.detail(testId), "scales"] as const,
+  scaleLists: (testId: string) =>
+    [...testDefinitionKeys.scales(testId), "list"] as const,
+  scaleList: (
+    testId: string,
+    params?: BaseListParams & { sectionId?: string },
+  ) => [...testDefinitionKeys.scaleLists(testId), { params }] as const,
+  scaleDetails: (testId: string) =>
+    [...testDefinitionKeys.scales(testId), "detail"] as const,
   scaleDetail: (testId: string, scaleId: string) =>
-    [...testDefinitionKeys.detail(testId), "scale", scaleId] as const,
+    [...testDefinitionKeys.scaleDetails(testId), scaleId] as const,
+
+  // Items
+  items: (testId: string) =>
+    [...testDefinitionKeys.detail(testId), "items"] as const,
+  itemLists: (testId: string) =>
+    [...testDefinitionKeys.items(testId), "list"] as const,
+  itemList: (testId: string, params?: ItemListParams) =>
+    [...testDefinitionKeys.itemLists(testId), { params }] as const,
+  itemDetails: (testId: string) =>
+    [...testDefinitionKeys.items(testId), "detail"] as const,
+  itemDetail: (testId: string, itemId: string) =>
+    [...testDefinitionKeys.itemDetails(testId), itemId] as const,
 };
 
 // --- 1. TEST DEFINITION HOOKS ---
@@ -151,11 +183,11 @@ export function useArchiveTestDefinitionMutation() {
 }
 
 // --- 2. TEST SECTION HOOKS ---
-export function useGetTestSections(testId: string) {
+export function useGetTestSections(testId: string, params?: BaseListParams) {
   return useQuery({
-    queryKey: testDefinitionKeys.sections(testId),
+    queryKey: testDefinitionKeys.sectionList(testId, params),
     queryFn: () =>
-      testApi.getTestSections(testId).catch((error) => {
+      testApi.getTestSections(testId, params).catch((error) => {
         toast.error(error?.data?.message || "Gagal mengambil daftar section");
         throw error;
       }),
@@ -248,10 +280,10 @@ export function useDeleteTestSectionMutation(testId: string) {
 // --- 3. TEST SCALE HOOKS ---
 export function useGetTestScales(
   testId: string,
-  params?: { sectionId?: string },
+  params?: BaseListParams & { sectionId?: string },
 ) {
   return useQuery({
-    queryKey: testDefinitionKeys.scales(testId, params),
+    queryKey: testDefinitionKeys.scaleList(testId, params),
     queryFn: () =>
       testApi.getTestScales(testId, params).catch((error) => {
         toast.error(error?.data?.message || "Gagal mengambil daftar skala");
@@ -273,7 +305,7 @@ export function useGetTestScale(testId: string, scaleId: string) {
   });
 }
 
-export function useCreateTestScaleMutation(testId: string) {
+export function useCreateTestScale(testId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -294,7 +326,7 @@ export function useCreateTestScaleMutation(testId: string) {
   });
 }
 
-export function useUpdateTestScaleMutation(testId: string) {
+export function useUpdateTestScale(testId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -339,6 +371,213 @@ export function useDeleteTestScaleMutation(testId: string) {
     },
     onError: (error: any) => {
       toast.error(error?.data?.message || "Gagal menghapus skala");
+    },
+  });
+}
+
+// --- 4. TEST ITEM HOOKS ---
+export function useGetTestItems(testId: string, params?: ItemListParams) {
+  return useQuery({
+    queryKey: testDefinitionKeys.itemList(testId, params),
+    queryFn: () =>
+      testApi.getTestItems(testId, params).catch((error) => {
+        toast.error(error?.data?.message || "Gagal mengambil daftar soal");
+        throw error;
+      }),
+    enabled: !!testId,
+  });
+}
+
+export function useGetTestItem(testId: string, itemId: string) {
+  return useQuery({
+    queryKey: testDefinitionKeys.itemDetail(testId, itemId),
+    queryFn: () =>
+      testApi.getTestItemDetail(testId, itemId).catch((error) => {
+        toast.error(error?.data?.message || "Gagal mengambil detail soal");
+        throw error;
+      }),
+    enabled: !!testId && !!itemId,
+  });
+}
+
+export function useCreateTestItem(testId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: TestItemCreatePayload) =>
+      testApi.createTestItem(testId, payload),
+    onSuccess: (res) => {
+      toast.success(res?.message || "Soal berhasil dibuat");
+      queryClient.invalidateQueries({
+        queryKey: testDefinitionKeys.items(testId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: testDefinitionKeys.detail(testId),
+      });
+    },
+    onError: (error: any) => {
+      toast.error(error?.data?.message || "Gagal membuat soal");
+    },
+  });
+}
+
+export function useUpdateTestItem(testId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      itemId,
+      payload,
+    }: {
+      itemId: string;
+      payload: TestItemUpdatePayload;
+    }) => testApi.updateTestItem(testId, itemId, payload),
+    onSuccess: (res, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: testDefinitionKeys.items(testId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: testDefinitionKeys.itemDetail(testId, variables.itemId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: testDefinitionKeys.detail(testId),
+      });
+      toast.success(res?.message || "Soal berhasil diperbarui");
+    },
+    onError: (error: any) => {
+      toast.error(error?.data?.message || "Gagal memperbarui soal");
+    },
+  });
+}
+
+export function useDeleteTestItemMutation(testId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (itemId: string) => testApi.deleteTestItem(testId, itemId),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: testDefinitionKeys.items(testId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: testDefinitionKeys.detail(testId),
+      });
+      toast.success(res?.message || "Soal berhasil dihapus");
+    },
+    onError: (error: any) => {
+      toast.error(error?.data?.message || "Gagal menghapus soal");
+    },
+  });
+}
+
+// --- 4. TEST NORM HOOKS ---
+// --- QUERY KEYS ---
+export const testNormKeys = {
+  all: (testId: string) => ["test-norms", testId] as const,
+  list: (testId: string, params?: { scaleId?: string; status?: string }) =>
+    [...testNormKeys.all(testId), { params }] as const,
+};
+
+// --- HOOKS ---
+export function useGetTestNorms(
+  testId: string,
+  params?: { scaleId?: string; status?: string },
+) {
+  return useQuery({
+    queryKey: testNormKeys.list(testId, params),
+    queryFn: () =>
+      testApi.getTestNorms(testId, params).catch((error) => {
+        toast.error(error?.data?.message || "Gagal mengambil daftar norma");
+        throw error;
+      }),
+    enabled: !!testId,
+  });
+}
+
+export function useCreateTestNormMutation(testId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: NormPayload) =>
+      testApi.createTestNorm(testId, payload),
+    onSuccess: (res) => {
+      toast.success(res?.message || "Norma berhasil dibuat");
+      queryClient.invalidateQueries({ queryKey: testNormKeys.all(testId) });
+      queryClient.invalidateQueries({
+        queryKey: testDefinitionKeys.detail(testId),
+      });
+    },
+    onError: (error: any) => {
+      toast.error(error?.data?.message || "Gagal membuat norma");
+    },
+  });
+}
+
+export function useUpdateTestNormMutation(testId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      normId,
+      payload,
+    }: {
+      normId: string;
+      payload: Omit<NormPayload, "scaleId">;
+    }) => testApi.updateTestNorm(testId, normId, payload),
+    onSuccess: (res) => {
+      toast.success(res?.message || "Norma berhasil diperbarui");
+      queryClient.invalidateQueries({ queryKey: testNormKeys.all(testId) });
+    },
+    onError: (error: any) => {
+      toast.error(error?.data?.message || "Gagal memperbarui norma");
+    },
+  });
+}
+
+export function useDeleteTestNormMutation(testId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (normId: string) => testApi.deleteTestNorm(testId, normId),
+    onSuccess: (res) => {
+      toast.success(res?.message || "Norma berhasil dihapus");
+      queryClient.invalidateQueries({ queryKey: testNormKeys.all(testId) });
+      queryClient.invalidateQueries({
+        queryKey: testDefinitionKeys.detail(testId),
+      });
+    },
+    onError: (error: any) => {
+      toast.error(error?.data?.message || "Gagal menghapus norma");
+    },
+  });
+}
+
+export function useActivateTestNormMutation(testId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (normId: string) => testApi.activateTestNorm(testId, normId),
+    onSuccess: (res) => {
+      toast.success(res?.message || "Norma berhasil diaktifkan");
+      queryClient.invalidateQueries({ queryKey: testNormKeys.all(testId) });
+    },
+    onError: (error: any) => {
+      toast.error(error?.data?.message || "Gagal mengaktifkan norma");
+    },
+  });
+}
+
+export function useArchiveTestNormMutation(testId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (normId: string) => testApi.archiveTestNorm(testId, normId),
+    onSuccess: (res) => {
+      toast.success(res?.message || "Norma berhasil diarsipkan");
+      queryClient.invalidateQueries({ queryKey: testNormKeys.all(testId) });
+    },
+    onError: (error: any) => {
+      toast.error(error?.data?.message || "Gagal mengarsipkan norma");
     },
   });
 }

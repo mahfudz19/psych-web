@@ -49,6 +49,7 @@ function Dialog(props: DialogProps) {
     scroll = "body",
     isDynamic = false,
     maxWidth = "md",
+    ...rest
   } = props;
 
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -138,7 +139,9 @@ function Dialog(props: DialogProps) {
       {trigger && trigger(openDialog)}
 
       <dialog
+        {...rest}
         ref={dialogRef}
+        {...(scroll !== "body" ? { "data-slot": "dialog" } : {})}
         onCancel={(e) => {
           e.preventDefault();
           closeDialog();
@@ -169,6 +172,7 @@ function Dialog(props: DialogProps) {
       >
         {scroll === "body" ? (
           <div
+            data-slot="dialog"
             ref={innerRef}
             className={twMerge(
               "bg-bg-paper border border-divider rounded-3xl w-full shadow-2xl relative",

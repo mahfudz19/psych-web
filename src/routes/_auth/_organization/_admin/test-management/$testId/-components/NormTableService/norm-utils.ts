@@ -1,13 +1,9 @@
-// ---------------------------------------------------------------------------
-// KONSTANTA & JENIS SKOR
-// ---------------------------------------------------------------------------
-
 import type {
   NormCriteria,
   NormEntry,
   NormTable,
   NormTargetScoreType,
-} from "../../-api/test-norms.type";
+} from "../../../-api/test-definitions.type";
 
 export const NORM_EDUCATION = [
   "SD",

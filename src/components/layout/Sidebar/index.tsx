@@ -123,10 +123,17 @@ export function Sidebar() {
         </div>
 
         <nav
-          className={`flex-1 px-3 py-6 space-y-1 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
+          className={`flex-1 px-3 py-6 space-y-4 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
         >
           {dynamicMenu.map((group, groupIdx) => (
-            <div key={groupIdx} className="mb-8">
+            <div
+              key={groupIdx}
+              className={`${
+                groupIdx > 0 && isMini
+                  ? "border-t border-divider pt-4"
+                  : undefined
+              }`}
+            >
               <p
                 className={`px-3 text-xs font-bold text-text-disabled uppercase tracking-widest mb-3 transition-opacity duration-300 ${isMini ? "lg:opacity-0 lg:invisible lg:h-0 lg:mb-0" : ""}`}
               >
@@ -142,7 +149,7 @@ export function Sidebar() {
                     {hasChildren ? (
                       <button
                         onClick={() => handleToggleExpand(item.titleKey)}
-                        className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main transition-colors focus:outline-none"
+                        className={`w-full flex items-center ${isMini ? "justify-center" : "justify-between"}  px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main transition-colors focus:outline-none`}
                       >
                         <div className="flex items-center">
                           {item.icon}
@@ -172,7 +179,7 @@ export function Sidebar() {
                         onClick={() =>
                           window.innerWidth < 1024 && toggleMobile()
                         }
-                        className="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main [&.active]:bg-primary-main/10 [&.active]:text-primary-main transition-colors"
+                        className={`flex items-center ${isMini ? "justify-center" : ""} px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main [&.active]:bg-primary-main/10 [&.active]:text-primary-main transition-colors`}
                       >
                         {item.icon}
                         <span

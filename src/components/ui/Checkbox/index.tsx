@@ -52,7 +52,7 @@ const variants = cva(
 );
 
 interface MoreProps {
-  label?: string;
+  label?: string | ReactNode;
   helperText?: string | boolean | JSX.Element;
   error?: boolean;
   lineThrough?: boolean;

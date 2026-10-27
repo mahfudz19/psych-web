@@ -2421,6 +2421,7 @@ export interface InputDateProps extends TextFieldProps {
     value: string;
     clear: (e: React.MouseEvent) => void;
   }) => React.ReactNode;
+  fullWidth?: boolean;
 }
 
 export interface DateState {
@@ -2749,7 +2750,10 @@ const InputDate = forwardRef<DateInputRef, InputDateProps>((props, ref) => {
     <Popover
       anchor="bottom-end"
       interaction="click"
-      classNames={{ popover: "p-0 overflow-hidden bg-bg-paper min-w-[24rem]" }}
+      classNames={{
+        trigger: rest.fullWidth ? "w-full" : undefined,
+        popover: "p-0 overflow-hidden bg-bg-paper min-w-[24rem]",
+      }}
       trigger={
         customTrigger ? (
           customTrigger({

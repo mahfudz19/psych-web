@@ -1,3 +1,4 @@
+import type { NormPayload } from "../$testId/-components/NormTableService/Normform";
 import type { BaseListParams } from "../../../../../../components/reusebale-components/DataTable";
 import { api } from "../../../../../../utils/api";
 import type {
@@ -11,6 +12,11 @@ import type {
   TestSection,
   TestSectionCreatePayload,
   TestSectionUpdatePayload,
+  TestItem,
+  TestItemCreatePayload,
+  TestItemUpdatePayload,
+  ItemListParams,
+  NormTable,
 } from "./test-definitions.type";
 
 const BASE = "/api/v1/admin/tests";
@@ -48,8 +54,8 @@ export function archiveTestDefinition(id: string) {
 }
 
 // --- 2. TEST SECTION ---
-export function getTestSections(testId: string) {
-  return api.get<TestSection[]>(`${BASE}/${testId}/sections`);
+export function getTestSections(testId: string, params?: BaseListParams) {
+  return api.get<TestSection[]>(`${BASE}/${testId}/sections`, { params });
 }
 
 export function getTestSectionDetail(testId: string, sectionId: string) {
@@ -79,7 +85,10 @@ export function deleteTestSection(testId: string, sectionId: string) {
 }
 
 // --- 3. TEST SCALE ---
-export function getTestScales(testId: string, params?: { sectionId?: string }) {
+export function getTestScales(
+  testId: string,
+  params?: BaseListParams & { sectionId?: string },
+) {
   return api.get<TestScale[]>(`${BASE}/${testId}/scales`, { params });
 }
 
@@ -104,4 +113,61 @@ export function updateTestScale(
 
 export function deleteTestScale(testId: string, scaleId: string) {
   return api.delete<null>(`${BASE}/${testId}/scales/${scaleId}`);
+}
+
+// --- 4. TEST ITEM ---
+export function getTestItems(testId: string, params?: ItemListParams) {
+  return api.get<TestItem[]>(`${BASE}/${testId}/items`, { params });
+}
+
+export function getTestItemDetail(testId: string, itemId: string) {
+  return api.get<TestItem>(`${BASE}/${testId}/items/${itemId}`);
+}
+
+export function createTestItem(testId: string, payload: TestItemCreatePayload) {
+  return api.post<TestItem>(`${BASE}/${testId}/items`, payload);
+}
+
+export function updateTestItem(
+  testId: string,
+  itemId: string,
+  payload: TestItemUpdatePayload,
+) {
+  return api.put<TestItem>(`${BASE}/${testId}/items/${itemId}`, payload);
+}
+
+export function deleteTestItem(testId: string, itemId: string) {
+  return api.delete<null>(`${BASE}/${testId}/items/${itemId}`);
+}
+
+// --- 5. TEST NORM ---
+export function getTestNorms(
+  testId: string,
+  params?: { scaleId?: string; status?: string },
+) {
+  return api.get<NormTable[]>(`${BASE}/${testId}/norms`, { params });
+}
+
+export function createTestNorm(testId: string, payload: NormPayload) {
+  return api.post<NormTable>(`${BASE}/${testId}/norms`, payload);
+}
+
+export function updateTestNorm(
+  testId: string,
+  normId: string,
+  payload: Omit<NormPayload, "scaleId">,
+) {
+  return api.put<NormTable>(`${BASE}/${testId}/norms/${normId}`, payload);
+}
+
+export function deleteTestNorm(testId: string, normId: string) {
+  return api.delete<null>(`${BASE}/${testId}/norms/${normId}`);
+}
+
+export function activateTestNorm(testId: string, normId: string) {
+  return api.post<NormTable>(`${BASE}/${testId}/norms/${normId}/activate`);
+}
+
+export function archiveTestNorm(testId: string, normId: string) {
+  return api.post<NormTable>(`${BASE}/${testId}/norms/${normId}/archive`);
 }

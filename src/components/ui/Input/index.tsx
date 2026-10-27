@@ -37,6 +37,8 @@ const inputVariants = cva(
   },
 );
 
+export { inputVariants };
+
 function Input({ color, size, className, ...restProps }: InputProps) {
   return (
     <input

@@ -213,9 +213,74 @@ const textVariant = cva(
   },
 );
 
+const ghostVariant = cva(
+  [
+    ...baseClass,
+    "hover:scale-[1.01]",
+    "active:scale-[1]",
+    "outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-offset-1",
+    ...disabledClass,
+    "disabled:bg-neutral-100 dark:disabled:bg-neutral-800",
+    "disabled:text-neutral-400 dark:disabled:text-neutral-500",
+  ],
+  {
+    variants: {
+      color: {
+        primary: [
+          "bg-primary-main/10 dark:bg-primary-main/20",
+          "text-primary-main dark:text-primary-300",
+          "hover:bg-primary-main/20 dark:hover:bg-primary-main/30",
+          "focus:ring-primary-main",
+        ],
+        secondary: [
+          "bg-secondary-main/10 dark:bg-secondary-main/20",
+          "text-secondary-main dark:text-secondary-300",
+          "hover:bg-secondary-main/20 dark:hover:bg-secondary-main/30",
+          "focus:ring-secondary-main",
+        ],
+        success: [
+          "bg-success-main/10 dark:bg-success-main/20",
+          "text-success-main dark:text-success-300",
+          "hover:bg-success-main/20 dark:hover:bg-success-main/30",
+          "focus:ring-success-main",
+        ],
+        error: [
+          "bg-error-main/10 dark:bg-error-main/20",
+          "text-error-main dark:text-error-300",
+          "hover:bg-error-main/20 dark:hover:bg-error-main/30",
+          "focus:ring-error-main",
+        ],
+        warning: [
+          "bg-warning-main/10 dark:bg-warning-main/20",
+          "text-warning-main dark:text-warning-300",
+          "hover:bg-warning-main/20 dark:hover:bg-warning-main/30",
+          "focus:ring-warning-main",
+        ],
+        info: [
+          "bg-info-main/10 dark:bg-info-main/20",
+          "text-info-main dark:text-info-300",
+          "hover:bg-info-main/20 dark:hover:bg-info-main/30",
+          "focus:ring-info-main",
+        ],
+        white: [
+          "bg-gray-100 dark:bg-white/10",
+          "text-gray-700 dark:text-white",
+          "hover:bg-gray-200 dark:hover:bg-white/20",
+          "focus:ring-gray-500 dark:focus:ring-white",
+        ],
+      },
+    },
+    defaultVariants: {
+      color: "primary",
+    },
+  },
+);
+
 interface MoreProps {
   loading?: boolean;
-  variant?: "contained" | "outlined" | "text";
+  variant?: "contained" | "outlined" | "text" | "ghost";
   size?: size;
   fullWidth?: boolean;
   noRipple?: boolean;
@@ -239,23 +304,42 @@ export const switchVariant = (
   color?: ButtonVariantProps["color"],
   noRipple?: boolean,
   icon?: boolean,
+  startIcon?: ReactNode,
+  endIcon?: ReactNode,
 ) => {
   const variantMap = {
     contained: containedVariant,
     outlined: outlinedVariant,
     text: textVariant,
+    ghost: ghostVariant,
   };
   const sizeMap: Record<size, { default: string[]; icon: string[] }> = {
     sm: {
-      default: ["text-xs", "px-3 py-2"],
+      default: [
+        "text-xs",
+        "px-2 py-1.5",
+        startIcon ? "pr-4" : "",
+        endIcon ? "pl-4" : "",
+      ],
       icon: ["text-sm", "w-8 h-8", "rounded-full"],
     },
     md: {
-      default: ["text-sm", "px-4 py-2.5", "leading-6"],
+      default: [
+        "text-sm",
+        "px-4 py-2.5",
+        "leading-6",
+        startIcon ? "pr-6" : "",
+        endIcon ? "pl-6" : "",
+      ],
       icon: ["text-base", "w-10 h-10", "rounded-full"],
     },
     lg: {
-      default: ["text-base", "px-6 py-3"],
+      default: [
+        "text-base",
+        "px-6 py-3",
+        startIcon ? "pr-8" : "",
+        endIcon ? "pl-8" : "",
+      ],
       icon: ["text-lg", "w-12 h-12", "rounded-full"],
     },
   };
@@ -279,8 +363,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProp>(
       loading,
       children,
       startIcon,
-      fullWidth,
       endIcon,
+      fullWidth,
       href,
       onClickDownloadURL,
       noRipple,
@@ -289,7 +373,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProp>(
     } = props;
 
     if (rest.disabled) LinkComponent = "button";
-    let choseVariant = switchVariant(variant, size, color, noRipple);
+    let choseVariant = switchVariant(
+      variant,
+      size,
+      color,
+      noRipple,
+      undefined,
+      startIcon,
+      endIcon,
+    );
 
     if (onClickDownloadURL) {
       rest.onClick = () => {
@@ -310,8 +402,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProp>(
         className={twMerge(
           "overflow-hidden relative",
           choseVariant,
-          startIcon ? "pl-3" : "",
-          endIcon ? "pr-3" : "",
           fullWidth && "w-full",
           className,
         )}

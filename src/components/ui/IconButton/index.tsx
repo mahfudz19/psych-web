@@ -13,7 +13,7 @@ import type { size } from "../Type";
 interface MoreProps {
   noRipple?: boolean;
   loading?: boolean;
-  variant?: "contained" | "outlined" | "text";
+  variant?: "contained" | "outlined" | "text" | "ghost";
   size?: size;
   onClickDownloadURL?: string;
   href?: string;

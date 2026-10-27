@@ -11,7 +11,7 @@ import { twMerge } from "tailwind-merge";
 import { type DateState } from ".";
 import IconButton from "../IconButton";
 import { Calendar, X } from "lucide-react";
-import type { color, size } from "../Type";
+import { inputVariants, type InputProps } from "../Input";
 
 const dateRegex = /^(\d{2}) ([A-Za-z]+) (\d{4})(?:\s+(\d{2}):(\d{2}))?$/;
 const rangeRegex =
@@ -695,10 +695,7 @@ function getDateInputs({
 }
 
 // Komponen untuk input tanggal
-export interface DateInputContainerProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  "size" | "color"
-> {
+export interface DateInputContainerProps extends InputProps {
   monthNames: string[];
   selectsRange: boolean;
   dateState: DateState;
@@ -732,15 +729,8 @@ export interface DateInputContainerProps extends Omit<
   hourRangeRef: React.RefObject<HTMLInputElement | null>;
   minuteRangeRef: React.RefObject<HTMLInputElement | null>;
 
-  // Props Styling Sederhana (Pengganti variantIsChoose)
-  label?: string | React.ReactNode;
-  helperText?: string | React.ReactNode | boolean;
-  startAdornment?: React.ReactNode;
-  endAdornment?: React.ReactNode;
   fullWidth?: boolean;
   error?: boolean;
-  color?: color;
-  size?: size;
   classNames?: {
     root?: string;
     container?: string;
@@ -777,14 +767,11 @@ const DateInput = memo(
       className,
       classNames,
       error,
+      color,
       size = "md",
       disabled,
       required,
-      label,
-      helperText,
       fullWidth,
-      startAdornment,
-      endAdornment,
       dayRef,
       hourRef,
       minuteRef,
@@ -834,7 +821,7 @@ const DateInput = memo(
       dayRef,
     ]);
 
-    // Hitung ukuran container
+    // Hitung ukuran container — selaras dengan inputVariants di Input
     const sizeClasses = {
       sm: "min-h-[2rem] px-2 text-sm",
       md: "min-h-[2.75rem] px-3",
@@ -846,6 +833,7 @@ const DateInput = memo(
         className={twMerge(
           "inline-flex flex-col relative",
           fullWidth ? "w-full" : "",
+          className,
           classNames?.root,
         )}
         onClick={() => dayRef.current?.focus()}
@@ -878,19 +866,20 @@ const DateInput = memo(
             }
           }}
           className={twMerge(
-            "relative flex items-center gap-2 border border-divider bg-bg-paper rounded-2xl transition-all",
+            inputVariants({ color: error ? "error" : color, size }),
+            "relative flex items-center gap-2",
+            "px-0 py-0",
             sizeClasses,
-            focus
-              ? "border-primary-main ring-1 ring-primary-main/20"
-              : "hover:border-gray-400",
-            error ? "border-error-main text-error-main" : "",
-            disabled ? "opacity-60 cursor-not-allowed bg-gray-50" : "",
+            focus &&
+              !error &&
+              `border-primary-main ring-2 ring-primary-main/20`,
+            focus && error && `border-error-main ring-2 ring-error-main/20`,
+            !focus && "hover:border-gray-400",
+            disabled ? "cursor-not-allowed" : "",
             className,
             classNames?.container,
           )}
         >
-          {startAdornment}
-
           <div
             className={twMerge(
               "flex-1 flex flex-col justify-center relative min-h-[inherit]",
@@ -904,26 +893,7 @@ const DateInput = memo(
               }
             }}
           >
-            {/* Sederhana Floating Label */}
-            {label && (
-              <label
-                className={twMerge(
-                  "absolute left-0 transition-all duration-200 pointer-events-none select-none text-text-secondary font-medium",
-                  focus || isThereValue
-                    ? "text-[10px] -translate-y-2.5 top-2.5 opacity-70"
-                    : "text-sm top-1/2 -translate-y-1/2",
-                )}
-              >
-                {label} {required && <span className="text-error-main">*</span>}
-              </label>
-            )}
-
-            <div
-              className={twMerge(
-                "flex items-center min-h-[inherit] pt-3.5 pb-1",
-                !label && "pt-1", // Jika tidak ada label, input di tengah
-              )}
-            >
+            <div className="flex items-center min-h-[inherit] py-1">
               {inputs.map((v, i) => {
                 const next = inputs[i + 1];
                 let separator: null | React.ReactNode = null;
@@ -962,7 +932,7 @@ const DateInput = memo(
                       inputMode={sm ? "none" : "numeric"}
                       maxLength={v.fieldType === "year" ? 4 : 2}
                       ref={v.ref}
-                      placeholder={focus ? v.placeholder : ""}
+                      placeholder={v.placeholder}
                       value={v.value}
                       disabled={v.disabled || disabled}
                       readOnly={rest.readOnly}
@@ -1052,7 +1022,6 @@ const DateInput = memo(
           </div>
 
           <div className="inline-flex items-center gap-1 min-h-[inherit]">
-            {endAdornment}
             {isClearable && dateState.startDate && (
               <IconButton
                 type="button"
@@ -1084,18 +1053,6 @@ const DateInput = memo(
             </IconButton>
           </div>
         </div>
-
-        {helperText && (
-          <div
-            className={twMerge(
-              "text-xs mt-1 absolute -bottom-5 left-1",
-              error ? "text-error-main" : "text-gray-500",
-              classNames?.helperText,
-            )}
-          >
-            {helperText}
-          </div>
-        )}
       </div>
     );
   }),

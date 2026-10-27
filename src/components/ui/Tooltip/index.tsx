@@ -24,13 +24,13 @@ export type TooltipPosition =
   | "right-bottom";
 
 export interface TooltipProps {
-  trigger: ReactNode;
-  children: ReactNode | ((close: () => void) => ReactNode);
+  children: ReactNode;
+  title: ReactNode | ((close: () => void) => ReactNode);
   position?: TooltipPosition;
   interaction?: "hover" | "click";
   delay?: number;
   disabled?: boolean;
-  classNames?: { trigger?: string; tooltip?: string };
+  classNames?: { children?: string; tooltip?: string };
 }
 
 export const getTransformOrigin = (pos: TooltipPosition): string => {
@@ -52,7 +52,7 @@ export const getTransformOrigin = (pos: TooltipPosition): string => {
 };
 
 export default function Tooltip({
-  trigger,
+  title,
   children,
   position = "top-center",
   interaction = "hover",
@@ -298,7 +298,7 @@ export default function Tooltip({
     <>
       <div
         ref={triggerRef}
-        className={twMerge("inline-block", classNames?.trigger)}
+        className={twMerge("inline-block", classNames?.children)}
         onClick={interaction === "click" ? toggleTooltip : undefined}
         onMouseEnter={interaction === "hover" ? () => openTooltip() : undefined}
         onMouseLeave={
@@ -307,7 +307,7 @@ export default function Tooltip({
         onFocus={interaction === "hover" ? () => openTooltip(true) : undefined}
         onBlur={interaction === "hover" ? () => closeTooltip(true) : undefined}
       >
-        {trigger}
+        {children}
       </div>
 
       {hasRendered &&
@@ -339,9 +339,9 @@ export default function Tooltip({
                 classNames?.tooltip,
               )}
             >
-              {typeof children === "function"
-                ? children(() => closeTooltip(true))
-                : children}
+              {typeof title === "function"
+                ? title(() => closeTooltip(true))
+                : title}
             </div>
           </div>,
           document.body,

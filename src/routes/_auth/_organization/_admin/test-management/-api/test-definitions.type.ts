@@ -1,3 +1,9 @@
+import type {
+  NavigationPolicy,
+  SectionStatus,
+} from "../$testId/-components/SectionManagement/SectionForm";
+import type { BaseListParams } from "../../../../../../components/reusebale-components/DataTable";
+
 // --- ENUMS ---
 export type TestCategory =
   | "ABILITY"
@@ -135,7 +141,10 @@ export type TestSectionCreatePayload = {
   status: SectionStatus;
 };
 
-export type TestSectionUpdatePayload = Omit<TestSectionCreatePayload, "code">;
+export type TestSectionUpdatePayload = Omit<
+  TestSectionCreatePayload,
+  "code"
+> & { id: string };
 
 // --- 3. TEST SCALE ---
 export interface TestScale {
@@ -168,3 +177,177 @@ export type TestScaleCreatePayload = Omit<
 >;
 
 export type TestScaleUpdatePayload = Omit<TestScaleCreatePayload, "code">;
+
+export type ItemType =
+  | "SINGLE_CHOICE"
+  | "MULTI_CHOICE"
+  | "TRUE_FALSE"
+  | "YES_NO"
+  | "LIKERT"
+  | "FORCED_CHOICE"
+  | "MOST_LEAST"
+  | "RANKING"
+  | "NUMERIC_INPUT"
+  | "TEXT_INPUT"
+  | "DRAWING"
+  | "MATRIX_TASK";
+
+export type ItemStatus = "ACTIVE" | "RETIRED";
+
+export interface TestItemOption {
+  key: string;
+  label: string | null;
+  imageUrl: string | null;
+  order: number;
+  scoring:
+    | ({ points: number } & Record<string, unknown>)
+    | Record<string, unknown>
+    | null;
+}
+
+export interface TestItemContent {
+  text: string | null;
+  images: { label: string; url: string }[];
+  audioUrl: string | null;
+}
+
+export interface TestItemAnswerKey {
+  correct?: string[];
+  accepted?: string[];
+}
+
+export interface TestItem {
+  id: string;
+  testId: string;
+  testVersion: string;
+  sectionId: string;
+  number: number;
+  type: ItemType;
+  content: TestItemContent;
+  options: TestItemOption[];
+  groupId: string | null;
+  scaleId: string | null;
+  reverseScored: boolean;
+  weight: number;
+  scoredInTotal: boolean;
+  consistencyGroup: string | null;
+  answerKey: TestItemAnswerKey | null;
+  timeLimitSeconds: number | null;
+  constraints: Record<string, unknown>;
+  difficulty: number | null;
+  isExample: boolean;
+  status: ItemStatus;
+  tags: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ItemListParams extends BaseListParams {
+  sectionId?: string;
+  scaleId?: string;
+}
+
+export interface TestItemCreatePayload {
+  sectionId: string;
+  number: number;
+  type: ItemType;
+  content: TestItemContent;
+  options?: TestItemOption[];
+  groupId?: string | null;
+  scaleId?: string | null;
+  reverseScored?: boolean;
+  weight?: number;
+  scoredInTotal?: boolean;
+  consistencyGroup?: string | null;
+  answerKey?: TestItemAnswerKey | null;
+  timeLimitSeconds?: number | null;
+  constraints?: Record<string, unknown> | null;
+  difficulty?: number | null;
+  isExample?: boolean;
+  status?: ItemStatus;
+  tags?: string[];
+}
+
+export interface TestItemUpdatePayload {
+  number: number;
+  content: TestItemContent;
+  options?: TestItemOption[];
+  groupId?: string | null;
+  scaleId?: string | null;
+  reverseScored?: boolean;
+  weight?: number;
+  scoredInTotal?: boolean;
+  consistencyGroup?: string | null;
+  answerKey?: TestItemAnswerKey | null;
+  timeLimitSeconds?: number | null;
+  constraints?: Record<string, unknown> | null;
+  difficulty?: number | null;
+  isExample?: boolean;
+  status?: ItemStatus;
+  tags?: string[];
+}
+
+export type NormTargetScoreType =
+  "SW" | "WS" | "IQ" | "T_SCORE" | "STEN" | "STANINE" | "PERCENTILE";
+
+export type NormMethod = "LOOKUP" | "MEAN_SD";
+export type NormStatus = "DRAFT" | "ACTIVE" | "ARCHIVED";
+export type NormGender = "ANY" | "MALE" | "FEMALE";
+
+export interface NormCriteria {
+  ageMin: number | null;
+  ageMax: number | null;
+  gender: NormGender;
+  /** "ANY" atau salah satu EducationLevel (SD, SMP, SMA, SMK, D3, S1, S2, S3, OTHER) */
+  education: string;
+}
+
+/** Satu baris tabel konversi. Isi `standard` ATAU pasangan `standardMin` dan `standardMax`. */
+export interface NormEntry {
+  rawMin: number;
+  rawMax: number;
+  standard: number | null;
+  standardMin: number | null;
+  standardMax: number | null;
+  percentile: number | null;
+  category: string | null;
+}
+
+export interface CategoryCutoff {
+  from: number;
+  to: number;
+  label: string;
+}
+
+export interface NormCoverage {
+  rawMin: number | null;
+  rawMax: number | null;
+  covered: boolean;
+  gaps: { from: number; to: number }[];
+}
+
+/** Bentuk respons norma dari API admin (GET /tests/{testId}/norms). */
+export interface NormTable {
+  id: string;
+  testId: string;
+  testVersion: string;
+  scaleId: string;
+  sectionId: string | null;
+  normVersion: string;
+  name: string;
+  targetScoreType: NormTargetScoreType;
+  method: NormMethod;
+  criteria: NormCriteria;
+  entries: NormEntry[];
+  mean: number | null;
+  sd: number | null;
+  categoryCutoffs: CategoryCutoff[];
+  sampleSize: number | null;
+  source: string | null;
+  validFrom: string | null;
+  validUntil: string | null;
+  status: NormStatus;
+  coverage?: NormCoverage | null;
+  createdAt: string;
+  updatedAt: string;
+}

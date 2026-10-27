@@ -111,14 +111,6 @@ export default function TestDetailLayout() {
             isLocked={test.status !== "DRAFT"}
             category={test.category}
           />
-
-          {/* <ItemManagement
-              testId={testId}
-              isLocked={test.status !== "DRAFT"}
-              category={test.category}
-              sectionId={focusSectionId}
-              onSectionChange={setFocusSectionId}
-            /> */}
         </TabContent>
         <TabContent value="norms" activeValue={activeTab}>
           <NormManagement

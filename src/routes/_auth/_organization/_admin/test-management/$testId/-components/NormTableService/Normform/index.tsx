@@ -1,33 +1,43 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
-  NORM_EDUCATION,
   analyzeRows,
   blankRow,
   computeCoverage,
   formatGaps,
   formatStandard,
+  NORM_EDUCATION,
   parsePaste,
   rowsFromEntries,
   targetFromScoreType,
   toNum,
   type DraftRow,
-} from "./norm-utils";
+} from "../norm-utils";
+import Input from "../../../../../../../../../components/ui/Input";
+import Select from "../../../../../../../../../components/ui/Select";
+import Button from "../../../../../../../../../components/ui/Button";
+import Textarea from "../../../../../../../../../components/ui/Textarea";
+import DialogConfirmAction from "../../../../../../../../../components/reusebale-components/dialog/DialogConfirmAction";
+import Label from "../../../../../../../../../components/ui/Label";
 import type {
   CategoryCutoff,
   NormGender,
   NormMethod,
   NormTable,
   NormTargetScoreType,
-} from "../../-api/test-norms.type";
-import { FIELD_CLASS, FieldLabel, HelpText } from "./FormParts";
-import Input from "../../../../../../../components/ui/Input";
-import Select from "../../../../../../../components/ui/Select";
-import Button from "../../../../../../../components/ui/Button";
-import DialogConfirmAction from "../../../../../../../components/reusebale-components/dialog/DialogConfirmAction";
-
-// ---------------------------------------------------------------------------
-// TIPE
-// ---------------------------------------------------------------------------
+} from "../../../../-api/test-definitions.type";
+import IconButton from "../../../../../../../../../components/ui/IconButton";
+import { Plus, X } from "lucide-react";
+import InputDate from "../../../../../../../../../components/ui/InputDate";
+import {
+  useActivateTestNormMutation,
+  useArchiveTestNormMutation,
+  useCreateTestNormMutation,
+  useDeleteTestNormMutation,
+  useUpdateTestNormMutation,
+} from "../../../../-api/test-definitions.query";
+import Alert from "../../../../../../../../../components/ui/Alert";
+import AlertTitle from "../../../../../../../../../components/ui/Alert/AlertTitle";
+import AlertDescription from "../../../../../../../../../components/ui/Alert/AlertDescription";
 
 export interface NormEntryPayload {
   rawMin: number;
@@ -39,12 +49,6 @@ export interface NormEntryPayload {
   category: string | null;
 }
 
-/**
- * Body request ke collection `norm_tables`.
- * - POST /tests/{testId}/norms          -> semua field, termasuk `scaleId`
- * - PUT  /tests/{testId}/norms/{id}     -> tanpa `scaleId` (skala tidak bisa diubah)
- * `sectionId` dan `status` tidak dikirim: diisi server (status awal selalu DRAFT).
- */
 export interface NormPayload {
   scaleId?: string;
   normVersion: string;
@@ -77,19 +81,15 @@ export interface NormScaleInfo {
 }
 
 interface Props {
-  /** create = norma baru (boleh diisi `norm` sebagai salinan), edit = norma yang sudah ada */
+  testId: string;
   mode: "create" | "edit";
   norm?: NormTable;
   scale: NormScaleInfo;
-  /** true jika norma bukan DRAFT atau tes sudah ARCHIVED: semua isian dikunci */
   readOnly: boolean;
-  /** Mengembalikan true jika berhasil. Boleh async. */
-  onSubmit: (payload: NormPayload) => boolean | Promise<boolean>;
   onCancel: () => void;
-  onActivate?: () => void;
-  onArchive?: () => void;
-  onCopy?: () => void;
-  onDelete?: () => void;
+  canActivate?: boolean;
+  canArchive?: Boolean;
+  canDelete?: boolean;
 }
 
 interface DraftCutoff {
@@ -98,15 +98,7 @@ interface DraftCutoff {
   label: string;
 }
 
-// ---------------------------------------------------------------------------
-// KONSTANTA
-// ---------------------------------------------------------------------------
-
-const COLLECTION = "norm_tables";
 const MAX_GENERATED_ROWS = 500;
-
-const CELL =
-  "h-8 w-full rounded-lg border border-divider bg-transparent px-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:border-primary-main focus:ring-primary-main/20 read-only:opacity-70";
 
 const TARGET_LABEL: Record<string, string> = {
   SW: "Skor Standar (SW)",
@@ -126,24 +118,26 @@ const hasData = (rows: DraftRow[]) =>
 const dateOnly = (iso?: string | null) => (iso ? iso.slice(0, 10) : "");
 const toIso = (date: string) => (date ? `${date}T00:00:00Z` : null);
 
-// ---------------------------------------------------------------------------
-// FORM
-// ---------------------------------------------------------------------------
-
 export default function NormForm({
+  testId,
   mode,
   norm,
   scale,
   readOnly,
-  onSubmit,
   onCancel,
-  onActivate,
-  onArchive,
-  onCopy,
-  onDelete,
+  canActivate,
+  canArchive,
+  canDelete,
 }: Props) {
   const isEdit = mode === "edit";
   const status = isEdit ? norm?.status : undefined;
+
+  const createMutation = useCreateTestNormMutation(testId);
+  const updateMutation = useUpdateTestNormMutation(testId);
+  const deleteMutation = useDeleteTestNormMutation(testId);
+  const activateMutation = useActivateTestNormMutation(testId);
+  const archiveMutation = useArchiveTestNormMutation(testId);
+
   const target: NormTargetScoreType | null =
     norm?.targetScoreType ?? targetFromScoreType(scale.scoreType);
 
@@ -153,7 +147,6 @@ export default function NormForm({
 
   // --- identitas & kelompok ---
   const [name, setName] = useState<string>(norm?.name ?? "");
-  // Salinan sebagai versi baru: versi dikosongkan agar admin wajib mengisinya.
   const [normVersion, setNormVersion] = useState<string>(
     isEdit ? (norm?.normVersion ?? "") : "",
   );
@@ -449,7 +442,23 @@ export default function NormForm({
     };
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    const onSubmit = async (payload: NormPayload): Promise<boolean> => {
+      try {
+        if (mode === "edit" && norm) {
+          const { scaleId: _omit, ...rest } = payload;
+          await updateMutation.mutateAsync({
+            normId: norm.id,
+            payload: rest,
+          });
+        } else {
+          await createMutation.mutateAsync(payload);
+        }
+        return true;
+      } catch {
+        return false;
+      }
+    };
     e.preventDefault();
     if (readOnly) return;
     const payload = buildPayload();
@@ -486,26 +495,28 @@ export default function NormForm({
       className="flex flex-col"
       noValidate
     >
-      <div className="max-h-[68vh] space-y-5 overflow-y-auto p-4">
+      <div className="max-h-[63.5vh] space-y-5 overflow-y-auto p-4">
         {readOnly && (
-          <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
-            {status === "DRAFT" || !status
-              ? "Tes ini sudah diarsipkan, jadi norma tidak bisa diubah."
-              : `Norma berstatus ${status} tidak bisa diubah. Gunakan "Salin sebagai versi baru" untuk menggantinya.`}
-          </div>
+          <Alert severity="warning" variant="standard">
+            <AlertTitle>Tes ini tidak berstatus DRAFT</AlertTitle>
+            <AlertDescription>
+              {status === "DRAFT" || !status
+                ? "Tes ini sudah diarsipkan, jadi norma tidak bisa diubah."
+                : `Norma berstatus ${status} tidak bisa diubah. Gunakan "Salin sebagai versi baru" untuk menggantinya.`}
+            </AlertDescription>
+          </Alert>
         )}
 
         {/* IDENTITAS */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_120px_minmax(0,180px)]">
           <div>
-            <FieldLabel
+            <Label
               htmlFor="norm-name"
-              label="Nama norma"
               required
-              collection={COLLECTION}
-              field="name"
               tooltip="Nama yang dilihat admin. Contoh: Norma TIU 5 Umum, atau Norma IST SE usia 25-29."
-            />
+            >
+              Nama norma
+            </Label>
             <Input
               id="norm-name"
               type="text"
@@ -516,14 +527,14 @@ export default function NormForm({
             />
           </div>
           <div>
-            <FieldLabel
+            <Label
               htmlFor="norm-version"
-              label="Versi norma"
               required
-              collection={COLLECTION}
-              field="normVersion"
               tooltip="Dicatat di setiap hasil agar hasil lama bisa dihitung ulang. Contoh: 2024.1."
-            />
+              className="whitespace-nowrap"
+            >
+              Versi norma
+            </Label>
             <Input
               id="norm-version"
               type="text"
@@ -534,13 +545,12 @@ export default function NormForm({
             />
           </div>
           <div>
-            <FieldLabel
+            <Label
               htmlFor="norm-target"
-              label="Skor tujuan"
-              collection={COLLECTION}
-              field="targetScoreType"
               tooltip="Jenis skor hasil konversi. Diturunkan otomatis dari jenis skor skala, jadi tidak bisa salah."
-            />
+            >
+              Skor tujuan
+            </Label>
             <Input
               id="norm-target"
               type="text"
@@ -553,15 +563,14 @@ export default function NormForm({
 
         {/* KELOMPOK PEMBANDING */}
         <div>
-          <FieldLabel
-            label="Kelompok pembanding"
-            collection={COLLECTION}
-            field="criteria"
-            tooltip="Norma ini dipakai untuk peserta yang sesuai kelompok ini (usia, jenis kelamin, pendidikan). Kosongkan untuk berlaku bagi semua."
-          />
+          <Label tooltip="Norma ini dipakai untuk peserta yang sesuai kelompok ini (usia, jenis kelamin, pendidikan). Kosongkan untuk berlaku bagi semua.">
+            Kelompok pembanding
+          </Label>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div>
-              <p className="mb-1 text-xs text-text-secondary">Usia dari</p>
+              <Label className="text-xs font-normal capitalize">
+                Usia dari
+              </Label>
               <Input
                 type="number"
                 min="0"
@@ -572,7 +581,9 @@ export default function NormForm({
               />
             </div>
             <div>
-              <p className="mb-1 text-xs text-text-secondary">Usia sampai</p>
+              <Label className="text-xs font-normal capitalize">
+                Usia sampai
+              </Label>
               <Input
                 type="number"
                 min="0"
@@ -583,12 +594,14 @@ export default function NormForm({
               />
             </div>
             <div>
-              <p className="mb-1 text-xs text-text-secondary">Jenis kelamin</p>
+              <Label className="text-xs font-normal capitalize">
+                Jenis kelamin
+              </Label>
               <Select
                 value={gender}
                 disabled={disabled}
                 onChange={(e) => setGender(e.target.value as NormGender)}
-                className={FIELD_CLASS}
+                className="w-full"
                 aria-label="Jenis kelamin"
               >
                 <option value="ANY">Semua</option>
@@ -597,12 +610,14 @@ export default function NormForm({
               </Select>
             </div>
             <div>
-              <p className="mb-1 text-xs text-text-secondary">Pendidikan</p>
+              <Label className="text-xs font-normal capitalize">
+                Pendidikan
+              </Label>
               <Select
                 value={education}
                 disabled={disabled}
                 onChange={(e) => setEducation(e.target.value)}
-                className={FIELD_CLASS}
+                className="w-full"
                 aria-label="Pendidikan"
               >
                 <option value="ANY">Semua</option>
@@ -619,12 +634,9 @@ export default function NormForm({
         {/* METODE */}
         <div className="space-y-3 border-t border-divider pt-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <FieldLabel
-              label="Isi konversi"
-              collection={COLLECTION}
-              field="method"
-              tooltip="Tabel = daftar baris skor mentah ke skor standar. Mean/SD = norma berupa rata-rata dan simpangan baku."
-            />
+            <Label tooltip="Tabel = daftar baris skor mentah ke skor standar. Mean/SD = norma berupa rata-rata dan simpangan baku.">
+              Isi konversi
+            </Label>
             <div className="inline-flex overflow-hidden rounded-lg border border-divider text-sm">
               {(["LOOKUP", "MEAN_SD"] as NormMethod[]).map((m) => (
                 <button
@@ -654,7 +666,7 @@ export default function NormForm({
                   <Button
                     type="button"
                     size="sm"
-                    variant="outlined"
+                    variant="ghost"
                     onClick={() => setShowPaste((v) => !v)}
                   >
                     Tempel dari spreadsheet
@@ -662,7 +674,7 @@ export default function NormForm({
                   <Button
                     type="button"
                     size="sm"
-                    variant="outlined"
+                    variant="ghost"
                     onClick={generateRows}
                     disabled={!hasRange}
                   >
@@ -671,36 +683,37 @@ export default function NormForm({
                   <Button
                     type="button"
                     size="sm"
-                    variant="outlined"
+                    variant="ghost"
                     onClick={addRow}
+                    startIcon={<Plus size={16} />}
                   >
-                    + Baris
+                    Baris
                   </Button>
                 </div>
               )}
               {!hasRange && (
-                <HelpText>
+                <p className="mt-1 text-xs text-text-secondary">
                   Skala ini belum punya rentang skor mentah, jadi cakupan tidak
                   bisa diperiksa dan &quot;Buat baris per skor&quot; tidak
                   tersedia. Isi di tab Scales.
-                </HelpText>
+                </p>
               )}
 
               {showPaste && !readOnly && (
                 <div className="space-y-2 rounded-xl border border-divider p-3">
-                  <HelpText>
+                  <p className="mt-1 text-xs text-text-secondary">
                     Satu baris per konversi. Kolom: skor mentah (24 atau 23-24),
                     skor standar (14 atau 17-20), kategori (opsional), persentil
                     (opsional). Pisahkan dengan tab (salinan dari spreadsheet),
                     titik koma, atau koma. Baris judul di atas diabaikan.
-                  </HelpText>
-                  <textarea
+                  </p>
+                  <Textarea
                     value={pasteText}
                     onChange={(e) => setPasteText(e.target.value)}
                     rows={6}
                     spellCheck={false}
                     placeholder={"29-30\t17-20\tBS\n27-28\t16\tB"}
-                    className={`${FIELD_CLASS} font-mono`}
+                    className="font-mono"
                   />
                   {pasteErrors.length > 0 && (
                     <ul className="list-disc space-y-0.5 pl-4 text-xs text-error-main">
@@ -751,31 +764,33 @@ export default function NormForm({
                           className={problem ? "bg-error-main/10" : undefined}
                         >
                           <td className="px-1 py-1">
-                            <input
+                            <Input
                               type="number"
                               value={r.rawMin}
                               readOnly={readOnly}
                               onChange={(e) =>
                                 updateRow(i, { rawMin: e.target.value })
                               }
-                              className={CELL}
+                              size="sm"
+                              className="w-full"
                               aria-label={`Mentah dari, baris ${i + 1}`}
                             />
                           </td>
                           <td className="px-1 py-1">
-                            <input
+                            <Input
                               type="number"
                               value={r.rawMax}
                               readOnly={readOnly}
                               onChange={(e) =>
                                 updateRow(i, { rawMax: e.target.value })
                               }
-                              className={CELL}
+                              size="sm"
+                              className="w-full"
                               aria-label={`Mentah sampai, baris ${i + 1}`}
                             />
                           </td>
                           <td className="px-1 py-1">
-                            <input
+                            <Input
                               type="text"
                               value={r.standard}
                               readOnly={readOnly}
@@ -783,44 +798,49 @@ export default function NormForm({
                               onChange={(e) =>
                                 updateRow(i, { standard: e.target.value })
                               }
-                              className={CELL}
+                              size="sm"
+                              className="w-full"
                               aria-label={`Skor standar, baris ${i + 1}`}
                             />
                           </td>
                           <td className="px-1 py-1">
-                            <input
+                            <Input
                               type="text"
                               value={r.category}
                               readOnly={readOnly}
                               onChange={(e) =>
                                 updateRow(i, { category: e.target.value })
                               }
-                              className={CELL}
+                              size="sm"
+                              className="w-full"
                               aria-label={`Kategori, baris ${i + 1}`}
                             />
                           </td>
                           <td className="px-1 py-1">
-                            <input
+                            <Input
                               type="number"
                               value={r.percentile}
                               readOnly={readOnly}
                               onChange={(e) =>
                                 updateRow(i, { percentile: e.target.value })
                               }
-                              className={CELL}
+                              size="sm"
+                              className="w-full"
                               aria-label={`Persentil, baris ${i + 1}`}
                             />
                           </td>
                           <td className="px-1 py-1 text-center">
                             {!readOnly && (
-                              <button
+                              <IconButton
                                 type="button"
                                 onClick={() => removeRow(i)}
-                                className="text-text-secondary hover:text-error-main"
+                                size="sm"
                                 aria-label={`Hapus baris ${i + 1}`}
+                                variant="ghost"
+                                color="error"
                               >
-                                ×
-                              </button>
+                                <X size={16} />
+                              </IconButton>
                             )}
                           </td>
                         </tr>
@@ -871,14 +891,13 @@ export default function NormForm({
             <div className="space-y-2">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <FieldLabel
+                  <Label
                     htmlFor="norm-mean"
-                    label="Rata-rata (mean)"
                     required
-                    collection={COLLECTION}
-                    field="mean"
                     tooltip="Rata-rata skor mentah kelompok pembanding."
-                  />
+                  >
+                    Rata-rata (mean)
+                  </Label>
                   <Input
                     id="norm-mean"
                     type="number"
@@ -890,14 +909,13 @@ export default function NormForm({
                   />
                 </div>
                 <div>
-                  <FieldLabel
+                  <Label
                     htmlFor="norm-sd"
-                    label="Simpangan baku (SD)"
                     required
-                    collection={COLLECTION}
-                    field="sd"
                     tooltip="Simpangan baku skor mentah kelompok pembanding. Harus lebih dari 0."
-                  />
+                  >
+                    Simpangan baku (SD)
+                  </Label>
                   <Input
                     id="norm-sd"
                     type="number"
@@ -909,11 +927,11 @@ export default function NormForm({
                   />
                 </div>
               </div>
-              <HelpText>
+              <p className="mt-1 text-xs text-text-secondary">
                 Skor mentah diubah menjadi z-score. Cara z-score menjadi{" "}
                 {target ? (TARGET_LABEL[target] ?? target) : "skor tujuan"}{" "}
                 ditentukan oleh scorer, bukan oleh norma ini.
-              </HelpText>
+              </p>
             </div>
           )}
 
@@ -921,12 +939,13 @@ export default function NormForm({
           <div className="flex flex-wrap items-center gap-2 rounded-xl bg-black/3 px-3 py-2 text-sm dark:bg-white/5">
             <span className="font-medium">Uji konversi</span>
             <span>skor mentah</span>
-            <input
+            <Input
               type="number"
               value={testRaw}
               onChange={(e) => setTestRaw(e.target.value)}
-              className={`${CELL} w-20`}
               aria-label="Skor mentah untuk diuji"
+              size="sm"
+              className="w-20"
             />
             {testResult && (
               <>
@@ -950,71 +969,82 @@ export default function NormForm({
           </button>
           {showCutoffs && (
             <div className="mt-3 space-y-2">
-              <HelpText>
+              <p className="mt-1 text-xs text-text-secondary">
                 Batas kategori pada skor standar. Contoh TIU 5: BS = 17 sampai
                 20, B = 13 sampai 16.
-              </HelpText>
+              </p>
               {cutoffs.map((c, i) => (
                 <div key={i} className="flex items-center gap-2">
-                  <input
+                  <Input
                     type="number"
                     value={c.from}
                     readOnly={readOnly}
                     placeholder="Dari"
                     onChange={(e) => updateCutoff(i, { from: e.target.value })}
-                    className={`${CELL} w-24`}
+                    size="sm"
+                    className="w-full"
                     aria-label={`Batas kategori ${i + 1} dari`}
                   />
-                  <input
+                  <Input
                     type="number"
                     value={c.to}
                     readOnly={readOnly}
                     placeholder="Sampai"
                     onChange={(e) => updateCutoff(i, { to: e.target.value })}
-                    className={`${CELL} w-24`}
+                    size="sm"
+                    className="w-full"
                     aria-label={`Batas kategori ${i + 1} sampai`}
                   />
-                  <input
+                  <Input
                     type="text"
                     value={c.label}
                     readOnly={readOnly}
                     placeholder="Label (BS, B, S...)"
                     onChange={(e) => updateCutoff(i, { label: e.target.value })}
-                    className={`${CELL} min-w-0 flex-1`}
+                    size="sm"
+                    className="w-full"
                     aria-label={`Label batas kategori ${i + 1}`}
                   />
                   {!readOnly && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCutoffs((prev) =>
-                          prev.filter((_, idx) => idx !== i),
-                        );
-                        markDirty();
-                      }}
-                      className="text-text-secondary hover:text-error-main"
-                      aria-label={`Hapus batas kategori ${i + 1}`}
-                    >
-                      ×
-                    </button>
+                    <div>
+                      <IconButton
+                        type="button"
+                        onClick={() => {
+                          setCutoffs((prev) =>
+                            prev.filter((_, idx) => idx !== i),
+                          );
+                          markDirty();
+                        }}
+                        className="text-text-secondary hover:text-error-main"
+                        aria-label={`Hapus batas kategori ${i + 1}`}
+                        size="sm"
+                        color="error"
+                        variant="ghost"
+                      >
+                        <X size={16} />
+                      </IconButton>
+                    </div>
                   )}
                 </div>
               ))}
               {!readOnly && (
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outlined"
-                  onClick={() => {
-                    setCutoffs((prev) => [
-                      ...prev,
-                      { from: "", to: "", label: "" },
-                    ]);
-                    markDirty();
-                  }}
-                >
-                  + Batas
-                </Button>
+                <div className="text-right">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    startIcon={<Plus size={16} />}
+                    onClick={() => {
+                      setCutoffs((prev) => [
+                        ...prev,
+                        { from: "", to: "", label: "" },
+                      ]);
+                      markDirty();
+                    }}
+                  >
+                    Batas
+                  </Button>
+                </div>
               )}
             </div>
           )}
@@ -1034,13 +1064,12 @@ export default function NormForm({
             <div className="mt-3 space-y-3">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_140px]">
                 <div>
-                  <FieldLabel
+                  <Label
                     htmlFor="norm-source"
-                    label="Sumber norma"
-                    collection={COLLECTION}
-                    field="source"
                     tooltip="Dari mana norma ini berasal. Contoh: Manual TIU 5, LPSP3 Fakultas Psikologi UI."
-                  />
+                  >
+                    Sumber norma
+                  </Label>
                   <Input
                     id="norm-source"
                     type="text"
@@ -1051,13 +1080,13 @@ export default function NormForm({
                   />
                 </div>
                 <div>
-                  <FieldLabel
+                  <Label
                     htmlFor="norm-sample"
-                    label="Ukuran sampel"
-                    collection={COLLECTION}
-                    field="sampleSize"
                     tooltip="Jumlah orang pada sampel norma, sebagai bukti kualitas."
-                  />
+                    className="whitespace-nowrap"
+                  >
+                    Ukuran sampel
+                  </Label>
                   <Input
                     id="norm-sample"
                     type="number"
@@ -1071,37 +1100,37 @@ export default function NormForm({
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <FieldLabel
+                  <Label
                     htmlFor="norm-from"
-                    label="Berlaku dari"
-                    collection={COLLECTION}
-                    field="validFrom"
                     tooltip="Awal masa berlaku. Kosongkan untuk berlaku sejak disimpan."
-                  />
-                  <Input
+                  >
+                    Berlaku dari
+                  </Label>
+                  <InputDate
                     id="norm-from"
                     type="date"
                     value={validFrom}
                     disabled={disabled}
                     onChange={(e) => setValidFrom(e.target.value)}
-                    className="w-full"
+                    isClearable
+                    fullWidth
                   />
                 </div>
                 <div>
-                  <FieldLabel
+                  <Label
                     htmlFor="norm-until"
-                    label="Berlaku sampai"
-                    collection={COLLECTION}
-                    field="validUntil"
                     tooltip="Akhir masa berlaku. Kosongkan jika tanpa akhir."
-                  />
-                  <Input
+                  >
+                    Berlaku sampai
+                  </Label>
+                  <InputDate
                     id="norm-until"
                     type="date"
                     value={validUntil}
                     disabled={disabled}
                     onChange={(e) => setValidUntil(e.target.value)}
-                    className="w-full"
+                    isClearable
+                    fullWidth
                   />
                 </div>
               </div>
@@ -1142,11 +1171,11 @@ export default function NormForm({
       {/* FOOTER */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-divider p-4">
         <div>
-          {isEdit && status === "DRAFT" && !readOnly && onDelete && (
+          {isEdit && status === "DRAFT" && !readOnly && canDelete && norm && (
             <DialogConfirmAction
               title="Hapus Norma"
               description={`Yakin ingin menghapus norma ${norm?.name ?? ""}?`}
-              onConfirm={onDelete}
+              onConfirm={() => deleteMutation.mutate(norm.id)}
               trigger={(open) => (
                 <Button type="button" variant="outlined" onClick={open}>
                   Hapus
@@ -1166,17 +1195,11 @@ export default function NormForm({
             {readOnly ? "Tutup" : "Batal"}
           </Button>
 
-          {readOnly && onCopy && (
-            <Button type="button" variant="outlined" onClick={onCopy}>
-              Salin sebagai versi baru
-            </Button>
-          )}
-
-          {readOnly && status === "ACTIVE" && onArchive && (
+          {readOnly && status === "ACTIVE" && canArchive && norm && (
             <DialogConfirmAction
               title="Arsipkan Norma"
               description="Norma yang diarsipkan tidak dipakai lagi untuk perhitungan baru. Hasil lama tetap menunjuk versi norma ini."
-              onConfirm={onArchive}
+              onConfirm={() => archiveMutation.mutate(norm.id)}
               trigger={(open) => (
                 <Button type="button" onClick={open}>
                   Arsipkan
@@ -1195,11 +1218,11 @@ export default function NormForm({
             </Button>
           )}
 
-          {!readOnly && isEdit && status === "DRAFT" && onActivate && (
+          {!readOnly && isEdit && status === "DRAFT" && canActivate && norm && (
             <DialogConfirmAction
               title="Aktifkan Norma"
               description="Setelah aktif, norma ini dipakai untuk perhitungan dan tidak bisa diubah lagi. Server akan memeriksa kelengkapan dan tumpang tindih dengan norma aktif lain."
-              onConfirm={onActivate}
+              onConfirm={() => activateMutation.mutate(norm.id)}
               trigger={(open) => (
                 <Button
                   type="button"

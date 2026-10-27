@@ -25,11 +25,6 @@ interface Props {
   isLocked: boolean;
 }
 
-type FormState =
-  | { mode: "create"; seed?: NormTable }
-  | { mode: "edit"; norm: NormTable }
-  | null;
-
 type Light = "red" | "yellow" | "green";
 
 const DOT: Record<Light, string> = {
@@ -84,7 +79,6 @@ export default function NormManagement({ testId, isLocked }: Props) {
     useGetTestScales(testId);
   const { data: normData, isLoading: normsLoading } = useGetTestNorms(testId);
   const [selectedScaleId, setSelectedScaleId] = useState<string | null>(null);
-  const [formState, setFormState] = useState<FormState>(null);
 
   if (scalesLoading || normsLoading) return <div>Memuat norma...</div>;
 
@@ -133,10 +127,7 @@ export default function NormManagement({ testId, isLocked }: Props) {
     selected.rawMax !== null &&
     selected.rawMax !== undefined;
 
-  const selectScale = (id: string) => {
-    setSelectedScaleId(id);
-    setFormState(null);
-  };
+  const selectScale = (id: string) => setSelectedScaleId(id);
 
   return (
     <div className="space-y-4">
@@ -243,7 +234,7 @@ export default function NormManagement({ testId, isLocked }: Props) {
               >
                 {(closeDialog) => (
                   <>
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-divider">
+                    <div className="sticky top-0 bg-bg-paper z-10 flex items-center justify-between px-6 py-4 border-b border-divider">
                       <h4 className="text-lg font-semibold text-text-primary">
                         Tambah norma · {selected.code}
                       </h4>
@@ -270,7 +261,7 @@ export default function NormManagement({ testId, isLocked }: Props) {
                         rawMax: selected.rawMax,
                       }}
                       readOnly={isLocked}
-                      onCancel={() => setFormState(null)}
+                      onCancel={closeDialog}
                       canActivate={!isLocked}
                       canArchive={!isLocked}
                       canDelete={!isLocked}
@@ -297,8 +288,6 @@ export default function NormManagement({ testId, isLocked }: Props) {
           ) : (
             <div className="flex flex-wrap gap-2">
               {selectedNorms.map((n) => {
-                const open =
-                  formState?.mode === "edit" && formState.norm.id === n.id;
                 const gap =
                   n.status !== "ARCHIVED" && !isNormCovered(n, selected);
                 return (
@@ -312,7 +301,8 @@ export default function NormManagement({ testId, isLocked }: Props) {
                           type="button"
                           onClick={openDialog}
                           size="sm"
-                          variant={open ? "ghost" : "outlined"}
+                          color="info"
+                          variant={"ghost"}
                           startIcon={criteriaLabel(n.criteria)}
                           endIcon={
                             <>
@@ -341,7 +331,7 @@ export default function NormManagement({ testId, isLocked }: Props) {
                     >
                       {(closeDialog) => (
                         <>
-                          <div className="flex items-center justify-between px-6 py-4 border-b border-divider">
+                          <div className="sticky top-0 bg-bg-paper z-10 flex items-center justify-between px-6 py-4 border-b border-divider">
                             <h4 className="text-lg font-semibold text-text-primary">
                               Norma {selected.code} ·{" "}
                               {criteriaLabel(n.criteria)}
@@ -370,7 +360,7 @@ export default function NormManagement({ testId, isLocked }: Props) {
                               rawMax: selected.rawMax,
                             }}
                             readOnly={isLocked || n.status !== "DRAFT"}
-                            onCancel={() => setFormState(null)}
+                            onCancel={closeDialog}
                             canActivate={!isLocked}
                             canArchive={!isLocked}
                             canDelete={!isLocked}
@@ -402,7 +392,7 @@ export default function NormManagement({ testId, isLocked }: Props) {
                       >
                         {(closeDialog) => (
                           <>
-                            <div className="flex items-center justify-between px-6 py-4 border-b border-divider">
+                            <div className="sticky top-0 bg-bg-paper z-10 flex items-center justify-between px-6 py-4 border-b border-divider">
                               <h4 className="text-lg font-semibold text-text-primary">
                                 Salin norma · {selected.code}
                               </h4>
@@ -430,7 +420,7 @@ export default function NormManagement({ testId, isLocked }: Props) {
                                 rawMax: selected.rawMax,
                               }}
                               readOnly={isLocked || n.status !== "DRAFT"}
-                              onCancel={() => setFormState(null)}
+                              onCancel={closeDialog}
                               canActivate={!isLocked}
                               canArchive={!isLocked}
                               canDelete={!isLocked}

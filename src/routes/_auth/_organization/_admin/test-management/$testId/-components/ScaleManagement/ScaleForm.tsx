@@ -126,7 +126,6 @@ export default function ScaleForm({
   const [compositeMethod, setCompositeMethod] = useState<CompositeMethod>(
     scale?.composite?.method === "MEAN" ? "MEAN" : "SUM",
   );
-  const [errors, setErrors] = useState<string[]>([]);
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -194,10 +193,9 @@ export default function ScaleForm({
     }
 
     if (errs.length > 0) {
-      setErrors(errs);
+      toast.error(errs.join(", "));
       return;
     }
-    setErrors([]);
 
     let payload = {
       name,
@@ -299,32 +297,6 @@ export default function ScaleForm({
           />
         </TabContent>
       </div>
-
-      {/* KETERANGAN FIELD OTOMATIS */}
-      <div className="px-4 py-3 border-t border-divider bg-black/2 text-xs text-text-secondary space-y-1">
-        <p className="font-medium">Tidak diisi di form ini (diatur server):</p>
-        <ul className="list-disc pl-4 space-y-0.5">
-          <li>
-            <span className="font-mono">testId</span>: dari URL halaman,
-            mengarah ke <span className="font-mono">test_definitions</span>
-          </li>
-          <li>
-            <span className="font-mono">test_sections.scaleIds</span>: ikut
-            diperbarui otomatis saat Section dipilih atau diganti
-          </li>
-        </ul>
-      </div>
-
-      {/* ERROR */}
-      {errors.length > 0 && (
-        <div className="mx-4 mt-3 rounded-xl border border-error-main/40 bg-error-main/5 px-4 py-3 text-sm text-error-main">
-          <ul className="list-disc pl-4 space-y-0.5">
-            {errors.map((msg) => (
-              <li key={msg}>{msg}</li>
-            ))}
-          </ul>
-        </div>
-      )}
 
       {/* FOOTER */}
       <div className="flex items-center justify-end gap-3 p-4 border-t border-divider">

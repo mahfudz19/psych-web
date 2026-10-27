@@ -86,7 +86,6 @@ export default function SectionForm({
   const [useStimulus, setUseStimulus] = useState<boolean>(
     Boolean(section?.stimulusPhase),
   );
-  const [errors, setErrors] = useState<string[]>([]);
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -155,10 +154,9 @@ export default function SectionForm({
     }
 
     if (errs.length > 0) {
-      setErrors(errs);
+      toast.error(errs.join(", "));
       return;
     }
-    setErrors([]);
 
     let payload = {
       order,
@@ -235,33 +233,6 @@ export default function SectionForm({
           />
         </TabContent>
       </div>
-
-      <div className="px-4 py-3 border-t border-divider bg-secondary-main/10 text-xs text-text-secondary space-y-1">
-        <p className="font-medium">Tidak diisi di form ini (diatur server):</p>
-        <ul className="list-disc pl-4 space-y-0.5">
-          <li>
-            <span className="font-mono">testId</span>: dari URL halaman,
-            mengarah ke <span className="font-mono">test_definitions</span>
-          </li>
-          <li>
-            <span className="font-mono">testVersion</span>: disalin dari tes
-          </li>
-          <li>
-            <span className="font-mono">scaleIds</span>: terisi otomatis dari{" "}
-            <span className="font-mono">test_scales.sectionId</span>
-          </li>
-        </ul>
-      </div>
-
-      {errors.length > 0 && (
-        <div className="mx-4 mt-3 rounded-xl border border-error-main/40 bg-error-main/5 px-4 py-3 text-sm text-error-main">
-          <ul className="list-disc pl-4 space-y-0.5">
-            {errors.map((msg) => (
-              <li key={msg}>{msg}</li>
-            ))}
-          </ul>
-        </div>
-      )}
 
       <div className="flex items-center justify-end gap-3 p-4 border-t border-divider">
         <Button

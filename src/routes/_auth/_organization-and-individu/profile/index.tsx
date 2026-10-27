@@ -11,6 +11,7 @@ import { useAuthStore } from "../../../../utils/authStore";
 import { useAvatarUploadMutation } from "./-api/avatar.query";
 import { useUpdateProfileMutation } from "./-api/profile.query";
 import Select from "../../../../components/ui/Select";
+import Card from "../../../../components/ui/Card";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/profile/",
@@ -98,7 +99,7 @@ const FormInputs = () => {
 
   return (
     <form onSubmit={handleSave} className="space-y-6">
-      <div className="p-6 rounded-3xl bg-bg-paper border border-divider shadow-sm space-y-6">
+      <Card className="p-6 space-y-6">
         <div className="border-b border-divider pb-4">
           <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">
             {t("profile.form.mainInfo.title")}
@@ -185,7 +186,7 @@ const FormInputs = () => {
             />
           </div>
         </div>
-      </div>
+      </Card>
 
       <div className="flex items-center justify-end gap-3 pt-2">
         <Button type="submit" disabled={updateProfileMutation.isPending}>
@@ -207,7 +208,7 @@ function ProfileInfoPage() {
   return (
     <div className="flex flex-col md:flex-row gap-6 md:items-start">
       <div className="w-full md:w-1/3 flex flex-col gap-6">
-        <div className="p-6 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col items-center text-center">
+        <Card className="p-6 flex flex-col items-center text-center">
           <ChangeAvatar />
 
           <div className="mt-4 space-y-1">
@@ -239,7 +240,7 @@ function ProfileInfoPage() {
               </span>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
       <div className="w-full md:w-2/3">

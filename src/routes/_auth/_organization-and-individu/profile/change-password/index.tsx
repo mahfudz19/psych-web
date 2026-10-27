@@ -9,6 +9,7 @@ import { useChangePasswordMutation } from "../../../../_guest/-api/auth.query";
 import PasswordFields, {
   requirements,
 } from "../../../../_guest/register/-components/PassWordFields";
+import Card from "../../../../../components/ui/Card";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/profile/change-password/",
@@ -47,7 +48,7 @@ function ChangePasswordPage() {
   };
 
   return (
-    <div className="max-w-md bg-bg-paper p-6 rounded-3xl border border-divider shadow-sm">
+    <Card className="max-w-md p-6">
       <div className="mb-6">
         <h2 className="text-xl font-extrabold text-text-primary tracking-tight">
           {t("profile.changePassword.title")}
@@ -93,6 +94,6 @@ function ChangePasswordPage() {
           </Button>
         </div>
       </form>
-    </div>
+    </Card>
   );
 }

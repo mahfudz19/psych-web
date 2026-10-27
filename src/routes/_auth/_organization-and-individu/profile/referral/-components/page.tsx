@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useReferralStatsQuery } from "../-api/referral.query";
 import type { ReferralStats } from "../../../../../../types/user";
 import HandleRegenerate from "./HandleRegenerate";
+import Card from "../../../../../../components/ui/Card";
 
 const ActiveCode = ({ activeCode }: { activeCode?: string }) => {
   const { t } = useTranslation();
@@ -57,14 +58,14 @@ export function ReferralPage() {
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="md:col-span-2 p-5 rounded-3xl bg-bg-paper border border-divider shadow-sm animate-pulse">
+          <Card className="md:col-span-2 p-5 animate-pulse">
             <div className="h-4 bg-divider rounded w-1/3 mb-4"></div>
             <div className="h-8 bg-divider rounded w-1/2"></div>
-          </div>
-          <div className="p-5 rounded-3xl bg-bg-paper border border-divider shadow-sm animate-pulse">
+          </Card>
+          <Card className="p-5 animate-pulse">
             <div className="h-4 bg-divider rounded w-1/3 mb-4"></div>
             <div className="h-8 bg-divider rounded w-1/2"></div>
-          </div>
+          </Card>
         </div>
       </div>
     );
@@ -73,7 +74,7 @@ export function ReferralPage() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {/* Kolom 1-2: Kode Aktif */}
-      <div className="md:col-span-2 p-5 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col justify-between space-y-4">
+      <Card className="md:col-span-2 p-5 flex flex-col justify-between space-y-4">
         <div>
           <span className="text-[11px] font-bold text-primary-main uppercase tracking-wider">
             {t("referral.activeCodeLabel")}
@@ -89,10 +90,10 @@ export function ReferralPage() {
           </span>
           <HandleRegenerate />
         </div>
-      </div>
+      </Card>
 
       {/* Kolom 3: Statistik Singkat */}
-      <div className="p-5 rounded-3xl bg-bg-paper border border-divider shadow-sm flex flex-col justify-between space-y-3">
+      <Card className="p-5 flex flex-col justify-between space-y-3">
         <div>
           <p className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">
             {t("referral.stats.totalReferredLabel")}
@@ -110,7 +111,7 @@ export function ReferralPage() {
           </p>
           <NoRewards stats={stats ?? undefined} />
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

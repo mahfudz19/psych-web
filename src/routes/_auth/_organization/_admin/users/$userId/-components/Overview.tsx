@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import type { Users } from "../../-api/user.type";
+import Card from "../../../../../../../components/ui/Card";
 
 const formatDate = (dateString?: string) => {
   if (!dateString) return "-";
@@ -31,7 +32,7 @@ const InfoCard = ({
   value: string | number;
   className?: string;
 }) => (
-  <div className="flex items-start gap-3 p-3.5 rounded-2xl border border-divider bg-bg-paper shadow-sm">
+  <Card className="flex items-start gap-3 p-3.5">
     <div className="mt-0.5 p-2 rounded-xl bg-divider/10 text-text-secondary [&>svg]:w-4 [&>svg]:h-4">
       {icon}
     </div>
@@ -43,7 +44,7 @@ const InfoCard = ({
         {value}
       </p>
     </div>
-  </div>
+  </Card>
 );
 
 const CopyReferral = ({ referralCode }: { referralCode: string }) => {
@@ -102,7 +103,7 @@ function Overview({ user }: { user: Users }) {
         <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-3">
           Program Referral
         </h3>
-        <div className="p-6 rounded-3xl border border-divider bg-bg-paper shadow-sm space-y-6">
+        <Card className="p-6 space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-divider">
             <div>
               <p className="text-xs font-semibold text-text-secondary mb-1">
@@ -146,7 +147,7 @@ function Overview({ user }: { user: Users }) {
               </p>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

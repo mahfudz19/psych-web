@@ -9,6 +9,8 @@ import Tabs from "../../../../../../../components/ui/Tabs";
 import Tab from "../../../../../../../components/ui/Tabs/Tab";
 import TabContent from "../../../../../../../components/ui/Tabs/TabContent";
 import PageHeader from "../../../../../../../components/reusebale-components/PageHeader";
+import Card from "../../../../../../../components/ui/Card";
+import Paper from "../../../../../../../components/ui/Paper";
 
 export default function TestDetailLayout() {
   const { testId } = Route.useParams();
@@ -30,7 +32,7 @@ export default function TestDetailLayout() {
         ]}
       />
       {/* Header & Stats */}
-      <div className="bg-bg-paper mb-6 p-6 rounded-4xl border border-divider shadow-sm">
+      <Card className="mb-6 p-6">
         <div className="flex justify-between items-start mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -86,10 +88,10 @@ export default function TestDetailLayout() {
             </p>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Tabs Navigation */}
-      <div className="bg-bg-paper p-6 rounded-4xl border border-divider shadow-sm">
+      <Paper className="p-6">
         <Tabs value={activeTab} onChange={setActiveTab}>
           <Tab value="sections" label="Sections (Subtes)" />
           <Tab value="scales" label="Scales (Aspek)" />
@@ -118,7 +120,7 @@ export default function TestDetailLayout() {
             isLocked={test.status === "ARCHIVED"}
           />
         </TabContent>
-      </div>
+      </Paper>
     </>
   );
 }

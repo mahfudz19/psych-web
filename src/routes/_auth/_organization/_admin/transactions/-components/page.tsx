@@ -17,6 +17,7 @@ import {
 import { Route } from "../index";
 import DetailTransaksi, { HandleCopy } from "./DetailTransaksi";
 import PageHeader from "../../../../../../components/reusebale-components/PageHeader";
+import Card from "../../../../../../components/ui/Card";
 
 function TransactionsPage() {
   const search = Route.useSearch();
@@ -208,7 +209,7 @@ function TransactionsPage() {
 
       {/* Ringkasan Laporan Keuangan & Perilaku */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="p-4 bg-bg-paper border border-divider rounded-2xl shadow-sm flex items-center justify-between">
+        <Card className="p-4 flex items-center justify-between">
           <div>
             <p className="text-xs text-text-secondary font-medium">
               Total Pendapatan (Lunas)
@@ -223,9 +224,9 @@ function TransactionsPage() {
           <div className="p-3 bg-success-main/10 text-success-main rounded-xl">
             <DollarSign className="w-6 h-6" />
           </div>
-        </div>
+        </Card>
 
-        <div className="p-4 bg-bg-paper border border-divider rounded-2xl shadow-sm flex items-center justify-between">
+        <Card className="p-4 flex items-center justify-between">
           <div>
             <p className="text-xs text-text-secondary font-medium">
               Rasio Pembayaran
@@ -249,9 +250,9 @@ function TransactionsPage() {
           <div className="p-3 bg-primary-main/10 text-primary-main rounded-xl">
             <FileText className="w-6 h-6" />
           </div>
-        </div>
+        </Card>
 
-        <div className="p-4 bg-bg-paper border border-divider rounded-2xl shadow-sm flex items-center justify-between">
+        <Card className="p-4 flex items-center justify-between">
           <div>
             <p className="text-xs text-text-secondary font-medium">
               Audit Xendit
@@ -266,7 +267,7 @@ function TransactionsPage() {
           <div className="p-3 bg-warning-main/10 text-warning-main rounded-xl">
             <CheckCircle2 className="w-6 h-6" />
           </div>
-        </div>
+        </Card>
       </div>
 
       <DataTable<AdminTransactionsInfo, BaseListParams>

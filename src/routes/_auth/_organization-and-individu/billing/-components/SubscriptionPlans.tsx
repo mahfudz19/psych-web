@@ -15,6 +15,7 @@ import { useCheckout, useGetSubscriptionPlans } from "../-api/billing.query";
 import Button from "../../../../../components/ui/Button";
 import Skeleton from "../../../../../components/ui/Skeleton";
 import type { SubscriptionPlan as SP } from "../../../_organization/_admin/subscription-plan-management/-api/subscriptionPlan.type";
+import Card from "../../../../../components/ui/Card";
 
 type SubscriptionPlan = Omit<SP, "createdAt" | "updatedAt">;
 
@@ -65,7 +66,7 @@ const SelectedPlan = ({ selectedPlan, setSelectedPlan }: SelectedPlanProps) => {
   const { t } = useTranslation();
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      <div className="bg-bg-paper border border-divider rounded-3xl p-6 md:p-8 shadow-lg space-y-6">
+      <Card className="p-6 md:p-8 shadow-lg space-y-6">
         <div className="flex items-center gap-3 border-b border-divider pb-4">
           <div className="w-12 h-12 bg-primary-main/10 text-primary-main rounded-2xl flex items-center justify-center shrink-0">
             <Receipt className="w-6 h-6" />
@@ -131,7 +132,7 @@ const SelectedPlan = ({ selectedPlan, setSelectedPlan }: SelectedPlanProps) => {
             setSelectedPlan={setSelectedPlan}
           />
         </div>
-      </div>
+      </Card>
     </div>
   );
 };
@@ -145,7 +146,7 @@ const Plans = ({
 
   if (error) {
     return (
-      <div className="bg-bg-paper border border-divider rounded-3xl p-8 text-center shadow-sm max-w-xl mx-auto mt-4">
+      <Card className="p-8 text-center shadow-sm max-w-xl mx-auto mt-4">
         <div className="w-16 h-16 bg-error-main/10 text-error-main rounded-2xl flex items-center justify-center mx-auto mb-6">
           <Lock className="w-8 h-8" />
         </div>
@@ -166,7 +167,7 @@ const Plans = ({
         >
           {t("common.backToDashboard", "Kembali ke Dashboard")}
         </Button>
-      </div>
+      </Card>
     );
   }
 
@@ -203,9 +204,9 @@ const Plans = ({
           {data?.data?.map((plan) => {
             const isPopular = plan.recommended;
             return (
-              <div
+              <Card
                 key={plan.id}
-                className={`relative bg-bg-paper rounded-3xl p-6 md:p-8 flex flex-col justify-between transition-all border ${
+                className={`relative p-6 md:p-8 flex flex-col justify-between transition-all ${
                   isPopular
                     ? "border-primary-main shadow-xl ring-2 ring-primary-main/20"
                     : "border-divider shadow-sm"
@@ -273,7 +274,7 @@ const Plans = ({
                     Beli Sekarang
                   </Button>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>

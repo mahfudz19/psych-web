@@ -16,6 +16,7 @@ import Input from "../../ui/Input";
 import Select from "../../ui/Select";
 import DateRangeFilter from "./DateRangeFilter";
 import FacetedFilter from "./FacetedFilter";
+import Paper from "../../ui/Paper";
 
 export interface BaseListParams {
   page?: number;
@@ -232,8 +233,8 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
   };
 
   return (
-    <div
-      className={`flex flex-col w-full border border-divider overflow-hidden ${isChild ? "rounded-2xl" : "bg-bg-paper rounded-3xl shadow-sm"}`}
+    <Paper
+      className={`flex flex-col w-full overflow-hidden ${isChild ? "border border-divider shadow-none rounded-2xl" : ""}`}
     >
       {/* --- TOOLBAR UTAMA --- */}
       <div
@@ -523,6 +524,6 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
           </div>
         </div>
       )}
-    </div>
+    </Paper>
   );
 }

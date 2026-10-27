@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Tabs from "../../../components/ui/Tabs";
 import Tab from "../../../components/ui/Tabs/Tab";
+import Card from "../../../components/ui/Card";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/billing",
@@ -77,7 +78,7 @@ function BillingLayout() {
         <Outlet />
 
         {/* Card Bantuan WhatsApp Admin */}
-        <div className="p-5 rounded-3xl border border-divider bg-bg-paper shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <Card className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <div className="p-3 rounded-2xl bg-success-main/10 text-success-main shrink-0">
               <HelpCircle className="w-5 h-5" />
@@ -94,7 +95,7 @@ function BillingLayout() {
           </div>
 
           <AdminContact />
-        </div>
+        </Card>
       </div>
     </div>
   );

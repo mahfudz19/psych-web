@@ -6,6 +6,7 @@ import AlertDescription from "../../../../../components/ui/Alert/AlertDescriptio
 import AlertTitle from "../../../../../components/ui/Alert/AlertTitle";
 import Button from "../../../../../components/ui/Button";
 import CanclePayment from "./CanclePayment";
+import Card from "../../../../../components/ui/Card";
 
 const WaitingPayment = ({ referenceId }: { referenceId: string }) => {
   const { t } = useTranslation();
@@ -27,7 +28,7 @@ const WaitingPayment = ({ referenceId }: { referenceId: string }) => {
 
   if (!txRes?.data) {
     return (
-      <div className="bg-bg-paper border border-divider rounded-3xl p-8 text-center shadow-sm max-w-xl mx-auto mt-4">
+      <Card className="p-8 text-center max-w-xl mx-auto mt-4">
         <h3 className="text-xl font-bold text-text-primary mb-2">
           {t("billing.transactionNotFoundTitle", "Transaksi Tidak Ditemukan")}
         </h3>
@@ -37,12 +38,12 @@ const WaitingPayment = ({ referenceId }: { referenceId: string }) => {
             "Gagal memuat detail transaksi. Silakan coba beberapa saat lagi.",
           )}
         </p>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="bg-bg-paper border border-divider rounded-3xl p-6 md:p-10 shadow-lg mt-4 space-y-6">
+    <Card className="p-6 md:p-10 mt-4 space-y-6">
       <div className="text-center space-y-2">
         <span className="inline-flex items-center gap-2 bg-warning-main/10 text-warning-main px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase animate-pulse">
           <Clock className="w-4 h-4" />
@@ -95,7 +96,7 @@ const WaitingPayment = ({ referenceId }: { referenceId: string }) => {
         <RefreshCw className="w-3.5 h-3.5 animate-spin text-primary-main" />
         <span>Mengecek status pembayaran secara otomatis...</span>
       </div>
-    </div>
+    </Card>
   );
 };
 

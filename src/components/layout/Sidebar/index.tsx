@@ -98,160 +98,170 @@ export function Sidebar() {
           aria-hidden="true"
         />
       )}
-
-      <aside
-        className={twMerge(
-          "fixed lg:static inset-y-0 left-0 z-50",
-          "bg-bg-paper border-r border-divider flex flex-col h-full shadow-sm",
-          "transition-all duration-300 ease-in-out",
-          isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          isMini ? "lg:w-20" : "lg:w-64",
-          "w-64",
-        )}
-      >
-        <div className="h-16 flex items-center justify-center px-4 border-b border-divider shrink-0">
-          <h1 className="font-extrabold text-primary-main tracking-tight whitespace-nowrap overflow-hidden transition-all duration-300">
-            <span
-              className={`text-2xl hidden ${isMini ? "lg:inline-block" : ""}`}
-            >
-              @
-            </span>
-            <span className={`text-xl ${isMini ? "lg:hidden" : ""}`}>
-              @psych-web
-            </span>
-          </h1>
-        </div>
-
-        <nav
-          className={`flex-1 px-3 py-6 space-y-4 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
+      <div className="p-0 lg:p-4 z-50">
+        <aside
+          className={twMerge(
+            "fixed lg:static inset-y-0 left-0 flex flex-col h-full rounded-2xl shadow-xl",
+            "transition-all duration-300 ease-in-out border-none",
+            /* BACKGROUND GRADIENT UTAMA */
+            "bg-linear-to-b from-primary-main to-primary-dark text-primary-contrast",
+            isMobileOpen
+              ? "translate-x-0"
+              : "-translate-x-full lg:translate-x-0",
+            isMini ? "lg:w-20" : "lg:w-64",
+            "w-64",
+          )}
         >
-          {dynamicMenu.map((group, groupIdx) => (
-            <div
-              key={groupIdx}
-              className={`${
-                groupIdx > 0 && isMini
-                  ? "border-t border-divider pt-4"
-                  : undefined
-              }`}
-            >
-              <p
-                className={`px-3 text-xs font-bold text-text-disabled uppercase tracking-widest mb-3 transition-opacity duration-300 ${isMini ? "lg:opacity-0 lg:invisible lg:h-0 lg:mb-0" : ""}`}
+          {/* HEADER LOGO */}
+          <div className="h-16 flex items-center justify-center px-4 border-b border-primary-contrast/20 shrink-0">
+            <h1 className="font-extrabold tracking-tight whitespace-nowrap overflow-hidden transition-all duration-300 text-primary-contrast">
+              <span
+                className={`text-2xl hidden ${isMini ? "lg:inline-block" : ""}`}
               >
-                {t(group.groupLabelKey as any)}
-              </p>
+                @
+              </span>
+              <span className={`text-xl ${isMini ? "lg:hidden" : ""}`}>
+                @psych-web
+              </span>
+            </h1>
+          </div>
 
-              {group.items.map((item, itemIdx) => {
-                const hasChildren = item.children && item.children.length > 0;
-                const isExpanded = expandedMenus.includes(item.titleKey);
+          <nav
+            className={`flex-1 px-3 py-6 space-y-4 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
+          >
+            {dynamicMenu.map((group, groupIdx) => (
+              <div
+                key={groupIdx}
+                className={`${
+                  groupIdx > 0 && isMini
+                    ? "border-t border-primary-contrast/20 pt-4"
+                    : undefined
+                }`}
+              >
+                {/* GROUP LABEL */}
+                <p
+                  className={`px-3 text-xs font-bold text-primary-contrast/60 uppercase tracking-widest mb-3 transition-opacity duration-300 ${isMini ? "lg:opacity-0 lg:invisible lg:h-0 lg:mb-0" : ""}`}
+                >
+                  {t(group.groupLabelKey as any)}
+                </p>
 
-                return (
-                  <div key={itemIdx} className="relative group">
-                    {hasChildren ? (
-                      <button
-                        onClick={() => handleToggleExpand(item.titleKey)}
-                        className={`w-full flex items-center ${isMini ? "justify-center" : "justify-between"}  px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main transition-colors focus:outline-none`}
-                      >
-                        <div className="flex items-center">
+                {group.items.map((item, itemIdx) => {
+                  const hasChildren = item.children && item.children.length > 0;
+                  const isExpanded = expandedMenus.includes(item.titleKey);
+
+                  return (
+                    <div key={itemIdx} className="relative group">
+                      {hasChildren ? (
+                        <button
+                          onClick={() => handleToggleExpand(item.titleKey)}
+                          className={`w-full flex items-center ${isMini ? "justify-center" : "justify-between"} px-3 py-2.5 rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast transition-all focus:outline-none`}
+                        >
+                          <div className="flex items-center">
+                            {item.icon}
+                            <span
+                              className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0 lg:hidden" : ""}`}
+                            >
+                              {t(item.titleKey as any)}
+                            </span>
+                          </div>
+                          <svg
+                            className={`w-4 h-4 transition-transform duration-200 ${isMini ? "lg:hidden" : ""} ${isExpanded ? "rotate-90" : ""}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M9 5l7 7-7 7"
+                            />
+                          </svg>
+                        </button>
+                      ) : (
+                        /* MAIN ITEM */
+                        <Link
+                          to={item.path!}
+                          onClick={() =>
+                            window.innerWidth < 1024 && toggleMobile()
+                          }
+                          className={`flex items-center ${isMini ? "justify-center" : ""} px-3 py-2.5 rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast [&.active]:bg-primary-contrast/20 [&.active]:text-primary-contrast [&.active]:shadow-inner [&.active]:font-semibold transition-all duration-200`}
+                        >
                           {item.icon}
                           <span
                             className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0 lg:hidden" : ""}`}
                           >
                             {t(item.titleKey as any)}
                           </span>
-                        </div>
-                        <svg
-                          className={`w-4 h-4 transition-transform duration-200 ${isMini ? "lg:hidden" : ""} ${isExpanded ? "rotate-90" : ""}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </button>
-                    ) : (
-                      <Link
-                        to={item.path!}
-                        onClick={() =>
-                          window.innerWidth < 1024 && toggleMobile()
-                        }
-                        className={`flex items-center ${isMini ? "justify-center" : ""} px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:bg-primary-main/10 hover:text-primary-main [&.active]:bg-primary-main/10 [&.active]:text-primary-main transition-colors`}
-                      >
-                        {item.icon}
-                        <span
-                          className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0 lg:hidden" : ""}`}
-                        >
-                          {t(item.titleKey as any)}
-                        </span>
-                      </Link>
-                    )}
+                        </Link>
+                      )}
 
-                    {isMini && (
-                      <div className="absolute left-full top-0 ml-2 w-48 bg-bg-paper border border-divider shadow-lg rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-60 hidden lg:block overflow-hidden">
-                        <div className="px-4 py-3 bg-divider/20 border-b border-divider font-bold text-sm text-text-primary">
-                          {t(item.titleKey as any)}
+                      {/* MINI MODE POPOVER (Hover) */}
+                      {isMini && (
+                        <div className="absolute left-full top-0 ml-2 w-48 bg-primary-dark border border-primary-contrast/20 shadow-xl rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-60 hidden lg:block overflow-hidden">
+                          <div className="px-4 py-3 bg-primary-contrast/10 border-b border-primary-contrast/20 font-bold text-sm text-primary-contrast">
+                            {t(item.titleKey as any)}
+                          </div>
+                          {hasChildren && (
+                            <div className="py-1">
+                              {(item.children || []).map((child, childIdx) => (
+                                <Link
+                                  key={childIdx}
+                                  to={child.path!}
+                                  className="block px-4 py-2.5 text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast [&.active]:text-primary-contrast [&.active]:bg-primary-contrast/20"
+                                >
+                                  {t(child.titleKey as any)}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        {hasChildren && (
-                          <div className="py-1">
+                      )}
+
+                      {/* SUB MENU ITEM */}
+                      {hasChildren && (
+                        <div
+                          className={`overflow-hidden transition-all duration-300 ease-in-out ${isMini ? "lg:hidden" : ""} ${isExpanded ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"}`}
+                        >
+                          <div className="ml-7 pl-3 border-l border-primary-contrast/30 space-y-1 py-1">
                             {(item.children || []).map((child, childIdx) => (
                               <Link
                                 key={childIdx}
                                 to={child.path!}
-                                className="block px-4 py-2.5 text-sm font-medium text-text-secondary hover:bg-primary-main/5 hover:text-primary-main [&.active]:text-primary-main"
+                                onClick={() =>
+                                  window.innerWidth < 1024 && toggleMobile()
+                                }
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-primary-contrast/70 hover:text-primary-contrast hover:bg-primary-contrast/10 [&.active]:text-primary-contrast [&.active]:bg-primary-contrast/20 [&.active]:font-semibold transition-all"
                               >
-                                {t(child.titleKey as any)}
+                                {child.icon}
+                                <span>{t(child.titleKey as any)}</span>
                               </Link>
                             ))}
                           </div>
-                        )}
-                      </div>
-                    )}
-
-                    {hasChildren && (
-                      <div
-                        className={`overflow-hidden transition-all duration-300 ease-in-out ${isMini ? "lg:hidden" : ""} ${isExpanded ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"}`}
-                      >
-                        <div className="ml-7 pl-3 border-l-2 border-divider space-y-1 py-1">
-                          {(item.children || []).map((child, childIdx) => (
-                            <Link
-                              key={childIdx}
-                              to={child.path!}
-                              onClick={() =>
-                                window.innerWidth < 1024 && toggleMobile()
-                              }
-                              className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-text-secondary hover:text-primary-main hover:bg-primary-main/5 [&.active]:text-primary-main [&.active]:font-bold transition-colors"
-                            >
-                              {child.icon}
-                              <span>{t(child.titleKey as any)}</span>
-                            </Link>
-                          ))}
                         </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </nav>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </nav>
 
-        <div className="p-4 border-t border-divider shrink-0 overflow-hidden">
-          <p
-            className={`text-xs text-text-disabled font-medium whitespace-nowrap transition-all duration-300 text-center ${isMini ? "lg:opacity-0 lg:hidden" : ""}`}
-          >
-            &copy; {new Date().getFullYear()} PsyCorp
-          </p>
-          {isMini && (
-            <p className="text-[10px] text-text-disabled font-bold text-center hidden lg:block">
-              Psy
+          {/* FOOTER */}
+          <div className="p-4 border-t border-primary-contrast/20 shrink-0 overflow-hidden">
+            <p
+              className={`text-xs text-primary-contrast/60 font-medium whitespace-nowrap transition-all duration-300 text-center ${isMini ? "lg:opacity-0 lg:hidden" : ""}`}
+            >
+              &copy; {new Date().getFullYear()} PsyCorp
             </p>
-          )}
-        </div>
-      </aside>
+            {isMini && (
+              <p className="text-[10px] text-primary-contrast/60 font-bold text-center hidden lg:block">
+                Psy
+              </p>
+            )}
+          </div>
+        </aside>
+      </div>
     </>
   );
 }

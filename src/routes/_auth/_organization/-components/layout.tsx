@@ -13,10 +13,11 @@ export const DashboardLayout = ({
       <div className="flex h-screen w-full bg-bg-default font-sans overflow-hidden">
         <Sidebar />
 
-        <div className="flex flex-col flex-1 overflow-hidden">
+        <main id="main-scroll-area" className="flex-1 overflow-y-auto relative">
           <Topbar />
-          <main className="flex-1 p-6 md:p-8 overflow-y-auto">{children}</main>
-        </div>
+
+          <div className="p-6">{children}</div>
+        </main>
       </div>
     </SidebarProvider>
   );

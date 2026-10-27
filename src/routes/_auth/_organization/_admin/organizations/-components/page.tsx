@@ -8,6 +8,7 @@ import {
 import type { Organization } from "../../../../../../types";
 import { Route } from "../index";
 import DetailOrganization from "./DetailOrganization";
+import PageHeader from "../../../../../../components/reusebale-components/PageHeader";
 
 function OrganizationsPage() {
   const tableState = Route.useSearch();
@@ -90,12 +91,11 @@ function OrganizationsPage() {
 
   return (
     <>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Manajemen Oragnisation</h1>
-        <p className="text-sm">
-          Kelola akses, profil, dan status anggota platform.
-        </p>
-      </div>
+      <PageHeader
+        title="Manajemen Oragnisation"
+        subtitle="Kelola akses, profil, dan status anggota platform."
+        breadcrumbs={["Manajemen Oragnisation"]}
+      />
 
       <DataTable<Organization, BaseListParams>
         columns={columns}

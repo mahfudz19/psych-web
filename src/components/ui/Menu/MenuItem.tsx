@@ -7,6 +7,12 @@ export interface MenuItemProps {
   children: ReactNode;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   className?: string;
+  classNames?: {
+    root?: string;
+    iconStart?: string;
+    children?: string;
+    iconEnd?: string;
+  };
   iconStart?: ReactNode;
   iconEnd?: ReactNode;
   rippleColor?: color;
@@ -17,6 +23,7 @@ export default function MenuItem({
   children,
   onClick,
   className = "",
+  classNames,
   iconStart,
   iconEnd,
   rippleColor = "primary",
@@ -32,12 +39,23 @@ export default function MenuItem({
       className={twMerge(
         "w-full relative overflow-hidden flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-medium text-text-secondary focus:outline-none transition-colors text-left hover:bg-primary-main/20",
         className,
+        classNames?.root,
       )}
     >
       <span className="relative z-10 flex items-center gap-3 w-full">
-        {iconStart && <span className="shrink-0">{iconStart}</span>}
-        <span className="flex-1 truncate">{children}</span>
-        {iconEnd && <span className="shrink-0">{iconEnd}</span>}
+        {iconStart && (
+          <span className={twMerge("shrink-0", classNames?.iconStart)}>
+            {iconStart}
+          </span>
+        )}
+        <span className={twMerge("flex-1 truncate", classNames?.children)}>
+          {children}
+        </span>
+        {iconEnd && (
+          <span className={twMerge("shrink-0", classNames?.iconEnd)}>
+            {iconEnd}
+          </span>
+        )}
       </span>
 
       <Ripple color={rippleColor} />

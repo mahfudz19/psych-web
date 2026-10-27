@@ -9,6 +9,7 @@ import {
 import { Route } from "../index";
 import IconButton from "../../../../../../components/ui/IconButton";
 import { Eye } from "lucide-react";
+import PageHeader from "../../../../../../components/reusebale-components/PageHeader";
 
 function UsersPage() {
   const tableState = Route.useSearch();
@@ -107,12 +108,11 @@ function UsersPage() {
 
   return (
     <>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Manajemen Pengguna</h1>
-        <p className="text-sm">
-          Kelola akses, profil, dan status anggota platform.
-        </p>
-      </div>
+      <PageHeader
+        title="Manajemen Pengguna"
+        subtitle="Kelola akses, profil, dan status anggota platform."
+        breadcrumbs={["Manajemen Pengguna"]}
+      />
 
       <DataTable<Users, BaseListParams>
         columns={userColumns}

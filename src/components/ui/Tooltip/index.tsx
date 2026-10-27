@@ -3,6 +3,7 @@ import {
   useRef,
   useEffect,
   useLayoutEffect,
+  useCallback,
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
@@ -23,19 +24,16 @@ export type TooltipPosition =
   | "right-bottom";
 
 export interface TooltipProps {
-  trigger: ReactNode;
-  children: ReactNode | ((close: () => void) => ReactNode);
+  children: ReactNode;
+  title: ReactNode | ((close: () => void) => ReactNode);
   position?: TooltipPosition;
   interaction?: "hover" | "click";
-  delay?: number; // Delay dalam ms sebelum tooltip muncul saat hover
+  delay?: number;
   disabled?: boolean;
-  classNames?: {
-    trigger?: string;
-    tooltip?: string;
-  };
+  classNames?: { children?: string; tooltip?: string };
 }
 
-const getTransformOrigin = (pos: TooltipPosition): string => {
+export const getTransformOrigin = (pos: TooltipPosition): string => {
   const map: Record<TooltipPosition, string> = {
     "top-left": "bottom left",
     "top-center": "bottom center",
@@ -54,7 +52,7 @@ const getTransformOrigin = (pos: TooltipPosition): string => {
 };
 
 export default function Tooltip({
-  trigger,
+  title,
   children,
   position = "top-center",
   interaction = "hover",
@@ -67,134 +65,202 @@ export default function Tooltip({
 
   const triggerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
 
-  const clearTimer = () => {
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearTimers = () => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
     }
-  };
-
-  const openTooltip = (immediate = false) => {
-    if (disabled) return;
-    clearTimer();
-    if (!hasRendered) setHasRendered(true);
-
-    if (immediate || delay === 0 || interaction === "click") {
-      setIsOpen(true);
-    } else {
-      timerRef.current = setTimeout(() => setIsOpen(true), delay);
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
     }
   };
 
-  const closeTooltip = (immediate = false) => {
-    clearTimer();
-    if (immediate || interaction === "click") {
-      setIsOpen(false);
-    } else {
-      timerRef.current = setTimeout(() => setIsOpen(false), 100);
+  const updatePosition = useCallback(() => {
+    const triggerEl = triggerRef.current;
+    const tooltipEl = tooltipRef.current;
+    const innerEl = innerRef.current;
+    if (!triggerEl || !tooltipEl || !innerEl) return;
+
+    const tRect = triggerEl.getBoundingClientRect();
+
+    const pWidth = innerEl.offsetWidth;
+    const pHeight = innerEl.offsetHeight;
+    const gap = 8;
+
+    let top = 0;
+    let left = 0;
+
+    switch (position) {
+      case "top-left":
+        top = tRect.top - pHeight - gap;
+        left = tRect.left;
+        break;
+      case "top-center":
+        top = tRect.top - pHeight - gap;
+        left = tRect.left + tRect.width / 2 - pWidth / 2;
+        break;
+      case "top-right":
+        top = tRect.top - pHeight - gap;
+        left = tRect.right - pWidth;
+        break;
+      case "bottom-left":
+        top = tRect.bottom + gap;
+        left = tRect.left;
+        break;
+      case "bottom-center":
+        top = tRect.bottom + gap;
+        left = tRect.left + tRect.width / 2 - pWidth / 2;
+        break;
+      case "bottom-right":
+        top = tRect.bottom + gap;
+        left = tRect.right - pWidth;
+        break;
+      case "left-top":
+        top = tRect.top;
+        left = tRect.left - pWidth - gap;
+        break;
+      case "left-center":
+        top = tRect.top + tRect.height / 2 - pHeight / 2;
+        left = tRect.left - pWidth - gap;
+        break;
+      case "left-bottom":
+        top = tRect.bottom - pHeight;
+        left = tRect.left - pWidth - gap;
+        break;
+      case "right-top":
+        top = tRect.top;
+        left = tRect.right + gap;
+        break;
+      case "right-center":
+        top = tRect.top + tRect.height / 2 - pHeight / 2;
+        left = tRect.right + gap;
+        break;
+      case "right-bottom":
+        top = tRect.bottom - pHeight;
+        left = tRect.right + gap;
+        break;
     }
-  };
+
+    if (left < 16) left = 16;
+    if (left + pWidth > window.innerWidth - 16) {
+      left = window.innerWidth - pWidth - 16;
+    }
+    if (top < 16) top = 16;
+    if (top + pHeight > window.innerHeight - 16) {
+      top = window.innerHeight - pHeight - 16;
+    }
+
+    tooltipEl.style.margin = "0";
+    tooltipEl.style.inset = "auto";
+    tooltipEl.style.top = `${top}px`;
+    tooltipEl.style.left = `${left}px`;
+
+    innerEl.style.transformOrigin = getTransformOrigin(position);
+  }, [position]);
+
+  const openTooltip = useCallback(
+    (immediate = false) => {
+      if (disabled) return;
+      clearTimers();
+      if (!hasRendered) setHasRendered(true);
+
+      const executeOpen = () => {
+        setIsOpen(true);
+      };
+
+      if (immediate || delay === 0 || interaction === "click") {
+        executeOpen();
+      } else {
+        timerRef.current = setTimeout(executeOpen, delay);
+      }
+    },
+    [disabled, hasRendered, delay, interaction],
+  );
+
+  const closeTooltip = useCallback(
+    (immediate = false) => {
+      clearTimers();
+
+      const performClose = () => {
+        const inner = innerRef.current;
+        if (inner) {
+          inner.removeAttribute("data-state");
+        }
+
+        closeTimerRef.current = setTimeout(() => {
+          const tooltip = tooltipRef.current;
+          if (tooltip && typeof tooltip.hidePopover === "function") {
+            try {
+              if (tooltip.matches(":popover-open")) {
+                tooltip.hidePopover();
+              }
+            } catch (e) {}
+          }
+          setIsOpen(false);
+        }, 150);
+      };
+
+      if (immediate) {
+        const inner = innerRef.current;
+        if (inner) inner.removeAttribute("data-state");
+        const tooltip = tooltipRef.current;
+        if (tooltip && typeof tooltip.hidePopover === "function") {
+          try {
+            if (tooltip.matches(":popover-open")) tooltip.hidePopover();
+          } catch (e) {}
+        }
+        setIsOpen(false);
+      } else if (interaction === "click") {
+        performClose();
+      } else {
+        timerRef.current = setTimeout(performClose, 100);
+      }
+    },
+    [interaction],
+  );
 
   const toggleTooltip = () => {
     if (isOpen) closeTooltip(true);
     else openTooltip(true);
   };
 
-  // Synchronous positioning sebelum browser melakukan repaint
   useLayoutEffect(() => {
-    if (!isOpen || !triggerRef.current || !tooltipRef.current) return;
+    if (!isOpen) return;
 
-    const updatePosition = () => {
-      const trigger = triggerRef.current;
-      const tooltip = tooltipRef.current;
-      if (!trigger || !tooltip) return;
+    const tooltip = tooltipRef.current;
+    const inner = innerRef.current;
+    if (!tooltip || !inner) return;
 
-      const tRect = trigger.getBoundingClientRect();
-      const pRect = tooltip.getBoundingClientRect();
-      const gap = 8;
-
-      let top = 0;
-      let left = 0;
-
-      switch (position) {
-        case "top-left":
-          top = tRect.top - pRect.height - gap;
-          left = tRect.left;
-          break;
-        case "top-center":
-          top = tRect.top - pRect.height - gap;
-          left = tRect.left + tRect.width / 2 - pRect.width / 2;
-          break;
-        case "top-right":
-          top = tRect.top - pRect.height - gap;
-          left = tRect.right - pRect.width;
-          break;
-        case "bottom-left":
-          top = tRect.bottom + gap;
-          left = tRect.left;
-          break;
-        case "bottom-center":
-          top = tRect.bottom + gap;
-          left = tRect.left + tRect.width / 2 - pRect.width / 2;
-          break;
-        case "bottom-right":
-          top = tRect.bottom + gap;
-          left = tRect.right - pRect.width;
-          break;
-        case "left-top":
-          top = tRect.top;
-          left = tRect.left - pRect.width - gap;
-          break;
-        case "left-center":
-          top = tRect.top + tRect.height / 2 - pRect.height / 2;
-          left = tRect.left - pRect.width - gap;
-          break;
-        case "left-bottom":
-          top = tRect.bottom - pRect.height;
-          left = tRect.left - pRect.width - gap;
-          break;
-        case "right-top":
-          top = tRect.top;
-          left = tRect.right + gap;
-          break;
-        case "right-center":
-          top = tRect.top + tRect.height / 2 - pRect.height / 2;
-          left = tRect.right + gap;
-          break;
-        case "right-bottom":
-          top = tRect.bottom - pRect.height;
-          left = tRect.right + gap;
-          break;
+    try {
+      if (typeof tooltip.showPopover === "function") {
+        if (!tooltip.matches(":popover-open")) {
+          tooltip.showPopover();
+        }
       }
-
-      // Viewport boundary guard
-      if (left < 16) left = 16;
-      if (left + pRect.width > window.innerWidth - 16) {
-        left = window.innerWidth - pRect.width - 16;
-      }
-      if (top < 16) top = 16;
-      if (top + pRect.height > window.innerHeight - 16) {
-        top = window.innerHeight - pRect.height - 16;
-      }
-
-      tooltip.style.top = `${top}px`;
-      tooltip.style.left = `${left}px`;
-      tooltip.style.transformOrigin = getTransformOrigin(position);
-    };
+    } catch (error) {}
 
     updatePosition();
-    window.addEventListener("scroll", updatePosition, true);
-    window.addEventListener("resize", updatePosition);
+
+    void inner.offsetWidth;
+
+    inner.setAttribute("data-state", "open");
+
+    const handleScrollResize = () => updatePosition();
+    window.addEventListener("scroll", handleScrollResize, true);
+    window.addEventListener("resize", handleScrollResize);
 
     return () => {
-      window.removeEventListener("scroll", updatePosition, true);
-      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", handleScrollResize, true);
+      window.removeEventListener("resize", handleScrollResize);
     };
-  }, [isOpen, position]);
+  }, [isOpen, updatePosition]);
 
-  // Click outside & Escape key listeners
   useEffect(() => {
     if (!isOpen) return;
 
@@ -207,7 +273,8 @@ export default function Tooltip({
         const target = e.target as Node;
         if (
           triggerRef.current?.contains(target) ||
-          tooltipRef.current?.contains(target)
+          tooltipRef.current?.contains(target) ||
+          innerRef.current?.contains(target)
         ) {
           return;
         }
@@ -221,18 +288,17 @@ export default function Tooltip({
       document.removeEventListener("mousedown", handleEvents);
       document.removeEventListener("keydown", handleEvents);
     };
-  }, [isOpen, interaction]);
+  }, [isOpen, interaction, closeTooltip]);
 
-  // Cleanup timer saat unmount
   useEffect(() => {
-    return () => clearTimer();
+    return () => clearTimers();
   }, []);
 
   return (
     <>
       <div
         ref={triggerRef}
-        className={twMerge("inline-block", classNames?.trigger)}
+        className={twMerge("inline-block", classNames?.children)}
         onClick={interaction === "click" ? toggleTooltip : undefined}
         onMouseEnter={interaction === "hover" ? () => openTooltip() : undefined}
         onMouseLeave={
@@ -241,7 +307,7 @@ export default function Tooltip({
         onFocus={interaction === "hover" ? () => openTooltip(true) : undefined}
         onBlur={interaction === "hover" ? () => closeTooltip(true) : undefined}
       >
-        {trigger}
+        {children}
       </div>
 
       {hasRendered &&
@@ -249,27 +315,34 @@ export default function Tooltip({
           <div
             ref={tooltipRef}
             role="tooltip"
-            data-state={isOpen ? "open" : "closed"}
-            onMouseEnter={
-              interaction === "hover" ? () => openTooltip(true) : undefined
-            }
-            onMouseLeave={
-              interaction === "hover" ? () => closeTooltip(true) : undefined
-            }
+            popover="manual"
             className={twMerge(
-              "fixed z-9999 rounded-lg px-2.5 py-1 text-xs font-medium shadow-md border border-divider",
-              "bg-bg-paper text-text-primary transition-all duration-150 ease-out",
-              "data-[state=closed]:opacity-0 data-[state=closed]:scale-95 data-[state=closed]:pointer-events-none",
-              "data-[state=open]:opacity-100 data-[state=open]:scale-100",
-              interaction === "hover"
-                ? "pointer-events-none"
-                : "pointer-events-auto",
-              classNames?.tooltip,
+              "fixed p-0 m-0 border-0 bg-transparent overflow-visible pointer-events-none z-9999",
             )}
           >
-            {typeof children === "function"
-              ? children(() => closeTooltip(true))
-              : children}
+            <div
+              ref={innerRef}
+              onMouseEnter={
+                interaction === "hover" ? () => openTooltip(true) : undefined
+              }
+              onMouseLeave={
+                interaction === "hover" ? () => closeTooltip() : undefined
+              }
+              className={twMerge(
+                "rounded-lg px-2.5 py-1 text-xs font-medium shadow-md border border-divider",
+                "bg-bg-paper text-text-primary transition-all duration-150 ease-out transform",
+                "opacity-0 scale-95 pointer-events-none",
+                "data-[state=open]:opacity-100 data-[state=open]:scale-100",
+                interaction === "hover"
+                  ? "pointer-events-none"
+                  : "data-[state=open]:pointer-events-auto",
+                classNames?.tooltip,
+              )}
+            >
+              {typeof title === "function"
+                ? title(() => closeTooltip(true))
+                : title}
+            </div>
           </div>,
           document.body,
         )}

@@ -43,6 +43,7 @@
       "searchPlaceholder": "Search...",
       "show": "Show",
       "rows": "rows",
+      "reset": "Reset",
       "filterPlaceholder": "Filter...",
       "range": "Range",
       "loading": "Loading data...",
@@ -69,7 +70,8 @@
     "organizations": "Organizations Management",
     "settingsApp": "App Setting",
     "transactions": "Transaksi",
-    "subscription-plan": "Subscription Plan"
+    "subscription-plan": "Subscription Plan",
+    "test-management": "Test Management"
   },
   "topbar": {
     "welcome": "Welcome",

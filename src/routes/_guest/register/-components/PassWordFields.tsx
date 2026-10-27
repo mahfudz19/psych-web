@@ -56,42 +56,40 @@ export default function PasswordFields({
 
         <Tooltip
           position={sm ? "top-center" : "right-center"}
-          classNames={{ trigger: "w-full" }}
-          trigger={
-            <>
-              <PassworfField
-                name="password"
-                placeholder={t("guest.register.passwordPlaceholder")}
-                required
-                value={password}
-                className="w-full!"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </>
+          classNames={{ children: "w-full" }}
+          title={
+            <div className="w-full min-w-70 p-2">
+              <p className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-3">
+                {t("guest.register.passwordRequirements")}
+              </p>
+              <ul className="space-y-2">
+                {listRequirements.map(({ key, lable }) => (
+                  <li
+                    key={key}
+                    className={`text-xs flex items-center gap-2 transition-colors ${
+                      requirements[key]
+                        ? "text-success-main font-medium"
+                        : "text-text-disabled"
+                    }`}
+                  >
+                    <span className="w-4 h-4 flex items-center justify-center">
+                      {requirements[key] ? "✓" : "○"}
+                    </span>
+                    {lable}
+                  </li>
+                ))}
+              </ul>
+            </div>
           }
         >
-          <div className="w-full min-w-70 p-2">
-            <p className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-3">
-              {t("guest.register.passwordRequirements")}
-            </p>
-            <ul className="space-y-2">
-              {listRequirements.map(({ key, lable }) => (
-                <li
-                  key={key}
-                  className={`text-xs flex items-center gap-2 transition-colors ${
-                    requirements[key]
-                      ? "text-success-main font-medium"
-                      : "text-text-disabled"
-                  }`}
-                >
-                  <span className="w-4 h-4 flex items-center justify-center">
-                    {requirements[key] ? "✓" : "○"}
-                  </span>
-                  {lable}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <PassworfField
+            name="password"
+            placeholder={t("guest.register.passwordPlaceholder")}
+            required
+            value={password}
+            className="w-full!"
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </Tooltip>
         {unfulfilledRequirements.length > 0 && (
           <>

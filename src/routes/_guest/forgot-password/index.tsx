@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForgotPasswordMutation } from "../-api/auth.query";
 import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
+import Label from "../../../components/ui/Label";
 
 export const Route = createFileRoute("/_guest/forgot-password/")({
   component: ForgotPasswordPage,
@@ -36,9 +37,7 @@ function ForgotPasswordPage() {
             className="flex flex-col gap-4 text-left"
           >
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
-                Email Akun
-              </label>
+              <Label>Email Akun</Label>
               <Input
                 type="email"
                 placeholder="nama@email.com"

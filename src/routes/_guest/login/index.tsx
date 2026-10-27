@@ -5,6 +5,7 @@ import PassworfField from "../-components/PassworfField";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import ButtonLoginGoogle from "./-components/ButtonLoginGoogle";
+import Label from "../../../components/ui/Label";
 
 export const Route = createFileRoute("/_guest/login/")({ component: Login });
 
@@ -37,9 +38,7 @@ function Login() {
 
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-2">
-            {t("guest.login.emailLabel")}
-          </label>
+          <Label>{t("guest.login.emailLabel")}</Label>
           <Input
             type="email"
             name="email"
@@ -51,10 +50,7 @@ function Login() {
 
         <div>
           <div className="flex justify-between items-center mb-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary">
-              {t("guest.login.passwordLabel")}
-            </label>
-
+            <Label>{t("guest.login.passwordLabel")}</Label>
             <Link
               to="/forgot-password"
               preload={false}

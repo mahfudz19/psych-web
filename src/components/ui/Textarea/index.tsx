@@ -12,7 +12,7 @@ export interface InputProps extends Omit<
 }
 
 const inputVariants = cva(
-  "rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:ring-2 transition-all font-medium",
+  "rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:ring-2 transition-all font-medium disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-text-disabled disabled:border-divider/50 disabled:opacity-60",
   {
     variants: {
       color: {

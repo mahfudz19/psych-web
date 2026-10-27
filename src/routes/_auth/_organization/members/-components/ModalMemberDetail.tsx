@@ -6,6 +6,7 @@ import Dialog from "../../../../../components/ui/Dialog";
 import IconButton from "../../../../../components/ui/IconButton";
 import type { OrganizationMember } from "../../../../../types";
 import { useAuthStore } from "../../../../../utils/authStore";
+import Select from "../../../../../components/ui/Select";
 
 interface Props {
   orgId: string;
@@ -62,7 +63,7 @@ function ChangeRole({
       </div>
 
       <div className="relative shrink-0">
-        <select
+        <Select
           value={currentRole}
           disabled={isPending}
           onChange={handleChange}
@@ -70,7 +71,7 @@ function ChangeRole({
         >
           <option value="member">Member</option>
           <option value="admin">Admin</option>
-        </select>
+        </Select>
 
         {isPending ? (
           <span className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-primary-main border-t-transparent rounded-full animate-spin pointer-events-none" />

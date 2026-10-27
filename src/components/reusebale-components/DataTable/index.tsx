@@ -1,19 +1,21 @@
 import {
-  ChevronLeft,
-  ChevronRight,
+  ArrowDown,
   ArrowDownUp,
   ArrowUp,
-  ArrowDown,
+  ChevronLeft,
+  ChevronRight,
   MoreHorizontal,
 } from "lucide-react";
 import { useEffect, useState, type HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
+import { twMerge } from "tailwind-merge";
 import type { PaginationMeta } from "../../../types";
+import Button from "../../ui/Button";
 import IconButton from "../../ui/IconButton";
 import Input from "../../ui/Input";
-import FacetedFilter from "./FacetedFilter";
+import Select from "../../ui/Select";
 import DateRangeFilter from "./DateRangeFilter";
-import { twMerge } from "tailwind-merge";
+import FacetedFilter from "./FacetedFilter";
 
 export interface BaseListParams {
   page?: number;
@@ -42,6 +44,7 @@ interface DataTableProps<T, TState extends BaseListParams = BaseListParams> {
   isLoading?: boolean;
   state: TState;
   onStateChange: (newState: TState) => void;
+  variant?: "default" | "child";
 }
 
 const parseFilterString = (
@@ -130,8 +133,10 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
   meta,
   isLoading,
   state,
+  variant = "default",
   onStateChange,
 }: DataTableProps<T, TState>) {
+  const isChild = variant === "child";
   const { t } = useTranslation();
   const [searchInput, setSearchInput] = useState(state.search || "");
 
@@ -152,6 +157,24 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
           : newState.filter,
     };
     onStateChange(cleanState as TState);
+  };
+
+  const hasActiveFilters = Boolean(
+    searchInput ||
+    Object.keys(localFilters).length > 0 ||
+    state.search ||
+    (Array.isArray(state.filter) ? state.filter.length > 0 : state.filter),
+  );
+
+  const handleResetFilters = () => {
+    setSearchInput("");
+    setLocalFilters({});
+    emitCleanState({
+      ...state,
+      search: undefined,
+      filter: undefined,
+      page: undefined,
+    });
   };
 
   useEffect(() => {
@@ -209,21 +232,38 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
   };
 
   return (
-    <div className="flex flex-col w-full bg-bg-paper rounded-3xl shadow-sm border border-divider overflow-hidden">
+    <div
+      className={`flex flex-col w-full border border-divider overflow-hidden ${isChild ? "rounded-2xl" : "bg-bg-paper rounded-3xl shadow-sm"}`}
+    >
       {/* --- TOOLBAR UTAMA --- */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 border-b border-divider">
-        <div className="w-full sm:w-72">
+      <div
+        className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ${isChild ? "p-2" : "p-4"} border-b border-divider`}
+      >
+        <div className="w-full flex gap-1 sm:w-72">
           <Input
             type="text"
             placeholder={t("common.table.searchPlaceholder")}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="w-full"
+            size={isChild ? "sm" : undefined}
           />
+          {hasActiveFilters && (
+            <div className="flex items-center justify-center">
+              <Button
+                type="button"
+                size="sm"
+                color="warning"
+                variant="ghost"
+                onClick={handleResetFilters}
+              >
+                {t("common.table.reset", "Reset")}
+              </Button>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2 text-sm text-text-secondary shrink-0">
           <span>{t("common.table.show")}</span>
-          <select
+          <Select
             value={state.limit || 10}
             onChange={(e) =>
               emitCleanState({
@@ -232,14 +272,14 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
                 page: undefined,
               })
             }
-            className="border border-divider rounded-lg px-2 py-1.5 text-sm focus:outline-none bg-transparent hover:bg-divider/10 transition-colors cursor-pointer"
+            size="sm"
           >
             {[5, 10, 25, 50, 100].map((size) => (
               <option key={size} value={size}>
                 {size}
               </option>
             ))}
-          </select>
+          </Select>
           <span>{t("common.table.rows")}</span>
         </div>
       </div>
@@ -247,7 +287,9 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
       {/* --- AREA TABEL --- */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">
-          <thead className="bg-bg-paper text-text-secondary text-xs border-b border-divider">
+          <thead
+            className={`${isChild ? "bg-divider/50" : "bg-bg-paper"} text-text-secondary text-xs border-b border-divider`}
+          >
             <tr className="uppercase tracking-wider">
               {columns.map((col, idx) => (
                 <th
@@ -256,7 +298,7 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
                     handleSort(col.accessorKey as string, col.sortable)
                   }
                   className={twMerge(
-                    "px-6 py-4 font-bold whitespace-nowrap",
+                    `${isChild ? "px-3 py-2" : "px-6 py-4"} font-bold whitespace-nowrap`,
                     col.sortable
                       ? "cursor-pointer hover:bg-divider/20 select-none transition-colors"
                       : "",
@@ -290,8 +332,10 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
                 <th
                   key={`filter-${idx}`}
                   className={twMerge(
-                    "px-3 py-2 font-normal align-top",
-                    col.filterType ? "min-w-48" : "",
+                    "font-normal align-top",
+                    col.filterType
+                      ? `min-w-48 ${isChild ? "px-2 py-1" : "px-3 py-2"}`
+                      : "",
                     col.className,
                   )}
                   style={col.style}
@@ -372,7 +416,7 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
                     <td
                       key={colIndex}
                       className={twMerge(
-                        "px-6 py-4 text-text-primary",
+                        `${isChild ? "px-3 py-2" : "px-6 py-4"} text-text-primary`,
                         col.className?.includes("w-1")
                           ? "whitespace-nowrap"
                           : "",

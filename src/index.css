@@ -3,21 +3,21 @@
 /* 1. VARIANT DARK MODE TAILWIND V4 */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* 2. ROOT: LIGHT MODE (Clinical-Modern Minimalist) */
+/* 2. ROOT: LIGHT MODE */
 :root {
-  /* Primary: Deep Teal (Tenang, Profesional, Presisi) */
-  --app-primary-main: #0f766e;
-  --app-primary-light: #14b8a6;
-  --app-primary-dark: #115e59;
+  /* Primary  */
+  --app-primary-main: #00a39d;
+  --app-primary-light: #33b5b1;
+  --app-primary-dark: #007a75;
   --app-primary-contrast: #ffffff;
 
-  /* Secondary: Slate Blue (Aksen Elegan) */
-  --app-secondary-main: #334155;
-  --app-secondary-light: #64748b;
-  --app-secondary-dark: #1e293b;
-  --app-secondary-contrast: #ffffff;
+  /* Secondary */
+  --app-secondary-main: #fdb813;
+  --app-secondary-light: #ffcd4a;
+  --app-secondary-dark: #c68900;
+  --app-secondary-contrast: #0f172a;
 
-  /* Semantik: Soft & Muted (Tidak Mengintimidasi) */
+  /* Semantik: Soft & Muted */
   --app-error-main: #e11d48;
   --app-error-light: #f43f5e;
   --app-error-dark: #be123c;
@@ -34,30 +34,30 @@
   --app-success-light: #22c55e;
   --app-success-dark: #166534;
 
-  /* Background: Off-white lembut untuk mengurangi kelelahan mata */
+  /* Background */
   --app-bg-default: #f8fafc;
   --app-bg-paper: #ffffff;
 
-  /* Tipografi: Slate Neutrals */
+  /* Tipografi */
   --app-text-primary: #0f172a;
   --app-text-secondary: #475569;
   --app-text-disabled: #94a3b8;
 
-  /* Garis Batas Eksplisit & Muted */
+  /* Garis Batas */
   --app-divider: #e2e8f0;
 }
 
-/* 3. ROOT: DARK MODE (Deep Slate Neutral) */
+/* 3. ROOT: DARK MODE */
 .dark {
   /* Primary & Secondary disesuaikan untuk kontras di layar gelap */
-  --app-primary-main: #2dd4bf;
-  --app-primary-light: #5eead4;
-  --app-primary-dark: #0f766e;
+  --app-primary-main: #33b5b1;
+  --app-primary-light: #66c7c4;
+  --app-primary-dark: #00a39d;
   --app-primary-contrast: #0f172a;
 
-  --app-secondary-main: #94a3b8;
-  --app-secondary-light: #cbd5e1;
-  --app-secondary-dark: #64748b;
+  --app-secondary-main: #fdb813;
+  --app-secondary-light: #ffcd4a;
+  --app-secondary-dark: #c68900;
   --app-secondary-contrast: #0f172a;
 
   /* Semantik Dark Mode */
@@ -77,7 +77,7 @@
   --app-success-light: #86efac;
   --app-success-dark: #22c55e;
 
-  /* Background Deep Slate (Tidak Pitch Black agar mata nyaman) */
+  /* Background Deep Slate */
   --app-bg-default: #0f172a;
   --app-bg-paper: #1e293b;
 

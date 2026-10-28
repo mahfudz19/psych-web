@@ -193,6 +193,7 @@ export default function LookupSection({
                         size="sm"
                         aria-label={`Hapus baris ${i + 1}`}
                         variant="ghost"
+                        disabled={rows.length === 1}
                         color="error"
                       >
                         <X size={16} />

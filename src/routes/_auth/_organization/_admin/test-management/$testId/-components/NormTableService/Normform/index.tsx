@@ -1,3 +1,4 @@
+import { Trash } from "lucide-react";
 import { useMemo, useReducer, useState } from "react";
 import {
   useActivateTestNormMutation,
@@ -163,6 +164,7 @@ function NormFormBody({
       createMutation.mutateAsync(result.payload);
     }
     setDirty(false);
+    onCancel();
   };
 
   // --- alasan tombol Aktifkan dinonaktifkan ---
@@ -257,7 +259,13 @@ function NormFormBody({
             description={`Yakin ingin menghapus norma ${norm.name ?? ""}?`}
             onConfirm={() => deleteMutation.mutate(norm.id)}
             trigger={(open) => (
-              <Button type="button" variant="outlined" onClick={open}>
+              <Button
+                type="button"
+                variant="ghost"
+                startIcon={<Trash size={16} />}
+                color="error"
+                onClick={open}
+              >
                 Hapus
               </Button>
             )}

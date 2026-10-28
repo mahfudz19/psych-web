@@ -43,10 +43,11 @@ export default function DialogConfirmAction({
             {description}
           </p>
           <div className="flex justify-center gap-3">
-            <Button variant="outlined" onClick={close}>
+            <Button variant="outlined" type="button" onClick={close}>
               {cancelText}
             </Button>
             <Button
+              type="button"
               color={variant === "danger" ? "error" : "primary"}
               onClick={() => {
                 onConfirm();

@@ -220,7 +220,7 @@ export default function NormManagement({ testId, isLocked }: Props) {
             {!isLocked && (
               <Dialog
                 dismissible={false}
-                maxWidth="full"
+                maxWidth="7xl"
                 scroll="paper"
                 trigger={(openDialog) => (
                   <Button
@@ -273,16 +273,19 @@ export default function NormManagement({ testId, isLocked }: Props) {
           </div>
 
           {!hasRange && (
-            <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
-              Skala ini belum punya rentang skor mentah, jadi cakupan norma
-              tidak bisa diperiksa. Isi skor mentah minimum dan maksimum di tab
-              Scales.
-            </div>
+            <Alert severity="warning" variant="standard">
+              <AlertTitle>Skala ini belum punya rentang skor mentah</AlertTitle>
+              <AlertDescription>
+                Skala ini belum punya rentang skor mentah, jadi cakupan norma
+                tidak bisa diperiksa. Isi skor mentah minimum dan maksimum di
+                tab Scales.
+              </AlertDescription>
+            </Alert>
           )}
 
           {/* CHIP NORMA */}
           {selectedNorms.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-gray-300 px-4 py-6 text-center text-sm text-gray-500 dark:border-gray-700">
+            <div className="rounded-xl border border-dashed border-divider px-4 py-6 text-center text-sm">
               Belum ada norma untuk skala {selected.code}.
             </div>
           ) : (
@@ -319,6 +322,7 @@ export default function NormManagement({ testId, isLocked }: Props) {
                               </span>
                               {gap && (
                                 <span className="text-yellow-700">
+                                  {" "}
                                   ada celah
                                 </span>
                               )}

@@ -13,7 +13,7 @@ import type {
   TestSectionCreatePayload,
   TestSectionUpdatePayload,
 } from "./test-definitions.type";
-import type { NormPayload } from "../$testId/-components/NormTableService/Normform";
+import type { NormPayload } from "../$testId/norms/-components/NormTableService/Normform";
 
 // --- QUERY KEYS FACTORY ---
 export const testDefinitionKeys = {

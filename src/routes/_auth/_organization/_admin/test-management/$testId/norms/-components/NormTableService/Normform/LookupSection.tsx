@@ -8,14 +8,14 @@ import {
   type computeCoverage,
   type DraftRow,
 } from "../norm-utils";
-import type { NormTargetScoreType } from "../../../../-api/test-definitions.type";
+import type { NormTargetScoreType } from "../../../../../-api/test-definitions.type";
 import { MAX_GENERATED_ROWS } from "./constants";
 import { hasData, type RowField, type RowsAction } from "./state";
 import type { NormScaleInfo } from "./types";
 import { Button, IconButton, Input } from "./ui";
 import ConversionTester from "./ConversionTester";
 import PastePanel from "./PastePanel";
-import toast from "../../../../../../../../../components/ui/Toast";
+import toast from "../../../../../../../../../../components/ui/Toast";
 
 type Analysis = ReturnType<typeof analyzeRows>;
 type Coverage = ReturnType<typeof computeCoverage>;

@@ -1,4 +1,4 @@
-import type { NormPayload } from "../$testId/-components/NormTableService/Normform";
+import type { NormPayload } from "../$testId/norms/-components/NormTableService/Normform";
 import type { BaseListParams } from "../../../../../../components/reusebale-components/DataTable";
 import { api } from "../../../../../../utils/api";
 import type {

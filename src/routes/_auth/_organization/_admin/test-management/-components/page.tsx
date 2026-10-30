@@ -163,12 +163,11 @@ function ActionMenu({ row }: { row: TestDefinition }) {
 export default function TestManagement() {
   const tableState = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-
-  const { data, isLoading, isFetching } = useGetTestDefinitions(tableState);
-
   const handleStateChange = (newState: BaseListParams) => {
     navigate({ search: (prev) => ({ ...prev, ...newState }), replace: true });
   };
+
+  const { data, isLoading, isFetching } = useGetTestDefinitions(tableState);
 
   const columns: ColumnDef<TestDefinition>[] = [
     {

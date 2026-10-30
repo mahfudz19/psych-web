@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import type { NormTable } from "../../../../-api/test-definitions.type";
+import type { NormTable } from "../../../../../-api/test-definitions.type";
 import { Input, InputDate, Label } from "./ui";
 import { ChevronRight } from "lucide-react";
 

@@ -2,7 +2,7 @@ import { NORM_EDUCATION } from "../norm-utils";
 import type {
   NormTable,
   NormTargetScoreType,
-} from "../../../../-api/test-definitions.type";
+} from "../../../../../-api/test-definitions.type";
 import { Input, Label, Select } from "./ui";
 import { TARGET_LABEL } from "./constants";
 

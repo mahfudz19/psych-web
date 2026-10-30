@@ -4,7 +4,7 @@ import type {
   NormGender,
   NormMethod,
   NormTargetScoreType,
-} from "../../../../-api/test-definitions.type";
+} from "../../../../../-api/test-definitions.type";
 import type {
   DraftCutoff,
   NormEntryPayload,

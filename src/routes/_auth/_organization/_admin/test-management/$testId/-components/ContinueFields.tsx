@@ -1,7 +1,7 @@
-import Checkbox from "../../../../../../../../components/ui/Checkbox";
-import Input from "../../../../../../../../components/ui/Input";
-import Label from "../../../../../../../../components/ui/Label";
-import Textarea from "../../../../../../../../components/ui/Textarea";
+import Checkbox from "../../../../../../../components/ui/Checkbox";
+import Input from "../../../../../../../components/ui/Input";
+import Label from "../../../../../../../components/ui/Label";
+import Textarea from "../../../../../../../components/ui/Textarea";
 import type { SectionFormInitial } from "./SectionForm";
 
 const toJson = (value: unknown, fallback: string) =>

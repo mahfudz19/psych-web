@@ -1,13 +1,15 @@
 import type { Dispatch, SetStateAction } from "react";
-import Button from "../../../../../../../../components/ui/Button";
-import Input from "../../../../../../../../components/ui/Input";
-import Select from "../../../../../../../../components/ui/Select";
-import Checkbox from "../../../../../../../../components/ui/Checkbox";
-import IconButton from "../../../../../../../../components/ui/IconButton";
-import { Plus, X } from "lucide-react";
-import Radio from "../../../../../../../../components/ui/Radio";
-import Label from "../../../../../../../../components/ui/Label";
 import type { ItemType } from "../../../-api/test-definitions.type";
+import {
+  Button,
+  IconButton,
+  Input,
+  Label,
+  Select,
+} from "../../norms/-components/NormTableService/Normform/ui";
+import Radio from "../../../../../../../../components/ui/Radio";
+import { Plus, X } from "lucide-react";
+import Checkbox from "../../../../../../../../components/ui/Checkbox";
 
 const TYPE_OPTIONS: { value: ItemType; label: string; supported: boolean }[] = [
   { value: "SINGLE_CHOICE", label: "Pilihan tunggal", supported: true },

@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import {
   useCreateTestSectionMutation,
   useUpdateTestSectionMutation,
-} from "../../../-api/test-definitions.query";
-import Button from "../../../../../../../../components/ui/Button";
-import Tabs from "../../../../../../../../components/ui/Tabs";
-import Tab from "../../../../../../../../components/ui/Tabs/Tab";
-import TabContent from "../../../../../../../../components/ui/Tabs/TabContent";
+} from "../../-api/test-definitions.query";
+import Button from "../../../../../../../components/ui/Button";
+import Tabs from "../../../../../../../components/ui/Tabs";
+import Tab from "../../../../../../../components/ui/Tabs/Tab";
+import TabContent from "../../../../../../../components/ui/Tabs/TabContent";
 import BaseField from "./BaseFields";
 import ContinueField from "./ContinueFields";
 import TimeField from "./TimeFields";
-import toast from "../../../../../../../../components/ui/Toast";
+import toast from "../../../../../../../components/ui/Toast";
 
 export type NavigationPolicy = "FREE" | "FORWARD_ONLY";
 export type SectionStatus = "ACTIVE" | "RETIRED";

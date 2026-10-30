@@ -3,15 +3,15 @@ import { useState } from "react";
 import {
   useGetTestNorms,
   useGetTestScales,
-} from "../../../-api/test-definitions.query";
-import type { NormTable } from "../../../-api/test-definitions.type";
-import Alert from "../../../../../../../../components/ui/Alert";
-import AlertDescription from "../../../../../../../../components/ui/Alert/AlertDescription";
-import AlertTitle from "../../../../../../../../components/ui/Alert/AlertTitle";
-import Button from "../../../../../../../../components/ui/Button";
-import Dialog from "../../../../../../../../components/ui/Dialog";
-import IconButton from "../../../../../../../../components/ui/IconButton";
-import Tooltip from "../../../../../../../../components/ui/Tooltip";
+} from "../../../../-api/test-definitions.query";
+import type { NormTable } from "../../../../-api/test-definitions.type";
+import Alert from "../../../../../../../../../components/ui/Alert";
+import AlertDescription from "../../../../../../../../../components/ui/Alert/AlertDescription";
+import AlertTitle from "../../../../../../../../../components/ui/Alert/AlertTitle";
+import Button from "../../../../../../../../../components/ui/Button";
+import Dialog from "../../../../../../../../../components/ui/Dialog";
+import IconButton from "../../../../../../../../../components/ui/IconButton";
+import Tooltip from "../../../../../../../../../components/ui/Tooltip";
 import {
   criteriaLabel,
   isNormCovered,

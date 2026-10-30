@@ -1,4 +1,3 @@
-import { AlertTriangle, Check, Copy, Edit, Plus, Trash, X } from "lucide-react";
 import { useState } from "react";
 import {
   useCreateTestItem,
@@ -20,15 +19,20 @@ import {
   DataTable,
   type BaseListParams,
 } from "../../../../../../../../components/reusebale-components/DataTable";
-import DialogConfirmAction from "../../../../../../../../components/reusebale-components/dialog/DialogConfirmAction";
-import Button from "../../../../../../../../components/ui/Button";
 import Dialog from "../../../../../../../../components/ui/Dialog";
-import IconButton from "../../../../../../../../components/ui/IconButton";
-import Select from "../../../../../../../../components/ui/Select";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  Button,
+  DialogConfirmAction,
+  IconButton,
+  Select,
+} from "../../norms/-components/NormTableService/Normform/ui";
+import { AlertTriangle, Check, Copy, Edit, Plus, Trash, X } from "lucide-react";
 import ItemForm from "./ItemForm";
-import Alert from "../../../../../../../../components/ui/Alert";
-import AlertTitle from "../../../../../../../../components/ui/Alert/AlertTitle";
-import AlertDescription from "../../../../../../../../components/ui/Alert/AlertDescription";
+import { Route } from "..";
+import { useNavigate } from "@tanstack/react-router";
 
 interface Props {
   testId: string;
@@ -102,10 +106,12 @@ function ItemMutation({
   }
 
   const isAbility = category === "ABILITY";
-  const [tableState, setTableState] = useState<BaseListParams>({
-    page: 1,
-    limit: 50,
-  });
+
+  const tableState = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const handleStateChange = (newState: BaseListParams) => {
+    navigate({ search: (prev) => ({ ...prev, ...newState }), replace: true });
+  };
 
   const {
     data: itemData,
@@ -234,7 +240,7 @@ function ItemMutation({
         meta={itemData?.meta}
         isLoading={itemsLoading || isFetching}
         state={tableState}
-        onStateChange={setTableState}
+        onStateChange={handleStateChange}
         variant="child"
         columns={[
           {

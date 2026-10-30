@@ -1,23 +1,24 @@
+import { useNavigate } from "@tanstack/react-router";
 import { Edit, Plus, Trash, X } from "lucide-react";
+import { Route } from "..";
 import {
   useDeleteTestScaleMutation,
   useGetTestScales,
   useGetTestSections,
 } from "../../../-api/test-definitions.query";
-import DialogConfirmAction from "../../../../../../../../components/reusebale-components/dialog/DialogConfirmAction";
-import Button from "../../../../../../../../components/ui/Button";
-import Dialog from "../../../../../../../../components/ui/Dialog";
-import IconButton from "../../../../../../../../components/ui/IconButton";
-import ScaleForm from "./ScaleForm";
+import type { TestScale } from "../../../-api/test-definitions.type";
 import {
   DataTable,
   type BaseListParams,
 } from "../../../../../../../../components/reusebale-components/DataTable";
-import type { TestScale } from "../../../-api/test-definitions.type";
-import { useState } from "react";
+import DialogConfirmAction from "../../../../../../../../components/reusebale-components/dialog/DialogConfirmAction";
 import Alert from "../../../../../../../../components/ui/Alert";
-import AlertTitle from "../../../../../../../../components/ui/Alert/AlertTitle";
 import AlertDescription from "../../../../../../../../components/ui/Alert/AlertDescription";
+import AlertTitle from "../../../../../../../../components/ui/Alert/AlertTitle";
+import Button from "../../../../../../../../components/ui/Button";
+import Dialog from "../../../../../../../../components/ui/Dialog";
+import IconButton from "../../../../../../../../components/ui/IconButton";
+import ScaleForm from "./ScaleForm";
 
 /** Nama pendek jenis skor untuk kolom tabel. */
 const SCORE_TYPE_LABEL: Record<string, string> = {
@@ -48,10 +49,12 @@ export default function ScaleManagement({
   testId: string;
   isLocked: boolean;
 }) {
-  const [tableState, setTableState] = useState<BaseListParams>({
-    page: 1,
-    limit: 10,
-  });
+  const tableState = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const handleStateChange = (newState: BaseListParams) => {
+    navigate({ search: (prev) => ({ ...prev, ...newState }), replace: true });
+  };
+
   const { data, isLoading, isFetching } = useGetTestScales(testId, tableState);
   const { data: sectionData } = useGetTestSections(testId);
   const deleteMutation = useDeleteTestScaleMutation(testId);
@@ -268,7 +271,7 @@ export default function ScaleManagement({
         meta={data?.meta}
         isLoading={isLoading || isFetching}
         state={tableState}
-        onStateChange={setTableState}
+        onStateChange={handleStateChange}
         variant="child"
         columns={columns}
       />

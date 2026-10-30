@@ -3,7 +3,7 @@ import type {
   NormEntry,
   NormTable,
   NormTargetScoreType,
-} from "../../../-api/test-definitions.type";
+} from "../../../../-api/test-definitions.type";
 
 export const NORM_EDUCATION = [
   "SD",

@@ -1,13 +1,15 @@
 import { useState, useRef } from "react";
-import type { ItemType, TestItem } from "../../../-api/test-definitions.type";
-import Button from "../../../../../../../../components/ui/Button";
-import Input from "../../../../../../../../components/ui/Input";
-import Select from "../../../../../../../../components/ui/Select";
-import Label from "../../../../../../../../components/ui/Label";
-import Textarea from "../../../../../../../../components/ui/Textarea";
 import StimulusImage from "./StimulusImage";
 import Advanced from "./Advanced";
 import TypeFields from "./TypeFields";
+import type { ItemType, TestItem } from "../../../-api/test-definitions.type";
+import {
+  Button,
+  Input,
+  Label,
+  Select,
+  Textarea,
+} from "../../norms/-components/NormTableService/Normform/ui";
 
 type SupportedType = "SINGLE_CHOICE" | "LIKERT";
 

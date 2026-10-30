@@ -6,13 +6,13 @@ import {
   useCreateTestNormMutation,
   useDeleteTestNormMutation,
   useUpdateTestNormMutation,
-} from "../../../../-api/test-definitions.query";
+} from "../../../../../-api/test-definitions.query";
 import type {
   NormMethod,
   NormTable,
   NormTargetScoreType,
-} from "../../../../-api/test-definitions.type";
-import toast from "../../../../../../../../../components/ui/Toast";
+} from "../../../../../-api/test-definitions.type";
+import toast from "../../../../../../../../../../components/ui/Toast";
 import {
   analyzeRows,
   computeCoverage,

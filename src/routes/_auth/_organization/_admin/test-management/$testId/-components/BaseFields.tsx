@@ -1,7 +1,7 @@
-import Input from "../../../../../../../../components/ui/Input";
-import Label from "../../../../../../../../components/ui/Label";
-import Select from "../../../../../../../../components/ui/Select";
-import Textarea from "../../../../../../../../components/ui/Textarea";
+import Input from "../../../../../../../components/ui/Input";
+import Label from "../../../../../../../components/ui/Label";
+import Select from "../../../../../../../components/ui/Select";
+import Textarea from "../../../../../../../components/ui/Textarea";
 import type { SectionFormInitial } from "./SectionForm";
 
 function BaseField({

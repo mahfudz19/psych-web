@@ -1,5 +1,5 @@
 import { blankRow, rowsFromEntries, toNum, type DraftRow } from "../norm-utils";
-import type { NormTable } from "../../../../-api/test-definitions.type";
+import type { NormTable } from "../../../../../-api/test-definitions.type";
 import type { DraftCutoff } from "./types";
 
 export type RowField =

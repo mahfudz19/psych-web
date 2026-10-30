@@ -3,7 +3,7 @@ import type {
   NormMethod,
   NormTargetScoreType,
   CategoryCutoff,
-} from "../../../../-api/test-definitions.type";
+} from "../../../../../-api/test-definitions.type";
 
 export interface NormEntryPayload {
   rawMin: number;

@@ -84,15 +84,11 @@ function BaseField(props: Props) {
     handleCompositeMethod,
   } = props;
   const isEdit = Boolean(scale);
-  // Skala induk: bukan dirinya sendiri dan bukan turunannya.
   const excluded = scale?.id
     ? new Set([scale.id, ...collectDescendants(scales, scale.id)])
     : new Set<string>();
   const parentOptions = scales.filter((s) => !excluded.has(s.id));
-
-  // Sumber skor gabungan: semua skala selain dirinya sendiri.
   const sourceOptions = scales.filter((s) => s.id !== scale?.id);
-
   const typeHint = SCALE_TYPES.find((t) => t.value === type)?.hint;
 
   return (

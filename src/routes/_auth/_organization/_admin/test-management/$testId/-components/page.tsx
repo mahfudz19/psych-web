@@ -1,126 +1,264 @@
-import { useState } from "react";
-import SectionManagement from "./SectionManagement";
-import ScaleManagement from "./ScaleManagement";
-import ItemManagement from "./ItemManagement";
-import NormManagement from "./NormTableService";
+import { useNavigate } from "@tanstack/react-router";
+import { Edit, Plus, Trash, X } from "lucide-react";
 import { Route } from "..";
-import { useGetTestDefinition } from "../../-api/test-definitions.query";
-import Tabs from "../../../../../../../components/ui/Tabs";
-import Tab from "../../../../../../../components/ui/Tabs/Tab";
-import TabContent from "../../../../../../../components/ui/Tabs/TabContent";
-import PageHeader from "../../../../../../../components/reusebale-components/PageHeader";
-import Card from "../../../../../../../components/ui/Card";
-import Paper from "../../../../../../../components/ui/Paper";
+import {
+  useDeleteTestSectionMutation,
+  useGetTestDefinition,
+  useGetTestSections,
+} from "../../-api/test-definitions.query";
+import type { TestSection } from "../../-api/test-definitions.type";
+import {
+  DataTable,
+  type BaseListParams,
+} from "../../../../../../../components/reusebale-components/DataTable";
+import Dialog from "../../../../../../../components/ui/Dialog";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  Button,
+  DialogConfirmAction,
+  IconButton,
+} from "../norms/-components/NormTableService/Normform/ui";
+import SectionForm from "./SectionForm";
+
+function formatTime(seconds?: number | null) {
+  if (!seconds) return "Tanpa Batas";
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  if (m === 0) return `${seconds} dtk`;
+  return `${seconds} dtk (${m} mnt${s ? ` ${s} dtk` : ""})`;
+}
+
+function SectionManagement({
+  testId,
+  isLocked,
+}: {
+  testId: string;
+  isLocked: boolean;
+}) {
+  const tableState = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  const handleStateChange = (newState: BaseListParams) => {
+    navigate({
+      search: (prev) => {
+        const nextSearch = { ...prev, ...newState };
+        return nextSearch;
+      },
+      replace: true,
+    });
+  };
+
+  const { data, isLoading, isFetching } = useGetTestSections(
+    testId,
+    tableState,
+  );
+  const deleteMutation = useDeleteTestSectionMutation(testId);
+
+  const sections = [...(data?.data || [])].sort(
+    (a, b) => (a.order ?? 0) - (b.order ?? 0),
+  );
+  const nextOrder = Math.max(0, ...sections.map((s) => s.order ?? 0)) + 1;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold">Daftar Section</h3>
+        {!isLocked && (
+          <Dialog
+            dismissible={false}
+            maxWidth="4xl"
+            trigger={(openDialog) => (
+              <Button
+                startIcon={<Plus size={16} />}
+                size="sm"
+                onClick={openDialog}
+              >
+                Tambah Section
+              </Button>
+            )}
+          >
+            {(closeDialog) => (
+              <>
+                <div className="flex items-center justify-between px-6 py-4 border-b border-divider">
+                  <h4 className="text-lg font-semibold text-text-primary">
+                    Tambah Section
+                  </h4>
+                  <IconButton
+                    size="sm"
+                    variant="text"
+                    color="error"
+                    onClick={closeDialog}
+                  >
+                    <X size={18} />
+                  </IconButton>
+                </div>
+
+                <SectionForm
+                  key="create"
+                  nextOrder={nextOrder}
+                  testId={testId}
+                  onClose={() => closeDialog()}
+                />
+              </>
+            )}
+          </Dialog>
+        )}
+      </div>
+
+      {isLocked && (
+        <Alert severity="warning" variant="standard">
+          <AlertTitle>Tes ini tidak berstatus DRAFT</AlertTitle>
+          <AlertDescription>
+            Tes ini tidak berstatus DRAFT, sehingga section tidak bisa ditambah,
+            diubah, atau dihapus.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <DataTable<TestSection>
+        data={data?.data || []}
+        meta={data?.meta}
+        isLoading={isLoading || isFetching}
+        state={tableState}
+        onStateChange={handleStateChange}
+        variant="child"
+        columns={[
+          {
+            header: "No",
+            accessorKey: "order",
+            cell: (row: TestSection) => row.order,
+          },
+          {
+            header: "Kode",
+            accessorKey: "code",
+            cell: (row: TestSection) => row.code,
+          },
+          {
+            header: "Nama Section",
+            accessorKey: "name",
+            cell: (row: TestSection) => row.name,
+          },
+          {
+            header: "Soal",
+            accessorKey: "itemCount",
+            cell: (row: TestSection) => row.itemCount ?? 0,
+          },
+          {
+            header: "Waktu",
+            accessorKey: "timeLimitSeconds",
+            cell: (row: TestSection) => formatTime(row.timeLimitSeconds),
+          },
+          {
+            header: "Navigasi",
+            accessorKey: "navigationPolicy",
+            cell: (row: TestSection) => row.navigationPolicy,
+          },
+          {
+            header: "Skala",
+            accessorKey: "scaleIds",
+            cell: (row: TestSection) => row.scaleIds?.length ?? 0,
+          },
+          {
+            header: "Aksi",
+            accessorKey: "actions",
+            cell: (row: TestSection) => (
+              <div className="flex justify-end gap-2">
+                <Dialog
+                  dismissible={false}
+                  maxWidth="4xl"
+                  className="text-left"
+                  trigger={(openDialog) => (
+                    <IconButton
+                      size="sm"
+                      variant="text"
+                      disabled={isLocked}
+                      onClick={openDialog}
+                    >
+                      <Edit size={18} />
+                    </IconButton>
+                  )}
+                >
+                  {(closeDialog) => (
+                    <>
+                      <div className="flex items-center justify-between px-6 py-4 border-b border-divider">
+                        <h4 className="text-lg font-semibold text-text-primary">
+                          Edit Section {row.order}
+                        </h4>
+                        <IconButton
+                          size="sm"
+                          variant="text"
+                          color="error"
+                          onClick={closeDialog}
+                        >
+                          <X size={18} />
+                        </IconButton>
+                      </div>
+
+                      <SectionForm
+                        key={`edit-${row.id}`}
+                        nextOrder={nextOrder}
+                        testId={testId}
+                        onClose={() => closeDialog()}
+                        section={{
+                          id: row.id,
+                          code: row.code,
+                          order: row.order,
+                          name: row.name,
+                          instructions: row.instructions,
+                          examples: row.examples,
+                          showExamplesFirst: row.showExamplesFirst,
+                          timeLimitSeconds: row.timeLimitSeconds,
+                          itemCount: row.itemCount,
+                          navigationPolicy: row.navigationPolicy,
+                          defaultItemType: row.defaultItemType,
+                          stimulusPhase: row.stimulusPhase,
+                          config: row.config,
+                          status: row.status,
+                        }}
+                      />
+                    </>
+                  )}
+                </Dialog>
+
+                {!isLocked && (
+                  <DialogConfirmAction
+                    title="Hapus Section"
+                    description={`Yakin ingin menghapus section ${row.name}? Aksi ini akan gagal jika masih ada soal atau skala di dalamnya.`}
+                    onConfirm={() => deleteMutation.mutate(row.id)}
+                    trigger={(open) => (
+                      <IconButton
+                        size="sm"
+                        variant="text"
+                        color="error"
+                        onClick={open}
+                      >
+                        <Trash size={16} />
+                      </IconButton>
+                    )}
+                  />
+                )}
+              </div>
+            ),
+          },
+        ]}
+      />
+    </div>
+  );
+}
 
 export default function TestDetailLayout() {
   const { testId } = Route.useParams();
   const { data, isLoading } = useGetTestDefinition(testId);
-  const [activeTab, setActiveTab] = useState("sections");
 
   if (isLoading) return <div className="p-8 text-center">Memuat data...</div>;
   if (!data?.data)
     return <div className="p-8 text-center">Tes tidak ditemukan</div>;
 
-  const { test, stats } = data.data;
+  const { test } = data.data;
 
   return (
-    <>
-      <PageHeader
-        breadcrumbs={[
-          { label: "Test Definition", href: "/test-management" },
-          "Detail",
-        ]}
-      />
-      {/* Header & Stats */}
-      <Card className="mb-6 p-6">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {test.name}{" "}
-              <span className="text-gray-400 text-lg font-normal">
-                ({test.code})
-              </span>
-            </h1>
-            <p className="text-sm text-gray-500 mt-1">{test.description}</p>
-          </div>
-          <span
-            className={`px-3 py-1 text-sm font-medium rounded-full border ${
-              test.status === "ACTIVE"
-                ? "bg-green-50 text-green-700 border-green-200"
-                : "bg-yellow-50 text-yellow-700 border-yellow-200"
-            }`}
-          >
-            {test.status}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-4 gap-4 border-t border-gray-100 dark:border-gray-800 pt-6">
-          <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {stats.sections}
-            </p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">
-              Sections
-            </p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {stats.scales}
-            </p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">
-              Scales
-            </p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {stats.items}
-            </p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">
-              Items
-            </p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {stats.norms}
-            </p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">
-              Norms
-            </p>
-          </div>
-        </div>
-      </Card>
-
-      {/* Tabs Navigation */}
-      <Paper className="p-6">
-        <Tabs value={activeTab} onChange={setActiveTab}>
-          <Tab value="sections" label="Sections (Subtes)" />
-          <Tab value="scales" label="Scales (Aspek)" />
-          <Tab value="items" label="Items (Soal)" />
-          <Tab value="norms" label="Norms (Norma)" />
-        </Tabs>
-        <TabContent value="sections" activeValue={activeTab}>
-          <SectionManagement
-            testId={testId}
-            isLocked={test.status !== "DRAFT"}
-          />
-        </TabContent>
-        <TabContent value="scales" activeValue={activeTab}>
-          <ScaleManagement testId={testId} isLocked={test.status !== "DRAFT"} />
-        </TabContent>
-        <TabContent value="items" activeValue={activeTab}>
-          <ItemManagement
-            testId={testId}
-            isLocked={test.status !== "DRAFT"}
-            category={test.category}
-          />
-        </TabContent>
-        <TabContent value="norms" activeValue={activeTab}>
-          <NormManagement
-            testId={testId}
-            isLocked={test.status === "ARCHIVED"}
-          />
-        </TabContent>
-      </Paper>
-    </>
+    <SectionManagement testId={testId} isLocked={test.status !== "DRAFT"} />
   );
 }

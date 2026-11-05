@@ -189,24 +189,25 @@ const Plans = ({
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="flex flex-wrap justify-center gap-6 items-stretch">
           {[1, 2, 3].map((i) => (
-            <Skeleton
-              key={i}
-              height={380}
-              variant="rounded"
-              className="w-full rounded-3xl"
-            />
+            <div key={i} className="w-full lg:w-[calc(33.333%-1rem)] max-w-sm">
+              <Skeleton
+                height={380}
+                variant="rounded"
+                className="w-full rounded-3xl"
+              />
+            </div>
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+        <div className="flex flex-wrap justify-center gap-6 items-stretch">
           {data?.data?.map((plan) => {
             const isPopular = plan.recommended;
             return (
               <Card
                 key={plan.id}
-                className={`relative p-6 md:p-8 flex flex-col justify-between transition-all ${
+                className={`relative w-full lg:w-[calc(33.333%-1rem)] max-w-sm p-6 lg:p-8 flex flex-col justify-between transition-all ${
                   isPopular
                     ? "border-primary-main shadow-xl ring-2 ring-primary-main/20"
                     : "border-divider shadow-sm"

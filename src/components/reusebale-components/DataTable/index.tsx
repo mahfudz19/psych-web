@@ -1,11 +1,4 @@
-import {
-  ArrowDown,
-  ArrowDownUp,
-  ArrowUp,
-  ChevronLeft,
-  ChevronRight,
-  MoreHorizontal,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { useEffect, useState, type HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
 import { twMerge } from "tailwind-merge";
@@ -13,10 +6,10 @@ import type { PaginationMeta } from "../../../types";
 import Button from "../../ui/Button";
 import IconButton from "../../ui/IconButton";
 import Input from "../../ui/Input";
+import Paper from "../../ui/Paper";
 import Select from "../../ui/Select";
 import DateRangeFilter from "./DateRangeFilter";
 import FacetedFilter from "./FacetedFilter";
-import Paper from "../../ui/Paper";
 
 export interface BaseListParams {
   page?: number;
@@ -309,19 +302,36 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
                 >
                   <div className="flex items-center gap-2">
                     {col.header}
-                    {col.sortable && state.sortBy === col.accessorKey && (
-                      <span className="text-primary-main">
-                        {state.sortOrder === "asc" ? (
-                          <ArrowUp className="w-3.5 h-3.5" />
-                        ) : (
-                          <ArrowDown className="w-3.5 h-3.5" />
-                        )}
-                      </span>
-                    )}
-                    {col.sortable && state.sortBy !== col.accessorKey && (
-                      <span className="text-text-disabled opacity-40">
-                        <ArrowDownUp className="w-3.5 h-3.5" />
-                      </span>
+
+                    {col.sortable && (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1em"
+                        height="1em"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M0 0h24v24H0z" fill="none" />
+                        <path
+                          fill="currentColor"
+                          className={
+                            state.sortBy === col.accessorKey &&
+                            state.sortOrder === "asc"
+                              ? "text-primary-main"
+                              : "text-divider"
+                          }
+                          d="M6.227 11h11.547c.862 0 1.32-1.02.747-1.665L12.748 2.84a.998.998 0 0 0-1.494 0L5.479 9.335C4.906 9.98 5.364 11 6.227 11"
+                        />
+                        <path
+                          fill="currentColor"
+                          className={
+                            state.sortBy === col.accessorKey &&
+                            state.sortOrder === "desc"
+                              ? "text-primary-main"
+                              : "text-divider"
+                          }
+                          d="M11.253 21.159a.998.998 0 0 0 1.494 0l5.773-6.495c.574-.644.116-1.664-.747-1.664H6.227c-.862 0-1.32 1.02-.747 1.665z"
+                        />
+                      </svg>
                     )}
                   </div>
                 </th>

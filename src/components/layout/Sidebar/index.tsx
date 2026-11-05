@@ -50,7 +50,7 @@ const GroupItem = (props: { item: NavItem; dynamicMenu: NavGroup[] }) => {
       {hasChildren ? (
         <button
           onClick={() => handleToggleExpand(item.titleKey)}
-          className={`w-full flex items-center py-2.5 ${isMini ? "pl-4.5 pr-0.5" : "px-3"} justify-between rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast transition-all focus:outline-none`}
+          className={`w-full overflow-hidden flex items-center py-2.5 ${isMini ? "pl-4.5 pr-0.5" : "px-3"} justify-between rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast transition-all focus:outline-none`}
         >
           <div className="flex items-center">
             {item.icon}
@@ -78,7 +78,7 @@ const GroupItem = (props: { item: NavItem; dynamicMenu: NavGroup[] }) => {
         <Link
           to={item.path!}
           onClick={() => window.innerWidth < 1024 && toggleMobile()}
-          className={`flex items-center py-2.5 ${isMini ? "pl-4.5 pr-0.5" : "px-3 "} rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast [&.active]:bg-primary-contrast/25 [&.active]:text-primary-contrast [&.active]:shadow-inner [&.active]:font-bold transition-all duration-200`}
+          className={`flex overflow-hidden items-center py-2.5 ${isMini ? "pl-4.5 pr-0.5" : "px-3 "} rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast [&.active]:bg-primary-contrast/25 [&.active]:text-primary-contrast [&.active]:shadow-inner [&.active]:font-bold transition-all duration-200`}
         >
           {item.icon}
           <span

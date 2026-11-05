@@ -7,10 +7,135 @@ import { menuConfig, type NavGroup, type NavItem } from "./menu";
 import { authStore } from "../../../utils/authStore";
 import { Ad, ChevronsLeft, ChevronsRight } from "lucide-react";
 
+const GroupItem = (props: { item: NavItem; dynamicMenu: NavGroup[] }) => {
+  const { item, dynamicMenu } = props;
+
+  const { isMini, toggleMobile } = useSidebar();
+  const location = useLocation();
+  const { t } = useTranslation();
+
+  const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
+
+  const hasChildren = item.children && item.children.length > 0;
+  const isExpanded = expandedMenus.includes(item.titleKey);
+
+  const handleToggleExpand = (titleKey: string) => {
+    setExpandedMenus((prev) =>
+      prev.includes(titleKey)
+        ? prev.filter((item) => item !== titleKey)
+        : [...prev, titleKey],
+    );
+  };
+
+  useEffect(() => {
+    const activeKeys = dynamicMenu
+      .flatMap((group) => group.items)
+      .filter((item) =>
+        item.children?.some(
+          (child) =>
+            child.path &&
+            (location.pathname === child.path ||
+              location.pathname.startsWith(`${child.path}/`)),
+        ),
+      )
+      .map((item) => item.titleKey);
+
+    if (activeKeys.length > 0) {
+      setExpandedMenus((prev) => Array.from(new Set([...prev, ...activeKeys])));
+    }
+  }, [location.pathname, dynamicMenu]);
+
+  return (
+    <div className="relative group">
+      {hasChildren ? (
+        <button
+          onClick={() => handleToggleExpand(item.titleKey)}
+          className={`w-full flex items-center py-2.5 ${isMini ? "pl-4.5 pr-0.5" : "px-3"} justify-between rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast transition-all focus:outline-none`}
+        >
+          <div className="flex items-center">
+            {item.icon}
+            <span
+              className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0 lg:hidden" : ""}`}
+            >
+              {t(item.titleKey as any)}
+            </span>
+          </div>
+          <svg
+            className={`w-4 h-4 transition-transform duration-200 ${isMini ? "lg:hidden" : ""} ${isExpanded ? "rotate-90" : ""}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
+      ) : (
+        <Link
+          to={item.path!}
+          onClick={() => window.innerWidth < 1024 && toggleMobile()}
+          className={`flex items-center py-2.5 ${isMini ? "pl-4.5 pr-0.5" : "px-3 "} rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast [&.active]:bg-primary-contrast/25 [&.active]:text-primary-contrast [&.active]:shadow-inner [&.active]:font-bold transition-all duration-200`}
+        >
+          {item.icon}
+          <span
+            className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0 lg:hidden" : ""}`}
+          >
+            {t(item.titleKey as any)}
+          </span>
+        </Link>
+      )}
+
+      {isMini && (
+        <div className="absolute left-full top-0 ml-4 w-48 bg-primary-dark border border-primary-contrast/20 shadow-xl rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-60 hidden lg:block overflow-hidden">
+          <div className="px-4 py-3 bg-primary-contrast/10 border-b border-primary-contrast/20 font-bold text-sm text-primary-contrast">
+            {t(item.titleKey as any)}
+          </div>
+          {hasChildren && (
+            <div className="p-1">
+              {(item.children || []).map((c, i) => (
+                <Link
+                  key={i}
+                  to={c.path!}
+                  onClick={toggleMobile}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-primary-contrast/70 hover:text-primary-contrast hover:bg-primary-contrast/10 [&.active]:text-primary-contrast [&.active]:bg-primary-contrast/20 [&.active]:font-bold transition-all"
+                >
+                  {c.icon}
+                  <span>{t(c.titleKey as any)}</span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {hasChildren && (
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${isMini ? "lg:hidden" : ""} ${isExpanded ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"}`}
+        >
+          <div className="ml-5 pl-2 border-l border-primary-contrast/20 space-y-1 py-1 my-1">
+            {(item.children || []).map((c, i) => (
+              <Link
+                key={i}
+                to={c.path!}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium text-primary-contrast/70 hover:text-primary-contrast hover:bg-primary-contrast/10 [&.active]:text-primary-contrast [&.active]:bg-primary-contrast/20 [&.active]:font-bold transition-all"
+              >
+                {t(c.titleKey as any)}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export function Sidebar() {
   const { isMobileOpen, isMini, toggleMobile, toggleMini } = useSidebar();
   const { t } = useTranslation();
-  const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
 
   const user = authStore.get().user;
 
@@ -66,34 +191,6 @@ export function Sidebar() {
       .filter(Boolean) as NavGroup[];
   }, [user]);
 
-  const handleToggleExpand = (titleKey: string) => {
-    setExpandedMenus((prev) =>
-      prev.includes(titleKey)
-        ? prev.filter((item) => item !== titleKey)
-        : [...prev, titleKey],
-    );
-  };
-
-  const location = useLocation();
-
-  useEffect(() => {
-    const activeKeys = dynamicMenu
-      .flatMap((group) => group.items)
-      .filter((item) =>
-        item.children?.some(
-          (child) =>
-            child.path &&
-            (location.pathname === child.path ||
-              location.pathname.startsWith(`${child.path}/`)),
-        ),
-      )
-      .map((item) => item.titleKey);
-
-    if (activeKeys.length > 0) {
-      setExpandedMenus((prev) => Array.from(new Set([...prev, ...activeKeys])));
-    }
-  }, [location.pathname, dynamicMenu]);
-
   return (
     <>
       {isMobileOpen && (
@@ -106,7 +203,7 @@ export function Sidebar() {
       <div className="p-0 lg:p-4 z-50">
         <aside
           className={twMerge(
-            "fixed lg:static inset-y-0 left-0 flex flex-col h-full rounded-2xl shadow-xl overflow-hidden",
+            "fixed lg:static inset-y-0 left-0 flex flex-col h-full rounded-2xl shadow-xl",
             "transition-all duration-300 ease-in-out border-none",
             "bg-linear-to-b from-primary-main to-primary-dark text-primary-contrast",
             isMobileOpen
@@ -184,100 +281,15 @@ export function Sidebar() {
                 >
                   {t(group.groupLabelKey as any)}
                 </span>
+                {groupIdx !== 0 && (
+                  <div
+                    className={`mx-1 h-px bg-primary-contrast/20 transition-all ${isMini ? "" : "opacity-0"}`}
+                  />
+                )}
 
-                {group.items.map((item, itemIdx) => {
-                  const hasChildren = item.children && item.children.length > 0;
-                  const isExpanded = expandedMenus.includes(item.titleKey);
-
+                {group.items.map((v, i) => {
                   return (
-                    <div key={itemIdx} className="relative group">
-                      {hasChildren ? (
-                        <button
-                          onClick={() => handleToggleExpand(item.titleKey)}
-                          className={`w-full flex items-center ${isMini ? "justify-center" : "justify-between"} px-3 py-2.5 rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast transition-all focus:outline-none`}
-                        >
-                          <div className="flex items-center">
-                            {item.icon}
-                            <span
-                              className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0 lg:hidden" : ""}`}
-                            >
-                              {t(item.titleKey as any)}
-                            </span>
-                          </div>
-                          <svg
-                            className={`w-4 h-4 transition-transform duration-200 ${isMini ? "lg:hidden" : ""} ${isExpanded ? "rotate-90" : ""}`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
-                        </button>
-                      ) : (
-                        <Link
-                          to={item.path!}
-                          onClick={() =>
-                            window.innerWidth < 1024 && toggleMobile()
-                          }
-                          className={`flex items-center ${isMini ? "justify-center" : ""} px-3 py-2.5 rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast [&.active]:bg-primary-contrast/25 [&.active]:text-primary-contrast [&.active]:shadow-inner [&.active]:font-bold transition-all duration-200`}
-                        >
-                          {item.icon}
-                          <span
-                            className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0 lg:hidden" : ""}`}
-                          >
-                            {t(item.titleKey as any)}
-                          </span>
-                        </Link>
-                      )}
-
-                      {isMini && (
-                        <div className="absolute left-full top-0 ml-4 w-48 bg-primary-dark border border-primary-contrast/20 shadow-xl rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-60 hidden lg:block overflow-hidden">
-                          <div className="px-4 py-3 bg-primary-contrast/10 border-b border-primary-contrast/20 font-bold text-sm text-primary-contrast">
-                            {t(item.titleKey as any)}
-                          </div>
-                          {hasChildren && (
-                            <div className="py-1">
-                              {(item.children || []).map((child, childIdx) => (
-                                <Link
-                                  key={childIdx}
-                                  to={child.path!}
-                                  className="block px-4 py-2.5 text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast [&.active]:text-primary-contrast [&.active]:bg-primary-contrast/20"
-                                >
-                                  {t(child.titleKey as any)}
-                                </Link>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {hasChildren && (
-                        <div
-                          className={`overflow-hidden transition-all duration-300 ease-in-out ${isMini ? "lg:hidden" : ""} ${isExpanded ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"}`}
-                        >
-                          <div className="ml-5 pl-4 border-l border-primary-contrast/20 space-y-1 py-1 my-1">
-                            {(item.children || []).map((child, childIdx) => (
-                              <Link
-                                key={childIdx}
-                                to={child.path!}
-                                onClick={() =>
-                                  window.innerWidth < 1024 && toggleMobile()
-                                }
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-primary-contrast/70 hover:text-primary-contrast hover:bg-primary-contrast/10 [&.active]:text-primary-contrast [&.active]:bg-primary-contrast/20 [&.active]:font-bold transition-all"
-                              >
-                                {child.icon}
-                                <span>{t(child.titleKey as any)}</span>
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    <GroupItem key={i} item={v} dynamicMenu={dynamicMenu} />
                   );
                 })}
               </div>

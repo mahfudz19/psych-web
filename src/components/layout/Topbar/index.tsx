@@ -44,7 +44,7 @@ export function Topbar() {
     <header
       ref={headerRef}
       data-scrolled="false"
-      className="h-16 flex items-center justify-between px-2 rounded-b sticky top-0 z-40 transition-all duration-300 border-b shadow-none border-transparent data-[scrolled=true]:bg-bg-paper/70 data-[scrolled=true]:backdrop-blur-sm data-[scrolled=true]:border-divider/50 data-[scrolled=true]:shadow-xs"
+      className="h-16 flex items-center justify-between px-2 rounded-b sticky top-0 z-30 transition-all duration-300 border-b shadow-none border-transparent data-[scrolled=true]:bg-bg-paper/70 data-[scrolled=true]:backdrop-blur-sm data-[scrolled=true]:border-divider/50 data-[scrolled=true]:shadow-xs"
     >
       <div className="flex items-center gap-2 lg:gap-4">
         <ToggleSidebar />

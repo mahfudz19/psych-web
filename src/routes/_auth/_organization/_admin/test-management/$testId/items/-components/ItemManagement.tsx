@@ -157,6 +157,7 @@ function ItemMutation({
             </span>
           </p>
         </div>
+
         {!isLocked && (
           <div className="flex items-center gap-2">
             {sections.length > 1 && (
@@ -234,6 +235,16 @@ function ItemMutation({
           </div>
         )}
       </div>
+
+      {isLocked && (
+        <Alert severity="warning" variant="standard">
+          <AlertTitle>Tes ini tidak berstatus DRAFT</AlertTitle>
+          <AlertDescription>
+            Tes ini tidak berstatus DRAFT, sehingga soal tidak bisa ditambah,
+            diubah, atau dihapus.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <DataTable<TestItem>
         data={items}
@@ -537,16 +548,6 @@ export default function ItemManagement({ testId, isLocked, category }: Props) {
 
   return (
     <div className="space-y-4">
-      {isLocked && (
-        <Alert severity="warning" variant="standard">
-          <AlertTitle>Tes ini tidak berstatus DRAFT</AlertTitle>
-          <AlertDescription>
-            Tes ini tidak berstatus DRAFT, sehingga soal tidak bisa ditambah,
-            diubah, atau dihapus.
-          </AlertDescription>
-        </Alert>
-      )}
-
       <ItemMutation
         category={category}
         isLocked={isLocked}

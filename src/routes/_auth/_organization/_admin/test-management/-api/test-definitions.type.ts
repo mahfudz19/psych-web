@@ -1,7 +1,7 @@
 import type {
   NavigationPolicy,
   SectionStatus,
-} from "../$testId/-components/SectionManagement/SectionForm";
+} from "../$testId/-components/SectionForm";
 import type { BaseListParams } from "../../../../../../components/reusebale-components/DataTable";
 
 // --- ENUMS ---

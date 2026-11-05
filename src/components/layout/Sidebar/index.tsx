@@ -14,8 +14,9 @@ export function Sidebar() {
 
   const user = authStore.get().user;
 
-  const handleCollapse = () =>
+  const handleCollapse = () => {
     window.innerWidth < 1024 ? toggleMobile() : toggleMini();
+  };
 
   const checkAccess = (allowedRoles?: string[], allowedOrgRoles?: string[]) => {
     let roleMatch = true;
@@ -117,36 +118,31 @@ export function Sidebar() {
         >
           {/* HEADER */}
           <div className="group/brand shrink-0">
-            <div
-              className={`flex h-16 items-center justify-between px-4 ${
-                isMini ? "lg:justify-center lg:px-0" : ""
-              }`}
-            >
+            <div className="flex h-16 items-center justify-between px-4">
               <div className="flex items-center gap-3 overflow-hidden">
-                {/* Logomark */}
-                <div className="relative shrink-0 flex items-center justify-center">
+                <div
+                  className={`relative shrink-0 flex items-center justify-center overflow-hidden rounded-xl ${isMini ? "ml-1" : ""}`}
+                >
                   <div
-                    className={`flex items-center justify-center rounded-xl bg-linear-to-br from-secondary-light to-secondary-main text-primary-dark font-black shadow-sm ring-1 ring-primary-contrast/20 transition-all duration-300 ${
+                    className={`flex items-center justify-center bg-linear-to-br from-secondary-light to-secondary-main text-primary-dark font-black shadow-sm ring-1 ring-primary-contrast/20 transition-all duration-300 ${
                       isMini ? "h-10 w-10" : "h-9 w-9"
                     }`}
                   >
                     <Ad size={20} />
                   </div>
 
-                  {/* Mode mini: saat hover, logo berganti tombol "perluas" */}
                   {isMini && (
                     <button
                       type="button"
                       onClick={handleCollapse}
                       aria-label="Perluas sidebar"
-                      className="absolute inset-0 hidden items-center justify-center rounded-xl bg-primary-dark text-primary-contrast opacity-0 ring-1 ring-primary-contrast/30 transition-opacity focus-visible:opacity-100 group-hover/brand:opacity-100 lg:flex"
+                      className="absolute inset-0 hidden items-center justify-center bg-primary-dark text-primary-contrast opacity-0 ring-1 ring-primary-contrast/30 transition-opacity focus-visible:opacity-100 group-hover/brand:opacity-100 lg:flex"
                     >
                       <ChevronsRight size={18} />
                     </button>
                   )}
                 </div>
 
-                {/* Wordmark */}
                 <h1
                   className={`whitespace-nowrap flex items-center transition-all duration-300 ${
                     isMini ? "lg:hidden lg:w-0 lg:opacity-0" : "opacity-100"
@@ -161,7 +157,6 @@ export function Sidebar() {
                 </h1>
               </div>
 
-              {/* Tombol ciutkan: selalu terlihat di mobile, muncul saat hover di desktop */}
               <button
                 type="button"
                 onClick={handleCollapse}
@@ -179,25 +174,16 @@ export function Sidebar() {
           </div>
 
           <nav
-            className={`flex-1 px-3 py-6 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
+            className={`flex-1 p-3 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
           >
             {dynamicMenu.map((group, groupIdx) => (
-              <div
-                key={groupIdx}
-                className={`space-y-2 ${
-                  groupIdx > 0
-                    ? isMini
-                      ? "border-t border-primary-contrast/20 pt-4 mt-4"
-                      : "mt-8"
-                    : ""
-                }`}
-              >
+              <div key={groupIdx} className="space-y-2">
                 {/* GROUP LABEL */}
-                <p
-                  className={`px-3 text-xs font-bold text-primary-contrast/60 uppercase tracking-widest mb-3 transition-opacity duration-300 ${isMini ? "lg:opacity-0 lg:invisible lg:h-0 lg:mb-0" : ""}`}
+                <span
+                  className={`px-3 whitespace-nowrap text-xs font-bold text-primary-contrast/60 uppercase tracking-widest transition-opacity duration-300 ${isMini ? "opacity-0" : ""}`}
                 >
                   {t(group.groupLabelKey as any)}
-                </p>
+                </span>
 
                 {group.items.map((item, itemIdx) => {
                   const hasChildren = item.children && item.children.length > 0;
@@ -233,7 +219,6 @@ export function Sidebar() {
                           </svg>
                         </button>
                       ) : (
-                        /* MAIN ITEM */
                         <Link
                           to={item.path!}
                           onClick={() =>
@@ -271,7 +256,6 @@ export function Sidebar() {
                         </div>
                       )}
 
-                      {/* SUB MENU ITEM */}
                       {hasChildren && (
                         <div
                           className={`overflow-hidden transition-all duration-300 ease-in-out ${isMini ? "lg:hidden" : ""} ${isExpanded ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"}`}

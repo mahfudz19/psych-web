@@ -55,7 +55,7 @@ const GroupItem = (props: { item: NavItem; dynamicMenu: NavGroup[] }) => {
           <div className="flex items-center">
             {item.icon}
             <span
-              className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0 lg:hidden" : ""}`}
+              className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0" : ""}`}
             >
               {t(item.titleKey as any)}
             </span>
@@ -82,7 +82,7 @@ const GroupItem = (props: { item: NavItem; dynamicMenu: NavGroup[] }) => {
         >
           {item.icon}
           <span
-            className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0 lg:hidden" : ""}`}
+            className={`ml-3 transition-all duration-300 whitespace-nowrap ${isMini ? "lg:w-0 lg:opacity-0" : ""}`}
           >
             {t(item.titleKey as any)}
           </span>
@@ -114,9 +114,9 @@ const GroupItem = (props: { item: NavItem; dynamicMenu: NavGroup[] }) => {
 
       {hasChildren && (
         <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${isMini ? "lg:hidden" : ""} ${isExpanded ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"}`}
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${isMini ? "lg:hidden" : ""} ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
         >
-          <div className="ml-5 pl-2 border-l border-primary-contrast/20 space-y-1 py-1 my-1">
+          <div className="ml-5 pl-2 border-l border-primary-contrast/20">
             {(item.children || []).map((c, i) => (
               <Link
                 key={i}
@@ -271,21 +271,26 @@ export function Sidebar() {
           </div>
 
           <nav
-            className={`flex-1 p-3 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
+            className={`flex-1 p-3 space-y-3 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
           >
             {dynamicMenu.map((group, groupIdx) => (
-              <div key={groupIdx} className="space-y-2">
+              <div key={groupIdx}>
                 {/* GROUP LABEL */}
-                <span
-                  className={`px-3 whitespace-nowrap text-xs font-bold text-primary-contrast/60 uppercase tracking-widest transition-opacity duration-300 ${isMini ? "opacity-0" : ""}`}
-                >
-                  {t(group.groupLabelKey as any)}
-                </span>
-                {groupIdx !== 0 && (
-                  <div
-                    className={`mx-1 h-px bg-primary-contrast/20 transition-all ${isMini ? "" : "opacity-0"}`}
-                  />
-                )}
+                <>
+                  {!isMini ? (
+                    <span
+                      className={`px-3 whitespace-nowrap text-xs font-bold text-primary-contrast/40 uppercase tracking-widest transition-opacity duration-300 ${isMini ? "opacity-0" : ""}`}
+                    >
+                      {t(group.groupLabelKey as any)}
+                    </span>
+                  ) : (
+                    <div className="py-[0.72rem]">
+                      <div
+                        className={`mx-1 h-px bg-primary-contrast/20 transition-all ${groupIdx !== 0 ? "" : "opacity-0"}`}
+                      />
+                    </div>
+                  )}
+                </>
 
                 {group.items.map((v, i) => {
                   return (

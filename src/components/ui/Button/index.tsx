@@ -91,12 +91,10 @@ const containedVariant = cva(
           "text-white",
           "focus:ring-info-main",
         ],
-        white: [
-          "bg-white",
-          "dark:bg-gray-700",
-          "text-primary-main",
-          "dark:text-white",
-          "focus:ring-neutral-200",
+        neutral: [
+          "bg-text-primary text-bg-paper",
+          "hover:bg-text-primary/90",
+          "focus:ring-divider",
         ],
       },
     },
@@ -157,10 +155,11 @@ const outlinedVariant = cva(
           "text-info-main",
           "focus:ring-info-main",
         ],
-        white: [
-          "border-gray-500 dark:border-white",
-          "text-gray-500 dark:text-white",
-          "focus:ring-gray-500 dark:focus:ring-white",
+        neutral: [
+          "border-divider",
+          "text-text-secondary dark:text-text-primary",
+          "hover:bg-divider/20",
+          "focus:ring-divider",
         ],
       },
     },
@@ -201,9 +200,10 @@ const textVariant = cva(
           "hover:text-warning-dark focus:ring-warning-main",
         ],
         info: ["text-info-main", "hover:text-info-dark focus:ring-info-main"],
-        white: [
-          "text-gray-500 dark:text-white",
-          "focus:ring-gray-500 dark:focus:ring-white",
+        neutral: [
+          "text-text-secondary dark:text-text-primary",
+          "hover:text-text-primary hover:bg-divider/20",
+          "focus:ring-divider",
         ],
       },
     },
@@ -264,11 +264,11 @@ const ghostVariant = cva(
           "hover:bg-info-main/20 dark:hover:bg-info-main/30",
           "focus:ring-info-main",
         ],
-        white: [
-          "bg-gray-100 dark:bg-white/10",
-          "text-gray-700 dark:text-white",
-          "hover:bg-gray-200 dark:hover:bg-white/20",
-          "focus:ring-gray-500 dark:focus:ring-white",
+        neutral: [
+          "bg-divider/60 dark:bg-divider/40",
+          "text-text-primary",
+          "hover:bg-divider dark:hover:bg-divider/60",
+          "focus:ring-divider",
         ],
       },
     },
@@ -425,10 +425,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProp>(
         {!noRipple && !rest.disabled && (
           <Ripple
             color={
-              variant === "contained" && color !== "white" ? undefined : color
+              variant === "contained" && color !== "neutral" ? undefined : color
             }
             opacity={
-              variant === "contained" && color !== "white" ? undefined : 0.25
+              variant === "contained" && color !== "neutral" ? undefined : 0.25
             }
           />
         )}

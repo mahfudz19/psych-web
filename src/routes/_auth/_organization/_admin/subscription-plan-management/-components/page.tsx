@@ -13,6 +13,7 @@ import Button from "../../../../../../components/ui/Button";
 import { Plus } from "lucide-react";
 import SubscriptionPlanForm from "./Form";
 import PageHeader from "../../../../../../components/reusebale-components/PageHeader";
+import Chip from "../../../../../../components/ui/Chip";
 
 function DialogCreate() {
   return (
@@ -82,15 +83,11 @@ function SubscriptionPlanManagement() {
         { label: "Organisasi", value: "ORGANIZATION" },
       ],
       cell: (row) => (
-        <span
-          className={`px-2.5 py-0.5 text-xs font-medium rounded-full border ${
-            row.targetAudience === "ORGANIZATION"
-              ? "bg-purple-50 text-purple-700 border-purple-100 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800"
-              : "bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800"
-          }`}
+        <Chip
+          color={row.targetAudience === "ORGANIZATION" ? "warning" : "success"}
         >
           {row.targetAudience === "ORGANIZATION" ? "Organisasi" : "Individual"}
-        </span>
+        </Chip>
       ),
     },
     {
@@ -153,7 +150,7 @@ function SubscriptionPlanManagement() {
         other={<DialogCreate />}
       />
 
-      <DataTable<SubscriptionPlan, BaseListParams>
+      <DataTable<SubscriptionPlan>
         columns={columns}
         data={data?.data}
         meta={data?.meta}

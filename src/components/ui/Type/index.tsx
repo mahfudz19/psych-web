@@ -6,6 +6,12 @@ export type ComponentProp = {
 };
 
 export type color =
-  "primary" | "secondary" | "success" | "error" | "warning" | "info" | "white";
+  | "primary"
+  | "secondary"
+  | "success"
+  | "error"
+  | "warning"
+  | "info"
+  | "neutral";
 
 export type size = "sm" | "md" | "lg";

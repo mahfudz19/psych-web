@@ -35,7 +35,7 @@ const Actions = (props: SelectedPlanProps) => {
     <>
       <Button
         variant="outlined"
-        color="white"
+        color="neutral"
         fullWidth
         onClick={() => setSelectedPlan(null)}
         disabled={isCheckingOut}

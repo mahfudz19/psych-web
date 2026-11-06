@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { validateSearch } from "../../profile/sessions/validateSearch";
+import { validateSearch } from "../../../../../components/utility/validateSearch";
 import HistoryPage from "./-components/page";
 
 export const Route = createFileRoute(

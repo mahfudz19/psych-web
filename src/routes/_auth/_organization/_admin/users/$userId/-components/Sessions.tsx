@@ -8,6 +8,7 @@ import {
 } from "../../../../../../../components/reusebale-components/DataTable";
 import { useSessionsByUserIdQuery } from "../../-api/user.query";
 import type { Session } from "../../../../../../../types/user";
+import Chip from "../../../../../../../components/ui/Chip";
 
 function Sessions({ userId }: { userId: string }) {
   const { t } = useTranslation();
@@ -104,15 +105,9 @@ function Sessions({ userId }: { userId: string }) {
         { value: "rotated", label: "Rotated" },
       ],
       cell: (row) => (
-        <span
-          className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${
-            row.status === "active"
-              ? "bg-success-main/10 text-success-main"
-              : "bg-divider text-text-secondary"
-          }`}
-        >
+        <Chip color={row.status === "active" ? "success" : "default"}>
           {row.status}
-        </span>
+        </Chip>
       ),
     },
   ];

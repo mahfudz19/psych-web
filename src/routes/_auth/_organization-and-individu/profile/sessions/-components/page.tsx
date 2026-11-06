@@ -10,6 +10,7 @@ import {
 import type { Session } from "../../../../../../types/user";
 import { Route } from "../index";
 import Revoke from "./Revoke";
+import Chip from "../../../../../../components/ui/Chip";
 
 function SessionPage() {
   const { t } = useTranslation();
@@ -103,15 +104,19 @@ function SessionPage() {
         { value: "rotated", label: "Rotated" },
       ],
       cell: (row) => (
-        <span
-          className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${
+        <Chip
+          color={
             row.status === "active"
-              ? "bg-success-main/10 text-success-main"
-              : "bg-divider text-text-secondary"
-          }`}
+              ? "success"
+              : row.status === "revoked"
+                ? "error"
+                : row.status === "expired"
+                  ? "warning"
+                  : "default"
+          }
         >
           {row.status}
-        </span>
+        </Chip>
       ),
     },
     {
@@ -121,6 +126,7 @@ function SessionPage() {
       cell: (row) => !row.isCurrentSession && <Revoke data={row} />,
     },
   ];
+
   return (
     <>
       <div className="mb-6">

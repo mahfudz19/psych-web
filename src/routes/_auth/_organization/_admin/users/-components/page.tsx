@@ -10,6 +10,7 @@ import { Route } from "../index";
 import IconButton from "../../../../../../components/ui/IconButton";
 import { Eye } from "lucide-react";
 import PageHeader from "../../../../../../components/reusebale-components/PageHeader";
+import Chip from "../../../../../../components/ui/Chip";
 
 function UsersPage() {
   const tableState = Route.useSearch();
@@ -26,7 +27,7 @@ function UsersPage() {
     });
   };
 
-  const userColumns: ColumnDef<Users>[] = [
+  const columns: ColumnDef<Users>[] = [
     {
       header: "Nama Lengkap",
       accessorKey: "fullName",
@@ -49,9 +50,9 @@ function UsersPage() {
         { label: "Organisasi", value: "ORGANIZATION" },
       ],
       cell: (row) => (
-        <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full border border-blue-100">
+        <Chip color={row.accountType === "INDIVIDUAL" ? "info" : "warning"}>
           {row.accountType}
-        </span>
+        </Chip>
       ),
     },
     {
@@ -66,13 +67,7 @@ function UsersPage() {
       ],
       cell: (row) => {
         const isOpt = row.status === "ACTIVE";
-        return (
-          <span
-            className={`px-2 py-1 text-xs rounded-full border ${isOpt ? "bg-green-50 text-green-700 border-green-100" : "bg-red-50 text-red-700 border-red-100"}`}
-          >
-            {row.status}
-          </span>
-        );
+        return <Chip color={isOpt ? "success" : "error"}>{row.status}</Chip>;
       },
     },
     {
@@ -115,7 +110,7 @@ function UsersPage() {
       />
 
       <DataTable<Users>
-        columns={userColumns}
+        columns={columns}
         data={data?.data}
         meta={data?.meta}
         isLoading={isLoading || isFetching}

@@ -17,7 +17,7 @@ const variants = cva(["animate-spin"], {
       error: ["text-error-main"],
       warning: ["text-warning-main"],
       info: ["text-info-main"],
-      white: ["text-white"],
+      neutral: ["text-white"],
     },
   },
 });

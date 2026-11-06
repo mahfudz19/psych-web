@@ -1,4 +1,4 @@
-import type { BaseListParams } from "../../../../../components/reusebale-components/DataTable";
+import type { BaseListParams } from "../reusebale-components/DataTable";
 
 export function validateSearch(
   search: Record<string, unknown>,

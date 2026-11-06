@@ -12,7 +12,7 @@ const CanclePayment = ({ referenceId }: { referenceId: string | null }) => {
   return (
     <Button
       variant="outlined"
-      color="white"
+      color="neutral"
       fullWidth
       onClick={handleCancelPayment}
       loading={isCanceling}

@@ -54,7 +54,7 @@ function ButtonRegisrationGoogle({ fieldName, inviteToken }: Props) {
   const CustomGoogleButton = ({ onClick }: { onClick: () => void }) => (
     <Button
       type="button"
-      color="white"
+      color="neutral"
       onClick={onClick}
       disabled={googleRegisterMutation.isPending}
       className="w-full flex items-center justify-center gap-3 bg-bg-paper border border-divider text-text-primary hover:bg-divider/10"

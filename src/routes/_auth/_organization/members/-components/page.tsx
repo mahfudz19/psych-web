@@ -12,15 +12,16 @@ import type { OrganizationMember } from "../../../../../types";
 import { useAuthStore } from "../../../../../utils/authStore";
 import { Route } from "../index";
 import ModalMemberDetail from "./ModalMemberDetail";
+import Chip from "../../../../../components/ui/Chip";
 
 function getRoleBadgeClass(organizationRole?: string) {
   switch (organizationRole?.toLowerCase()) {
     case "owner":
-      return "bg-warning-main/10 text-warning-main";
+      return "warning" as const;
     case "admin":
-      return "bg-info-main/10 text-info-main";
+      return "info" as const;
     default:
-      return "bg-divider text-text-secondary";
+      return "default" as const;
   }
 }
 
@@ -47,7 +48,7 @@ function OrganizationMembersPage() {
     tableState,
   );
 
-  const userColumns: ColumnDef<OrganizationMember>[] = [
+  const columns: ColumnDef<OrganizationMember>[] = [
     {
       header: "Nama Lengkap",
       accessorKey: "fullName",
@@ -71,11 +72,9 @@ function OrganizationMembersPage() {
         { label: "Member", value: "member" },
       ],
       cell: (row) => (
-        <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeClass(row.organizationRole)}`}
-        >
+        <Chip color={getRoleBadgeClass(row.organizationRole)}>
           {row.organizationRole}
-        </span>
+        </Chip>
       ),
     },
     {
@@ -128,7 +127,7 @@ function OrganizationMembersPage() {
       </div>
 
       <DataTable<OrganizationMember>
-        columns={userColumns}
+        columns={columns}
         data={data?.data}
         meta={data?.meta}
         isLoading={isLoading || isFetching}

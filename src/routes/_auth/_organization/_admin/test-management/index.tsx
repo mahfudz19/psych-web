@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { validateSearch } from "../../../_organization-and-individu/profile/sessions/validateSearch";
+import { validateSearch } from "../../../../../components/utility/validateSearch";
 import TestManagement from "./-components/page";
 
 export const Route = createFileRoute(

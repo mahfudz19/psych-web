@@ -20,7 +20,7 @@ function PassworfField(props: InputProps) {
         onClick={togglePasswordVisibility}
         className="absolute right-3 top-1/2 -translate-y-1/2"
         size="sm"
-        color="white"
+        color="neutral"
         variant="text"
         aria-label={showPassword ? "Hide password" : "Show password"}
       >

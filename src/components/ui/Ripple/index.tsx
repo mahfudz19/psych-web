@@ -29,7 +29,7 @@ const getRippleColorClasses = (
       return { base: "bg-primary-main", sudo: ["after:bg-primary-main"] };
     case "secondary":
       return { base: "bg-secondary-main", sudo: ["after:bg-secondary-main"] };
-    case "white":
+    case "neutral":
       return {
         base: "bg-gray-500 dark:bg-white",
         sudo: ["after:bg-gray-500", "after:dark:bg-white"],

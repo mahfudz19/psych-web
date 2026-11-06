@@ -26,7 +26,7 @@ export default function CancelActiveSubscription() {
         <div className="flex gap-2 pt-2">
           <Button
             variant="outlined"
-            color="white"
+            color="neutral"
             size="sm"
             fullWidth
             onClick={() => setIsConfirming(false)}

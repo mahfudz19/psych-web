@@ -22,7 +22,7 @@ const selectVariants = cva(
         warning: "focus:border-warning-main focus:ring-warning-main/20",
         error: "focus:border-error-main focus:ring-error-main/20",
         info: "focus:border-info-main focus:ring-info-main/20",
-        white: "focus:border-white focus:ring-white/20",
+        neutral: "focus:border-white focus:ring-white/20",
       },
       size: {
         sm: "text-xs pl-3 pr-8 py-2",

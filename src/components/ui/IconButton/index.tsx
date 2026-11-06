@@ -79,12 +79,8 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         </span>
         {!noRipple && !rest.disabled && (
           <Ripple
-            color={
-              variant === "contained" && color !== "white" ? undefined : color
-            }
-            opacity={
-              variant === "contained" && color !== "white" ? undefined : 0.25
-            }
+            color={variant === "contained" ? undefined : color}
+            opacity={variant === "contained" ? undefined : 0.25}
             centerRipple
             rippleScale={variant === "text" ? 0.85 : 0.75}
             rippleScaleMax={1}

@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import DarkMode from "../../components/layout/Topbar/DarkMode";
 import Button from "../../components/ui/Button";
+import Chip from "../../components/ui/Chip";
 import IconButton from "../../components/ui/IconButton";
 import Input from "../../components/ui/Input";
 import Tabs from "../../components/ui/Tabs";
@@ -12,22 +14,154 @@ export const Route = createFileRoute("/example-page/")({
 });
 
 function component() {
-  const [menu, setMenu] = useState("button");
-  const menus = ["button", "tabs"] as const;
-  return (
-    <div className="flex">
-      <div className="max-w-2xl flex-0">
-        {menus.map((v) => (
-          <Button key={v} onClick={() => setMenu(v)}>
-            {v}
-          </Button>
-        ))}
+  type MenuKey = "button" | "tabs" | "chip";
 
-        <div className="col-span-4 flex-1">
-          {menu === "button" && <ButtonShowcase />}
-          {menu === "tabs" && <TabsPage />}
+  interface MenuItem {
+    id: MenuKey;
+    label: string;
+    description: string;
+    icon: React.ReactNode;
+  }
+  const MENU_ITEMS: MenuItem[] = [
+    {
+      id: "button",
+      label: "Button",
+      description: "Standard & Icon buttons",
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
+          />
+        </svg>
+      ),
+    },
+    {
+      id: "tabs",
+      label: "Tabs",
+      description: "Navigation & segment tabs",
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 10h16M4 14h16M4 18h16"
+          />
+        </svg>
+      ),
+    },
+    {
+      id: "chip",
+      label: "Chip",
+      description: "Tags, badges & status",
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+          />
+        </svg>
+      ),
+    },
+  ];
+  const [activeMenu, setActiveMenu] = useState<MenuKey>("button");
+
+  return (
+    <div className="min-h-screen bg-bg-default text-text-primary flex flex-col md:flex-row">
+      {/* SIDEBAR NAVIGATION */}
+      <aside className="w-full md:w-72 bg-bg-paper border-b md:border-b-0 md:border-r border-divider shrink-0 md:sticky md:top-0 md:h-screen flex flex-col justify-between">
+        <div className="p-6">
+          {/* Brand / Title Header */}
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-9 h-9 rounded-xl bg-primary-main flex items-center justify-center text-primary-contrast font-bold text-lg shadow-sm">
+              DS
+            </div>
+            <div>
+              <h2 className="font-bold text-base tracking-tight leading-tight">
+                Design System
+              </h2>
+              <p className="text-xs text-text-secondary">
+                UI Component Gallery
+              </p>
+            </div>
+          </div>
+
+          {/* Navigation Menu */}
+          <nav className="space-y-1">
+            <p className="text-xs flex justify-between font-semibold uppercase tracking-wider text-text-disabled px-3 mb-2">
+              Components
+              <DarkMode />
+            </p>
+            {MENU_ITEMS.map((item) => {
+              const isActive = activeMenu === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveMenu(item.id)}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-left transition-all duration-150 group ${
+                    isActive
+                      ? "bg-primary-main/10 text-primary-main font-semibold"
+                      : "text-text-secondary hover:bg-bg-default hover:text-text-primary"
+                  }`}
+                >
+                  <span
+                    className={`transition-colors ${
+                      isActive
+                        ? "text-primary-main"
+                        : "text-text-disabled group-hover:text-text-secondary"
+                    }`}
+                  >
+                    {item.icon}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm leading-none">{item.label}</div>
+                    <div className="text-[11px] text-text-disabled truncate mt-1 font-normal">
+                      {item.description}
+                    </div>
+                  </div>
+                  {isActive && (
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary-main" />
+                  )}
+                </button>
+              );
+            })}
+          </nav>
         </div>
-      </div>
+
+        {/* Sidebar Footer */}
+        <div className="p-4 border-t border-divider text-xs text-text-disabled text-center">
+          Tailwind v4 • Custom Tokens
+        </div>
+      </aside>
+
+      {/* MAIN CONTENT AREA */}
+      <main className="flex-1 min-w-0 overflow-y-auto">
+        <div className="p-6 md:p-10 max-w-7xl mx-auto">
+          {activeMenu === "button" && <ButtonShowcase />}
+          {activeMenu === "tabs" && <TabsPage />}
+          {activeMenu === "chip" && <ChipShowcase />}
+        </div>
+      </main>
     </div>
   );
 }
@@ -40,7 +174,7 @@ function ButtonShowcase() {
     "error",
     "warning",
     "info",
-    "white",
+    "neutral",
   ] as const;
 
   return (
@@ -308,6 +442,117 @@ function TabsPage() {
           </div>
         </TabContent>
       ))}
+    </div>
+  );
+}
+
+function ChipShowcase() {
+  const COLORS = [
+    "primary",
+    "secondary",
+    "success",
+    "error",
+    "warning",
+    "info",
+    "white",
+  ] as const;
+
+  const VARIANTS = [
+    { key: "contained", title: "Contained (Default)" },
+    { key: "outlined", title: "Outlined" },
+    { key: "light", title: "Light" },
+  ] as const;
+
+  return (
+    <div className="p-8 max-w-7xl mx-auto space-y-16 bg-neutral-50 dark:bg-neutral-900 min-h-screen rounded-xl text-neutral-800 dark:text-neutral-100">
+      {/* Header */}
+      <div className="border-b pb-6">
+        <h1 className="text-4xl font-extrabold tracking-tight">
+          Komponen Chip Showcase
+        </h1>
+        <p className="text-neutral-500 mt-2 text-lg">
+          Galeri lengkap untuk menguji semua variasi, ukuran, dan ikon pada
+          komponen Chip.
+        </p>
+      </div>
+
+      {/* BAGIAN 1: VARIANTS & COLORS */}
+      <div className="space-y-12">
+        <div className="border-l-4 border-primary-main pl-4">
+          <h2 className="text-3xl font-bold">1. Variants & Colors</h2>
+          <p className="text-neutral-500 text-sm mt-1">
+            Kombinasi antara tipe varian (Contained, Outlined, Light) dengan
+            skema warna yang tersedia.
+          </p>
+        </div>
+
+        <section className="space-y-8">
+          {VARIANTS.map(({ key, title }) => (
+            <div key={key} className="space-y-3">
+              <h3 className="text-sm font-medium uppercase tracking-wider text-neutral-400">
+                {title}
+              </h3>
+              <div className="flex flex-wrap items-center gap-4 p-6 border border-divider rounded-xl bg-white/50 dark:bg-neutral-800/50">
+                {COLORS.map((color) => (
+                  <Chip key={`${key}-${color}`} variant={key} color={color}>
+                    {color}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+      </div>
+
+      {/* BAGIAN 2: SIZES & ICONS */}
+      <div className="space-y-12 pt-8 border-t border-divider">
+        <div className="border-l-4 border-secondary-main pl-4">
+          <h2 className="text-3xl font-bold">2. Sizes & Icons</h2>
+          <p className="text-neutral-500 text-sm mt-1">
+            Pengujian skala ukuran dan integrasi ikon opsional (Start Icon & End
+            Icon).
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Sizes */}
+          <section className="space-y-4">
+            <h3 className="text-xl font-semibold">2.1 Sizes</h3>
+            <div className="flex flex-wrap items-center gap-4 p-6 border border-divider rounded-xl h-full">
+              <Chip size="sm" color="primary">
+                Small
+              </Chip>
+              <Chip size="md" color="primary">
+                Medium (Default)
+              </Chip>
+              <Chip size="lg" color="primary">
+                Large
+              </Chip>
+            </div>
+          </section>
+
+          {/* Icons */}
+          <section className="space-y-4">
+            <h3 className="text-xl font-semibold">2.2 With Icons</h3>
+            <div className="flex flex-wrap items-center gap-4 p-6 border border-divider rounded-xl h-full">
+              <Chip variant="light" color="success" startIcon={<span>✨</span>}>
+                Start Icon
+              </Chip>
+              <Chip variant="outlined" color="error" endIcon={<span>✕</span>}>
+                Dismissible
+              </Chip>
+              <Chip
+                variant="contained"
+                color="info"
+                startIcon={<span>🚀</span>}
+                endIcon={<span>⚡</span>}
+              >
+                Both Icons
+              </Chip>
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
   );
 }

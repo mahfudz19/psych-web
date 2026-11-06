@@ -9,6 +9,7 @@ import { useTransactionsByUserQuery } from "../../-api/user.query";
 import type { TransactionHistoryItem } from "../../../../../_organization-and-individu/billing/-api/billing.type";
 import Dialog from "../../../../../../../components/ui/Dialog";
 import IconButton from "../../../../../../../components/ui/IconButton";
+import Chip from "../../../../../../../components/ui/Chip";
 
 function Transactions({ userId }: { userId: string }) {
   const [tableState, setTableState] = useState<BaseListParams>({
@@ -75,22 +76,26 @@ function Transactions({ userId }: { userId: string }) {
         { label: "FAILED", value: "FAILED" },
       ],
       cell: (row) => (
-        <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${
+        <Chip
+          color={
             row.status === "PAID"
-              ? "bg-success-main/10 text-success-main"
+              ? "success"
               : row.status === "PENDING"
-                ? "bg-warning-main/10 text-warning-main"
-                : "bg-error-main/10 text-error-main"
-          }`}
+                ? "warning"
+                : "error"
+          }
+          startIcon={
+            <>
+              {row.status === "PAID" && <CheckCircle2 className="w-3 h-3" />}
+              {row.status === "PENDING" && <Clock className="w-3 h-3" />}
+              {(row.status === "FAILED" || row.status === "EXPIRED") && (
+                <XCircle className="w-3 h-3" />
+              )}
+            </>
+          }
         >
-          {row.status === "PAID" && <CheckCircle2 className="w-3 h-3" />}
-          {row.status === "PENDING" && <Clock className="w-3 h-3" />}
-          {(row.status === "FAILED" || row.status === "EXPIRED") && (
-            <XCircle className="w-3 h-3" />
-          )}
           {row.status}
-        </span>
+        </Chip>
       ),
     },
     {

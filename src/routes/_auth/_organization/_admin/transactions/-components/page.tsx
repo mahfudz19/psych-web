@@ -18,6 +18,7 @@ import { Route } from "../index";
 import DetailTransaksi, { HandleCopy } from "./DetailTransaksi";
 import PageHeader from "../../../../../../components/reusebale-components/PageHeader";
 import Card from "../../../../../../components/ui/Card";
+import Chip from "../../../../../../components/ui/Chip";
 
 function TransactionsPage() {
   const navigate = useNavigate({ from: Route.fullPath });
@@ -165,22 +166,26 @@ function TransactionsPage() {
         { label: "FAILED", value: "FAILED" },
       ],
       cell: (row) => (
-        <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${
+        <Chip
+          color={
             row.status === "PAID"
-              ? "bg-success-main/10 text-success-main border border-success-main/20"
+              ? "success"
               : row.status === "PENDING"
-                ? "bg-warning-main/10 text-warning-main border border-warning-main/20"
-                : "bg-error-main/10 text-error-main border border-error-main/20"
-          }`}
+                ? "warning"
+                : "error"
+          }
+          startIcon={
+            <>
+              {row.status === "PAID" && <CheckCircle2 className="w-3 h-3" />}
+              {row.status === "PENDING" && <Clock className="w-3 h-3" />}
+              {(row.status === "FAILED" || row.status === "EXPIRED") && (
+                <XCircle className="w-3 h-3" />
+              )}
+            </>
+          }
         >
-          {row.status === "PAID" && <CheckCircle2 className="w-3 h-3" />}
-          {row.status === "PENDING" && <Clock className="w-3 h-3" />}
-          {(row.status === "FAILED" || row.status === "EXPIRED") && (
-            <XCircle className="w-3 h-3" />
-          )}
           {row.status}
-        </span>
+        </Chip>
       ),
     },
     {
@@ -261,7 +266,7 @@ function TransactionsPage() {
         </Card>
       </div>
 
-      <DataTable<AdminTransactionsInfo, BaseListParams>
+      <DataTable<AdminTransactionsInfo>
         columns={columns}
         data={transactionsList}
         meta={data?.meta}

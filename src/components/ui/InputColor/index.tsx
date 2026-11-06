@@ -18,7 +18,7 @@ const inputColorVariants = cva(
           "focus-within:border-warning-main focus-within:ring-warning-main/20",
         error: "focus-within:border-error-main focus-within:ring-error-main/20",
         info: "focus-within:border-info-main focus-within:ring-info-main/20",
-        white: "focus-within:border-white focus-within:ring-white/20",
+        neutral: "focus-within:border-white focus-within:ring-white/20",
       },
       size: {
         sm: "px-3 py-1.5",

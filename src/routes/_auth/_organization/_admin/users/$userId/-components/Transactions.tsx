@@ -14,13 +14,14 @@ function Transactions({ userId }: { userId: string }) {
   const [tableState, setTableState] = useState<BaseListParams>({
     page: 1,
     limit: 10,
+    sortBy: "createdAt",
+    sortOrder: "desc",
   });
 
-  const {
-    data: response,
-    isLoading,
-    isFetching,
-  } = useTransactionsByUserQuery(userId, tableState);
+  const { data, isLoading, isFetching } = useTransactionsByUserQuery(
+    userId,
+    tableState,
+  );
 
   const columns: ColumnDef<TransactionHistoryItem>[] = [
     {
@@ -287,8 +288,8 @@ function Transactions({ userId }: { userId: string }) {
 
       <DataTable<TransactionHistoryItem, BaseListParams>
         columns={columns}
-        data={response?.data || []}
-        meta={response?.meta}
+        data={data?.data}
+        meta={data?.meta}
         isLoading={isLoading || isFetching}
         state={tableState}
         onStateChange={setTableState}

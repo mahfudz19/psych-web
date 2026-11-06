@@ -1,13 +1,12 @@
 import type { BaseListParams } from "../../../../components/reusebale-components/DataTable";
 import type {
-  Organization,
   CreateOrganizationRequest,
   CreateOrganizationResponse,
-  UpdateOrganizationRequest,
-  MembersListParams,
-  OrganizationMember,
+  Organization,
   OrganizationDetailResponse,
+  OrganizationMember,
   OrganizationMemberDetail,
+  UpdateOrganizationRequest,
 } from "../../../../types/organization";
 import type { User } from "../../../../types/user";
 import { api } from "../../../../utils/api";
@@ -52,7 +51,7 @@ export async function uploadOrganizationLogo({
   return api.post<Organization>(`${BASE}/${orgId}/logo`, formData);
 }
 
-export async function getMembers(orgId: string, params?: MembersListParams) {
+export async function getMembers(orgId: string, params?: BaseListParams) {
   const endpoint = `${BASE}/${orgId}/members`;
 
   return await api.get<OrganizationMember[]>(endpoint, { params });

@@ -20,17 +20,8 @@ import PageHeader from "../../../../../../components/reusebale-components/PageHe
 import Card from "../../../../../../components/ui/Card";
 
 function TransactionsPage() {
-  const search = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-
-  const tableState: BaseListParams = {
-    page: search.page ?? 1,
-    limit: search.limit ?? 10,
-    search: search.search,
-    sortBy: search.sortBy,
-    sortOrder: search.sortOrder,
-    filter: search.filter,
-  };
+  const tableState = Route.useSearch();
 
   const handleStateChange = (
     updater: BaseListParams | ((prev: BaseListParams) => BaseListParams),
@@ -275,7 +266,11 @@ function TransactionsPage() {
         data={transactionsList}
         meta={data?.meta}
         isLoading={isLoading || isFetching}
-        state={tableState}
+        state={{
+          ...tableState,
+          sortBy: tableState.sortBy || "createdAt",
+          sortOrder: tableState.sortOrder || "desc",
+        }}
         onStateChange={handleStateChange}
       />
     </>

@@ -1,19 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { MembersListParams } from "../../../../../types";
 import * as apiOrganization from "../../-api/organization.api";
+import type { BaseListParams } from "../../../../../components/reusebale-components/DataTable";
 import toast from "../../../../../components/ui/Toast";
 
 export const memberKeys = {
   all: ["organizationMembers"] as const,
   lists: () => [...memberKeys.all, "list"] as const,
-  list: (orgId: string, params?: MembersListParams) =>
+  list: (orgId: string, params?: BaseListParams) =>
     [...memberKeys.lists(), orgId, params] as const,
   details: () => [...memberKeys.all, "detail"] as const,
   detail: (orgId: string, memberId: string) =>
     [...memberKeys.details(), orgId, memberId] as const,
 };
 
-export function useMembersListQuery(orgId: string, params?: MembersListParams) {
+export function useMembersListQuery(orgId: string, params?: BaseListParams) {
   return useQuery({
     queryKey: memberKeys.list(orgId, params),
     queryFn: () => apiOrganization.getMembers(orgId, params),

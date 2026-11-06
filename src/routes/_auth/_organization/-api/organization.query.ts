@@ -23,12 +23,7 @@ export const organizationKeys = {
 export function useGetOrganizations(params: BaseListParams) {
   return useQuery({
     queryKey: organizationKeys.list(params),
-    queryFn: () =>
-      apiOrganization
-        .getOrganizations(params)
-        .catch((error) =>
-          toast.error(error?.data?.message || "Gagal mengambil data pengguna"),
-        ),
+    queryFn: () => apiOrganization.getOrganizations(params),
   });
 }
 

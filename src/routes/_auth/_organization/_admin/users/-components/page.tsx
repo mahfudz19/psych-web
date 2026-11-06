@@ -14,7 +14,7 @@ import PageHeader from "../../../../../../components/reusebale-components/PageHe
 function UsersPage() {
   const tableState = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  const { data: response, isLoading, isFetching } = useGetUsers(tableState);
+  const { data, isLoading, isFetching } = useGetUsers(tableState);
 
   const handleStateChange = (newState: BaseListParams) => {
     navigate({
@@ -114,12 +114,16 @@ function UsersPage() {
         breadcrumbs={["Manajemen Pengguna"]}
       />
 
-      <DataTable<Users, BaseListParams>
+      <DataTable<Users>
         columns={userColumns}
-        data={response?.data || []}
-        meta={response?.meta}
+        data={data?.data}
+        meta={data?.meta}
         isLoading={isLoading || isFetching}
-        state={tableState}
+        state={{
+          ...tableState,
+          sortBy: tableState.sortBy || "createdAt",
+          sortOrder: tableState.sortOrder || "desc",
+        }}
         onStateChange={handleStateChange}
       />
     </>

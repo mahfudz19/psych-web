@@ -5,12 +5,10 @@ import ModalInvite from "../-components/ModalInvite";
 import ModalKickMember from "../-components/ModalKickMember";
 import {
   DataTable,
+  type BaseListParams,
   type ColumnDef,
 } from "../../../../../components/reusebale-components/DataTable";
-import type {
-  MembersListParams,
-  OrganizationMember,
-} from "../../../../../types";
+import type { OrganizationMember } from "../../../../../types";
 import { useAuthStore } from "../../../../../utils/authStore";
 import { Route } from "../index";
 import ModalMemberDetail from "./ModalMemberDetail";
@@ -34,7 +32,7 @@ function OrganizationMembersPage() {
   const tableState = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
-  const handleStateChange = (newState: MembersListParams) => {
+  const handleStateChange = (newState: BaseListParams) => {
     navigate({
       search: (prev) => {
         const nextSearch = { ...prev, ...newState };
@@ -129,12 +127,16 @@ function OrganizationMembersPage() {
         </div>
       </div>
 
-      <DataTable<OrganizationMember, MembersListParams>
+      <DataTable<OrganizationMember>
         columns={userColumns}
-        data={data?.data || []}
+        data={data?.data}
         meta={data?.meta}
         isLoading={isLoading || isFetching}
-        state={tableState}
+        state={{
+          ...tableState,
+          sortBy: tableState.sortBy || "createdAt",
+          sortOrder: tableState.sortOrder || "desc",
+        }}
         onStateChange={handleStateChange}
       />
     </>

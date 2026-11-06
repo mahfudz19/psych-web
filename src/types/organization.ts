@@ -155,17 +155,6 @@ export interface OrganizationMemberDetail {
   createdAt: string;
 }
 
-export interface MembersListParams {
-  page?: number;
-  limit?: number;
-  filter?: string | string[];
-  search?: string;
-  sortBy?: "fullName" | "email" | "role" | "joinedAt" | "createdAt";
-  sortOrder?: "asc" | "desc";
-  role?: OrganizationRole;
-  status?: "active" | "inactive" | "suspended";
-}
-
 /**
  * Interface untuk request kick member
  */

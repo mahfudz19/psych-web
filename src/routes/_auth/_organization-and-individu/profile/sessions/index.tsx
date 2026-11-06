@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import SessionPage from "./-components/page";
+import { validateSearch } from "./validateSearch";
 
 export const Route = createFileRoute(
   "/_auth/_organization-and-individu/profile/sessions/",
-)({
-  component: SessionPage,
-});
+)({ validateSearch, component: SessionPage });

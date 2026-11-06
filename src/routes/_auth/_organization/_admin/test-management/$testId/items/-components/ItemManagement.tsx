@@ -100,7 +100,6 @@ function ItemMutation({
   const updateMutation = useUpdateTestItem(testId);
   const [createSectionId, setCreateSectionId] = useState<string>("");
 
-  // Default createSectionId ke section pertama jika belum dipilih
   if (!createSectionId && sections.length > 0) {
     setCreateSectionId(sections[0].id);
   }
@@ -250,7 +249,11 @@ function ItemMutation({
         data={items}
         meta={itemData?.meta}
         isLoading={itemsLoading || isFetching}
-        state={tableState}
+        state={{
+          ...tableState,
+          sortBy: tableState.sortBy || "order",
+          sortOrder: tableState.sortOrder || "asc",
+        }}
         onStateChange={handleStateChange}
         variant="child"
         columns={[

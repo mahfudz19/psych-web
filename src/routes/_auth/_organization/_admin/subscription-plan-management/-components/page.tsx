@@ -48,11 +48,7 @@ const formatCurrency = (val: number) =>
 function SubscriptionPlanManagement() {
   const tableState = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  const {
-    data: response,
-    isLoading,
-    isFetching,
-  } = useGetSubscriptionPlans(tableState);
+  const { data, isLoading, isFetching } = useGetSubscriptionPlans(tableState);
 
   const handleStateChange = (newState: BaseListParams) => {
     navigate({
@@ -159,10 +155,14 @@ function SubscriptionPlanManagement() {
 
       <DataTable<SubscriptionPlan, BaseListParams>
         columns={columns}
-        data={response?.data || []}
-        meta={response?.meta}
+        data={data?.data}
+        meta={data?.meta}
         isLoading={isLoading || isFetching}
-        state={tableState}
+        state={{
+          ...tableState,
+          sortBy: tableState.sortBy || "createdAt",
+          sortOrder: tableState.sortOrder || "desc",
+        }}
         onStateChange={handleStateChange}
       />
     </>

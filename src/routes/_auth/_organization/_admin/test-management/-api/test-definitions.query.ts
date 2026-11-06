@@ -186,11 +186,7 @@ export function useArchiveTestDefinitionMutation() {
 export function useGetTestSections(testId: string, params?: BaseListParams) {
   return useQuery({
     queryKey: testDefinitionKeys.sectionList(testId, params),
-    queryFn: () =>
-      testApi.getTestSections(testId, params).catch((error) => {
-        toast.error(error?.data?.message || "Gagal mengambil daftar section");
-        throw error;
-      }),
+    queryFn: () => testApi.getTestSections(testId, params),
     enabled: !!testId,
   });
 }
@@ -379,11 +375,7 @@ export function useDeleteTestScaleMutation(testId: string) {
 export function useGetTestItems(testId: string, params?: ItemListParams) {
   return useQuery({
     queryKey: testDefinitionKeys.itemList(testId, params),
-    queryFn: () =>
-      testApi.getTestItems(testId, params).catch((error) => {
-        toast.error(error?.data?.message || "Gagal mengambil daftar soal");
-        throw error;
-      }),
+    queryFn: () => testApi.getTestItems(testId, params),
     enabled: !!testId,
   });
 }

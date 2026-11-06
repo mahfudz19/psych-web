@@ -15,13 +15,14 @@ function Sessions({ userId }: { userId: string }) {
   const [tableState, setTableState] = useState<BaseListParams>({
     page: 1,
     limit: 10,
+    sortBy: "lastActive",
+    sortOrder: "desc",
   });
 
-  const {
-    data: response,
-    isLoading,
-    isFetching,
-  } = useSessionsByUserIdQuery(userId, tableState);
+  const { data, isLoading, isFetching } = useSessionsByUserIdQuery(
+    userId,
+    tableState,
+  );
 
   const columns: ColumnDef<Session>[] = [
     {
@@ -127,10 +128,10 @@ function Sessions({ userId }: { userId: string }) {
         </p>
       </div>
 
-      <DataTable<Session, BaseListParams>
+      <DataTable<Session>
         columns={columns}
-        data={response?.data || []}
-        meta={response?.meta}
+        data={data?.data}
+        meta={data?.meta}
         isLoading={isLoading || isFetching}
         state={tableState}
         onStateChange={setTableState}

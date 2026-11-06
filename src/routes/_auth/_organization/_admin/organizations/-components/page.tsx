@@ -14,11 +14,7 @@ function OrganizationsPage() {
   const tableState = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
-  const {
-    data: response,
-    isLoading,
-    isFetching,
-  } = useGetOrganizations(tableState);
+  const { data, isLoading, isFetching } = useGetOrganizations(tableState);
 
   const handleStateChange = (newState: BaseListParams) => {
     navigate({
@@ -93,16 +89,20 @@ function OrganizationsPage() {
     <>
       <PageHeader
         title="Manajemen Oragnisation"
-        subtitle="Kelola akses, profil, dan status anggota platform."
+        subtitle="Kelola akses, profil, dan status organisasi platform."
         breadcrumbs={["Manajemen Oragnisation"]}
       />
 
-      <DataTable<Organization, BaseListParams>
+      <DataTable<Organization>
         columns={columns}
-        data={response?.data || []}
-        meta={response?.meta}
+        data={data?.data}
+        meta={data?.meta}
         isLoading={isLoading || isFetching}
-        state={tableState}
+        state={{
+          ...tableState,
+          sortBy: tableState.sortBy || "createdAt",
+          sortOrder: tableState.sortOrder || "desc",
+        }}
         onStateChange={handleStateChange}
       />
     </>

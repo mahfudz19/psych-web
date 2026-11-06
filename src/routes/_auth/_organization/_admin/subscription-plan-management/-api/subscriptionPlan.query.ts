@@ -19,13 +19,7 @@ export const subscriptionPlanKeys = {
 export function useGetSubscriptionPlans(params?: BaseListParams) {
   return useQuery({
     queryKey: subscriptionPlanKeys.list(params),
-    queryFn: () =>
-      getSubscriptionPlans(params).catch((error) => {
-        toast.error(
-          error?.data?.message || "Gagal mengambil data subscription plan",
-        );
-        throw error;
-      }),
+    queryFn: () => getSubscriptionPlans(params),
   });
 }
 

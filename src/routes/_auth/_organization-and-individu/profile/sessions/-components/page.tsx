@@ -128,12 +128,16 @@ function SessionPage() {
         <p className="text-sm">{t("profile.sessions.subtitle")}</p>
       </div>
 
-      <DataTable<Session, BaseListParams>
+      <DataTable<Session>
         columns={columns}
         data={response?.data || []}
         meta={response?.meta}
         isLoading={isLoading || isFetching}
-        state={tableState}
+        state={{
+          ...tableState,
+          sortBy: tableState.sortBy || "lastActive",
+          sortOrder: tableState.sortOrder || "desc",
+        }}
         onStateChange={handleStateChange}
       />
     </>

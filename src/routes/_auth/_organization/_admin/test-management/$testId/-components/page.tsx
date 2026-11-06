@@ -121,7 +121,11 @@ function SectionManagement({
         data={data?.data || []}
         meta={data?.meta}
         isLoading={isLoading || isFetching}
-        state={tableState}
+        state={{
+          ...tableState,
+          sortBy: tableState.sortBy || "number",
+          sortOrder: tableState.sortOrder || "asc",
+        }}
         onStateChange={handleStateChange}
         variant="child"
         columns={[

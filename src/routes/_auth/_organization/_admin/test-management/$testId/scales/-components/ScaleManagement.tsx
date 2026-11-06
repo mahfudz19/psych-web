@@ -267,10 +267,14 @@ export default function ScaleManagement({
       )}
 
       <DataTable<TestScale>
-        data={data?.data || []}
+        data={data?.data}
         meta={data?.meta}
         isLoading={isLoading || isFetching}
-        state={tableState}
+        state={{
+          ...tableState,
+          sortBy: tableState.sortBy || "order",
+          sortOrder: tableState.sortOrder || "asc",
+        }}
         onStateChange={handleStateChange}
         variant="child"
         columns={columns}

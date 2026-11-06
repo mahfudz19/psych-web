@@ -41,9 +41,7 @@ interface DataTableProps<T, TState extends BaseListParams = BaseListParams> {
   variant?: "default" | "child";
 }
 
-const parseFilterString = (
-  filterParams?: string | string[],
-): Record<string, string> => {
+const parseFilterString = (filterParams?: string | string[]) => {
   const result: Record<string, string> = {};
   if (!filterParams) return result;
 
@@ -69,9 +67,7 @@ const parseFilterString = (
   return result;
 };
 
-const buildFilterString = (
-  filters: Record<string, string>,
-): string[] | undefined => {
+const buildFilterString = (filters: Record<string, string>) => {
   const parts: string[] = [];
 
   Object.entries(filters).forEach(([key, val]) => {
@@ -123,7 +119,7 @@ const generatePagination = (currentPage: number, totalPages: number) => {
 
 export function DataTable<T, TState extends BaseListParams = BaseListParams>({
   columns,
-  data,
+  data = [],
   meta,
   isLoading,
   state,
@@ -223,6 +219,14 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
       }
       return { ...prev, [key]: value };
     });
+  };
+
+  const metaData = {
+    ...meta,
+    page: meta?.page || 1,
+    limit: meta?.limit || 10,
+    total: meta?.total || 0,
+    totalPages: meta?.totalPages || 1,
   };
 
   return (
@@ -450,90 +454,88 @@ export function DataTable<T, TState extends BaseListParams = BaseListParams>({
       </div>
 
       {/* --- AREA PAGINASI RESPONSIVE --- */}
-      {meta && (
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 border-t border-divider bg-bg-paper">
-          <div className="text-sm text-text-secondary text-center md:text-left">
-            {t("common.table.showing", {
-              from: (meta.page - 1) * meta.limit + 1,
-              to: Math.min(meta.page * meta.limit, meta.total),
-              total: meta.total,
-            })}
-          </div>
-
-          <div className="flex items-center gap-1 sm:gap-2">
-            <IconButton
-              disabled={meta.page <= 1}
-              variant="outlined"
-              size="sm"
-              onClick={() =>
-                emitCleanState({
-                  ...state,
-                  page:
-                    (state.page || 1) - 1 <= 1
-                      ? undefined
-                      : (state.page || 1) - 1,
-                })
-              }
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </IconButton>
-
-            {/* Desktop Page Numbers */}
-            <div className="hidden sm:flex items-center gap-1">
-              {generatePagination(meta.page, meta.totalPages).map(
-                (pageNum, idx) => {
-                  if (pageNum === "...") {
-                    return (
-                      <div
-                        key={`ellipsis-${idx}`}
-                        className="px-2 text-text-disabled"
-                      >
-                        <MoreHorizontal className="w-4 h-4" />
-                      </div>
-                    );
-                  }
-                  const isActive = pageNum === meta.page;
-                  return (
-                    <button
-                      key={`page-${pageNum}`}
-                      onClick={() =>
-                        emitCleanState({
-                          ...state,
-                          page:
-                            Number(pageNum) === 1 ? undefined : Number(pageNum),
-                        })
-                      }
-                      className={`min-w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
-                        isActive
-                          ? "bg-primary-main text-white"
-                          : "text-text-secondary hover:bg-divider/20 hover:text-text-primary"
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                },
-              )}
-            </div>
-
-            {/* Mobile Page Indicator (Hanya muncul di layar HP) */}
-            <div className="flex sm:hidden items-center justify-center px-4 text-sm font-medium text-text-primary">
-              {meta.page} / {meta.totalPages}
-            </div>
-
-            <IconButton
-              disabled={meta.page >= meta.totalPages}
-              variant="outlined"
-              size="sm"
-              onClick={() =>
-                emitCleanState({ ...state, page: (state.page || 1) + 1 })
-              }
-            >
-              <ChevronRight className="w-4 h-4" />
-            </IconButton>
-          </div>
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 border-t border-divider bg-bg-paper">
+        <div className="text-sm text-text-secondary text-center md:text-left">
+          {t("common.table.showing", {
+            from: (metaData.page - 1) * metaData.limit + 1,
+            to: Math.min(metaData.page * metaData.limit, metaData.total),
+            total: metaData.total,
+          })}
         </div>
-      )}
+
+        <div className="flex items-center gap-1 sm:gap-2">
+          <IconButton
+            disabled={metaData.page <= 1}
+            variant="outlined"
+            size="sm"
+            onClick={() =>
+              emitCleanState({
+                ...state,
+                page:
+                  (state.page || 1) - 1 <= 1
+                    ? undefined
+                    : (state.page || 1) - 1,
+              })
+            }
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </IconButton>
+
+          {/* Desktop Page Numbers */}
+          <div className="hidden sm:flex items-center gap-1">
+            {generatePagination(metaData.page, metaData.totalPages).map(
+              (pageNum, idx) => {
+                if (pageNum === "...") {
+                  return (
+                    <div
+                      key={`ellipsis-${idx}`}
+                      className="px-2 text-text-disabled"
+                    >
+                      <MoreHorizontal className="w-4 h-4" />
+                    </div>
+                  );
+                }
+                const isActive = pageNum === metaData.page;
+                return (
+                  <button
+                    key={`page-${pageNum}`}
+                    onClick={() =>
+                      emitCleanState({
+                        ...state,
+                        page:
+                          Number(pageNum) === 1 ? undefined : Number(pageNum),
+                      })
+                    }
+                    className={`min-w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
+                      isActive
+                        ? "bg-primary-main text-white"
+                        : "text-text-secondary hover:bg-divider/20 hover:text-text-primary"
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              },
+            )}
+          </div>
+
+          {/* Mobile Page Indicator (Hanya muncul di layar HP) */}
+          <div className="flex sm:hidden items-center justify-center px-4 text-sm font-medium text-text-primary">
+            {metaData.page} / {metaData.totalPages}
+          </div>
+
+          <IconButton
+            disabled={metaData.page >= metaData.totalPages}
+            variant="outlined"
+            size="sm"
+            onClick={() =>
+              emitCleanState({ ...state, page: (state.page || 1) + 1 })
+            }
+          >
+            <ChevronRight className="w-4 h-4" />
+          </IconButton>
+        </div>
+      </div>
     </Paper>
   );
 }

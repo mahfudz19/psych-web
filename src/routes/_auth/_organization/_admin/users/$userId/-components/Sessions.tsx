@@ -105,7 +105,7 @@ function Sessions({ userId }: { userId: string }) {
         { value: "rotated", label: "Rotated" },
       ],
       cell: (row) => (
-        <Chip color={row.status === "active" ? "success" : "default"}>
+        <Chip color={row.status === "active" ? "success" : "neutral"}>
           {row.status}
         </Chip>
       ),

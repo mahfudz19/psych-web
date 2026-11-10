@@ -29,7 +29,7 @@ const chipSizes = {
 const variantsLight = cva(baseChip, {
   variants: {
     color: {
-      default: ["bg-divider/60", "text-text-secondary"],
+      neutral: ["bg-divider/60", "text-text-secondary"],
       primary: [
         "bg-primary-main/15",
         "text-primary-dark dark:text-primary-light",
@@ -58,7 +58,7 @@ const variantsLight = cva(baseChip, {
 const variantsContained = cva(baseChip, {
   variants: {
     color: {
-      default: ["bg-text-primary", "text-bg-paper"],
+      neutral: ["bg-text-primary", "text-bg-paper"],
       primary: ["bg-primary-main", "text-white"],
       secondary: ["bg-secondary-main", "text-white"],
       success: ["bg-success-main", "text-white"],
@@ -75,7 +75,7 @@ const variantsContained = cva(baseChip, {
 const variantsOutlined = cva([...baseChip, "border", "bg-transparent"], {
   variants: {
     color: {
-      default: ["border-divider", "text-text-secondary"],
+      neutral: ["border-divider", "text-text-secondary"],
       primary: [
         "border-primary-main/40",
         "text-primary-main dark:text-primary-light",

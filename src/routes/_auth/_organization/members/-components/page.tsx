@@ -21,7 +21,7 @@ function getRoleBadgeClass(organizationRole?: string) {
     case "admin":
       return "info" as const;
     default:
-      return "default" as const;
+      return "neutral" as const;
   }
 }
 

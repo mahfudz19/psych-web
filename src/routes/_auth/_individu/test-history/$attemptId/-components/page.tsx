@@ -226,7 +226,7 @@ function SectionStatusBadge({
     COMPLETED: "success",
     IN_PROGRESS: "warning",
     EXPIRED: "error",
-    NOT_STARTED: "default",
+    NOT_STARTED: "neutral",
   } as const;
 
   return <Chip color={styles[status]}>{status.replace("_", " ")}</Chip>;

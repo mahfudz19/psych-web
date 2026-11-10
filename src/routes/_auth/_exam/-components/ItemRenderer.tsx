@@ -9,6 +9,7 @@ import {
   isAnswered,
   numConstraint,
 } from "../-api/exam.types";
+import Radio from "../../../../components/ui/Radio";
 
 interface WidgetProps {
   item: ExamItem;
@@ -60,17 +61,14 @@ function ChoiceWidget({ item, value, onChange, disabled }: WidgetProps) {
   return (
     <div className="space-y-3" role="radiogroup" aria-label="Pilihan jawaban">
       {sortedOptions(item).map((o) => (
-        <label key={o.key} className={cardClass(selected === o.key)}>
-          <input
-            type="radio"
-            name={`item-${item.id}`}
-            checked={selected === o.key}
-            disabled={disabled}
-            onChange={() => onChange({ keys: [o.key] })}
-            className="accent-primary-main"
-          />
-          <OptionContent option={o} />
-        </label>
+        <Radio
+          name={`item-${item.id}`}
+          checked={selected === o.key}
+          disabled={disabled}
+          onChange={() => onChange({ keys: [o.key] })}
+          label={<OptionContent option={o} />}
+          classNames={{ root: cardClass(selected === o.key) }}
+        />
       ))}
     </div>
   );

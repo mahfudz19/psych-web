@@ -1,9 +1,12 @@
-import { Link, Outlet } from "@tanstack/react-router";
+import { Outlet, useNavigate } from "@tanstack/react-router";
 import { useGetAttempt, useStartOrResumeAttempt } from "../-api/exam.api";
 import { unwrap, type AttemptState } from "../-api/exam.types";
+import DialogConfirmAction from "../../../../components/reusebale-components/dialog/DialogConfirmAction";
+import Button from "../../../../components/ui/Button";
 import { Route } from "../../_exam/exam/$testId";
 
 const Header = () => {
+  const navigate = useNavigate();
   const { testId } = Route.useParams();
 
   const { data, isError } = useStartOrResumeAttempt(testId);
@@ -58,21 +61,25 @@ const Header = () => {
       </div>
 
       <div>
-        <Link
-          to="/portal"
-          className="px-4 py-2 rounded-xl text-xs font-bold text-error-main bg-error-main/10 hover:bg-error-main/20 transition-colors"
-          onClick={(e) => {
-            if (
-              !window.confirm(
-                "Apakah Anda yakin ingin keluar? Progres ujian yang belum dikirim mungkin akan hilang.",
-              )
-            ) {
-              e.preventDefault();
-            }
-          }}
-        >
-          Keluar Ujian
-        </Link>
+        <DialogConfirmAction
+          title="Keluar dari Ujian?"
+          description="Apakah Anda yakin ingin keluar? Progres ujian yang belum dikirim mungkin akan hilang."
+          confirmText="Ya, Keluar"
+          cancelText="Tetap di Ujian"
+          variant="danger"
+          onConfirm={() => navigate({ to: "/portal" })}
+          trigger={(open: () => void) => (
+            <Button
+              type="button"
+              variant="ghost"
+              color="error"
+              size="sm"
+              onClick={open}
+            >
+              Keluar Ujian
+            </Button>
+          )}
+        />
       </div>
     </header>
   );
@@ -83,7 +90,7 @@ export default function ExamRootLayout() {
     <div className="min-h-screen flex flex-col bg-bg-default text-text-primary selection:bg-primary-main/20">
       <Header />
 
-      <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-8">
+      <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-8 space-y-2">
         <Outlet />
       </main>
     </div>

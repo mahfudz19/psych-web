@@ -1,23 +1,7 @@
-import type {
-  AttemptSection,
-  AttemptState,
-  SectionStatus,
-} from "../-api/exam.types";
+import { ArrowRight } from "lucide-react";
+import type { AttemptSection, AttemptState } from "../-api/exam.types";
 import { formatLimit } from "../-api/exam.types";
-
-const STATUS_LABEL: Record<SectionStatus, string> = {
-  NOT_STARTED: "Belum dimulai",
-  IN_PROGRESS: "Sedang berjalan",
-  COMPLETED: "Selesai",
-  EXPIRED: "Waktu habis",
-};
-
-const STATUS_STYLE: Record<SectionStatus, string> = {
-  NOT_STARTED: "bg-divider text-text-secondary",
-  IN_PROGRESS: "bg-warning-main/10 text-warning-main",
-  COMPLETED: "bg-success-main/10 text-success-main",
-  EXPIRED: "bg-error-main/10 text-error-main",
-};
+import Button from "../../../../components/ui/Button";
 
 interface LobbyProps {
   attempt: AttemptState;
@@ -32,6 +16,138 @@ interface LobbyProps {
   onFinish: () => void;
 }
 
+import { AlertCircle, Check, ChevronRight, Clock } from "lucide-react";
+import { useRef } from "react";
+
+interface SubtestListProps {
+  attempt: AttemptState;
+  nextSection: AttemptSection | null;
+  resuming: AttemptSection | null;
+}
+
+const SubtestList = ({ attempt, nextSection, resuming }: SubtestListProps) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const sections = [...attempt.sections].sort((a, b) => a.order - b.order);
+
+  return (
+    <div className="relative w-full">
+      {/* EFFECT BLUR GRADIENT KIRI */}
+      <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-10 w-8 bg-linear-to-r from-bg-default to-transparent" />
+
+      {/* EFFECT BLUR GRADIENT KANAN */}
+      <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 w-8 bg-linear-to-l from-bg-default to-transparent" />
+
+      {/* HORIZONTAL STEPPER CONTAINER */}
+      <div
+        ref={scrollRef}
+        className="no-scrollbar flex items-start gap-4 overflow-x-auto px-3 py-1 scroll-smooth snap-x snap-mandatory"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        {sections.map((s, index) => {
+          const isCurrent =
+            nextSection?.sectionId === s.sectionId ||
+            resuming?.sectionId === s.sectionId;
+          const isCompleted = s.status === "COMPLETED";
+          const isExpired = s.status === "EXPIRED";
+          const isInProgress = s.status === "IN_PROGRESS";
+
+          return (
+            <div
+              key={s.sectionId}
+              className="flex shrink-0 items-start snap-center"
+            >
+              {/* STEP CARD ITEM */}
+              <div
+                className={`relative flex w-64 flex-col gap-3 rounded-2xl border p-4 transition-all duration-200 ${
+                  isCurrent
+                    ? "border-primary-main bg-bg-paper shadow-md shadow-primary-main/10 ring-2 ring-primary-main/20"
+                    : isCompleted
+                      ? "border-divider bg-bg-paper/60 opacity-90"
+                      : isExpired
+                        ? "border-error-main/30 bg-error-main/5"
+                        : "border-divider bg-bg-paper/40"
+                }`}
+              >
+                {/* TOP ROW: NUMBER BADGE & STATUS */}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    {/* NODE ICON / NUMBER */}
+                    <div
+                      className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-transform ${
+                        isCompleted
+                          ? "bg-success-main text-white"
+                          : isCurrent
+                            ? "bg-primary-main text-primary-contrast shadow-sm scale-110"
+                            : isExpired
+                              ? "bg-error-main text-white"
+                              : "bg-divider/60 text-text-secondary"
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <Check size={14} strokeWidth={3} />
+                      ) : isExpired ? (
+                        <AlertCircle size={14} />
+                      ) : (
+                        s.order
+                      )}
+                    </div>
+
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-text-disabled">
+                      Subtes {s.order}
+                    </span>
+                  </div>
+
+                  {/* ACTIVE INDICATOR BADGE */}
+                  {isCurrent && (
+                    <span className="flex items-center gap-1 rounded-full bg-primary-main/10 px-2 py-0.5 text-[10px] font-bold text-primary-main">
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-main" />
+                      {isInProgress ? "Berjalan" : "Berikutnya"}
+                    </span>
+                  )}
+                </div>
+
+                {/* MIDDLE ROW: TITLE & METRICS */}
+                <div className="space-y-1">
+                  <h4
+                    className={`line-clamp-1 text-sm font-bold ${
+                      isCurrent ? "text-primary-main" : "text-text-primary"
+                    }`}
+                    title={s.name}
+                  >
+                    {s.name}
+                  </h4>
+                  <div className="flex items-center gap-2 text-[11px] text-text-secondary">
+                    <span>{s.itemCount} Soal</span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1">
+                      <Clock size={11} />
+                      {formatLimit(s.timeLimitSeconds)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* BOTTOM ROW: POLICY BADGE (IF ANY) */}
+                {s.navigationPolicy === "FORWARD_ONLY" && (
+                  <div className="w-fit rounded-md bg-warning-main/10 px-1.5 py-0.5 text-[10px] font-medium text-warning-main">
+                    Searah (Forward Only)
+                  </div>
+                )}
+              </div>
+
+              {/* CONNECTOR ARROW / LINE BETWEEN STEPS */}
+              {index < sections.length - 1 && (
+                <div className="flex h-full items-center justify-center px-1 pt-8 text-text-disabled/40">
+                  <ChevronRight size={18} />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 export default function Lobby({
   attempt,
   nextSection,
@@ -44,43 +160,14 @@ export default function Lobby({
   finishError,
   onFinish,
 }: LobbyProps) {
-  const sections = [...attempt.sections].sort((a, b) => a.order - b.order);
-
   return (
-    <>
+    <div>
       {/* DAFTAR SUBTES */}
-      <ol className="space-y-2">
-        {sections.map((s) => (
-          <li
-            key={s.sectionId}
-            className={`flex items-center justify-between gap-3 rounded-2xl border p-4 ${
-              nextSection?.sectionId === s.sectionId ||
-              resuming?.sectionId === s.sectionId
-                ? "border-primary-main/50 bg-primary-main/5"
-                : "border-divider bg-bg-paper"
-            }`}
-          >
-            <div className="flex min-w-0 items-center gap-3">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-divider/40 text-xs font-bold text-text-primary">
-                {s.order}
-              </span>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-bold text-text-primary">
-                  {s.name}
-                </p>
-                <p className="text-[11px] text-text-secondary">
-                  {s.itemCount} soal · {formatLimit(s.timeLimitSeconds)}
-                </p>
-              </div>
-            </div>
-            <span
-              className={`shrink-0 rounded-md px-2 py-0.5 text-[10px] font-bold ${STATUS_STYLE[s.status]}`}
-            >
-              {STATUS_LABEL[s.status]}
-            </span>
-          </li>
-        ))}
-      </ol>
+      <SubtestList
+        attempt={attempt}
+        nextSection={nextSection}
+        resuming={resuming}
+      />
 
       {/* MEMULIHKAN SUBTES YANG SEDANG BERJALAN */}
       {resuming && (
@@ -95,14 +182,14 @@ export default function Lobby({
           {startError && (
             <div className="flex items-center justify-between gap-3 text-xs text-error-main">
               <span>{startError}</span>
-              <button
+              <Button
                 type="button"
                 onClick={() => onStart(resuming.sectionId)}
                 disabled={starting}
                 className="shrink-0 font-bold hover:underline"
               >
                 Coba lagi
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -155,14 +242,15 @@ export default function Lobby({
             <p className="text-sm text-error-main">{startError}</p>
           )}
 
-          <button
+          <Button
             type="button"
             onClick={() => onStart(nextSection.sectionId)}
             disabled={starting}
-            className="w-full rounded-xl bg-primary-main px-8 py-3.5 text-sm font-bold text-primary-contrast shadow-md transition-all hover:opacity-90 disabled:opacity-60 sm:w-auto"
+            loading={starting}
+            endIcon={<ArrowRight size={16} />}
           >
-            {starting ? "Memulai..." : "Mulai Subtes →"}
-          </button>
+            Mulai Subtes
+          </Button>
         </div>
       )}
 
@@ -179,16 +267,16 @@ export default function Lobby({
           {finishError && (
             <p className="text-sm text-error-main">{finishError}</p>
           )}
-          <button
+          <Button
             type="button"
             onClick={onFinish}
             disabled={finishing}
-            className="rounded-xl bg-primary-main px-8 py-3.5 text-sm font-bold text-primary-contrast shadow-md transition-all hover:opacity-90 disabled:opacity-60"
+            loading={finishing}
           >
             {finishing ? "Menyelesaikan..." : "Selesaikan Tes"}
-          </button>
+          </Button>
         </div>
       )}
-    </>
+    </div>
   );
 }

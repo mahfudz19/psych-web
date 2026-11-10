@@ -64,6 +64,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
     helperText,
     error,
     className,
+    classNames,
     color,
     sizes,
     isDisabled,
@@ -90,6 +91,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
     <label
       className={twMerge(
         "inline-flex items-center cursor-pointer relative",
+        classNames?.root,
         getLabelLayoutClass(labelPosisition),
         isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
       )}
@@ -103,13 +105,20 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
         {...rest}
       />
       <div
-        className={twMerge(variants({ color, sizes, isDisabled }), className)}
+        className={twMerge(
+          variants({ color, sizes, isDisabled }),
+          className,
+          classNames?.radio,
+        )}
       />
-      {label && <span className="text-sm">{label}</span>}
+      {label && (
+        <span className={twMerge("text-sm", classNames?.label)}>{label}</span>
+      )}
       {helperText && (
         <p
           className={twMerge(
             "text-xs mt-1",
+            classNames?.helperText,
             error ? "text-red-500" : "text-gray-500",
           )}
         >

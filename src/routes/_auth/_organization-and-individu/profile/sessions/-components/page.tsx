@@ -112,7 +112,7 @@ function SessionPage() {
                 ? "error"
                 : row.status === "expired"
                   ? "warning"
-                  : "default"
+                  : "neutral"
           }
         >
           {row.status}

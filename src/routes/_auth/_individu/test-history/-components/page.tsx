@@ -191,14 +191,13 @@ const List = (props: { isError: boolean; historyItems: Attempt[] }) => {
         {/* Tombol Aksi Berdasarkan Status */}
         <div className="flex items-center gap-3">
           {isCompleted ? (
-            <a
-              href="/exam/result/$attemptId"
-              //   to="/exam/result/$attemptId"
-              //   params={{ attemptId: item.id }}
+            <Link
+              to="/exam/result/$attemptId"
+              params={{ attemptId: item.id }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-bg-default border border-divider text-text-primary hover:bg-divider/20 transition-all shadow-sm"
             >
               📄 Lihat Hasil
-            </a>
+            </Link>
           ) : isInProgress ? (
             <Link
               to="/exam/$testId"

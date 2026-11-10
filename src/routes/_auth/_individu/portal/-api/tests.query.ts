@@ -17,6 +17,8 @@ export const testKeys = {
     [...testKeys.attempts(), "list", { params }] as const,
   attemptDetails: () => [...testKeys.attempts(), "detail"] as const,
   attemptDetail: (id: string) => [...testKeys.attemptDetails(), id] as const,
+  startOrResume: (testId: string) =>
+    [...testKeys.attempts(), "start", testId] as const,
 };
 
 export const useGetCatalog = (params?: BaseListParams) => {
@@ -49,13 +51,14 @@ export const useGetAttempt = (attemptId: string, enabled: boolean = true) => {
   });
 };
 
-export const useStartOrResumeAttempt = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (testId: string) => testApi.startOrResumeAttempt(testId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: testKeys.attempts() });
-    },
+export const useStartOrResumeAttempt = (
+  testId: string,
+  enabled: boolean = true,
+) => {
+  return useQuery({
+    queryKey: testKeys.startOrResume(testId),
+    queryFn: () => testApi.startOrResumeAttempt(testId),
+    enabled: !!testId && enabled,
   });
 };
 

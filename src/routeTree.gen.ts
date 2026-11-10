@@ -37,6 +37,7 @@ import { Route as AuthOrganizationSettingsIndexRouteImport } from './routes/_aut
 import { Route as GuestRegisterOrganizationIndexRouteImport } from './routes/_guest/register/organization/index'
 import { Route as GuestRegisterVerifyEmailIndexRouteImport } from './routes/_guest/register/verify-email/index'
 import { Route as AuthExamExamTestIdIndexRouteImport } from './routes/_auth/_exam/exam/$testId/index'
+import { Route as AuthExamExamResultAttemptIdRouteImport } from './routes/_auth/_exam/exam/result/$attemptId'
 import { Route as AuthOrganizationAndIndividuBillingHistoryIndexRouteImport } from './routes/_auth/_organization-and-individu/billing/history/index'
 import { Route as AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/change-password/index'
 import { Route as AuthOrganizationAndIndividuProfileReferralIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/referral/index'
@@ -204,6 +205,12 @@ const AuthExamExamTestIdIndexRoute = AuthExamExamTestIdIndexRouteImport.update({
   path: '/exam/$testId/',
   getParentRoute: () => AuthExamRoute,
 } as any)
+const AuthExamExamResultAttemptIdRoute =
+  AuthExamExamResultAttemptIdRouteImport.update({
+    id: '/exam/result/$attemptId',
+    path: '/exam/result/$attemptId',
+    getParentRoute: () => AuthExamRoute,
+  } as any)
 const AuthOrganizationAndIndividuBillingHistoryIndexRoute =
   AuthOrganizationAndIndividuBillingHistoryIndexRouteImport.update({
     id: '/history/',
@@ -335,6 +342,7 @@ export interface FileRoutesByFullPath {
   '/settings/': typeof AuthOrganizationSettingsIndexRoute
   '/register/organization/': typeof GuestRegisterOrganizationIndexRoute
   '/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
+  '/exam/result/$attemptId': typeof AuthExamExamResultAttemptIdRoute
   '/test-management/$testId': typeof AuthOrganizationAdminTestManagementTestIdRouteWithChildren
   '/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
   '/billing/history/': typeof AuthOrganizationAndIndividuBillingHistoryIndexRoute
@@ -375,6 +383,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthOrganizationSettingsIndexRoute
   '/register/organization': typeof GuestRegisterOrganizationIndexRoute
   '/register/verify-email': typeof GuestRegisterVerifyEmailIndexRoute
+  '/exam/result/$attemptId': typeof AuthExamExamResultAttemptIdRoute
   '/exam/$testId': typeof AuthExamExamTestIdIndexRoute
   '/billing/history': typeof AuthOrganizationAndIndividuBillingHistoryIndexRoute
   '/profile/change-password': typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRoute
@@ -423,6 +432,7 @@ export interface FileRoutesById {
   '/_auth/_organization/settings/': typeof AuthOrganizationSettingsIndexRoute
   '/_guest/register/organization/': typeof GuestRegisterOrganizationIndexRoute
   '/_guest/register/verify-email/': typeof GuestRegisterVerifyEmailIndexRoute
+  '/_auth/_exam/exam/result/$attemptId': typeof AuthExamExamResultAttemptIdRoute
   '/_auth/_organization/_admin/test-management/$testId': typeof AuthOrganizationAdminTestManagementTestIdRouteWithChildren
   '/_auth/_exam/exam/$testId/': typeof AuthExamExamTestIdIndexRoute
   '/_auth/_organization-and-individu/billing/history/': typeof AuthOrganizationAndIndividuBillingHistoryIndexRoute
@@ -467,6 +477,7 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/register/organization/'
     | '/register/verify-email/'
+    | '/exam/result/$attemptId'
     | '/test-management/$testId'
     | '/exam/$testId/'
     | '/billing/history/'
@@ -507,6 +518,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/register/organization'
     | '/register/verify-email'
+    | '/exam/result/$attemptId'
     | '/exam/$testId'
     | '/billing/history'
     | '/profile/change-password'
@@ -554,6 +566,7 @@ export interface FileRouteTypes {
     | '/_auth/_organization/settings/'
     | '/_guest/register/organization/'
     | '/_guest/register/verify-email/'
+    | '/_auth/_exam/exam/result/$attemptId'
     | '/_auth/_organization/_admin/test-management/$testId'
     | '/_auth/_exam/exam/$testId/'
     | '/_auth/_organization-and-individu/billing/history/'
@@ -780,6 +793,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthExamExamTestIdIndexRouteImport
       parentRoute: typeof AuthExamRoute
     }
+    '/_auth/_exam/exam/result/$attemptId': {
+      id: '/_auth/_exam/exam/result/$attemptId'
+      path: '/exam/result/$attemptId'
+      fullPath: '/exam/result/$attemptId'
+      preLoaderRoute: typeof AuthExamExamResultAttemptIdRouteImport
+      parentRoute: typeof AuthExamRoute
+    }
     '/_auth/_organization-and-individu/billing/history/': {
       id: '/_auth/_organization-and-individu/billing/history/'
       path: '/history'
@@ -910,10 +930,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthExamRouteChildren {
+  AuthExamExamResultAttemptIdRoute: typeof AuthExamExamResultAttemptIdRoute
   AuthExamExamTestIdIndexRoute: typeof AuthExamExamTestIdIndexRoute
 }
 
 const AuthExamRouteChildren: AuthExamRouteChildren = {
+  AuthExamExamResultAttemptIdRoute: AuthExamExamResultAttemptIdRoute,
   AuthExamExamTestIdIndexRoute: AuthExamExamTestIdIndexRoute,
 }
 

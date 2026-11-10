@@ -24,7 +24,7 @@ export function getTestDetail(testId: string) {
 }
 
 export function startOrResumeAttempt(testId: string) {
-  return api.post<AttemptResponse>(`${BASE}/attempts`, { testId });
+  return api.get<AttemptResponse>(`${BASE}/attempts/start/${testId}`);
 }
 
 export function getAttempts(params?: BaseListParams) {

@@ -10,6 +10,7 @@ import {
   Select,
   Textarea,
 } from "../../norms/-components/NormTableService/Normform/ui";
+import toast from "../../../../../../../../components/ui/Toast";
 
 type SupportedType = "SINGLE_CHOICE" | "LIKERT";
 
@@ -198,7 +199,6 @@ export default function ItemForm({
   const [reverseScored, setReverseScored] = useState<boolean>(
     item?.reverseScored ?? false,
   );
-  const [errors, setErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (item && !isSupported(item.type)) {
@@ -238,7 +238,6 @@ export default function ItemForm({
     if (type === "SINGLE_CHOICE") {
       setOptions((prev) => prev.map(() => blankOption()));
     }
-    setErrors([]);
   };
 
   const buildPayload = (formData: FormData): ItemPayload | null => {
@@ -362,10 +361,9 @@ export default function ItemForm({
     }
 
     if (errs.length > 0) {
-      setErrors(errs);
+      toast.error(errs.toLocaleString());
       return null;
     }
-    setErrors([]);
 
     return {
       ...(isEdit ? {} : { sectionId }),
@@ -535,17 +533,6 @@ export default function ItemForm({
           <Advanced item={item} />
         </div>
       </div>
-
-      {/* ERROR */}
-      {errors.length > 0 && (
-        <div className="mx-4 mb-3 rounded-xl border border-error-main/40 bg-error-main/5 px-4 py-3 text-sm text-error-main">
-          <ul className="list-disc space-y-0.5 pl-4">
-            {errors.map((msg) => (
-              <li key={msg}>{msg}</li>
-            ))}
-          </ul>
-        </div>
-      )}
 
       {/* FOOTER */}
       <div className="sticky bottom-0 bg-bg-paper z-10 flex flex-wrap items-center justify-end gap-2 border-t border-divider p-4">

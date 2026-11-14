@@ -47,8 +47,6 @@ export interface AttemptSection {
   startedAt: string | null;
   deadlineAt: string | null;
   completedAt: string | null;
-  /** Belum dikirim API. Jika ditambahkan ke sectionStates, petunjuk tampil sebelum timer dimulai. */
-  instructions?: string | null;
 }
 
 export interface AttemptState {

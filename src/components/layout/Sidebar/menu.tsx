@@ -45,12 +45,12 @@ export const menuConfig: NavGroup[] = [
         children: [
           {
             titleKey: "sidebar.testList",
-            path: "/tests",
+            path: "/test",
             icon: <ClipboardList className="w-4 h-4 shrink-0" />,
           },
           {
             titleKey: "sidebar.history",
-            path: "/tests/history",
+            path: "/test-history",
             icon: <History className="w-4 h-4 shrink-0" />,
           },
         ],

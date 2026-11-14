@@ -103,6 +103,18 @@ export type TestDefinitionUpdatePayload = Omit<
   "code"
 >;
 
+export interface TestOption {
+  label: string;
+  text: string;
+}
+
+export interface TestExample {
+  text: string;
+  options: TestOption[];
+  correctAnswer: string;
+  explanation?: string;
+}
+
 // --- 2. TEST SECTION ---
 export interface TestSection {
   id: string;
@@ -111,7 +123,7 @@ export interface TestSection {
   order: number;
   name: string;
   instructions?: string;
-  examples?: string;
+  examples?: TestExample[];
   showExamplesFirst?: boolean;
   timeLimitSeconds?: number | null;
   itemCount?: number;
@@ -133,7 +145,6 @@ export type TestSectionCreatePayload = {
   examples: unknown[];
   showExamplesFirst: boolean;
   timeLimitSeconds: number | null;
-  itemCount: number;
   navigationPolicy: NavigationPolicy;
   defaultItemType: string;
   stimulusPhase: Record<string, unknown> | null;

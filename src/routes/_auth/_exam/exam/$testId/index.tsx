@@ -110,14 +110,13 @@ function ExamSessionPage() {
     }
   };
 
-  if (attemptId === "" || attemptQuery.isLoading) return <LoadingCard />;
+  if (attemptQuery.isLoading) return <LoadingCard />;
 
   if (attemptQuery.isError || !attempt) {
     return (
       <ErrorCard
         title="Gagal memuat sesi ujian"
         message="Data sesi Anda belum bisa diambil dari server. Jawaban yang sudah tersimpan tidak hilang."
-        onRetry={() => void refetchAttempt()}
       />
     );
   }
@@ -125,8 +124,6 @@ function ExamSessionPage() {
   if (attempt.status === "COMPLETED") {
     return <CompletedCard testName={attempt.testName} />;
   }
-
-  console.log({ run, attempt });
 
   if (run) {
     return (

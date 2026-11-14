@@ -114,14 +114,14 @@ const GroupItem = (props: { item: NavItem; dynamicMenu: NavGroup[] }) => {
 
       {hasChildren && (
         <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${isMini ? "lg:hidden" : ""} ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${isMini ? "lg:max-h-0" : ""} ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
         >
           <div className="ml-5 pl-2 border-l border-primary-contrast/20">
             {(item.children || []).map((c, i) => (
               <Link
                 key={i}
                 to={c.path!}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium text-primary-contrast/70 hover:text-primary-contrast hover:bg-primary-contrast/10 [&.active]:text-primary-contrast [&.active]:bg-primary-contrast/20 [&.active]:font-bold transition-all"
+                className="flex items-center whitespace-nowrap gap-2 px-3.5 py-2 rounded-xl text-sm font-medium text-primary-contrast/70 hover:text-primary-contrast hover:bg-primary-contrast/10 [&.active]:text-primary-contrast [&.active]:bg-primary-contrast/20 [&.active]:font-bold transition-all"
               >
                 {t(c.titleKey as any)}
               </Link>

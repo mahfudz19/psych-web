@@ -191,14 +191,17 @@ export function useGetTestSections(testId: string, params?: BaseListParams) {
   });
 }
 
-export function useGetTestSection(testId: string, sectionId: string) {
+export function useGetTestSection(testId?: string, sectionId?: string) {
   return useQuery({
-    queryKey: testDefinitionKeys.sectionDetail(testId, sectionId),
+    queryKey: testDefinitionKeys.sectionDetail(
+      testId || "no-testId",
+      sectionId || "no-sectionId",
+    ),
     queryFn: () =>
-      testApi.getTestSectionDetail(testId, sectionId).catch((error) => {
-        toast.error(error?.data?.message || "Gagal mengambil detail section");
-        throw error;
-      }),
+      testApi.getTestSectionDetail(
+        testId || "no-testId",
+        sectionId || "no-sectionId",
+      ),
     enabled: !!testId && !!sectionId,
   });
 }

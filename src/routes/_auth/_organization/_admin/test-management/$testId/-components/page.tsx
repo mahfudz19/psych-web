@@ -214,7 +214,6 @@ function SectionManagement({
                           examples: row.examples,
                           showExamplesFirst: row.showExamplesFirst,
                           timeLimitSeconds: row.timeLimitSeconds,
-                          itemCount: row.itemCount,
                           navigationPolicy: row.navigationPolicy,
                           defaultItemType: row.defaultItemType,
                           stimulusPhase: row.stimulusPhase,

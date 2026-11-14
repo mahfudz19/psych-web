@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BookOpen, Lightbulb } from "lucide-react";
 import type { AttemptSection, AttemptState } from "../-api/exam.types";
 import { formatLimit } from "../-api/exam.types";
 import Button from "../../../../components/ui/Button";
@@ -18,14 +18,15 @@ interface LobbyProps {
 
 import { AlertCircle, Check, ChevronRight, Clock } from "lucide-react";
 import { useRef } from "react";
+import { useGetTestSection } from "../../_organization/_admin/test-management/-api/test-definitions.query";
 
-interface SubtestListProps {
+interface SectionListProps {
   attempt: AttemptState;
   nextSection: AttemptSection | null;
   resuming: AttemptSection | null;
 }
 
-const SubtestList = ({ attempt, nextSection, resuming }: SubtestListProps) => {
+const SectionList = ({ attempt, nextSection, resuming }: SectionListProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const sections = [...attempt.sections].sort((a, b) => a.order - b.order);
 
@@ -148,22 +149,114 @@ const SubtestList = ({ attempt, nextSection, resuming }: SubtestListProps) => {
   );
 };
 
-export default function Lobby({
-  attempt,
-  nextSection,
-  allDone,
-  resuming,
-  starting,
-  startError,
-  onStart,
-  finishing,
-  finishError,
-  onFinish,
-}: LobbyProps) {
+const NextSection = (props: { testId: string; sectionId: string }) => {
+  const { sectionId, testId } = props;
+  const { data, isLoading } = useGetTestSection(testId, sectionId);
+  const section = data?.data;
+
+  if (isLoading) {
+    return (
+      <div className="my-4 h-32 w-full animate-pulse rounded-2xl bg-divider/20" />
+    );
+  }
+
+  if (!section) return null;
+
+  return (
+    <div className="my-6 flex flex-col gap-6">
+      {/* 1. PETUNJUK PENGERJAAN */}
+      {section.instructions && (
+        <div className="space-y-2 rounded-2xl border border-primary-main/20 bg-primary-main/5 p-4 sm:p-5">
+          <h3 className="flex items-center gap-2 text-sm font-bold text-primary-main">
+            <BookOpen size={16} />
+            Petunjuk Pengerjaan
+          </h3>
+          <p className="text-sm leading-relaxed text-text-primary">
+            {section.instructions}
+          </p>
+        </div>
+      )}
+
+      {/* 2. CONTOH SOAL (Jika showExamplesFirst = true) */}
+      {section.showExamplesFirst &&
+        section.examples &&
+        section.examples.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="flex items-center gap-2 text-sm font-bold text-text-primary">
+              <Lightbulb size={16} className="text-warning-main" />
+              Contoh Soal
+            </h3>
+
+            {section.examples.map((ex, idx: number) => (
+              <div
+                key={idx}
+                className="space-y-4 rounded-2xl border border-divider bg-bg-paper/50 p-4 sm:p-5"
+              >
+                {/* Pertanyaan Contoh Soal */}
+                <p className="text-sm font-medium text-text-primary">
+                  {ex.text}
+                </p>
+
+                {/* Pilihan Ganda Contoh Soal */}
+                <div className="flex flex-col gap-2">
+                  {ex.options.map((opt) => {
+                    const isCorrect = ex.correctAnswer === opt.label;
+                    return (
+                      <div
+                        key={opt.label}
+                        className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-sm transition-colors ${
+                          isCorrect
+                            ? "border-success-main bg-success-main/10 font-semibold text-success-main"
+                            : "border-divider text-text-secondary"
+                        }`}
+                      >
+                        <span
+                          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] uppercase ${
+                            isCorrect
+                              ? "border-success-main bg-success-main text-white"
+                              : "border-divider bg-bg-paper"
+                          }`}
+                        >
+                          {opt.label}
+                        </span>
+                        <span>{opt.text}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Penjelasan Contoh Soal */}
+                {ex.explanation && (
+                  <div className="mt-4 rounded-xl bg-info-main/10 p-3 text-xs leading-relaxed text-info-main">
+                    <span className="font-bold">Penjelasan: </span>
+                    {ex.explanation}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+    </div>
+  );
+};
+
+export default function Lobby(props: LobbyProps) {
+  const {
+    attempt,
+    nextSection,
+    allDone,
+    resuming,
+    starting,
+    startError,
+    onStart,
+    finishing,
+    finishError,
+    onFinish,
+  } = props;
   return (
     <div>
       {/* DAFTAR SUBTES */}
-      <SubtestList
+      <SectionList
         attempt={attempt}
         nextSection={nextSection}
         resuming={resuming}
@@ -207,16 +300,10 @@ export default function Lobby({
             </h2>
           </div>
 
-          {nextSection.instructions ? (
-            <p className="whitespace-pre-line text-sm leading-relaxed text-text-secondary">
-              {nextSection.instructions}
-            </p>
-          ) : (
-            <p className="text-sm leading-relaxed text-text-secondary">
-              Petunjuk subtes ini ditampilkan di bagian atas layar setelah Anda
-              memulai.
-            </p>
-          )}
+          <NextSection
+            sectionId={nextSection.sectionId}
+            testId={attempt.testId}
+          />
 
           <ul className="space-y-1.5 text-xs text-text-secondary">
             <li>📝 {nextSection.itemCount} soal</li>

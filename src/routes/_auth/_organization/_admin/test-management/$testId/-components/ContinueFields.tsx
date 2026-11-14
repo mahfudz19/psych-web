@@ -9,6 +9,39 @@ const toJson = (value: unknown, fallback: string) =>
     ? fallback
     : JSON.stringify(value, null, 2);
 
+const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
+  return (
+    <>
+      <Checkbox
+        name="showExamplesFirst"
+        label="Tampilkan contoh soal sebelum soal pertama"
+        defaultChecked={section?.showExamplesFirst ?? true}
+      />
+      <Label
+        htmlFor="examples"
+        required
+        tooltip="Soal contoh atau latihan sebelum waktu berjalan (IST, CFIT, TIU 5). Array JSON. Kosongkan jika tidak ada."
+      >
+        Contoh Soal (JSON)
+      </Label>
+      <Textarea
+        id="examples"
+        name="examples"
+        defaultValue={toJson(section?.examples ?? [], "[]")}
+        rows={7}
+        spellCheck={false}
+        className="w-full font-mono"
+      />
+      <p className="mt-1 text-xs text-text-secondary">
+        Bentuk yang disarankan:{" "}
+        {
+          '[{ content: { text, images: [{ label, url }] }, options: [{ key }], answer: ["3"], explanation }]'
+        }
+      </p>
+    </>
+  );
+};
+
 function ContinueField({
   section,
   useStimulus,
@@ -24,33 +57,7 @@ function ContinueField({
     <>
       {/* Contoh soal */}
       <div>
-        <Checkbox
-          name="showExamplesFirst"
-          label="Tampilkan contoh soal sebelum soal pertama"
-          defaultChecked={section?.showExamplesFirst ?? true}
-        />
-
-        <Label
-          htmlFor="examples"
-          required
-          tooltip="Soal contoh atau latihan sebelum waktu berjalan (IST, CFIT, TIU 5). Array JSON. Kosongkan jika tidak ada."
-        >
-          Contoh Soal (JSON)
-        </Label>
-        <Textarea
-          id="examples"
-          name="examples"
-          defaultValue={toJson(section?.examples ?? [], "[]")}
-          rows={7}
-          spellCheck={false}
-          className="w-full font-mono"
-        />
-        <p className="mt-1 text-xs text-text-secondary">
-          Bentuk yang disarankan:{" "}
-          {
-            '[{ content: { text, images: [{ label, url }] }, options: [{ key }], answer: ["3"], explanation }]'
-          }
-        </p>
+        <ExampleField />
       </div>
 
       {/* Fase hafalan */}

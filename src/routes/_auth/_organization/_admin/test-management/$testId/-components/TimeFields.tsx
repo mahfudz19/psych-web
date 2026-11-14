@@ -23,47 +23,6 @@ function TimeField({ section }: { section?: SectionFormInitial }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <Label
-            htmlFor="timeLimitSeconds"
-            required
-            tooltip="Batas waktu subtes. Server menutup subtes otomatis saat habis. Kosongkan jika tanpa batas. Isi sesuai manual tes."
-          >
-            Batas Waktu (Detik)
-          </Label>
-          <Input
-            id="timeLimitSeconds"
-            name="timeLimitSeconds"
-            type="number"
-            min="1"
-            defaultValue={section?.timeLimitSeconds ?? ""}
-            placeholder="Kosong = tanpa batas"
-            className="w-full"
-          />
-          <p className="mt-1 text-xs text-text-secondary">
-            Contoh: 360 detik = 6 menit.
-          </p>
-        </div>
-        <div>
-          <Label
-            htmlFor="itemCount"
-            required
-            tooltip="Jumlah soal yang diharapkan di subtes ini. Dibandingkan dengan soal yang sudah diinput untuk melihat progres."
-          >
-            Jumlah Soal
-          </Label>
-          <Input
-            id="itemCount"
-            name="itemCount"
-            type="number"
-            min="0"
-            defaultValue={section?.itemCount ?? 0}
-            className="w-full"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <Label
             htmlFor="navigationPolicy"
             required
             tooltip="FREE = peserta boleh kembali ke soal sebelumnya. FORWARD_ONLY = hanya maju (umum di IST)."
@@ -100,6 +59,30 @@ function TimeField({ section }: { section?: SectionFormInitial }) {
               </option>
             ))}
           </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <Label
+            htmlFor="timeLimitSeconds"
+            required
+            tooltip="Batas waktu subtes. Server menutup subtes otomatis saat habis. Kosongkan jika tanpa batas. Isi sesuai manual tes."
+          >
+            Batas Waktu (Detik)
+          </Label>
+          <Input
+            id="timeLimitSeconds"
+            name="timeLimitSeconds"
+            type="number"
+            min="1"
+            defaultValue={section?.timeLimitSeconds ?? ""}
+            placeholder="Kosong = tanpa batas"
+            className="w-full"
+          />
+          <p className="mt-1 text-xs text-text-secondary">
+            Contoh: 360 detik = 6 menit.
+          </p>
         </div>
       </div>
     </>

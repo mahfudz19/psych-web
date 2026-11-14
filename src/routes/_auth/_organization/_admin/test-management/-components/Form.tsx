@@ -93,217 +93,209 @@ function TestDefinitionForm({
         </Tabs>
       </div>
 
-      <div className="p-4 flex-1 overflow-y-auto">
+      <div className="px-4 flex-1 overflow-y-auto">
         {/* TAB 1: KATALOG (Informasi Dasar) */}
-        <TabContent value="katalog" activeValue={activeTab} keepMounted>
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label
-                  htmlFor="code"
-                  required
-                  tooltip="Kode unik tetap untuk keperluan aplikasi, URL, dan hak akses. Contoh: BIG_FIVE"
-                >
-                  Kode Tes
-                </Label>
-                <Input
-                  id="code"
-                  name="code"
-                  type="text"
-                  required
-                  defaultValue={testDefinition?.code}
-                  placeholder="Contoh: BIG_FIVE"
-                  disabled={isEdit}
-                  className="w-full uppercase"
-                />
-              </div>
-              <div>
-                <Label
-                  htmlFor="version"
-                  required
-                  tooltip="Versi iterasi alat tes (dicatat di riwayat attempt). Contoh: 1.0.0"
-                >
-                  Versi
-                </Label>
-                <Input
-                  id="version"
-                  name="version"
-                  type="text"
-                  required
-                  defaultValue={testDefinition?.version || "1.0.0"}
-                  className="w-full"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label
-                  htmlFor="name"
-                  required
-                  tooltip="Nama lengkap tes yang akan terlihat di laporan dan rincian."
-                >
-                  Nama Lengkap Tes
-                </Label>
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  defaultValue={testDefinition?.name}
-                  placeholder="Contoh: Big Five Personality"
-                  className="w-full"
-                />
-              </div>
-              <div>
-                <Label
-                  htmlFor="shortName"
-                  required
-                  tooltip="Singkatan nama tes untuk tampilan UI yang lebih ringkas/sempit seperti Kartu Tes."
-                >
-                  Nama Singkat (UI)
-                </Label>
-                <Input
-                  id="shortName"
-                  name="shortName"
-                  type="text"
-                  required
-                  defaultValue={testDefinition?.shortName}
-                  placeholder="Contoh: Big Five"
-                  className="w-full"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label
-                  htmlFor="category"
-                  required
-                  tooltip="Pengelompokan jenis psikotes (Kemampuan, Kepribadian, Minat, dll)."
-                >
-                  Kategori
-                </Label>
-                <Select
-                  id="category"
-                  name="category"
-                  required
-                  defaultValue={testDefinition?.category || ""}
-                  className="w-full"
-                >
-                  <option value="" disabled>
-                    -- Pilih Kategori --
-                  </option>
-                  <option value="ABILITY">Kemampuan (ABILITY)</option>
-                  <option value="PERSONALITY_SCALE">
-                    Kepribadian Skala (PERSONALITY_SCALE)
-                  </option>
-                  <option value="PERSONALITY_FORCED_CHOICE">
-                    Kepribadian Pilihan Paksa (PERSONALITY_FORCED_CHOICE)
-                  </option>
-                  <option value="INTEREST">Minat (INTEREST)</option>
-                  <option value="SPEED_ENDURANCE">
-                    Kecepatan & Ketelitian (SPEED_ENDURANCE)
-                  </option>
-                  <option value="PROJECTIVE">Proyektif (PROJECTIVE)</option>
-                  <option value="MANAGEMENT">Manajemen (MANAGEMENT)</option>
-                </Select>
-              </div>
-              <div>
-                <Label
-                  htmlFor="status"
-                  required
-                  tooltip="Status rilis alat tes. Pilih ACTIVE agar tes bisa digunakan oleh sistem."
-                >
-                  Status
-                </Label>
-                <Select
-                  id="status"
-                  name="status"
-                  required
-                  disabled
-                  defaultValue={testDefinition?.status || "DRAFT"}
-                  className="w-full"
-                >
-                  <option value="DRAFT">DRAFT</option>
-                </Select>
-              </div>
-            </div>
-
+        <TabContent
+          value="katalog"
+          activeValue={activeTab}
+          keepMounted
+          className="space-y-4 h-[calc(100dvh-333px)]"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label
-                htmlFor="description"
-                tooltip="Penjelasan singkat tentang apa yang diukur oleh tes ini untuk ditampilkan pada daftar eksplorasi."
+                htmlFor="code"
+                required
+                tooltip="Kode unik tetap untuk keperluan aplikasi, URL, dan hak akses. Contoh: BIG_FIVE"
               >
-                Deskripsi Katalog
+                Kode Tes
               </Label>
-              <Textarea
-                id="description"
-                name="description"
-                defaultValue={testDefinition?.description}
-                rows={3}
+              <Input
+                id="code"
+                name="code"
+                type="text"
+                required
+                defaultValue={testDefinition?.code}
+                placeholder="Contoh: BIG_FIVE"
+                disabled={isEdit}
+                className="w-full uppercase"
+              />
+            </div>
+            <div>
+              <Label
+                htmlFor="version"
+                required
+                tooltip="Versi iterasi alat tes (dicatat di riwayat attempt). Contoh: 1.0.0"
+              >
+                Versi
+              </Label>
+              <Input
+                id="version"
+                name="version"
+                type="text"
+                required
+                defaultValue={testDefinition?.version || "1.0.0"}
                 className="w-full"
               />
             </div>
+          </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label
-                htmlFor="instructions"
-                tooltip="Panduan yang akan dibaca oleh user sebelum mereka menekan tombol 'Mulai Tes'."
+                htmlFor="name"
+                required
+                tooltip="Nama lengkap tes yang akan terlihat di laporan dan rincian."
               >
-                Instruksi Umum
+                Nama Lengkap Tes
               </Label>
-              <Textarea
-                id="instructions"
-                name="instructions"
-                defaultValue={testDefinition?.instructions}
-                rows={3}
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                required
+                defaultValue={testDefinition?.name}
+                placeholder="Contoh: Big Five Personality"
                 className="w-full"
               />
             </div>
-
             <div>
-              <Label tooltip="Tujuan dari tes ini untuk pemfilteran ketersediaan pada dashboard (Bisa lebih dari satu).">
-                Tujuan Penggunaan
+              <Label
+                htmlFor="shortName"
+                required
+                tooltip="Singkatan nama tes untuk tampilan UI yang lebih ringkas/sempit seperti Kartu Tes."
+              >
+                Nama Singkat (UI)
               </Label>
-              <div className="flex items-center gap-4">
-                <Checkbox
-                  sizes="lg"
-                  value="SELF_DISCOVERY"
-                  defaultChecked={purposes.includes("SELF_DISCOVERY")}
-                  label="Self Discovery"
-                />
-                <Checkbox
-                  sizes="lg"
-                  value="RECRUITMENT"
-                  defaultChecked={purposes.includes("RECRUITMENT")}
-                  label="Recruitment"
-                />
-              </div>
+              <Input
+                id="shortName"
+                name="shortName"
+                type="text"
+                required
+                defaultValue={testDefinition?.shortName}
+                placeholder="Contoh: Big Five"
+                className="w-full"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <Label
+                htmlFor="category"
+                required
+                tooltip="Pengelompokan jenis psikotes (Kemampuan, Kepribadian, Minat, dll)."
+              >
+                Kategori
+              </Label>
+              <Select
+                id="category"
+                name="category"
+                required
+                defaultValue={testDefinition?.category || ""}
+                className="w-full"
+              >
+                <option value="" disabled>
+                  -- Pilih Kategori --
+                </option>
+                <option value="ABILITY">Kemampuan (ABILITY)</option>
+                <option value="PERSONALITY_SCALE">
+                  Kepribadian Skala (PERSONALITY_SCALE)
+                </option>
+                <option value="PERSONALITY_FORCED_CHOICE">
+                  Kepribadian Pilihan Paksa (PERSONALITY_FORCED_CHOICE)
+                </option>
+                <option value="INTEREST">Minat (INTEREST)</option>
+                <option value="SPEED_ENDURANCE">
+                  Kecepatan & Ketelitian (SPEED_ENDURANCE)
+                </option>
+                <option value="PROJECTIVE">Proyektif (PROJECTIVE)</option>
+                <option value="MANAGEMENT">Manajemen (MANAGEMENT)</option>
+              </Select>
+            </div>
+            <div>
+              <Label
+                htmlFor="status"
+                required
+                tooltip="Status rilis alat tes. Pilih ACTIVE agar tes bisa digunakan oleh sistem."
+              >
+                Status
+              </Label>
+              <Select
+                id="status"
+                name="status"
+                required
+                disabled
+                defaultValue={testDefinition?.status || "DRAFT"}
+                className="w-full"
+              >
+                <option value="DRAFT">DRAFT</option>
+              </Select>
+            </div>
+          </div>
+
+          <div>
+            <Label
+              htmlFor="description"
+              tooltip="Penjelasan singkat tentang apa yang diukur oleh tes ini untuk ditampilkan pada daftar eksplorasi."
+            >
+              Deskripsi Katalog
+            </Label>
+            <Textarea
+              id="description"
+              name="description"
+              defaultValue={testDefinition?.description}
+              rows={3}
+              className="w-full"
+            />
+          </div>
+
+          <div>
+            <Label
+              htmlFor="instructions"
+              tooltip="Panduan yang akan dibaca oleh user sebelum mereka menekan tombol 'Mulai Tes'."
+            >
+              Instruksi Umum
+            </Label>
+            <Textarea
+              id="instructions"
+              name="instructions"
+              defaultValue={testDefinition?.instructions}
+              rows={3}
+              className="w-full"
+            />
+          </div>
+
+          <div>
+            <Label tooltip="Tujuan dari tes ini untuk pemfilteran ketersediaan pada dashboard (Bisa lebih dari satu).">
+              Tujuan Penggunaan
+            </Label>
+            <div className="flex items-center gap-4">
+              <Checkbox
+                sizes="lg"
+                value="SELF_DISCOVERY"
+                defaultChecked={purposes.includes("SELF_DISCOVERY")}
+                label="Self Discovery"
+              />
+              <Checkbox
+                sizes="lg"
+                value="RECRUITMENT"
+                defaultChecked={purposes.includes("RECRUITMENT")}
+                label="Recruitment"
+              />
             </div>
           </div>
         </TabContent>
 
         {/* TAB 2: PENGERJAAN */}
-        <TabContent value="pengerjaan" activeValue={activeTab} keepMounted>
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <Label
-                  htmlFor="totalItems"
-                  tooltip="Jumlah total soal untuk keperluan validasi kelengkapan data."
-                >
-                  Total Soal
-                </Label>
-                <Input
-                  id="totalItems"
-                  name="totalItems"
-                  type="number"
-                  min="0"
-                  defaultValue={testDefinition?.totalItems || 0}
-                  className="w-full"
-                />
-              </div>
+        <TabContent
+          value="pengerjaan"
+          activeValue={activeTab}
+          keepMounted
+          className="space-y-4 h-[calc(100dvh-333px)]"
+        >
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label
                   htmlFor="estimatedMinutes"
@@ -377,12 +369,17 @@ function TestDefinitionForm({
                 </Select>
               </div>
             </div>
-          </div>
+          </>
         </TabContent>
 
         {/* TAB 3: HASIL & SCORING */}
-        <TabContent value="hasil" activeValue={activeTab} keepMounted>
-          <div className="space-y-4">
+        <TabContent
+          value="hasil"
+          activeValue={activeTab}
+          keepMounted
+          className="space-y-4 h-[calc(100dvh-333px)]"
+        >
+          <>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label
@@ -480,7 +477,7 @@ function TestDefinitionForm({
                 />
               </div>
             </div>
-          </div>
+          </>
         </TabContent>
       </div>
 

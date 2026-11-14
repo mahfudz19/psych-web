@@ -41,14 +41,13 @@ function DialogCreate() {
           Create New Test
         </Button>
       )}
+      scroll="paper"
       maxWidth="4xl"
     >
       {(close) => (
         <>
-          <div className="p-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Create New Test
-            </h3>
+          <div className="p-4 flex items-center justify-between border-b border-divider">
+            <h3 className="text-lg font-semibold">Create New Test</h3>
             <IconButton variant="text" size="sm" onClick={close} color="error">
               <X size={20} />
             </IconButton>

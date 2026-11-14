@@ -78,7 +78,7 @@ const GroupItem = (props: { item: NavItem; dynamicMenu: NavGroup[] }) => {
         <Link
           to={item.path!}
           onClick={() => window.innerWidth < 1024 && toggleMobile()}
-          className={`flex overflow-hidden items-center py-2.5 ${isMini ? "pl-4.5 pr-0.5" : "px-3 "} rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast [&.active]:bg-primary-contrast/25 [&.active]:text-primary-contrast [&.active]:shadow-inner [&.active]:font-bold transition-all duration-200`}
+          className={`overflow-hidden flex items-center py-2.5 ${isMini ? "pl-4.5 pr-0.5" : "px-3"} rounded-xl text-sm font-medium text-primary-contrast/80 hover:bg-primary-contrast/10 hover:text-primary-contrast [&.active]:bg-primary-contrast/25 [&.active]:text-primary-contrast [&.active]:shadow-inner [&.active]:font-bold transition-all duration-200`}
         >
           {item.icon}
           <span
@@ -203,7 +203,7 @@ export function Sidebar() {
       <div className="p-0 lg:p-4 z-50">
         <aside
           className={twMerge(
-            "fixed lg:static inset-y-0 left-0 flex flex-col h-full rounded-2xl shadow-xl",
+            "fixed lg:static inset-y-0 left-0 flex flex-col h-full rounded-r-2xl lg:rounded-2xl shadow-xl",
             "transition-all duration-300 ease-in-out border-none",
             "bg-linear-to-b from-primary-main to-primary-dark text-primary-contrast",
             isMobileOpen
@@ -271,7 +271,7 @@ export function Sidebar() {
           </div>
 
           <nav
-            className={`flex-1 p-3 space-y-3 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
+            className={`flex-1  py-1.5 px-3 custom-scrollbar ${isMini ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}
           >
             {dynamicMenu.map((group, groupIdx) => (
               <div key={groupIdx}>

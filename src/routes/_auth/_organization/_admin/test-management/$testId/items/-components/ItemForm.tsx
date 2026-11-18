@@ -424,7 +424,6 @@ export default function ItemForm({
       ref={formRef}
       onSubmit={handleSubmit}
       onKeyDown={handleKeyDown}
-      className="flex flex-col"
       noValidate
     >
       <div className="p-4 space-y-3">

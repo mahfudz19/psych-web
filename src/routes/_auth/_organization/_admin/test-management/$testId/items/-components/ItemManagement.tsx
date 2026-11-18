@@ -1,4 +1,17 @@
+import { useNavigate } from "@tanstack/react-router";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Copy,
+  Edit,
+  Plus,
+  Trash,
+  X,
+} from "lucide-react";
 import { useState } from "react";
+import { Route } from "..";
 import {
   useCreateTestItem,
   useDeleteTestItemMutation,
@@ -15,10 +28,7 @@ import type {
   TestScale,
   TestSection,
 } from "../../../-api/test-definitions.type";
-import {
-  DataTable,
-  type BaseListParams,
-} from "../../../../../../../../components/reusebale-components/DataTable";
+import { DataTable } from "../../../../../../../../components/reusebale-components/DataTable";
 import Dialog from "../../../../../../../../components/ui/Dialog";
 import {
   Alert,
@@ -27,12 +37,8 @@ import {
   Button,
   DialogConfirmAction,
   IconButton,
-  Select,
 } from "../../norms/-components/NormTableService/Normform/ui";
-import { AlertTriangle, Check, Copy, Edit, Plus, Trash, X } from "lucide-react";
 import ItemForm from "./ItemForm";
-import { Route } from "..";
-import { useNavigate } from "@tanstack/react-router";
 
 interface Props {
   testId: string;
@@ -82,73 +88,47 @@ function summarize(item: TestItem) {
   return n > 0 ? `[${n} gambar]` : "(tanpa isi)";
 }
 
-function ItemMutation({
-  testId,
-  scales,
-  sections,
-  isLocked,
-  category,
-}: {
+const SkalaCell = (props: { row: TestItem; scales: TestScale[] }) => {
+  const { row, scales } = props;
+  const scaleById = new Map(scales.map((s) => [s.id, s]));
+  const scale = row.scaleId ? scaleById.get(row.scaleId) : null;
+  return <span className="font-mono text-xs">{scale ? scale.code : "-"}</span>;
+};
+
+function ItemMutation(props: {
   testId: string;
+  section: TestSection;
   scales: TestScale[];
-  sections: TestSection[];
   isLocked: boolean;
   category: TestCategory;
 }) {
+  const { testId, scales, isLocked, category, section } = props;
+
+  const tableState = Route.useSearch();
+
   const createMutation = useCreateTestItem(testId);
   const deleteMutation = useDeleteTestItemMutation(testId);
   const updateMutation = useUpdateTestItem(testId);
-  const [createSectionId, setCreateSectionId] = useState<string>("");
 
-  if (!createSectionId && sections.length > 0) {
-    setCreateSectionId(sections[0].id);
-  }
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  const { data, isLoading, isFetching } = useGetTestItems(testId, {
+    ...tableState,
+    filter: [`sectionId:contains:${section.id}`],
+  });
 
   const isAbility = category === "ABILITY";
-
-  const tableState = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
-  const handleStateChange = (newState: BaseListParams) => {
-    navigate({ search: (prev) => ({ ...prev, ...newState }), replace: true });
-  };
-
-  const {
-    data: itemData,
-    isLoading: itemsLoading,
-    isFetching,
-  } = useGetTestItems(testId, tableState);
-
-  const items = itemData?.data ?? [];
-  const total = itemData?.meta?.total ?? 0;
-
+  const items = data?.data ?? [];
+  const total = data?.meta?.total ?? 0;
   const pageMax = Math.max(0, ...items.map((i) => i.number));
   const nextNumber = Math.max(pageMax, total) + 1;
-
-  const scaleById = new Map(scales.map((s) => [s.id, s]));
-  const sectionFilterOptions = sections.map((s) => ({
-    label: `${s.code} - ${s.name}`,
-    value: s.id,
-  }));
-
-  const scaleFilterOptions = scales.map((s) => ({
-    label: `${s.code} - ${s.name}`,
-    value: s.id,
-  }));
-
-  const typeFilterOptions = Object.entries(TYPE_LABEL).map(
-    ([value, label]) => ({ label, value }),
-  );
-
-  const sectionById = new Map(sections.map((s) => [s.id, s]));
-
-  const createSection = sectionById.get(createSectionId) ?? sections[0];
 
   return (
     <>
       {/* HEADER */}
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
         <div>
-          <h3 className="text-lg font-semibold">Daftar Soal</h3>
+          <h3 className="text-lg font-semibold">Daftar Soal {section.code}</h3>
           <p className="text-xs text-gray-500">
             Mode penilaian tes ini:{" "}
             <span className="font-medium">
@@ -159,20 +139,6 @@ function ItemMutation({
 
         {!isLocked && (
           <div className="flex items-center gap-2">
-            {sections.length > 1 && (
-              <Select
-                value={createSectionId}
-                onChange={(e) => setCreateSectionId(e.target.value)}
-                aria-label="Section tujuan"
-                size="sm"
-              >
-                {sections.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.code} - {s.name}
-                  </option>
-                ))}
-              </Select>
-            )}
             <Dialog
               dismissible={false}
               maxWidth="full"
@@ -182,7 +148,7 @@ function ItemMutation({
                   size="sm"
                   onClick={openDialog}
                 >
-                  Tambah soal ke {createSection.code}
+                  Tambah soal ke {section.code}
                 </Button>
               )}
             >
@@ -190,7 +156,7 @@ function ItemMutation({
                 <>
                   <div className="sticky top-0 bg-bg-paper z-10 flex items-center justify-between px-6 py-4 border-b border-divider">
                     <h4 className="text-lg font-semibold text-text-primary">
-                      Tambah soal · {createSection.code}
+                      Tambah soal · {section.code}
                     </h4>
                     <IconButton
                       size="sm"
@@ -202,12 +168,12 @@ function ItemMutation({
                     </IconButton>
                   </div>
                   <ItemForm
-                    key={`create-${createSection.id}`}
+                    key={`create-${section.id}`}
                     mode="create"
-                    sectionId={createSection.id}
-                    sectionCode={createSection.code}
+                    sectionId={section.id}
+                    sectionCode={section.code}
                     nextNumber={nextNumber}
-                    defaultType={createSection.defaultItemType}
+                    defaultType={section.defaultItemType}
                     isAbility={isAbility}
                     scales={scales.map((s) => ({
                       id: s.id,
@@ -235,26 +201,21 @@ function ItemMutation({
         )}
       </div>
 
-      {isLocked && (
-        <Alert severity="warning" variant="standard">
-          <AlertTitle>Tes ini tidak berstatus DRAFT</AlertTitle>
-          <AlertDescription>
-            Tes ini tidak berstatus DRAFT, sehingga soal tidak bisa ditambah,
-            diubah, atau dihapus.
-          </AlertDescription>
-        </Alert>
-      )}
-
       <DataTable<TestItem>
         data={items}
-        meta={itemData?.meta}
-        isLoading={itemsLoading || isFetching}
+        meta={data?.meta}
+        isLoading={isLoading || isFetching}
         state={{
           ...tableState,
           sortBy: tableState.sortBy || "order",
           sortOrder: tableState.sortOrder || "asc",
         }}
-        onStateChange={handleStateChange}
+        onStateChange={(newState) => {
+          navigate({
+            search: (prev) => ({ ...prev, ...newState }),
+            replace: true,
+          });
+        }}
         variant="child"
         columns={[
           {
@@ -263,22 +224,6 @@ function ItemMutation({
             sortable: true,
             cell: (row) => row.number,
             className: "w-16",
-          },
-          {
-            header: "Section",
-            accessorKey: "sectionId",
-            filterType: "faceted",
-            filterOptions: sectionFilterOptions,
-            cell: (row) => {
-              const section = row.sectionId
-                ? sectionById.get(row.sectionId)
-                : null;
-              return (
-                <span className="font-mono text-xs">
-                  {section ? section.code : "-"}
-                </span>
-              );
-            },
           },
           {
             header: "Soal",
@@ -312,7 +257,10 @@ function ItemMutation({
             header: "Tipe",
             accessorKey: "type",
             filterType: "faceted",
-            filterOptions: typeFilterOptions,
+            filterOptions: Object.entries(TYPE_LABEL).map(([value, label]) => ({
+              label,
+              value,
+            })),
             cell: (row) => (
               <span className="rounded bg-gray-100 px-2 py-1 text-xs dark:bg-gray-800">
                 {TYPE_LABEL[row.type] ?? row.type}
@@ -323,15 +271,11 @@ function ItemMutation({
             header: "Skala",
             accessorKey: "scaleId",
             filterType: "faceted",
-            filterOptions: scaleFilterOptions,
-            cell: (row) => {
-              const scale = row.scaleId ? scaleById.get(row.scaleId) : null;
-              return (
-                <span className="font-mono text-xs">
-                  {scale ? scale.code : "-"}
-                </span>
-              );
-            },
+            filterOptions: scales.map((s) => ({
+              label: `${s.code} - ${s.name}`,
+              value: s.id,
+            })),
+            cell: (row) => <SkalaCell row={row} scales={scales} />,
           },
           {
             header: "Nilai",
@@ -360,9 +304,7 @@ function ItemMutation({
             header: "Aksi",
             accessorKey: "actions",
             cell: (row) => {
-              const rowSection = row.sectionId
-                ? sectionById.get(row.sectionId)
-                : null;
+              const rowSection = row.sectionId === section.id ? section : null;
               const sectionCode = rowSection?.code ?? "-";
               return (
                 <div className="flex justify-end gap-1">
@@ -518,13 +460,17 @@ function ItemMutation({
 }
 
 export default function ItemManagement({ testId, isLocked, category }: Props) {
-  const { data: sectionData, isLoading: sectionsLoading } =
-    useGetTestSections(testId);
+  const { data: sectionData, isLoading } = useGetTestSections(testId);
   const { data: scaleData } = useGetTestScales(testId);
 
   const sections = [...(sectionData?.data || [])].sort(
     (a, b) => (a.order ?? 0) - (b.order ?? 0),
   );
+
+  const [isSelected, setIsSelected] = useState<TestSection | undefined>(
+    undefined,
+  );
+  if (!isSelected && sections.length > 0) setIsSelected(sections[0]);
 
   if (category === "SPEED_ENDURANCE") {
     return (
@@ -537,7 +483,7 @@ export default function ItemManagement({ testId, isLocked, category }: Props) {
     );
   }
 
-  if (sectionsLoading) return <div>Memuat soal...</div>;
+  if (isLoading) return <div>Memuat soal...</div>;
 
   if (sections.length === 0) {
     return (
@@ -550,14 +496,71 @@ export default function ItemManagement({ testId, isLocked, category }: Props) {
   const scales = scaleData?.data || [];
 
   return (
-    <div className="space-y-4">
-      <ItemMutation
-        category={category}
-        isLocked={isLocked}
-        scales={scales}
-        sections={sections}
-        testId={testId}
-      />
-    </div>
+    <>
+      {isLocked && (
+        <Alert severity="warning" variant="standard">
+          <AlertTitle>Tes ini tidak berstatus DRAFT</AlertTitle>
+          <AlertDescription>
+            Tes ini tidak berstatus DRAFT, sehingga soal tidak bisa ditambah,
+            diubah, atau dihapus.
+          </AlertDescription>
+        </Alert>
+      )}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_minmax(0,1fr)]">
+        <div className="space-y-2 self-start rounded-xl border border-gray-200 p-3 dark:border-gray-800">
+          <p className="px-1 text-xs text-gray-500">Section</p>
+          {sections.map((s) => {
+            return (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => setIsSelected(s)}
+                className={`w-full rounded-lg border px-3 py-2 text-left text-xs transition-colors ${
+                  isSelected?.id === s.id
+                    ? "border-primary-main bg-primary-main/10"
+                    : "border-transparent hover:bg-divider"
+                }`}
+              >
+                <div className="font-medium">{s.code}</div>
+                <div className="line-clamp-1">{s.name}</div>
+              </button>
+            );
+          })}
+
+          <div className="flex items-center justify-end">
+            <IconButton
+              size="sm"
+              variant="text"
+              disabled={sectionData?.meta?.page === 1}
+            >
+              <ArrowLeft size={12} />
+            </IconButton>
+            <span className="font-mono text-xs">
+              {sectionData?.meta?.page}|{sectionData?.meta?.totalPages}
+            </span>
+            <IconButton
+              size="sm"
+              variant="text"
+              disabled={
+                sectionData?.meta?.page === sectionData?.meta?.totalPages
+              }
+            >
+              <ArrowRight size={12} />
+            </IconButton>
+          </div>
+        </div>
+
+        <div>
+          <ItemMutation
+            key={isSelected?.id}
+            section={isSelected || sections[0]}
+            category={category}
+            isLocked={isLocked}
+            scales={scales}
+            testId={testId}
+          />
+        </div>
+      </div>
+    </>
   );
 }

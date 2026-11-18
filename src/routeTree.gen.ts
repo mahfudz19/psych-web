@@ -9,121 +9,97 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as GuestRouteImport } from './routes/_guest'
-import { Route as AuthExamRouteImport } from './routes/_auth/_exam'
-import { Route as AuthIndividuRouteImport } from './routes/_auth/_individu'
-import { Route as AuthOrganizationRouteImport } from './routes/_auth/_organization'
-import { Route as AuthOrganizationAndIndividuRouteImport } from './routes/_auth/_organization-and-individu'
-import { Route as GuestIndexRouteImport } from './routes/_guest/index'
+import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as ExamplePageIndexRouteImport } from './routes/example-page/index'
+import { Route as GuestIndexRouteImport } from './routes/_guest/index'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
-import { Route as AuthOrganizationAndIndividuBillingRouteImport } from './routes/_auth/_organization-and-individu/billing'
-import { Route as AuthOrganizationAndIndividuProfileRouteImport } from './routes/_auth/_organization-and-individu/profile'
-import { Route as AuthCreateOrganizationIndexRouteImport } from './routes/_auth/create-organization/index'
-import { Route as GuestForgotPasswordIndexRouteImport } from './routes/_guest/forgot-password/index'
-import { Route as GuestLoginIndexRouteImport } from './routes/_guest/login/index'
-import { Route as GuestRegisterIndexRouteImport } from './routes/_guest/register/index'
+import { Route as AuthOrganizationAndIndividuRouteImport } from './routes/_auth/_organization-and-individu'
+import { Route as AuthOrganizationRouteImport } from './routes/_auth/_organization'
+import { Route as AuthIndividuRouteImport } from './routes/_auth/_individu'
+import { Route as AuthExamRouteImport } from './routes/_auth/_exam'
 import { Route as GuestResetPasswordIndexRouteImport } from './routes/_guest/reset-password/index'
-import { Route as AuthIndividuPortalIndexRouteImport } from './routes/_auth/_individu/portal/index'
-import { Route as AuthIndividuTestHistoryIndexRouteImport } from './routes/_auth/_individu/test-history/index'
-import { Route as AuthIndividuTestIndexRouteImport } from './routes/_auth/_individu/test/index'
-import { Route as AuthOrganizationAndIndividuBillingIndexRouteImport } from './routes/_auth/_organization-and-individu/billing/index'
-import { Route as AuthOrganizationAndIndividuProfileIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/index'
-import { Route as AuthOrganizationDashboardIndexRouteImport } from './routes/_auth/_organization/dashboard/index'
-import { Route as AuthOrganizationMembersIndexRouteImport } from './routes/_auth/_organization/members/index'
-import { Route as AuthOrganizationOrganizationInfoIndexRouteImport } from './routes/_auth/_organization/organization-info/index'
-import { Route as AuthOrganizationSettingsIndexRouteImport } from './routes/_auth/_organization/settings/index'
-import { Route as GuestRegisterOrganizationIndexRouteImport } from './routes/_guest/register/organization/index'
+import { Route as GuestRegisterIndexRouteImport } from './routes/_guest/register/index'
+import { Route as GuestLoginIndexRouteImport } from './routes/_guest/login/index'
+import { Route as GuestForgotPasswordIndexRouteImport } from './routes/_guest/forgot-password/index'
+import { Route as AuthCreateOrganizationIndexRouteImport } from './routes/_auth/create-organization/index'
+import { Route as AuthOrganizationAndIndividuProfileRouteImport } from './routes/_auth/_organization-and-individu/profile'
+import { Route as AuthOrganizationAndIndividuBillingRouteImport } from './routes/_auth/_organization-and-individu/billing'
 import { Route as GuestRegisterVerifyEmailIndexRouteImport } from './routes/_guest/register/verify-email/index'
-import { Route as AuthExamExamTestIdIndexRouteImport } from './routes/_auth/_exam/exam/$testId/index'
-import { Route as AuthIndividuTestHistoryAttemptIdIndexRouteImport } from './routes/_auth/_individu/test-history/$attemptId/index'
-import { Route as AuthOrganizationAndIndividuBillingHistoryIndexRouteImport } from './routes/_auth/_organization-and-individu/billing/history/index'
-import { Route as AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/change-password/index'
-import { Route as AuthOrganizationAndIndividuProfileReferralIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/referral/index'
-import { Route as AuthOrganizationAndIndividuProfileSessionsIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/sessions/index'
-import { Route as AuthOrganizationAdminOrganizationsIndexRouteImport } from './routes/_auth/_organization/_admin/organizations/index'
-import { Route as AuthOrganizationAdminSettingsAppIndexRouteImport } from './routes/_auth/_organization/_admin/settings-app/index'
-import { Route as AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport } from './routes/_auth/_organization/_admin/subscription-plan-management/index'
-import { Route as AuthOrganizationAdminTestManagementIndexRouteImport } from './routes/_auth/_organization/_admin/test-management/index'
-import { Route as AuthOrganizationAdminTestManagementTestIdRouteImport } from './routes/_auth/_organization/_admin/test-management/$testId'
-import { Route as AuthOrganizationAdminTransactionsIndexRouteImport } from './routes/_auth/_organization/_admin/transactions/index'
-import { Route as AuthOrganizationAdminUsersIndexRouteImport } from './routes/_auth/_organization/_admin/users/index'
+import { Route as GuestRegisterOrganizationIndexRouteImport } from './routes/_guest/register/organization/index'
+import { Route as AuthOrganizationSettingsIndexRouteImport } from './routes/_auth/_organization/settings/index'
+import { Route as AuthOrganizationOrganizationInfoIndexRouteImport } from './routes/_auth/_organization/organization-info/index'
+import { Route as AuthOrganizationMembersIndexRouteImport } from './routes/_auth/_organization/members/index'
+import { Route as AuthOrganizationDashboardIndexRouteImport } from './routes/_auth/_organization/dashboard/index'
+import { Route as AuthOrganizationAndIndividuProfileIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/index'
+import { Route as AuthOrganizationAndIndividuBillingIndexRouteImport } from './routes/_auth/_organization-and-individu/billing/index'
+import { Route as AuthIndividuTestIndexRouteImport } from './routes/_auth/_individu/test/index'
+import { Route as AuthIndividuTestHistoryIndexRouteImport } from './routes/_auth/_individu/test-history/index'
+import { Route as AuthIndividuPortalIndexRouteImport } from './routes/_auth/_individu/portal/index'
 import { Route as GuestRegisterInviteTokenIndexRouteImport } from './routes/_guest/register/invite/$token/index'
-import { Route as AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport } from './routes/_auth/_organization-and-individu/joint/invite/$token/index'
-import { Route as AuthOrganizationAdminTestManagementTestIdIndexRouteImport } from './routes/_auth/_organization/_admin/test-management/$testId/index'
+import { Route as AuthOrganizationAdminUsersIndexRouteImport } from './routes/_auth/_organization/_admin/users/index'
+import { Route as AuthOrganizationAdminTransactionsIndexRouteImport } from './routes/_auth/_organization/_admin/transactions/index'
+import { Route as AuthOrganizationAdminTestManagementIndexRouteImport } from './routes/_auth/_organization/_admin/test-management/index'
+import { Route as AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport } from './routes/_auth/_organization/_admin/subscription-plan-management/index'
+import { Route as AuthOrganizationAdminSettingsAppIndexRouteImport } from './routes/_auth/_organization/_admin/settings-app/index'
+import { Route as AuthOrganizationAdminOrganizationsIndexRouteImport } from './routes/_auth/_organization/_admin/organizations/index'
+import { Route as AuthOrganizationAndIndividuProfileSessionsIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/sessions/index'
+import { Route as AuthOrganizationAndIndividuProfileReferralIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/referral/index'
+import { Route as AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport } from './routes/_auth/_organization-and-individu/profile/change-password/index'
+import { Route as AuthOrganizationAndIndividuBillingHistoryIndexRouteImport } from './routes/_auth/_organization-and-individu/billing/history/index'
+import { Route as AuthIndividuTestHistoryAttemptIdIndexRouteImport } from './routes/_auth/_individu/test-history/$attemptId/index'
+import { Route as AuthExamExamTestIdIndexRouteImport } from './routes/_auth/_exam/exam/$testId/index'
+import { Route as AuthOrganizationAdminTestManagementTestIdRouteImport } from './routes/_auth/_organization/_admin/test-management/$testId'
 import { Route as AuthOrganizationAdminUsersUserIdIndexRouteImport } from './routes/_auth/_organization/_admin/users/$userId/index'
-import { Route as AuthOrganizationAdminTestManagementTestIdItemsIndexRouteImport } from './routes/_auth/_organization/_admin/test-management/$testId/items/index'
-import { Route as AuthOrganizationAdminTestManagementTestIdNormsIndexRouteImport } from './routes/_auth/_organization/_admin/test-management/$testId/norms/index'
+import { Route as AuthOrganizationAdminTestManagementTestIdIndexRouteImport } from './routes/_auth/_organization/_admin/test-management/$testId/index'
+import { Route as AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport } from './routes/_auth/_organization-and-individu/joint/invite/$token/index'
 import { Route as AuthOrganizationAdminTestManagementTestIdScalesIndexRouteImport } from './routes/_auth/_organization/_admin/test-management/$testId/scales/index'
+import { Route as AuthOrganizationAdminTestManagementTestIdNormsIndexRouteImport } from './routes/_auth/_organization/_admin/test-management/$testId/norms/index'
+import { Route as AuthOrganizationAdminTestManagementTestIdItemsIndexRouteImport } from './routes/_auth/_organization/_admin/test-management/$testId/items/index'
 
-const AuthRoute = AuthRouteImport.update({
-  id: '/_auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GuestRoute = GuestRouteImport.update({
   id: '/_guest',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthExamRoute = AuthExamRouteImport.update({
-  id: '/_exam',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthIndividuRoute = AuthIndividuRouteImport.update({
-  id: '/_individu',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthOrganizationRoute = AuthOrganizationRouteImport.update({
-  id: '/_organization',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthOrganizationAndIndividuRoute =
-  AuthOrganizationAndIndividuRouteImport.update({
-    id: '/_organization-and-individu',
-    getParentRoute: () => AuthRoute,
-  } as any)
-const GuestIndexRoute = GuestIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => GuestRoute,
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ExamplePageIndexRoute = ExamplePageIndexRouteImport.update({
   id: '/example-page/',
   path: '/example-page/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuestIndexRoute = GuestIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GuestRoute,
+} as any)
 const InviteTokenRoute = InviteTokenRouteImport.update({
   id: '/invite/$token',
   path: '/invite/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthOrganizationAndIndividuBillingRoute =
-  AuthOrganizationAndIndividuBillingRouteImport.update({
-    id: '/billing',
-    path: '/billing',
-    getParentRoute: () => AuthOrganizationAndIndividuRoute,
-  } as any)
-const AuthOrganizationAndIndividuProfileRoute =
-  AuthOrganizationAndIndividuProfileRouteImport.update({
-    id: '/profile',
-    path: '/profile',
-    getParentRoute: () => AuthOrganizationAndIndividuRoute,
-  } as any)
-const AuthCreateOrganizationIndexRoute =
-  AuthCreateOrganizationIndexRouteImport.update({
-    id: '/create-organization/',
-    path: '/create-organization/',
+const AuthOrganizationAndIndividuRoute =
+  AuthOrganizationAndIndividuRouteImport.update({
+    id: '/_organization-and-individu',
     getParentRoute: () => AuthRoute,
   } as any)
-const GuestForgotPasswordIndexRoute =
-  GuestForgotPasswordIndexRouteImport.update({
-    id: '/forgot-password/',
-    path: '/forgot-password/',
-    getParentRoute: () => GuestRoute,
-  } as any)
-const GuestLoginIndexRoute = GuestLoginIndexRouteImport.update({
-  id: '/login/',
-  path: '/login/',
+const AuthOrganizationRoute = AuthOrganizationRouteImport.update({
+  id: '/_organization',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthIndividuRoute = AuthIndividuRouteImport.update({
+  id: '/_individu',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthExamRoute = AuthExamRouteImport.update({
+  id: '/_exam',
+  getParentRoute: () => AuthRoute,
+} as any)
+const GuestResetPasswordIndexRoute = GuestResetPasswordIndexRouteImport.update({
+  id: '/reset-password/',
+  path: '/reset-password/',
   getParentRoute: () => GuestRoute,
 } as any)
 const GuestRegisterIndexRoute = GuestRegisterIndexRouteImport.update({
@@ -131,49 +107,51 @@ const GuestRegisterIndexRoute = GuestRegisterIndexRouteImport.update({
   path: '/register/',
   getParentRoute: () => GuestRoute,
 } as any)
-const GuestResetPasswordIndexRoute = GuestResetPasswordIndexRouteImport.update({
-  id: '/reset-password/',
-  path: '/reset-password/',
+const GuestLoginIndexRoute = GuestLoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
   getParentRoute: () => GuestRoute,
 } as any)
-const AuthIndividuPortalIndexRoute = AuthIndividuPortalIndexRouteImport.update({
-  id: '/portal/',
-  path: '/portal/',
-  getParentRoute: () => AuthIndividuRoute,
-} as any)
-const AuthIndividuTestHistoryIndexRoute =
-  AuthIndividuTestHistoryIndexRouteImport.update({
-    id: '/test-history/',
-    path: '/test-history/',
-    getParentRoute: () => AuthIndividuRoute,
+const GuestForgotPasswordIndexRoute =
+  GuestForgotPasswordIndexRouteImport.update({
+    id: '/forgot-password/',
+    path: '/forgot-password/',
+    getParentRoute: () => GuestRoute,
   } as any)
-const AuthIndividuTestIndexRoute = AuthIndividuTestIndexRouteImport.update({
-  id: '/test/',
-  path: '/test/',
-  getParentRoute: () => AuthIndividuRoute,
-} as any)
-const AuthOrganizationAndIndividuBillingIndexRoute =
-  AuthOrganizationAndIndividuBillingIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthOrganizationAndIndividuBillingRoute,
+const AuthCreateOrganizationIndexRoute =
+  AuthCreateOrganizationIndexRouteImport.update({
+    id: '/create-organization/',
+    path: '/create-organization/',
+    getParentRoute: () => AuthRoute,
   } as any)
-const AuthOrganizationAndIndividuProfileIndexRoute =
-  AuthOrganizationAndIndividuProfileIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
+const AuthOrganizationAndIndividuProfileRoute =
+  AuthOrganizationAndIndividuProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthOrganizationAndIndividuRoute,
   } as any)
-const AuthOrganizationDashboardIndexRoute =
-  AuthOrganizationDashboardIndexRouteImport.update({
-    id: '/dashboard/',
-    path: '/dashboard/',
-    getParentRoute: () => AuthOrganizationRoute,
+const AuthOrganizationAndIndividuBillingRoute =
+  AuthOrganizationAndIndividuBillingRouteImport.update({
+    id: '/billing',
+    path: '/billing',
+    getParentRoute: () => AuthOrganizationAndIndividuRoute,
   } as any)
-const AuthOrganizationMembersIndexRoute =
-  AuthOrganizationMembersIndexRouteImport.update({
-    id: '/members/',
-    path: '/members/',
+const GuestRegisterVerifyEmailIndexRoute =
+  GuestRegisterVerifyEmailIndexRouteImport.update({
+    id: '/register/verify-email/',
+    path: '/register/verify-email/',
+    getParentRoute: () => GuestRoute,
+  } as any)
+const GuestRegisterOrganizationIndexRoute =
+  GuestRegisterOrganizationIndexRouteImport.update({
+    id: '/register/organization/',
+    path: '/register/organization/',
+    getParentRoute: () => GuestRoute,
+  } as any)
+const AuthOrganizationSettingsIndexRoute =
+  AuthOrganizationSettingsIndexRouteImport.update({
+    id: '/settings/',
+    path: '/settings/',
     getParentRoute: () => AuthOrganizationRoute,
   } as any)
 const AuthOrganizationOrganizationInfoIndexRoute =
@@ -182,87 +160,56 @@ const AuthOrganizationOrganizationInfoIndexRoute =
     path: '/organization-info/',
     getParentRoute: () => AuthOrganizationRoute,
   } as any)
-const AuthOrganizationSettingsIndexRoute =
-  AuthOrganizationSettingsIndexRouteImport.update({
-    id: '/settings/',
-    path: '/settings/',
+const AuthOrganizationMembersIndexRoute =
+  AuthOrganizationMembersIndexRouteImport.update({
+    id: '/members/',
+    path: '/members/',
     getParentRoute: () => AuthOrganizationRoute,
   } as any)
-const GuestRegisterOrganizationIndexRoute =
-  GuestRegisterOrganizationIndexRouteImport.update({
-    id: '/register/organization/',
-    path: '/register/organization/',
-    getParentRoute: () => GuestRoute,
+const AuthOrganizationDashboardIndexRoute =
+  AuthOrganizationDashboardIndexRouteImport.update({
+    id: '/dashboard/',
+    path: '/dashboard/',
+    getParentRoute: () => AuthOrganizationRoute,
   } as any)
-const GuestRegisterVerifyEmailIndexRoute =
-  GuestRegisterVerifyEmailIndexRouteImport.update({
-    id: '/register/verify-email/',
-    path: '/register/verify-email/',
-    getParentRoute: () => GuestRoute,
+const AuthOrganizationAndIndividuProfileIndexRoute =
+  AuthOrganizationAndIndividuProfileIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
   } as any)
-const AuthExamExamTestIdIndexRoute = AuthExamExamTestIdIndexRouteImport.update({
-  id: '/exam/$testId/',
-  path: '/exam/$testId/',
-  getParentRoute: () => AuthExamRoute,
-} as any)
-const AuthIndividuTestHistoryAttemptIdIndexRoute =
-  AuthIndividuTestHistoryAttemptIdIndexRouteImport.update({
-    id: '/test-history/$attemptId/',
-    path: '/test-history/$attemptId/',
-    getParentRoute: () => AuthIndividuRoute,
-  } as any)
-const AuthOrganizationAndIndividuBillingHistoryIndexRoute =
-  AuthOrganizationAndIndividuBillingHistoryIndexRouteImport.update({
-    id: '/history/',
-    path: '/history/',
+const AuthOrganizationAndIndividuBillingIndexRoute =
+  AuthOrganizationAndIndividuBillingIndexRouteImport.update({
+    id: '/',
+    path: '/',
     getParentRoute: () => AuthOrganizationAndIndividuBillingRoute,
   } as any)
-const AuthOrganizationAndIndividuProfileChangePasswordIndexRoute =
-  AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport.update({
-    id: '/change-password/',
-    path: '/change-password/',
-    getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
+const AuthIndividuTestIndexRoute = AuthIndividuTestIndexRouteImport.update({
+  id: '/test/',
+  path: '/test/',
+  getParentRoute: () => AuthIndividuRoute,
+} as any)
+const AuthIndividuTestHistoryIndexRoute =
+  AuthIndividuTestHistoryIndexRouteImport.update({
+    id: '/test-history/',
+    path: '/test-history/',
+    getParentRoute: () => AuthIndividuRoute,
   } as any)
-const AuthOrganizationAndIndividuProfileReferralIndexRoute =
-  AuthOrganizationAndIndividuProfileReferralIndexRouteImport.update({
-    id: '/referral/',
-    path: '/referral/',
-    getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
+const AuthIndividuPortalIndexRoute = AuthIndividuPortalIndexRouteImport.update({
+  id: '/portal/',
+  path: '/portal/',
+  getParentRoute: () => AuthIndividuRoute,
+} as any)
+const GuestRegisterInviteTokenIndexRoute =
+  GuestRegisterInviteTokenIndexRouteImport.update({
+    id: '/register/invite/$token/',
+    path: '/register/invite/$token/',
+    getParentRoute: () => GuestRoute,
   } as any)
-const AuthOrganizationAndIndividuProfileSessionsIndexRoute =
-  AuthOrganizationAndIndividuProfileSessionsIndexRouteImport.update({
-    id: '/sessions/',
-    path: '/sessions/',
-    getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
-  } as any)
-const AuthOrganizationAdminOrganizationsIndexRoute =
-  AuthOrganizationAdminOrganizationsIndexRouteImport.update({
-    id: '/_admin/organizations/',
-    path: '/organizations/',
-    getParentRoute: () => AuthOrganizationRoute,
-  } as any)
-const AuthOrganizationAdminSettingsAppIndexRoute =
-  AuthOrganizationAdminSettingsAppIndexRouteImport.update({
-    id: '/_admin/settings-app/',
-    path: '/settings-app/',
-    getParentRoute: () => AuthOrganizationRoute,
-  } as any)
-const AuthOrganizationAdminSubscriptionPlanManagementIndexRoute =
-  AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport.update({
-    id: '/_admin/subscription-plan-management/',
-    path: '/subscription-plan-management/',
-    getParentRoute: () => AuthOrganizationRoute,
-  } as any)
-const AuthOrganizationAdminTestManagementIndexRoute =
-  AuthOrganizationAdminTestManagementIndexRouteImport.update({
-    id: '/_admin/test-management/',
-    path: '/test-management/',
-    getParentRoute: () => AuthOrganizationRoute,
-  } as any)
-const AuthOrganizationAdminTestManagementTestIdRoute =
-  AuthOrganizationAdminTestManagementTestIdRouteImport.update({
-    id: '/_admin/test-management/$testId',
-    path: '/test-management/$testId',
+const AuthOrganizationAdminUsersIndexRoute =
+  AuthOrganizationAdminUsersIndexRouteImport.update({
+    id: '/_admin/users/',
+    path: '/users/',
     getParentRoute: () => AuthOrganizationRoute,
   } as any)
 const AuthOrganizationAdminTransactionsIndexRoute =
@@ -271,29 +218,70 @@ const AuthOrganizationAdminTransactionsIndexRoute =
     path: '/transactions/',
     getParentRoute: () => AuthOrganizationRoute,
   } as any)
-const AuthOrganizationAdminUsersIndexRoute =
-  AuthOrganizationAdminUsersIndexRouteImport.update({
-    id: '/_admin/users/',
-    path: '/users/',
+const AuthOrganizationAdminTestManagementIndexRoute =
+  AuthOrganizationAdminTestManagementIndexRouteImport.update({
+    id: '/_admin/test-management/',
+    path: '/test-management/',
     getParentRoute: () => AuthOrganizationRoute,
   } as any)
-const GuestRegisterInviteTokenIndexRoute =
-  GuestRegisterInviteTokenIndexRouteImport.update({
-    id: '/register/invite/$token/',
-    path: '/register/invite/$token/',
-    getParentRoute: () => GuestRoute,
+const AuthOrganizationAdminSubscriptionPlanManagementIndexRoute =
+  AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport.update({
+    id: '/_admin/subscription-plan-management/',
+    path: '/subscription-plan-management/',
+    getParentRoute: () => AuthOrganizationRoute,
   } as any)
-const AuthOrganizationAndIndividuJointInviteTokenIndexRoute =
-  AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport.update({
-    id: '/joint/invite/$token/',
-    path: '/joint/invite/$token/',
-    getParentRoute: () => AuthOrganizationAndIndividuRoute,
+const AuthOrganizationAdminSettingsAppIndexRoute =
+  AuthOrganizationAdminSettingsAppIndexRouteImport.update({
+    id: '/_admin/settings-app/',
+    path: '/settings-app/',
+    getParentRoute: () => AuthOrganizationRoute,
   } as any)
-const AuthOrganizationAdminTestManagementTestIdIndexRoute =
-  AuthOrganizationAdminTestManagementTestIdIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthOrganizationAdminTestManagementTestIdRoute,
+const AuthOrganizationAdminOrganizationsIndexRoute =
+  AuthOrganizationAdminOrganizationsIndexRouteImport.update({
+    id: '/_admin/organizations/',
+    path: '/organizations/',
+    getParentRoute: () => AuthOrganizationRoute,
+  } as any)
+const AuthOrganizationAndIndividuProfileSessionsIndexRoute =
+  AuthOrganizationAndIndividuProfileSessionsIndexRouteImport.update({
+    id: '/sessions/',
+    path: '/sessions/',
+    getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
+  } as any)
+const AuthOrganizationAndIndividuProfileReferralIndexRoute =
+  AuthOrganizationAndIndividuProfileReferralIndexRouteImport.update({
+    id: '/referral/',
+    path: '/referral/',
+    getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
+  } as any)
+const AuthOrganizationAndIndividuProfileChangePasswordIndexRoute =
+  AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport.update({
+    id: '/change-password/',
+    path: '/change-password/',
+    getParentRoute: () => AuthOrganizationAndIndividuProfileRoute,
+  } as any)
+const AuthOrganizationAndIndividuBillingHistoryIndexRoute =
+  AuthOrganizationAndIndividuBillingHistoryIndexRouteImport.update({
+    id: '/history/',
+    path: '/history/',
+    getParentRoute: () => AuthOrganizationAndIndividuBillingRoute,
+  } as any)
+const AuthIndividuTestHistoryAttemptIdIndexRoute =
+  AuthIndividuTestHistoryAttemptIdIndexRouteImport.update({
+    id: '/test-history/$attemptId/',
+    path: '/test-history/$attemptId/',
+    getParentRoute: () => AuthIndividuRoute,
+  } as any)
+const AuthExamExamTestIdIndexRoute = AuthExamExamTestIdIndexRouteImport.update({
+  id: '/exam/$testId/',
+  path: '/exam/$testId/',
+  getParentRoute: () => AuthExamRoute,
+} as any)
+const AuthOrganizationAdminTestManagementTestIdRoute =
+  AuthOrganizationAdminTestManagementTestIdRouteImport.update({
+    id: '/_admin/test-management/$testId',
+    path: '/test-management/$testId',
+    getParentRoute: () => AuthOrganizationRoute,
   } as any)
 const AuthOrganizationAdminUsersUserIdIndexRoute =
   AuthOrganizationAdminUsersUserIdIndexRouteImport.update({
@@ -301,10 +289,22 @@ const AuthOrganizationAdminUsersUserIdIndexRoute =
     path: '/users/$userId/',
     getParentRoute: () => AuthOrganizationRoute,
   } as any)
-const AuthOrganizationAdminTestManagementTestIdItemsIndexRoute =
-  AuthOrganizationAdminTestManagementTestIdItemsIndexRouteImport.update({
-    id: '/items/',
-    path: '/items/',
+const AuthOrganizationAdminTestManagementTestIdIndexRoute =
+  AuthOrganizationAdminTestManagementTestIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthOrganizationAdminTestManagementTestIdRoute,
+  } as any)
+const AuthOrganizationAndIndividuJointInviteTokenIndexRoute =
+  AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport.update({
+    id: '/joint/invite/$token/',
+    path: '/joint/invite/$token/',
+    getParentRoute: () => AuthOrganizationAndIndividuRoute,
+  } as any)
+const AuthOrganizationAdminTestManagementTestIdScalesIndexRoute =
+  AuthOrganizationAdminTestManagementTestIdScalesIndexRouteImport.update({
+    id: '/scales/',
+    path: '/scales/',
     getParentRoute: () => AuthOrganizationAdminTestManagementTestIdRoute,
   } as any)
 const AuthOrganizationAdminTestManagementTestIdNormsIndexRoute =
@@ -313,10 +313,10 @@ const AuthOrganizationAdminTestManagementTestIdNormsIndexRoute =
     path: '/norms/',
     getParentRoute: () => AuthOrganizationAdminTestManagementTestIdRoute,
   } as any)
-const AuthOrganizationAdminTestManagementTestIdScalesIndexRoute =
-  AuthOrganizationAdminTestManagementTestIdScalesIndexRouteImport.update({
-    id: '/scales/',
-    path: '/scales/',
+const AuthOrganizationAdminTestManagementTestIdItemsIndexRoute =
+  AuthOrganizationAdminTestManagementTestIdItemsIndexRouteImport.update({
+    id: '/items/',
+    path: '/items/',
     getParentRoute: () => AuthOrganizationAdminTestManagementTestIdRoute,
   } as any)
 
@@ -597,13 +597,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_guest': {
       id: '/_guest'
       path: ''
@@ -611,18 +604,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuestRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/_exam': {
-      id: '/_auth/_exam'
+    '/_auth': {
+      id: '/_auth'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AuthExamRouteImport
-      parentRoute: typeof AuthRoute
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_auth/_individu': {
-      id: '/_auth/_individu'
+    '/example-page/': {
+      id: '/example-page/'
+      path: '/example-page'
+      fullPath: '/example-page/'
+      preLoaderRoute: typeof ExamplePageIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_guest/': {
+      id: '/_guest/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof GuestIndexRouteImport
+      parentRoute: typeof GuestRoute
+    }
+    '/invite/$token': {
+      id: '/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof InviteTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/_organization-and-individu': {
+      id: '/_auth/_organization-and-individu'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AuthIndividuRouteImport
+      preLoaderRoute: typeof AuthOrganizationAndIndividuRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/_organization': {
@@ -632,67 +646,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/_organization-and-individu': {
-      id: '/_auth/_organization-and-individu'
+    '/_auth/_individu': {
+      id: '/_auth/_individu'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AuthOrganizationAndIndividuRouteImport
+      preLoaderRoute: typeof AuthIndividuRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_guest/': {
-      id: '/_guest/'
-      path: '/'
+    '/_auth/_exam': {
+      id: '/_auth/_exam'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof GuestIndexRouteImport
-      parentRoute: typeof GuestRoute
-    }
-    '/example-page/': {
-      id: '/example-page/'
-      path: '/example-page'
-      fullPath: '/example-page/'
-      preLoaderRoute: typeof ExamplePageIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/invite/$token': {
-      id: '/invite/$token'
-      path: '/invite/$token'
-      fullPath: '/invite/$token'
-      preLoaderRoute: typeof InviteTokenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_auth/_organization-and-individu/billing': {
-      id: '/_auth/_organization-and-individu/billing'
-      path: '/billing'
-      fullPath: '/billing'
-      preLoaderRoute: typeof AuthOrganizationAndIndividuBillingRouteImport
-      parentRoute: typeof AuthOrganizationAndIndividuRoute
-    }
-    '/_auth/_organization-and-individu/profile': {
-      id: '/_auth/_organization-and-individu/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileRouteImport
-      parentRoute: typeof AuthOrganizationAndIndividuRoute
-    }
-    '/_auth/create-organization/': {
-      id: '/_auth/create-organization/'
-      path: '/create-organization'
-      fullPath: '/create-organization/'
-      preLoaderRoute: typeof AuthCreateOrganizationIndexRouteImport
+      preLoaderRoute: typeof AuthExamRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_guest/forgot-password/': {
-      id: '/_guest/forgot-password/'
-      path: '/forgot-password'
-      fullPath: '/forgot-password/'
-      preLoaderRoute: typeof GuestForgotPasswordIndexRouteImport
-      parentRoute: typeof GuestRoute
-    }
-    '/_guest/login/': {
-      id: '/_guest/login/'
-      path: '/login'
-      fullPath: '/login/'
-      preLoaderRoute: typeof GuestLoginIndexRouteImport
+    '/_guest/reset-password/': {
+      id: '/_guest/reset-password/'
+      path: '/reset-password'
+      fullPath: '/reset-password/'
+      preLoaderRoute: typeof GuestResetPasswordIndexRouteImport
       parentRoute: typeof GuestRoute
     }
     '/_guest/register/': {
@@ -702,60 +674,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuestRegisterIndexRouteImport
       parentRoute: typeof GuestRoute
     }
-    '/_guest/reset-password/': {
-      id: '/_guest/reset-password/'
-      path: '/reset-password'
-      fullPath: '/reset-password/'
-      preLoaderRoute: typeof GuestResetPasswordIndexRouteImport
+    '/_guest/login/': {
+      id: '/_guest/login/'
+      path: '/login'
+      fullPath: '/login/'
+      preLoaderRoute: typeof GuestLoginIndexRouteImport
       parentRoute: typeof GuestRoute
     }
-    '/_auth/_individu/portal/': {
-      id: '/_auth/_individu/portal/'
-      path: '/portal'
-      fullPath: '/portal/'
-      preLoaderRoute: typeof AuthIndividuPortalIndexRouteImport
-      parentRoute: typeof AuthIndividuRoute
+    '/_guest/forgot-password/': {
+      id: '/_guest/forgot-password/'
+      path: '/forgot-password'
+      fullPath: '/forgot-password/'
+      preLoaderRoute: typeof GuestForgotPasswordIndexRouteImport
+      parentRoute: typeof GuestRoute
     }
-    '/_auth/_individu/test-history/': {
-      id: '/_auth/_individu/test-history/'
-      path: '/test-history'
-      fullPath: '/test-history/'
-      preLoaderRoute: typeof AuthIndividuTestHistoryIndexRouteImport
-      parentRoute: typeof AuthIndividuRoute
+    '/_auth/create-organization/': {
+      id: '/_auth/create-organization/'
+      path: '/create-organization'
+      fullPath: '/create-organization/'
+      preLoaderRoute: typeof AuthCreateOrganizationIndexRouteImport
+      parentRoute: typeof AuthRoute
     }
-    '/_auth/_individu/test/': {
-      id: '/_auth/_individu/test/'
-      path: '/test'
-      fullPath: '/test/'
-      preLoaderRoute: typeof AuthIndividuTestIndexRouteImport
-      parentRoute: typeof AuthIndividuRoute
+    '/_auth/_organization-and-individu/profile': {
+      id: '/_auth/_organization-and-individu/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuRoute
     }
-    '/_auth/_organization-and-individu/billing/': {
-      id: '/_auth/_organization-and-individu/billing/'
-      path: '/'
-      fullPath: '/billing/'
-      preLoaderRoute: typeof AuthOrganizationAndIndividuBillingIndexRouteImport
-      parentRoute: typeof AuthOrganizationAndIndividuBillingRoute
+    '/_auth/_organization-and-individu/billing': {
+      id: '/_auth/_organization-and-individu/billing'
+      path: '/billing'
+      fullPath: '/billing'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuBillingRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuRoute
     }
-    '/_auth/_organization-and-individu/profile/': {
-      id: '/_auth/_organization-and-individu/profile/'
-      path: '/'
-      fullPath: '/profile/'
-      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileIndexRouteImport
-      parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
+    '/_guest/register/verify-email/': {
+      id: '/_guest/register/verify-email/'
+      path: '/register/verify-email'
+      fullPath: '/register/verify-email/'
+      preLoaderRoute: typeof GuestRegisterVerifyEmailIndexRouteImport
+      parentRoute: typeof GuestRoute
     }
-    '/_auth/_organization/dashboard/': {
-      id: '/_auth/_organization/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof AuthOrganizationDashboardIndexRouteImport
-      parentRoute: typeof AuthOrganizationRoute
+    '/_guest/register/organization/': {
+      id: '/_guest/register/organization/'
+      path: '/register/organization'
+      fullPath: '/register/organization/'
+      preLoaderRoute: typeof GuestRegisterOrganizationIndexRouteImport
+      parentRoute: typeof GuestRoute
     }
-    '/_auth/_organization/members/': {
-      id: '/_auth/_organization/members/'
-      path: '/members'
-      fullPath: '/members/'
-      preLoaderRoute: typeof AuthOrganizationMembersIndexRouteImport
+    '/_auth/_organization/settings/': {
+      id: '/_auth/_organization/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof AuthOrganizationSettingsIndexRouteImport
       parentRoute: typeof AuthOrganizationRoute
     }
     '/_auth/_organization/organization-info/': {
@@ -765,102 +737,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationOrganizationInfoIndexRouteImport
       parentRoute: typeof AuthOrganizationRoute
     }
-    '/_auth/_organization/settings/': {
-      id: '/_auth/_organization/settings/'
-      path: '/settings'
-      fullPath: '/settings/'
-      preLoaderRoute: typeof AuthOrganizationSettingsIndexRouteImport
+    '/_auth/_organization/members/': {
+      id: '/_auth/_organization/members/'
+      path: '/members'
+      fullPath: '/members/'
+      preLoaderRoute: typeof AuthOrganizationMembersIndexRouteImport
       parentRoute: typeof AuthOrganizationRoute
     }
-    '/_guest/register/organization/': {
-      id: '/_guest/register/organization/'
-      path: '/register/organization'
-      fullPath: '/register/organization/'
-      preLoaderRoute: typeof GuestRegisterOrganizationIndexRouteImport
-      parentRoute: typeof GuestRoute
+    '/_auth/_organization/dashboard/': {
+      id: '/_auth/_organization/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthOrganizationDashboardIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
     }
-    '/_guest/register/verify-email/': {
-      id: '/_guest/register/verify-email/'
-      path: '/register/verify-email'
-      fullPath: '/register/verify-email/'
-      preLoaderRoute: typeof GuestRegisterVerifyEmailIndexRouteImport
-      parentRoute: typeof GuestRoute
+    '/_auth/_organization-and-individu/profile/': {
+      id: '/_auth/_organization-and-individu/profile/'
+      path: '/'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileIndexRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
     }
-    '/_auth/_exam/exam/$testId/': {
-      id: '/_auth/_exam/exam/$testId/'
-      path: '/exam/$testId'
-      fullPath: '/exam/$testId/'
-      preLoaderRoute: typeof AuthExamExamTestIdIndexRouteImport
-      parentRoute: typeof AuthExamRoute
-    }
-    '/_auth/_individu/test-history/$attemptId/': {
-      id: '/_auth/_individu/test-history/$attemptId/'
-      path: '/test-history/$attemptId'
-      fullPath: '/test-history/$attemptId/'
-      preLoaderRoute: typeof AuthIndividuTestHistoryAttemptIdIndexRouteImport
-      parentRoute: typeof AuthIndividuRoute
-    }
-    '/_auth/_organization-and-individu/billing/history/': {
-      id: '/_auth/_organization-and-individu/billing/history/'
-      path: '/history'
-      fullPath: '/billing/history/'
-      preLoaderRoute: typeof AuthOrganizationAndIndividuBillingHistoryIndexRouteImport
+    '/_auth/_organization-and-individu/billing/': {
+      id: '/_auth/_organization-and-individu/billing/'
+      path: '/'
+      fullPath: '/billing/'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuBillingIndexRouteImport
       parentRoute: typeof AuthOrganizationAndIndividuBillingRoute
     }
-    '/_auth/_organization-and-individu/profile/change-password/': {
-      id: '/_auth/_organization-and-individu/profile/change-password/'
-      path: '/change-password'
-      fullPath: '/profile/change-password/'
-      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport
-      parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
+    '/_auth/_individu/test/': {
+      id: '/_auth/_individu/test/'
+      path: '/test'
+      fullPath: '/test/'
+      preLoaderRoute: typeof AuthIndividuTestIndexRouteImport
+      parentRoute: typeof AuthIndividuRoute
     }
-    '/_auth/_organization-and-individu/profile/referral/': {
-      id: '/_auth/_organization-and-individu/profile/referral/'
-      path: '/referral'
-      fullPath: '/profile/referral/'
-      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileReferralIndexRouteImport
-      parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
+    '/_auth/_individu/test-history/': {
+      id: '/_auth/_individu/test-history/'
+      path: '/test-history'
+      fullPath: '/test-history/'
+      preLoaderRoute: typeof AuthIndividuTestHistoryIndexRouteImport
+      parentRoute: typeof AuthIndividuRoute
     }
-    '/_auth/_organization-and-individu/profile/sessions/': {
-      id: '/_auth/_organization-and-individu/profile/sessions/'
-      path: '/sessions'
-      fullPath: '/profile/sessions/'
-      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileSessionsIndexRouteImport
-      parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
+    '/_auth/_individu/portal/': {
+      id: '/_auth/_individu/portal/'
+      path: '/portal'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof AuthIndividuPortalIndexRouteImport
+      parentRoute: typeof AuthIndividuRoute
     }
-    '/_auth/_organization/_admin/organizations/': {
-      id: '/_auth/_organization/_admin/organizations/'
-      path: '/organizations'
-      fullPath: '/organizations/'
-      preLoaderRoute: typeof AuthOrganizationAdminOrganizationsIndexRouteImport
-      parentRoute: typeof AuthOrganizationRoute
+    '/_guest/register/invite/$token/': {
+      id: '/_guest/register/invite/$token/'
+      path: '/register/invite/$token'
+      fullPath: '/register/invite/$token/'
+      preLoaderRoute: typeof GuestRegisterInviteTokenIndexRouteImport
+      parentRoute: typeof GuestRoute
     }
-    '/_auth/_organization/_admin/settings-app/': {
-      id: '/_auth/_organization/_admin/settings-app/'
-      path: '/settings-app'
-      fullPath: '/settings-app/'
-      preLoaderRoute: typeof AuthOrganizationAdminSettingsAppIndexRouteImport
-      parentRoute: typeof AuthOrganizationRoute
-    }
-    '/_auth/_organization/_admin/subscription-plan-management/': {
-      id: '/_auth/_organization/_admin/subscription-plan-management/'
-      path: '/subscription-plan-management'
-      fullPath: '/subscription-plan-management/'
-      preLoaderRoute: typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport
-      parentRoute: typeof AuthOrganizationRoute
-    }
-    '/_auth/_organization/_admin/test-management/': {
-      id: '/_auth/_organization/_admin/test-management/'
-      path: '/test-management'
-      fullPath: '/test-management/'
-      preLoaderRoute: typeof AuthOrganizationAdminTestManagementIndexRouteImport
-      parentRoute: typeof AuthOrganizationRoute
-    }
-    '/_auth/_organization/_admin/test-management/$testId': {
-      id: '/_auth/_organization/_admin/test-management/$testId'
-      path: '/test-management/$testId'
-      fullPath: '/test-management/$testId'
-      preLoaderRoute: typeof AuthOrganizationAdminTestManagementTestIdRouteImport
+    '/_auth/_organization/_admin/users/': {
+      id: '/_auth/_organization/_admin/users/'
+      path: '/users'
+      fullPath: '/users/'
+      preLoaderRoute: typeof AuthOrganizationAdminUsersIndexRouteImport
       parentRoute: typeof AuthOrganizationRoute
     }
     '/_auth/_organization/_admin/transactions/': {
@@ -870,33 +807,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationAdminTransactionsIndexRouteImport
       parentRoute: typeof AuthOrganizationRoute
     }
-    '/_auth/_organization/_admin/users/': {
-      id: '/_auth/_organization/_admin/users/'
-      path: '/users'
-      fullPath: '/users/'
-      preLoaderRoute: typeof AuthOrganizationAdminUsersIndexRouteImport
+    '/_auth/_organization/_admin/test-management/': {
+      id: '/_auth/_organization/_admin/test-management/'
+      path: '/test-management'
+      fullPath: '/test-management/'
+      preLoaderRoute: typeof AuthOrganizationAdminTestManagementIndexRouteImport
       parentRoute: typeof AuthOrganizationRoute
     }
-    '/_guest/register/invite/$token/': {
-      id: '/_guest/register/invite/$token/'
-      path: '/register/invite/$token'
-      fullPath: '/register/invite/$token/'
-      preLoaderRoute: typeof GuestRegisterInviteTokenIndexRouteImport
-      parentRoute: typeof GuestRoute
+    '/_auth/_organization/_admin/subscription-plan-management/': {
+      id: '/_auth/_organization/_admin/subscription-plan-management/'
+      path: '/subscription-plan-management'
+      fullPath: '/subscription-plan-management/'
+      preLoaderRoute: typeof AuthOrganizationAdminSubscriptionPlanManagementIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
     }
-    '/_auth/_organization-and-individu/joint/invite/$token/': {
-      id: '/_auth/_organization-and-individu/joint/invite/$token/'
-      path: '/joint/invite/$token'
-      fullPath: '/joint/invite/$token/'
-      preLoaderRoute: typeof AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport
-      parentRoute: typeof AuthOrganizationAndIndividuRoute
+    '/_auth/_organization/_admin/settings-app/': {
+      id: '/_auth/_organization/_admin/settings-app/'
+      path: '/settings-app'
+      fullPath: '/settings-app/'
+      preLoaderRoute: typeof AuthOrganizationAdminSettingsAppIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
     }
-    '/_auth/_organization/_admin/test-management/$testId/': {
-      id: '/_auth/_organization/_admin/test-management/$testId/'
-      path: '/'
-      fullPath: '/test-management/$testId/'
-      preLoaderRoute: typeof AuthOrganizationAdminTestManagementTestIdIndexRouteImport
-      parentRoute: typeof AuthOrganizationAdminTestManagementTestIdRoute
+    '/_auth/_organization/_admin/organizations/': {
+      id: '/_auth/_organization/_admin/organizations/'
+      path: '/organizations'
+      fullPath: '/organizations/'
+      preLoaderRoute: typeof AuthOrganizationAdminOrganizationsIndexRouteImport
+      parentRoute: typeof AuthOrganizationRoute
+    }
+    '/_auth/_organization-and-individu/profile/sessions/': {
+      id: '/_auth/_organization-and-individu/profile/sessions/'
+      path: '/sessions'
+      fullPath: '/profile/sessions/'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileSessionsIndexRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
+    }
+    '/_auth/_organization-and-individu/profile/referral/': {
+      id: '/_auth/_organization-and-individu/profile/referral/'
+      path: '/referral'
+      fullPath: '/profile/referral/'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileReferralIndexRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
+    }
+    '/_auth/_organization-and-individu/profile/change-password/': {
+      id: '/_auth/_organization-and-individu/profile/change-password/'
+      path: '/change-password'
+      fullPath: '/profile/change-password/'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuProfileChangePasswordIndexRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuProfileRoute
+    }
+    '/_auth/_organization-and-individu/billing/history/': {
+      id: '/_auth/_organization-and-individu/billing/history/'
+      path: '/history'
+      fullPath: '/billing/history/'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuBillingHistoryIndexRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuBillingRoute
+    }
+    '/_auth/_individu/test-history/$attemptId/': {
+      id: '/_auth/_individu/test-history/$attemptId/'
+      path: '/test-history/$attemptId'
+      fullPath: '/test-history/$attemptId/'
+      preLoaderRoute: typeof AuthIndividuTestHistoryAttemptIdIndexRouteImport
+      parentRoute: typeof AuthIndividuRoute
+    }
+    '/_auth/_exam/exam/$testId/': {
+      id: '/_auth/_exam/exam/$testId/'
+      path: '/exam/$testId'
+      fullPath: '/exam/$testId/'
+      preLoaderRoute: typeof AuthExamExamTestIdIndexRouteImport
+      parentRoute: typeof AuthExamRoute
+    }
+    '/_auth/_organization/_admin/test-management/$testId': {
+      id: '/_auth/_organization/_admin/test-management/$testId'
+      path: '/test-management/$testId'
+      fullPath: '/test-management/$testId'
+      preLoaderRoute: typeof AuthOrganizationAdminTestManagementTestIdRouteImport
+      parentRoute: typeof AuthOrganizationRoute
     }
     '/_auth/_organization/_admin/users/$userId/': {
       id: '/_auth/_organization/_admin/users/$userId/'
@@ -905,11 +891,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationAdminUsersUserIdIndexRouteImport
       parentRoute: typeof AuthOrganizationRoute
     }
-    '/_auth/_organization/_admin/test-management/$testId/items/': {
-      id: '/_auth/_organization/_admin/test-management/$testId/items/'
-      path: '/items'
-      fullPath: '/test-management/$testId/items/'
-      preLoaderRoute: typeof AuthOrganizationAdminTestManagementTestIdItemsIndexRouteImport
+    '/_auth/_organization/_admin/test-management/$testId/': {
+      id: '/_auth/_organization/_admin/test-management/$testId/'
+      path: '/'
+      fullPath: '/test-management/$testId/'
+      preLoaderRoute: typeof AuthOrganizationAdminTestManagementTestIdIndexRouteImport
+      parentRoute: typeof AuthOrganizationAdminTestManagementTestIdRoute
+    }
+    '/_auth/_organization-and-individu/joint/invite/$token/': {
+      id: '/_auth/_organization-and-individu/joint/invite/$token/'
+      path: '/joint/invite/$token'
+      fullPath: '/joint/invite/$token/'
+      preLoaderRoute: typeof AuthOrganizationAndIndividuJointInviteTokenIndexRouteImport
+      parentRoute: typeof AuthOrganizationAndIndividuRoute
+    }
+    '/_auth/_organization/_admin/test-management/$testId/scales/': {
+      id: '/_auth/_organization/_admin/test-management/$testId/scales/'
+      path: '/scales'
+      fullPath: '/test-management/$testId/scales/'
+      preLoaderRoute: typeof AuthOrganizationAdminTestManagementTestIdScalesIndexRouteImport
       parentRoute: typeof AuthOrganizationAdminTestManagementTestIdRoute
     }
     '/_auth/_organization/_admin/test-management/$testId/norms/': {
@@ -919,11 +919,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrganizationAdminTestManagementTestIdNormsIndexRouteImport
       parentRoute: typeof AuthOrganizationAdminTestManagementTestIdRoute
     }
-    '/_auth/_organization/_admin/test-management/$testId/scales/': {
-      id: '/_auth/_organization/_admin/test-management/$testId/scales/'
-      path: '/scales'
-      fullPath: '/test-management/$testId/scales/'
-      preLoaderRoute: typeof AuthOrganizationAdminTestManagementTestIdScalesIndexRouteImport
+    '/_auth/_organization/_admin/test-management/$testId/items/': {
+      id: '/_auth/_organization/_admin/test-management/$testId/items/'
+      path: '/items'
+      fullPath: '/test-management/$testId/items/'
+      preLoaderRoute: typeof AuthOrganizationAdminTestManagementTestIdItemsIndexRouteImport
       parentRoute: typeof AuthOrganizationAdminTestManagementTestIdRoute
     }
   }

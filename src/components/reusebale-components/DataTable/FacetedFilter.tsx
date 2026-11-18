@@ -27,7 +27,7 @@ export default function FacetedFilter({
 
   const triggerElement = (
     <div
-      className={`min-h-9 flex items-center justify-between w-full gap-2 px-3 py-2 text-xs border rounded-2xl transition-all font-medium cursor-pointer min-w-56 ${
+      className={`min-h-9 inline-flex items-center justify-between gap-2 px-3 py-2 text-xs border rounded-2xl transition-all font-medium cursor-pointer min-w-24 ${
         selectedValues.size > 0
           ? "border-primary-main bg-primary-main/10 text-primary-main ring-2 ring-primary-main/20"
           : "border-divider bg-bg-paper hover:bg-divider text-text-primary focus:outline-none focus:ring-2 focus:border-primary-main focus:ring-primary-main/20"

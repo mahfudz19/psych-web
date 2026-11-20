@@ -10,7 +10,6 @@ import {
   Trash,
   X,
 } from "lucide-react";
-import { useState } from "react";
 import { Route } from "..";
 import {
   useCreateTestItem,
@@ -29,6 +28,7 @@ import type {
   TestSection,
 } from "../../../-api/test-definitions.type";
 import { DataTable } from "../../../../../../../../components/reusebale-components/DataTable";
+import Chip from "../../../../../../../../components/ui/Chip";
 import Dialog from "../../../../../../../../components/ui/Dialog";
 import {
   Alert,
@@ -61,7 +61,7 @@ const TYPE_LABEL: Record<ItemType, string> = {
   MATRIX_TASK: "Tugas matriks",
 };
 
-function evaluateItem(item: TestItem, isAbility: boolean): string | null {
+function evaluateItem(item: TestItem, isAbility: boolean) {
   if (item.type === "DRAWING") return null;
 
   if (isAbility) {
@@ -207,7 +207,7 @@ function ItemMutation(props: {
         isLoading={isLoading || isFetching}
         state={{
           ...tableState,
-          sortBy: tableState.sortBy || "order",
+          sortBy: tableState.sortBy || "number",
           sortOrder: tableState.sortOrder || "asc",
         }}
         onStateChange={(newState) => {
@@ -238,7 +238,7 @@ function ItemMutation(props: {
                       <img
                         src={thumb}
                         alt=""
-                        className="h-8 w-8 shrink-0 rounded border border-gray-200 object-cover dark:border-gray-700"
+                        className="h-8 w-8 shrink-0 rounded border border-divider object-cover"
                         onError={(e) => {
                           e.currentTarget.style.display = "none";
                         }}
@@ -262,9 +262,9 @@ function ItemMutation(props: {
               value,
             })),
             cell: (row) => (
-              <span className="rounded bg-gray-100 px-2 py-1 text-xs dark:bg-gray-800">
+              <Chip color="neutral" size="sm">
                 {TYPE_LABEL[row.type] ?? row.type}
-              </span>
+              </Chip>
             ),
           },
           {
@@ -285,14 +285,14 @@ function ItemMutation(props: {
               return problem ? (
                 <span
                   title={problem}
-                  className="inline-flex items-center gap-1 text-xs text-yellow-700"
+                  className="inline-flex items-center gap-1 text-xs text-warning-main"
                 >
                   <AlertTriangle size={14} />
                   Kurang
                 </span>
               ) : (
                 <span
-                  className="inline-flex items-center text-green-600"
+                  className="inline-flex items-center justify-center text-success-main"
                   title="Penilaian lengkap"
                 >
                   <Check size={16} />
@@ -307,7 +307,7 @@ function ItemMutation(props: {
               const rowSection = row.sectionId === section.id ? section : null;
               const sectionCode = rowSection?.code ?? "-";
               return (
-                <div className="flex justify-end gap-1">
+                <div className="flex justify-end">
                   {/* Edit */}
                   <Dialog
                     dismissible={false}
@@ -315,9 +315,10 @@ function ItemMutation(props: {
                     trigger={(openDialog) => (
                       <IconButton
                         size="sm"
-                        variant="text"
                         disabled={isLocked}
                         onClick={openDialog}
+                        variant="ghost"
+                        className="rounded-r-xl"
                       >
                         <Edit size={16} />
                       </IconButton>
@@ -377,9 +378,11 @@ function ItemMutation(props: {
                     trigger={(openDialog) => (
                       <IconButton
                         size="sm"
-                        variant="text"
+                        color="warning"
                         disabled={isLocked}
                         onClick={openDialog}
+                        variant="ghost"
+                        className="rounded-none"
                       >
                         <Copy size={16} />
                       </IconButton>
@@ -440,9 +443,10 @@ function ItemMutation(props: {
                       trigger={(open) => (
                         <IconButton
                           size="sm"
-                          variant="text"
                           color="error"
                           onClick={open}
+                          variant="ghost"
+                          className="rounded-l-xl"
                         >
                           <Trash size={16} />
                         </IconButton>
@@ -460,17 +464,13 @@ function ItemMutation(props: {
 }
 
 export default function ItemManagement({ testId, isLocked, category }: Props) {
+  const tableState = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+
   const { data: sectionData, isLoading } = useGetTestSections(testId);
   const { data: scaleData } = useGetTestScales(testId);
 
-  const sections = [...(sectionData?.data || [])].sort(
-    (a, b) => (a.order ?? 0) - (b.order ?? 0),
-  );
-
-  const [isSelected, setIsSelected] = useState<TestSection | undefined>(
-    undefined,
-  );
-  if (!isSelected && sections.length > 0) setIsSelected(sections[0]);
+  const sections = sectionData?.data || [];
 
   if (category === "SPEED_ENDURANCE") {
     return (
@@ -495,6 +495,9 @@ export default function ItemManagement({ testId, isLocked, category }: Props) {
   }
   const scales = scaleData?.data || [];
 
+  const sectionId = tableState.section || sections[0].id;
+  const section = sections.find((f) => f.id === sectionId) || sections[0];
+
   return (
     <>
       {isLocked && (
@@ -507,25 +510,32 @@ export default function ItemManagement({ testId, isLocked, category }: Props) {
         </Alert>
       )}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_minmax(0,1fr)]">
-        <div className="space-y-2 self-start rounded-xl border border-gray-200 p-3 dark:border-gray-800">
+        <div className="h-full flex flex-col space-y-2 self-start rounded-xl border border-gray-200 p-3 dark:border-gray-800">
           <p className="px-1 text-xs text-gray-500">Section</p>
-          {sections.map((s) => {
-            return (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setIsSelected(s)}
-                className={`w-full rounded-lg border px-3 py-2 text-left text-xs transition-colors ${
-                  isSelected?.id === s.id
-                    ? "border-primary-main bg-primary-main/10"
-                    : "border-transparent hover:bg-divider"
-                }`}
-              >
-                <div className="font-medium">{s.code}</div>
-                <div className="line-clamp-1">{s.name}</div>
-              </button>
-            );
-          })}
+          <div className="h-full">
+            {sections.map((s) => {
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => {
+                    navigate({
+                      search: (prev) => ({ limit: prev.limit, section: s.id }),
+                      replace: true,
+                    });
+                  }}
+                  className={`w-full rounded-lg border px-3 py-2 text-left text-xs transition-colors ${
+                    sectionId === s.id
+                      ? "border-primary-main bg-primary-main/10"
+                      : "border-transparent hover:bg-divider"
+                  }`}
+                >
+                  <div className="font-medium">{s.code}</div>
+                  <div className="line-clamp-1">{s.name}</div>
+                </button>
+              );
+            })}
+          </div>
 
           <div className="flex items-center justify-end">
             <IconButton
@@ -552,8 +562,8 @@ export default function ItemManagement({ testId, isLocked, category }: Props) {
 
         <div>
           <ItemMutation
-            key={isSelected?.id}
-            section={isSelected || sections[0]}
+            key={sectionId}
+            section={section}
             category={category}
             isLocked={isLocked}
             scales={scales}

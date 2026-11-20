@@ -28,9 +28,9 @@ interface Props {
 type Light = "red" | "yellow" | "green";
 
 const DOT: Record<Light, string> = {
-  red: "bg-red-500",
-  yellow: "bg-yellow-500",
-  green: "bg-green-500",
+  red: "bg-error-main",
+  yellow: "bg-warning-main",
+  green: "bg-success-main",
 };
 
 const STATUS_LABEL: Record<string, string> = {

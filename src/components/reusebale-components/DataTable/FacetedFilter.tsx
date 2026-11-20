@@ -65,6 +65,7 @@ export default function FacetedFilter({
                 }
                 className="relative flex items-center gap-3 px-2 py-2 hover:bg-divider/20 rounded-xl cursor-pointer transition-colors group"
                 classNames={{ iconStart: "flex items-center" }}
+                title={opt.label}
               >
                 {/* Teks Label */}
                 <span

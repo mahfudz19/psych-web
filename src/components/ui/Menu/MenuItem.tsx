@@ -1,9 +1,9 @@
-import type { MouseEventHandler, ReactNode } from "react";
+import type { ButtonHTMLAttributes, MouseEventHandler, ReactNode } from "react";
 import type { color } from "../Type";
 import Ripple from "../Ripple";
 import { twMerge } from "tailwind-merge";
 
-export interface MenuItemProps {
+export interface MenuItemProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   className?: string;
@@ -28,9 +28,11 @@ export default function MenuItem({
   iconEnd,
   rippleColor = "primary",
   active = false,
+  ...rest
 }: MenuItemProps) {
   return (
     <button
+      {...rest}
       type="button"
       role="menuitem"
       data-active={active ? "true" : undefined}

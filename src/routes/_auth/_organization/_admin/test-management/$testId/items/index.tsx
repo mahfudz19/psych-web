@@ -4,4 +4,12 @@ import TestItems from "./-components/page";
 
 export const Route = createFileRoute(
   "/_auth/_organization/_admin/test-management/$testId/items/",
-)({ validateSearch, component: TestItems });
+)({
+  validateSearch: (search) => {
+    return {
+      ...validateSearch(search),
+      section: search.section as string | undefined,
+    };
+  },
+  component: TestItems,
+});

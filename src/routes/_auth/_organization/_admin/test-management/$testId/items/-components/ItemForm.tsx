@@ -461,8 +461,8 @@ export default function ItemForm({
   const submit = async (addNext: boolean, formData: FormData) => {
     const payload = buildPayload(formData);
     if (!payload) return;
-    setIsSubmitting(true);
     try {
+      setIsSubmitting(true);
       const ok = await onSubmit(payload, addNext);
       if (ok && addNext && !isEdit) resetForNext(payload.number);
     } finally {

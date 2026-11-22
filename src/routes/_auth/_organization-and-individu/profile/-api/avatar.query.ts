@@ -24,7 +24,7 @@ const uploadAvatar = async ({
     return data;
   }
 
-  const urlData = await uploadApi(file);
+  const urlData = await uploadApi(file, "PROFILE_PICTURE");
 
   const { data } = await updateProfile({
     profilePicture: urlData.fileKey ?? undefined,

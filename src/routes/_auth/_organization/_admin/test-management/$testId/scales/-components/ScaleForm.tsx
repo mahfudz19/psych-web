@@ -90,7 +90,6 @@ interface Props {
   scales: ScaleOption[];
   onCancel: () => void;
   isSubmitting?: boolean;
-  nextOrder: number;
 }
 
 const CODE_PATTERN = /^[A-Za-z0-9_]{1,30}$/;
@@ -109,7 +108,6 @@ export default function ScaleForm({
   scales,
   onCancel,
   isSubmitting = false,
-  nextOrder,
 }: Props) {
   const create = useCreateTestScale(testId);
   const update = useUpdateTestScale(testId);

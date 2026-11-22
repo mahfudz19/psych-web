@@ -11,6 +11,7 @@ import {
   Textarea,
 } from "../../norms/-components/NormTableService/Normform/ui";
 import toast from "../../../../../../../../components/ui/Toast";
+import { LoaderCircle } from "lucide-react";
 
 type SupportedType = "SINGLE_CHOICE" | "LIKERT";
 
@@ -268,9 +269,6 @@ export default function ItemForm({
       .filter((u) => u !== "")
       .map((url, i) => ({ label: imageLabel(i), url }));
 
-    if (!text && cleanImages.length === 0) {
-      errs.push("Isi soal wajib: teks, atau minimal satu gambar");
-    }
     for (const img of cleanImages) {
       if (!/^https?:\/\//i.test(img.url)) {
         errs.push(
@@ -547,12 +545,11 @@ export default function ItemForm({
           type="submit"
           variant={isEdit ? undefined : "outlined"}
           disabled={isSubmitting}
+          startIcon={
+            isSubmitting ? <LoaderCircle className="animate-spin" /> : undefined
+          }
         >
-          {isSubmitting
-            ? "Menyimpan..."
-            : isEdit
-              ? "Simpan Perubahan"
-              : "Simpan"}
+          {isEdit ? "Simpan Perubahan" : "Simpan dan close"}
         </Button>
         {!isEdit && (
           <Button
@@ -570,6 +567,11 @@ export default function ItemForm({
               }
             }}
             disabled={isSubmitting}
+            startIcon={
+              isSubmitting ? (
+                <LoaderCircle className="animate-spin" />
+              ) : undefined
+            }
           >
             Simpan dan tambah berikutnya
           </Button>

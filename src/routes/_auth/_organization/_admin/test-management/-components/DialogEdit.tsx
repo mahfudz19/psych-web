@@ -33,9 +33,6 @@ function DialogEdit({ id }: { id: string }) {
         >
           Edit
         </MenuItem>
-        // <IconButton onClick={openDialog} size="sm" variant="text">
-        //   <Edit size={16} />
-        // </IconButton>
       )}
       maxWidth="4xl"
     >

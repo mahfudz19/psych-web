@@ -4,6 +4,7 @@ import { formatLimit } from "../-api/exam.types";
 import Button from "../../../../components/ui/Button";
 
 interface LobbyProps {
+  attemptId: string;
   attempt: AttemptState;
   nextSection: AttemptSection | null;
   allDone: boolean;
@@ -11,14 +12,13 @@ interface LobbyProps {
   starting: boolean;
   startError: string | null;
   onStart: (sectionId: string) => void;
-  finishing: boolean;
-  finishError: string | null;
-  onFinish: () => void;
 }
 
 import { AlertCircle, Check, ChevronRight, Clock } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useGetTestSection } from "../../_organization/_admin/test-management/-api/test-definitions.query";
+import { useFinishAttempt } from "../-api/exam.api";
+import { useNavigate } from "@tanstack/react-router";
 
 interface SectionListProps {
   attempt: AttemptState;
@@ -242,6 +242,7 @@ const NextSection = (props: { testId: string; sectionId: string }) => {
 
 export default function Lobby(props: LobbyProps) {
   const {
+    attemptId,
     attempt,
     nextSection,
     allDone,
@@ -249,10 +250,25 @@ export default function Lobby(props: LobbyProps) {
     starting,
     startError,
     onStart,
-    finishing,
-    finishError,
-    onFinish,
   } = props;
+  const navigate = useNavigate();
+
+  // FINISH
+  const [finishError, setFinishError] = useState<string | null>(null);
+  const { mutateAsync: finishAsync, isPending: finishing } = useFinishAttempt();
+
+  const onFinish = async () => {
+    if (!attemptId) return;
+    setFinishError(null);
+    try {
+      await finishAsync(attemptId);
+      navigate({ to: "/test-history/$attemptId", params: { attemptId } });
+    } catch {
+      setFinishError(
+        "Tes belum bisa diselesaikan. Periksa koneksi Anda lalu coba lagi.",
+      );
+    }
+  };
   return (
     <div>
       {/* DAFTAR SUBTES */}

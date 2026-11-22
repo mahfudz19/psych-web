@@ -88,18 +88,6 @@ export default function MenuCore({
               e.preventDefault();
               items[items.length - 1]?.focus();
               break;
-            case "Escape":
-            case "Tab":
-              e.preventDefault();
-              close();
-
-              setTimeout(() => {
-                const triggerElement = document.querySelector(
-                  '[aria-expanded="true"]',
-                ) as HTMLElement;
-                triggerElement?.focus();
-              }, 10);
-              break;
           }
         };
 

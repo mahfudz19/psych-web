@@ -1,21 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  unwrap,
-  type AttemptState,
-  type SectionRun,
-} from "../../-api/exam.types";
-import {
-  useFinishAttempt,
   useGetAttempt,
   useStartOrResumeAttempt,
   useStartSection,
 } from "../../-api/exam.api";
-import SectionPlayer from "../../-components/SectionPlayer";
+import {
+  unwrap,
+  type AttemptState,
+  type SectionRun,
+} from "../../-api/exam.types";
+import CompletedCard from "../../-components/CompletedCard";
 import ErrorCard from "../../-components/ErrorCard";
 import LoadingCard from "../../-components/LoadingCard";
-import CompletedCard from "../../-components/CompletedCard";
 import Lobby from "../../-components/Lobby";
+import SectionPlayer from "../../-components/SectionPlayer";
 
 export const Route = createFileRoute("/_auth/_exam/exam/$testId/")({
   component: ExamSessionPage,
@@ -95,21 +94,6 @@ function ExamSessionPage() {
     void refetchAttempt();
   }, [refetchAttempt]);
 
-  const [finishError, setFinishError] = useState<string | null>(null);
-  const { mutateAsync: finishAsync, isPending: finishing } = useFinishAttempt();
-
-  const finishAttempt = async () => {
-    if (!attemptId) return;
-    setFinishError(null);
-    try {
-      await finishAsync(attemptId);
-    } catch {
-      setFinishError(
-        "Tes belum bisa diselesaikan. Periksa koneksi Anda lalu coba lagi.",
-      );
-    }
-  };
-
   if (attemptQuery.isLoading) return <LoadingCard />;
 
   if (attemptQuery.isError || !attempt) {
@@ -148,6 +132,7 @@ function ExamSessionPage() {
 
   return (
     <Lobby
+      attemptId={attemptId}
       attempt={attempt}
       nextSection={nextSection}
       allDone={allDone}
@@ -155,9 +140,6 @@ function ExamSessionPage() {
       starting={starting}
       startError={startError}
       onStart={(sectionId) => void beginSection(sectionId)}
-      finishing={finishing}
-      finishError={finishError}
-      onFinish={() => void finishAttempt()}
     />
   );
 }

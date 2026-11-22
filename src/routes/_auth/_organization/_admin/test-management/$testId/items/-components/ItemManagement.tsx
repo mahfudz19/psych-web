@@ -88,6 +88,68 @@ function summarize(item: TestItem) {
   return n > 0 ? `[${n} gambar]` : "(tanpa isi)";
 }
 
+function Section(props: {
+  sections: TestSection[];
+  section: TestSection;
+  page: number;
+  totalPages: number;
+}) {
+  const { sections, section, page, totalPages } = props;
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  return (
+    <div className="space-y-2 self-start rounded-xl border border-gray-200 p-3 dark:border-gray-800">
+      <p className="px-1 text-xs text-gray-500">Section</p>
+      <>
+        {sections.map((s) => {
+          return (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => {
+                navigate({
+                  search: (prev) => ({
+                    limit: prev.limit,
+                    section: s.id === sections[0].id ? undefined : s.id,
+                  }),
+                  replace: true,
+                });
+              }}
+              className={`flex items-start gap-1 w-full rounded-lg border px-3 py-2 text-left text-xs transition-colors ${
+                section.id === s.id
+                  ? "border-primary-main bg-primary-main/10"
+                  : "border-transparent hover:bg-divider"
+              }`}
+            >
+              <div className="bg-secondary-main/25 min-w-4 max-w-4 flex items-center justify-center rounded-full text-xs">
+                {s.order}
+              </div>
+              <div>
+                <div className="font-medium">{s.code}</div>
+                <div className="line-clamp-1">{s.name}</div>
+              </div>
+            </button>
+          );
+        })}
+      </>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-end">
+          <IconButton size="sm" variant="text" disabled={page === 1}>
+            <ArrowLeft size={12} />
+          </IconButton>
+          <span className="font-mono text-xs">
+            {page}|{totalPages}
+          </span>
+          <IconButton size="sm" variant="text" disabled={page === totalPages}>
+            <ArrowRight size={12} />
+          </IconButton>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const SkalaCell = (props: { row: TestItem; scales: TestScale[] }) => {
   const { row, scales } = props;
   const scaleById = new Map(scales.map((s) => [s.id, s]));
@@ -222,7 +284,7 @@ function ItemMutation(props: {
             header: "No",
             accessorKey: "number",
             sortable: true,
-            cell: (row) => row.number,
+            cell: (row) => `${row.number}.`,
             className: "w-16",
           },
           {
@@ -465,7 +527,6 @@ function ItemMutation(props: {
 
 export default function ItemManagement({ testId, isLocked, category }: Props) {
   const tableState = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
 
   const { data: sectionData, isLoading } = useGetTestSections(testId);
   const { data: scaleData } = useGetTestScales(testId);
@@ -510,55 +571,12 @@ export default function ItemManagement({ testId, isLocked, category }: Props) {
         </Alert>
       )}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_minmax(0,1fr)]">
-        <div className="h-full flex flex-col space-y-2 self-start rounded-xl border border-gray-200 p-3 dark:border-gray-800">
-          <p className="px-1 text-xs text-gray-500">Section</p>
-          <div className="h-full">
-            {sections.map((s) => {
-              return (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => {
-                    navigate({
-                      search: (prev) => ({ limit: prev.limit, section: s.id }),
-                      replace: true,
-                    });
-                  }}
-                  className={`w-full rounded-lg border px-3 py-2 text-left text-xs transition-colors ${
-                    sectionId === s.id
-                      ? "border-primary-main bg-primary-main/10"
-                      : "border-transparent hover:bg-divider"
-                  }`}
-                >
-                  <div className="font-medium">{s.code}</div>
-                  <div className="line-clamp-1">{s.name}</div>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="flex items-center justify-end">
-            <IconButton
-              size="sm"
-              variant="text"
-              disabled={sectionData?.meta?.page === 1}
-            >
-              <ArrowLeft size={12} />
-            </IconButton>
-            <span className="font-mono text-xs">
-              {sectionData?.meta?.page}|{sectionData?.meta?.totalPages}
-            </span>
-            <IconButton
-              size="sm"
-              variant="text"
-              disabled={
-                sectionData?.meta?.page === sectionData?.meta?.totalPages
-              }
-            >
-              <ArrowRight size={12} />
-            </IconButton>
-          </div>
-        </div>
+        <Section
+          sections={sections}
+          section={section}
+          page={sectionData?.meta?.page || 1}
+          totalPages={sectionData?.meta?.totalPages || 1}
+        />
 
         <div>
           <ItemMutation

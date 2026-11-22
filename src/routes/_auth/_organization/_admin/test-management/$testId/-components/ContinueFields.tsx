@@ -10,6 +10,7 @@ const toJson = (value: unknown, fallback: string) =>
     : JSON.stringify(value, null, 2);
 
 const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
+  console.log(section);
   return (
     <>
       <Checkbox
@@ -17,6 +18,7 @@ const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
         label="Tampilkan contoh soal sebelum soal pertama"
         defaultChecked={section?.showExamplesFirst ?? true}
       />
+      <br />
       <Label
         htmlFor="examples"
         required
@@ -57,7 +59,7 @@ function ContinueField({
     <>
       {/* Contoh soal */}
       <div>
-        <ExampleField />
+        <ExampleField section={section} />
       </div>
 
       {/* Fase hafalan */}

@@ -17,7 +17,65 @@ const ITEM_TYPES = [
   { value: "DRAWING", label: "Gambar (DRAWING)" },
 ];
 
-function TimeField({ section }: { section?: SectionFormInitial }) {
+import { useState } from "react";
+
+function formatMinutesHint(rawValue: string): string {
+  const num = Number(rawValue);
+  if (!rawValue.trim() || Number.isNaN(num) || num <= 0) {
+    return "Kosongkan jika tanpa batas. Contoh: 360 detik = 6 menit.";
+  }
+
+  const minutes = num / 60;
+  const formattedMinutes = Number.isInteger(minutes)
+    ? `${minutes}`
+    : minutes.toFixed(1).replace(".", ",");
+
+  const wholeMinutes = Math.floor(num / 60);
+  const remainderSeconds = num % 60;
+
+  if (wholeMinutes > 0 && remainderSeconds > 0) {
+    return `Setara ${formattedMinutes} menit (${wholeMinutes} menit ${remainderSeconds} detik)`;
+  }
+
+  return `Setara ${formattedMinutes} menit`;
+}
+
+function TimeLimitSecondsField({ section }: Props) {
+  const [secondsValue, setSecondsValue] = useState<string>(
+    section?.timeLimitSeconds != null ? String(section.timeLimitSeconds) : "",
+  );
+
+  return (
+    <div>
+      <Label
+        htmlFor="timeLimitSeconds"
+        required
+        tooltip="Batas waktu subtes. Server menutup subtes otomatis saat habis. Kosongkan jika tanpa batas. Isi sesuai manual tes."
+      >
+        Batas Waktu (Detik)
+      </Label>
+      <Input
+        id="timeLimitSeconds"
+        name="timeLimitSeconds"
+        type="number"
+        min="1"
+        value={secondsValue}
+        onChange={(e) => setSecondsValue(e.target.value)}
+        placeholder="Kosong = tanpa batas"
+        className="w-full"
+      />
+      <p className="mt-1 text-xs text-text-secondary">
+        {formatMinutesHint(secondsValue)}
+      </p>
+    </div>
+  );
+}
+
+interface Props {
+  section?: SectionFormInitial;
+}
+
+function TimeField({ section }: Props) {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -63,27 +121,7 @@ function TimeField({ section }: { section?: SectionFormInitial }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <Label
-            htmlFor="timeLimitSeconds"
-            required
-            tooltip="Batas waktu subtes. Server menutup subtes otomatis saat habis. Kosongkan jika tanpa batas. Isi sesuai manual tes."
-          >
-            Batas Waktu (Detik)
-          </Label>
-          <Input
-            id="timeLimitSeconds"
-            name="timeLimitSeconds"
-            type="number"
-            min="1"
-            defaultValue={section?.timeLimitSeconds ?? ""}
-            placeholder="Kosong = tanpa batas"
-            className="w-full"
-          />
-          <p className="mt-1 text-xs text-text-secondary">
-            Contoh: 360 detik = 6 menit.
-          </p>
-        </div>
+        <TimeLimitSecondsField section={section} />
       </div>
     </>
   );

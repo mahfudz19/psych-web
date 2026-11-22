@@ -90,6 +90,7 @@ interface Props {
   scales: ScaleOption[];
   onCancel: () => void;
   isSubmitting?: boolean;
+  nextOrder: number;
 }
 
 const CODE_PATTERN = /^[A-Za-z0-9_]{1,30}$/;
@@ -108,6 +109,7 @@ export default function ScaleForm({
   scales,
   onCancel,
   isSubmitting = false,
+  nextOrder,
 }: Props) {
   const create = useCreateTestScale(testId);
   const update = useUpdateTestScale(testId);
@@ -230,10 +232,7 @@ export default function ScaleForm({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col max-h-[75vh] text-left"
-    >
+    <form onSubmit={handleSubmit}>
       {/* TABS */}
       <div className="px-4 pt-4 pb-2 border-b border-divider">
         <Tabs value={activeTab} onChange={setActiveTab}>
@@ -249,7 +248,7 @@ export default function ScaleForm({
           value="base"
           activeValue={activeTab}
           keepMounted
-          className="space-y-4"
+          className="space-y-4 h-[calc(100dvh-333px)]"
         >
           <BaseField
             scale={scale}
@@ -278,7 +277,7 @@ export default function ScaleForm({
           value="measurement"
           activeValue={activeTab}
           keepMounted
-          className="space-y-4"
+          className="space-y-4 h-[calc(100dvh-333px)]"
         >
           <MeasurementFields scale={scale} />
         </TabContent>
@@ -288,7 +287,7 @@ export default function ScaleForm({
           value="view"
           activeValue={activeTab}
           keepMounted
-          className="space-y-4"
+          className="space-y-4 h-[calc(100dvh-333px)]"
         >
           <ViewFields
             isValidityScale={isValidityScale}

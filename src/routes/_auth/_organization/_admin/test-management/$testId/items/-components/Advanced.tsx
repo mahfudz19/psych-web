@@ -1,12 +1,17 @@
 import { ChevronRight } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef, useState, type Dispatch, type SetStateAction } from "react";
 import type { TestItem } from "../../../-api/test-definitions.type";
 import Checkbox from "../../../../../../../../components/ui/Checkbox";
 import Input from "../../../../../../../../components/ui/Input";
 import Label from "../../../../../../../../components/ui/Label";
 import Select from "../../../../../../../../components/ui/Select";
 
-function Advanced({ item }: { item?: TestItem }) {
+function Advanced(props: {
+  item?: TestItem;
+  tags: string;
+  setTags: Dispatch<SetStateAction<string>>;
+}) {
+  const { item, tags, setTags } = props;
   const [showAdvanced, setShowAdvanced] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -134,7 +139,8 @@ function Advanced({ item }: { item?: TestItem }) {
             id="item-tags"
             name="tags"
             type="text"
-            defaultValue={(item?.tags ?? []).join(", ")}
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
             className="w-full"
           />
         </div>

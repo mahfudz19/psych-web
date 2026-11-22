@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import StimulusImage from "./StimulusImage";
 import Advanced from "./Advanced";
-import TypeFields, { type ScoringTier } from "./TypeFields";
+import TypeFields, { type ScoringTier, type NormalizeMode } from "./TypeFields";
 import type { ItemType, TestItem } from "../../../-api/test-definitions.type";
 import {
   Button,
@@ -44,6 +44,7 @@ export interface ItemPayload {
     | {
         accepted: string[];
         scoring?: Record<string, string[]>;
+        normalize?: string;
       }
     | null;
   timeLimitSeconds: number | null;
@@ -212,14 +213,17 @@ export default function ItemForm({
   );
   const [scoringTiers, setScoringTiers] = useState<ScoringTier[]>(() => {
     const scoring = (item?.answerKey as any)?.scoring as
-      | Record<string, string[]>
-      | undefined;
+      Record<string, string[]> | undefined;
     if (!scoring) return [];
     return Object.entries(scoring).map(([points, answers]) => ({
       points,
       answers: answers.join(", "),
     }));
   });
+  const [normalize, setNormalize] = useState<NormalizeMode>(
+    () => ((item?.answerKey as any)?.normalize as NormalizeMode) || "NONE",
+  );
+  const [tags, setTags] = useState(() => item?.tags.join(", ") || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (item && !isSupported(item.type)) {
@@ -249,6 +253,8 @@ export default function ItemForm({
     setReverseScored(false);
     setAcceptedAnswers("");
     setScoringTiers([]);
+    setNormalize("NONE");
+    setTags("");
   };
 
   const resetForNext = (lastSubmittedNumber: number) => {
@@ -362,6 +368,7 @@ export default function ItemForm({
       answerKey = {
         accepted,
         ...(Object.keys(scoring).length > 0 ? { scoring } : {}),
+        ...(normalize !== "NONE" ? { normalize } : {}),
       };
     } else if (type === "LIKERT") {
       if (options.length < 2) errs.push("Minimal 2 opsi");
@@ -579,6 +586,8 @@ export default function ItemForm({
             setAcceptedAnswers={setAcceptedAnswers}
             scoringTiers={scoringTiers}
             setScoringTiers={setScoringTiers}
+            normalize={normalize}
+            setNormalize={setNormalize}
             isAbility={isAbility}
             type={type}
             blankOption={blankOption}
@@ -590,7 +599,7 @@ export default function ItemForm({
 
         {/* LANJUTAN */}
         <div className="border-t border-divider pt-3">
-          <Advanced item={item} />
+          <Advanced item={item} tags={tags} setTags={setTags} />
         </div>
       </div>
 

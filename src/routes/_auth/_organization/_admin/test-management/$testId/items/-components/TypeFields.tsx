@@ -63,14 +63,116 @@ function Tag({ children }: { children: React.ReactNode }) {
   );
 }
 
+function inferNormalizeMode(raw: string): NormalizeMode | null {
+  const parts = raw
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  if (parts.length === 0) {
+    return null;
+  }
+
+  // Cek apakah setiap jawaban valid sebagai angka (mendukung desimal atau tanda +/- opsional)
+  const allNumeric = parts.every((part) =>
+    /^[+-]?(\d+(\.\d+)?|\.\d+)$/.test(part),
+  );
+
+  return allNumeric ? "TRIM_LEADING_ZEROS" : "NONE";
+}
+
+function AcceptedAnswersFields(props: {
+  acceptedAnswers: string;
+  setAcceptedAnswers: Dispatch<SetStateAction<string>>;
+  normalize: NormalizeMode;
+  setNormalize: Dispatch<SetStateAction<NormalizeMode>>;
+}) {
+  const { acceptedAnswers, setAcceptedAnswers, normalize, setNormalize } =
+    props;
+  const isManualSelect = useRef(false);
+
+  const handleAnswersChange = (nextValue: string) => {
+    setAcceptedAnswers(nextValue);
+
+    if (!nextValue.trim()) {
+      isManualSelect.current = false;
+      setNormalize("NONE");
+      return;
+    }
+
+    if (!isManualSelect.current) {
+      const inferred = inferNormalizeMode(nextValue);
+      if (inferred) {
+        setNormalize(inferred);
+      }
+    }
+  };
+
+  const handleNormalizeChange = (nextMode: NormalizeMode) => {
+    isManualSelect.current = true;
+    setNormalize(nextMode);
+  };
+
+  return (
+    <div className="flex gap-1">
+      <div className="w-full">
+        <span className="text-xs text-text-secondary">
+          Masukkan jawaban yang diterima, dipisah koma jika jawaban lebih dari
+          satu. Contoh: bunga, kembang
+        </span>
+        <Input
+          type="text"
+          value={acceptedAnswers}
+          onChange={(e) => handleAnswersChange(e.target.value)}
+          placeholder="bunga, kembang atau 01, 1"
+          className="w-full"
+        />
+      </div>
+      <div>
+        <Label
+          htmlFor="timeLimitSeconds"
+          required
+          tooltip="Batas waktu subtes. Server menutup subtes otomatis saat habis. Kosongkan jika tanpa batas. Isi sesuai manual tes."
+        >
+          Batas Waktu (Detik)
+        </Label>
+        <br />
+        <Select
+          id="normalize-mode"
+          value={normalize}
+          onChange={(e) =>
+            handleNormalizeChange(e.target.value as NormalizeMode)
+          }
+        >
+          <option value="NONE">Tidak ada (exact match)</option>
+          <option value="TRIM_LEADING_ZEROS">
+            Hapus nol di depan (untuk angka)
+          </option>
+          <option value="LOWERCASE">Huruf kecil (untuk teks)</option>
+        </Select>
+      </div>
+    </div>
+  );
+}
+
+export type NormalizeMode = "NONE" | "TRIM_LEADING_ZEROS" | "LOWERCASE";
+
 function TextInput(props: {
   acceptedAnswers: string;
   setAcceptedAnswers: Dispatch<SetStateAction<string>>;
   scoringTiers: ScoringTier[];
   setScoringTiers: Dispatch<SetStateAction<ScoringTier[]>>;
+  normalize: NormalizeMode;
+  setNormalize: Dispatch<SetStateAction<NormalizeMode>>;
 }) {
-  const { acceptedAnswers, setAcceptedAnswers, scoringTiers, setScoringTiers } =
-    props;
+  const {
+    acceptedAnswers,
+    setAcceptedAnswers,
+    scoringTiers,
+    setScoringTiers,
+    normalize,
+    setNormalize,
+  } = props;
 
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -79,15 +181,11 @@ function TextInput(props: {
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium">Jawaban yang diterima</span>
       </div>
-      <p className="mt-1 text-xs text-text-secondary">
-        Masukkan jawaban yang diterima, dipisah koma. Contoh: bunga, kembang
-      </p>
-      <Input
-        type="text"
-        value={acceptedAnswers}
-        onChange={(e) => setAcceptedAnswers(e.target.value)}
-        placeholder="bunga, kembang"
-        className="w-full"
+      <AcceptedAnswersFields
+        acceptedAnswers={acceptedAnswers}
+        setAcceptedAnswers={setAcceptedAnswers}
+        normalize={normalize}
+        setNormalize={setNormalize}
       />
 
       <div className="flex items-center justify-between mt-4">
@@ -116,7 +214,7 @@ function TextInput(props: {
       </div>
       <p className="mt-1 text-xs text-text-secondary">
         Opsional. Tiap tingkat: poin dan jawaban yang mendapat poin tersebut,
-        dipisah koma.
+        dipisah koma jika lebih dari satu.
       </p>
       <div
         className="space-y-2 max-h-[calc(100dvh-380px)] overflow-auto"
@@ -189,6 +287,8 @@ function TypeFields(props: {
   setAcceptedAnswers: Dispatch<SetStateAction<string>>;
   scoringTiers: ScoringTier[];
   setScoringTiers: Dispatch<SetStateAction<ScoringTier[]>>;
+  normalize: NormalizeMode;
+  setNormalize: Dispatch<SetStateAction<NormalizeMode>>;
   isAbility: boolean;
   type: SupportedType;
   blankOption: () => DraftOption;
@@ -212,6 +312,8 @@ function TypeFields(props: {
     setAcceptedAnswers,
     scoringTiers,
     setScoringTiers,
+    normalize,
+    setNormalize,
 
     isAbility,
     type,
@@ -273,12 +375,12 @@ function TypeFields(props: {
         >
           Tipe soal
         </Label>
+        <br />
         <Select
           id="item-type"
           value={type}
           onChange={(e) => handleTypeChange(e.target.value as ItemType)}
           disabled={isEdit}
-          className="w-full"
         >
           {TYPE_OPTIONS.map((t) => (
             <option key={t.value} value={t.value} disabled={!t.supported}>
@@ -298,6 +400,8 @@ function TypeFields(props: {
           setAcceptedAnswers={setAcceptedAnswers}
           scoringTiers={scoringTiers}
           setScoringTiers={setScoringTiers}
+          normalize={normalize}
+          setNormalize={setNormalize}
         />
       ) : (
         <>

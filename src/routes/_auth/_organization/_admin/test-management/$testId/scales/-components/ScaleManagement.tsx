@@ -69,6 +69,11 @@ export default function ScaleManagement({
 
   const columns = [
     {
+      header: "Order",
+      accessorKey: "order",
+      cell: (row: TestScale) => row.order,
+    },
+    {
       header: "Kode",
       accessorKey: "code",
       cell: (row: TestScale) => row.code,

@@ -39,10 +39,27 @@ const inputVariants = cva(
 
 export { inputVariants };
 
-function Input({ color, size, className, ...restProps }: InputProps) {
+function Input({
+  color,
+  size,
+  className,
+  type,
+  onWheel,
+  ...restProps
+}: InputProps) {
+  const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+    if (type === "number" && !onWheel) {
+      e.currentTarget.blur();
+    } else {
+      onWheel?.(e);
+    }
+  };
+
   return (
     <input
       {...restProps}
+      type={type}
+      onWheel={handleWheel}
       className={twMerge(inputVariants({ color, size, className }))}
     />
   );

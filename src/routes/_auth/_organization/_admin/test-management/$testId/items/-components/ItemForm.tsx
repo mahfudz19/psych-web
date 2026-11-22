@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import StimulusImage from "./StimulusImage";
 import Advanced from "./Advanced";
-import TypeFields from "./TypeFields";
+import TypeFields, { type ScoringTier } from "./TypeFields";
 import type { ItemType, TestItem } from "../../../-api/test-definitions.type";
 import {
   Button,
@@ -13,7 +13,7 @@ import {
 import toast from "../../../../../../../../components/ui/Toast";
 import { LoaderCircle } from "lucide-react";
 
-type SupportedType = "SINGLE_CHOICE" | "LIKERT";
+type SupportedType = "SINGLE_CHOICE" | "LIKERT" | "TEXT_INPUT";
 
 export interface ItemOptionPayload {
   key: string;
@@ -39,7 +39,13 @@ export interface ItemPayload {
   weight: number;
   scoredInTotal: boolean;
   consistencyGroup: string | null;
-  answerKey: { correct: string[] } | null;
+  answerKey:
+    | { correct: string[] }
+    | {
+        accepted: string[];
+        scoring?: Record<string, string[]>;
+      }
+    | null;
   timeLimitSeconds: number | null;
   constraints: Record<string, unknown>;
   difficulty: number | null;
@@ -77,7 +83,7 @@ interface DraftOption {
   points: string;
 }
 
-const SUPPORTED: SupportedType[] = ["SINGLE_CHOICE", "LIKERT"];
+const SUPPORTED: SupportedType[] = ["SINGLE_CHOICE", "LIKERT", "TEXT_INPUT"];
 
 const LIKERT_PRESETS: Record<string, { label: string; labels: string[] }> = {
   setuju: {
@@ -106,6 +112,7 @@ const blankOption = (): DraftOption => ({
 });
 
 function defaultOptions(type: SupportedType): DraftOption[] {
+  if (type === "TEXT_INPUT") return [];
   if (type === "LIKERT") {
     return LIKERT_PRESETS.setuju.labels.map((label) => ({
       label,
@@ -200,6 +207,19 @@ export default function ItemForm({
   const [reverseScored, setReverseScored] = useState<boolean>(
     item?.reverseScored ?? false,
   );
+  const [acceptedAnswers, setAcceptedAnswers] = useState<string>(
+    () => item?.answerKey?.accepted?.join(", ") ?? "",
+  );
+  const [scoringTiers, setScoringTiers] = useState<ScoringTier[]>(() => {
+    const scoring = (item?.answerKey as any)?.scoring as
+      | Record<string, string[]>
+      | undefined;
+    if (!scoring) return [];
+    return Object.entries(scoring).map(([points, answers]) => ({
+      points,
+      answers: answers.join(", "),
+    }));
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (item && !isSupported(item.type)) {
@@ -219,10 +239,16 @@ export default function ItemForm({
   const handleTypeChange = (next: ItemType) => {
     if (!isSupported(next) || next === type) return;
     setType(next);
-    setOptions(defaultOptions(next));
+    if (next === "TEXT_INPUT") {
+      setOptions([]);
+    } else {
+      setOptions(defaultOptions(next));
+    }
     setCorrectIndex(null);
     setPreset("setuju");
     setReverseScored(false);
+    setAcceptedAnswers("");
+    setScoringTiers([]);
   };
 
   const resetForNext = (lastSubmittedNumber: number) => {
@@ -236,7 +262,10 @@ export default function ItemForm({
     setImages([]);
     setCorrectIndex(null);
     setReverseScored(false);
-    if (type === "SINGLE_CHOICE") {
+    if (type === "TEXT_INPUT") {
+      setAcceptedAnswers("");
+      setScoringTiers([]);
+    } else if (type === "SINGLE_CHOICE") {
       setOptions((prev) => prev.map(() => blankOption()));
     }
   };
@@ -302,11 +331,40 @@ export default function ItemForm({
 
     // --- opsi dan penilaian ---
     const optionPayload: ItemOptionPayload[] = [];
-    let answerKey: { correct: string[] } | null = null;
+    let answerKey: ItemPayload["answerKey"] = null;
 
-    if (options.length < 2) errs.push("Minimal 2 opsi");
+    if (type === "TEXT_INPUT") {
+      const accepted = acceptedAnswers
+        .split(",")
+        .map((a) => a.trim().toLowerCase())
+        .filter((a) => a !== "");
+      if (accepted.length === 0)
+        errs.push("Minimal satu jawaban yang diterima");
 
-    if (type === "LIKERT") {
+      const scoring: Record<string, string[]> = {};
+      for (const tier of scoringTiers) {
+        const pts = tier.points.trim();
+        if (!pts || Number.isNaN(Number(pts))) {
+          errs.push("Poin pada aturan skor harus berupa angka");
+          continue;
+        }
+        const tierAnswers = tier.answers
+          .split(",")
+          .map((a) => a.trim().toLowerCase())
+          .filter((a) => a !== "");
+        if (tierAnswers.length === 0) {
+          errs.push(`Jawaban untuk poin ${pts} tidak boleh kosong`);
+          continue;
+        }
+        scoring[pts] = tierAnswers;
+      }
+
+      answerKey = {
+        accepted,
+        ...(Object.keys(scoring).length > 0 ? { scoring } : {}),
+      };
+    } else if (type === "LIKERT") {
+      if (options.length < 2) errs.push("Minimal 2 opsi");
       if (!scaleId) errs.push("Skala wajib dipilih untuk soal Likert");
       options.forEach((o, i) => {
         if (!o.label.trim()) errs.push(`Label opsi ke-${i + 1} wajib diisi`);
@@ -319,6 +377,7 @@ export default function ItemForm({
         });
       });
     } else {
+      if (options.length < 2) errs.push("Minimal 2 opsi");
       options.forEach((o, i) => {
         const label = o.label.trim();
         const imageUrl = o.imageUrl.trim();
@@ -516,6 +575,10 @@ export default function ItemForm({
             setCorrectIndex={setCorrectIndex}
             reverseScored={reverseScored}
             setReverseScored={setReverseScored}
+            acceptedAnswers={acceptedAnswers}
+            setAcceptedAnswers={setAcceptedAnswers}
+            scoringTiers={scoringTiers}
+            setScoringTiers={setScoringTiers}
             isAbility={isAbility}
             type={type}
             blankOption={blankOption}

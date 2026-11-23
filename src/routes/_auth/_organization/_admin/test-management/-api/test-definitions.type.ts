@@ -110,9 +110,12 @@ export interface TestOption {
 
 export interface TestExample {
   text: string;
-  options: TestOption[];
+  options?: TestOption[];
   correctAnswer: string;
   explanation?: string;
+
+  answer?: string;
+  content?: { text?: string };
 }
 
 // --- 2. TEST SECTION ---

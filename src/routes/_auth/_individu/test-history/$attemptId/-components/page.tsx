@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Route } from "..";
 import Card from "../../../../../../components/ui/Card";
 import Chip from "../../../../../../components/ui/Chip";
@@ -64,7 +65,14 @@ export default function HistoryDetailPage() {
         </div>
 
         {/* Status Badge */}
-        <div>
+        <div className="text-right">
+          <Link
+            to="/portal"
+            className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold text-text-secondary bg-divider/20 hover:bg-divider/40 transition-colors w-fit"
+          >
+            &larr; Kembali ke history
+          </Link>
+          <br />
           <StatusBadge status={attempt.status} />
         </div>
       </div>

@@ -1,7 +1,9 @@
+import { useState } from "react";
 import Input from "../../../../../../../components/ui/Input";
 import Label from "../../../../../../../components/ui/Label";
 import Select from "../../../../../../../components/ui/Select";
 import type { SectionFormInitial } from "./SectionForm";
+import formatMinutesHint from "../../../../../../../components/utility/formatMinutesHint";
 
 const ITEM_TYPES = [
   { value: "SINGLE_CHOICE", label: "Pilihan Tunggal (SINGLE_CHOICE)" },
@@ -16,29 +18,6 @@ const ITEM_TYPES = [
   { value: "TEXT_INPUT", label: "Isian Teks (TEXT_INPUT)" },
   { value: "DRAWING", label: "Gambar (DRAWING)" },
 ];
-
-import { useState } from "react";
-
-function formatMinutesHint(rawValue: string): string {
-  const num = Number(rawValue);
-  if (!rawValue.trim() || Number.isNaN(num) || num <= 0) {
-    return "Kosongkan jika tanpa batas. Contoh: 360 detik = 6 menit.";
-  }
-
-  const minutes = num / 60;
-  const formattedMinutes = Number.isInteger(minutes)
-    ? `${minutes}`
-    : minutes.toFixed(1).replace(".", ",");
-
-  const wholeMinutes = Math.floor(num / 60);
-  const remainderSeconds = num % 60;
-
-  if (wholeMinutes > 0 && remainderSeconds > 0) {
-    return `Setara ${formattedMinutes} menit (${wholeMinutes} menit ${remainderSeconds} detik)`;
-  }
-
-  return `Setara ${formattedMinutes} menit`;
-}
 
 function TimeLimitSecondsField({ section }: Props) {
   const [secondsValue, setSecondsValue] = useState<string>(

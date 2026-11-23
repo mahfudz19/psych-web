@@ -55,6 +55,7 @@ function Dialog(props: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const backdropClickStartRef = useRef<boolean>(false);
 
   const [isMounted, setIsMounted] = useState(!isDynamic);
 
@@ -112,8 +113,18 @@ function Dialog(props: DialogProps) {
     }, 300);
   };
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === e.currentTarget) backdropClickStartRef.current = true;
+    else backdropClickStartRef.current = false;
+  };
+
+  const handleMouseUp = (e: React.MouseEvent<HTMLDialogElement>) => {
     if (!dismissible) return;
+    const wasStartedHere = backdropClickStartRef.current;
+    backdropClickStartRef.current = false;
+
+    if (!wasStartedHere) return;
+
     const dialog = e.currentTarget;
 
     if (scroll === "paper") {
@@ -124,8 +135,14 @@ function Dialog(props: DialogProps) {
         e.clientY < rect.top ||
         e.clientY > rect.bottom;
 
-      if (isClickOutside) closeDialog();
-    } else if (e.target === dialog) closeDialog();
+      if (isClickOutside) {
+        e.stopPropagation();
+        closeDialog();
+      }
+    } else if (e.target === dialog) {
+      e.stopPropagation();
+      closeDialog();
+    }
   };
 
   const renderChildren = isMounted
@@ -142,11 +159,21 @@ function Dialog(props: DialogProps) {
         {...rest}
         ref={dialogRef}
         {...(scroll !== "body" ? { "data-slot": "dialog" } : {})}
-        onCancel={(e) => {
-          e.preventDefault();
-          closeDialog();
+        onCancel={(e) => e.preventDefault()}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            e.preventDefault();
+            e.stopPropagation();
+            if (
+              document.body.getAttribute("data-file-picker-active") === "true"
+            ) {
+              return;
+            }
+            closeDialog();
+          }
         }}
-        onClick={handleBackdropClick}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
         className={twMerge(
           "group fixed inset-0 m-auto",
           "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",

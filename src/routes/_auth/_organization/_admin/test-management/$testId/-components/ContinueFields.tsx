@@ -1,8 +1,10 @@
+import { useState } from "react";
 import Checkbox from "../../../../../../../components/ui/Checkbox";
 import Input from "../../../../../../../components/ui/Input";
 import Label from "../../../../../../../components/ui/Label";
 import Textarea from "../../../../../../../components/ui/Textarea";
 import type { SectionFormInitial } from "./SectionForm";
+import formatMinutesHint from "../../../../../../../components/utility/formatMinutesHint";
 
 const toJson = (value: unknown, fallback: string) =>
   value === null || value === undefined
@@ -43,6 +45,44 @@ const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
     </>
   );
 };
+
+function TimeLimitSecondsField({ displaySeconds }: { displaySeconds: string }) {
+  const [secondsValue, setSecondsValue] = useState<string>(displaySeconds);
+
+  return (
+    <div>
+      <Label
+        htmlFor="stimulusDisplaySeconds"
+        required
+        tooltip="Berapa detik konten ditampilkan sebelum disembunyikan."
+      >
+        Lama Tampil (Detik)
+      </Label>
+      <Input
+        id="stimulusDisplaySeconds"
+        name="stimulusDisplaySeconds"
+        type="number"
+        min="1"
+        value={secondsValue}
+        onChange={(e) => setSecondsValue(e.target.value)}
+        className="w-full"
+      />
+      {/* <Input
+        id="timeLimitSeconds"
+        name="timeLimitSeconds"
+        type="number"
+        min="1"
+        value={secondsValue}
+        onChange={(e) => setSecondsValue(e.target.value)}
+        placeholder="Kosong = tanpa batas"
+        className="w-full"
+      /> */}
+      <p className="mt-1 text-xs text-text-secondary">
+        {formatMinutesHint(secondsValue)}
+      </p>
+    </div>
+  );
+}
 
 function ContinueField({
   section,
@@ -89,23 +129,9 @@ function ContinueField({
                   className="w-full"
                 />
               </div>
-              <div>
-                <Label
-                  htmlFor="stimulusDisplaySeconds"
-                  required
-                  tooltip="Berapa detik konten ditampilkan sebelum disembunyikan."
-                >
-                  Lama Tampil (Detik)
-                </Label>
-                <Input
-                  id="stimulusDisplaySeconds"
-                  name="stimulusDisplaySeconds"
-                  type="number"
-                  min="1"
-                  defaultValue={Number(stimulus?.displaySeconds ?? 180)}
-                  className="w-full"
-                />
-              </div>
+              <TimeLimitSecondsField
+                displaySeconds={String(stimulus?.displaySeconds ?? 180)}
+              />
             </div>
 
             <Checkbox

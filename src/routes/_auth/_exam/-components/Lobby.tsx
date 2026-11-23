@@ -187,53 +187,76 @@ const NextSection = (props: { testId: string; sectionId: string }) => {
               Contoh Soal
             </h3>
 
-            {section.examples.map((ex, idx: number) => (
-              <div
-                key={idx}
-                className="space-y-4 rounded-2xl border border-divider bg-bg-paper/50 p-4 sm:p-5"
-              >
-                {/* Pertanyaan Contoh Soal */}
-                <p className="text-sm font-medium text-text-primary">
-                  {ex.text}
-                </p>
+            {section.examples.map((ex, idx: number) => {
+              // Ambil teks soal dari format baru (content.text) atau format lama (text)
+              const questionText = ex.content?.text || ex.text;
+              const hasOptions =
+                Array.isArray(ex.options) && ex.options.length > 0;
 
-                {/* Pilihan Ganda Contoh Soal */}
-                <div className="flex flex-col gap-2">
-                  {ex.options.map((opt) => {
-                    const isCorrect = ex.correctAnswer === opt.label;
-                    return (
-                      <div
-                        key={opt.label}
-                        className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-sm transition-colors ${
-                          isCorrect
-                            ? "border-success-main bg-success-main/10 font-semibold text-success-main"
-                            : "border-divider text-text-secondary"
-                        }`}
-                      >
-                        <span
-                          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] uppercase ${
-                            isCorrect
-                              ? "border-success-main bg-success-main text-white"
-                              : "border-divider bg-bg-paper"
-                          }`}
-                        >
-                          {opt.label}
-                        </span>
-                        <span>{opt.text}</span>
-                      </div>
-                    );
-                  })}
+              return (
+                <div
+                  key={idx}
+                  className="space-y-4 rounded-2xl border border-divider bg-bg-paper/50 p-4 sm:p-5"
+                >
+                  {/* Pertanyaan Contoh Soal */}
+                  {questionText && (
+                    <p className="text-sm font-medium text-text-primary">
+                      {questionText}
+                    </p>
+                  )}
+
+                  {/* KONDISI A: Pilihan Ganda (Jika memiliki options) */}
+                  {hasOptions && (
+                    <div className="flex flex-col gap-2">
+                      {ex.options?.map((opt) => {
+                        const isCorrect = ex.correctAnswer === opt.label;
+                        return (
+                          <div
+                            key={opt.label}
+                            className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-sm transition-colors ${
+                              isCorrect
+                                ? "border-success-main bg-success-main/10 font-semibold text-success-main"
+                                : "border-divider text-text-secondary"
+                            }`}
+                          >
+                            <span
+                              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] uppercase ${
+                                isCorrect
+                                  ? "border-success-main bg-success-main text-white"
+                                  : "border-divider bg-bg-paper"
+                              }`}
+                            >
+                              {opt.label}
+                            </span>
+                            <span>{opt.text}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {/* KONDISI B: Isian Singkat / Jawaban Langsung (Jika tidak ada options & memakai field answer) */}
+                  {!hasOptions && ex.answer && (
+                    <div className="flex items-center gap-2.5 rounded-xl border border-success-main/40 bg-success-main/10 px-3.5 py-2.5 text-sm">
+                      <span className="text-xs font-medium text-text-secondary">
+                        Jawaban:
+                      </span>
+                      <span className="font-semibold text-success-main">
+                        {ex.answer}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Penjelasan Contoh Soal */}
+                  {ex.explanation && (
+                    <div className="rounded-xl bg-info-main/10 p-3 text-xs leading-relaxed text-info-main">
+                      <span className="font-bold">Penjelasan: </span>
+                      {ex.explanation}
+                    </div>
+                  )}
                 </div>
-
-                {/* Penjelasan Contoh Soal */}
-                {ex.explanation && (
-                  <div className="mt-4 rounded-xl bg-info-main/10 p-3 text-xs leading-relaxed text-info-main">
-                    <span className="font-bold">Penjelasan: </span>
-                    {ex.explanation}
-                  </div>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
     </div>

@@ -39,6 +39,7 @@ import {
   IconButton,
 } from "../../norms/-components/NormTableService/Normform/ui";
 import ItemForm from "./ItemForm";
+import Tooltip from "../../../../../../../../components/ui/Tooltip";
 
 interface Props {
   testId: string;
@@ -297,16 +298,40 @@ function ItemMutation(props: {
                 <div className="max-w-64">
                   <div className="flex items-center gap-2">
                     {thumb && (
-                      <img
-                        src={thumb}
-                        alt=""
-                        className="h-8 w-8 shrink-0 rounded border border-divider object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                        }}
-                      />
+                      <Tooltip
+                        classNames={{ tooltip: "flex flex-wrap overflow-auto" }}
+                        title={row.content?.images.map((v) => (
+                          <img
+                            key={v.url}
+                            src={v.url}
+                            alt=""
+                            className="w-full max-w-xs shrink-0 rounded border border-divider object-contain"
+                            onError={(e) =>
+                              (e.currentTarget.style.display = "none")
+                            }
+                          />
+                        ))}
+                      >
+                        <img
+                          src={thumb}
+                          alt=""
+                          className="h-8 w-8 shrink-0 rounded border border-divider object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
+                        />
+                      </Tooltip>
                     )}
-                    <span className="line-clamp-2">{summarize(row)}</span>
+                    {!!thumb ? (
+                      <span>{summarize(row)}</span>
+                    ) : (
+                      <Tooltip
+                        title={summarize(row)}
+                        classNames={{ children: "line-clamp-2" }}
+                      >
+                        {summarize(row)}
+                      </Tooltip>
+                    )}
                   </div>
                   {row.status === "RETIRED" && (
                     <span className="text-xs text-gray-500">Dipensiunkan</span>

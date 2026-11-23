@@ -1,15 +1,8 @@
-import {
-  ImageIcon,
-  Loader2,
-  Plus,
-  Type,
-  Upload,
-  X,
-  ImagePlus,
-} from "lucide-react";
-import { useState, useRef, type Dispatch, type SetStateAction } from "react";
+import { ImageIcon, Loader2, Plus, Type, Upload, X } from "lucide-react";
+import { useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { MAX_CHOICE_OPTIONS } from ".";
+import UploadDialog from "../../../../../../../../../components/reusebale-components/UploadDialog";
 import Radio from "../../../../../../../../../components/ui/Radio";
-import Dialog from "../../../../../../../../../components/ui/Dialog"; // Pastikan path ini benar
 import { uploadApi } from "../../../../../../../../../components/utility/uploadApi";
 import {
   Button,
@@ -17,7 +10,8 @@ import {
   Input,
   Select,
 } from "../../../norms/-components/NormTableService/Normform/ui";
-import { MAX_CHOICE_OPTIONS } from ".";
+import Tooltip from "../../../../../../../../../components/ui/Tooltip";
+import { inputVariants } from "../../../../../../../../../components/ui/Input";
 
 interface DraftOption {
   label: string;
@@ -25,17 +19,20 @@ interface DraftOption {
   points: string;
 }
 
-function Thumb({ url }: { url: string }) {
+function Thumb({ url, sm = false }: { url: string; sm?: boolean }) {
   if (!/^https?:\/\//i.test(url)) return null;
+  let className =
+    "w-full max-w-xs shrink-0 rounded border border-divider object-contain";
+  if (sm)
+    className = "h-6 w-6 shrink-0 rounded border border-divider object-cover";
+
   return (
     <img
       key={url}
       src={url}
       alt=""
-      className="h-7 w-7 shrink-0 rounded border border-divider object-cover"
-      onError={(e) => {
-        e.currentTarget.style.display = "none";
-      }}
+      className={className}
+      onError={(e) => (e.currentTarget.style.display = "none")}
     />
   );
 }
@@ -52,6 +49,7 @@ type OptionMode = "text" | "image";
 
 // --- Komponen UploadDialog Khusus untuk SingleChoice ---
 function SingleChoiceUploadDialog(props: {
+  imageUrl: string;
   isUploading: boolean;
   setUploadingIndex: (index: number | null) => void;
   setUploadError: Dispatch<SetStateAction<Record<number, string>>>;
@@ -59,6 +57,7 @@ function SingleChoiceUploadDialog(props: {
   index: number;
 }) {
   const {
+    imageUrl,
     isUploading,
     setUploadingIndex,
     setUploadError,
@@ -66,245 +65,70 @@ function SingleChoiceUploadDialog(props: {
     index,
   } = props;
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [localError, setLocalError] = useState<string>("");
 
   const resetLocalState = () => {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setSelectedFile(null);
     setPreviewUrl(null);
-    setLocalError("");
-    setIsDragging(false);
-  };
-
-  const handleSelectFile = (file?: File) => {
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      setLocalError("File harus berupa gambar (PNG, JPG, WEBP, dll).");
-      return;
-    }
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setLocalError("");
-    setSelectedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-    handleSelectFile(e.dataTransfer.files?.[0]);
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!isDragging) setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
-
-  const handleUpload = async (closeDialog: () => void) => {
-    if (!selectedFile) return;
-
-    setLocalError("");
-    setUploadError((prev) => ({ ...prev, [index]: "" }));
-    setUploadingIndex(index);
-
-    try {
-      const res = await uploadApi(selectedFile, "TEST_ASSETS");
-      // Asumsi backend mengembalikan struktur ini:
-      const publicUrl = `https://storage.googleapis.com/${res.bucket}/${res.fileKey}`;
-
-      updateOption(index, {
-        label: "", // Pastikan teks eksklusif kosong
-        imageUrl: publicUrl,
-      });
-      resetLocalState();
-      closeDialog();
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Gagal mengunggah gambar";
-      setLocalError(message);
-      setUploadError((prev) => ({ ...prev, [index]: message }));
-    } finally {
-      setUploadingIndex(null);
-    }
   };
 
   return (
-    <Dialog
-      maxWidth="sm"
-      isDynamic
-      dismissible={!isUploading}
+    <UploadDialog
+      isUploading={isUploading}
       trigger={(openDialog) => (
-        <button
-          type="button"
-          disabled={isUploading}
-          onClick={(e) => {
-            resetLocalState();
-            openDialog(e);
-          }}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-md border border-dashed border-border px-3 py-1.5 text-xs text-text-secondary transition-colors hover:border-primary hover:text-primary ${
-            isUploading ? "pointer-events-none opacity-60" : ""
-          }`}
+        <label
+          className={inputVariants({
+            className: "flex gap-2 items-center w-full",
+            size: "sm",
+          })}
         >
-          {isUploading ? (
-            <>
-              <Loader2 size={14} className="animate-spin" />
-              <span>Mengunggah...</span>
-            </>
-          ) : (
-            <>
-              <Upload size={14} />
-              <span>Unggah gambar opsi</span>
-            </>
-          )}
-        </button>
-      )}
-    >
-      {(closeDialog) => (
-        <div className="space-y-4 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-semibold text-text-primary">
-                Unggah Gambar Opsi
-              </h3>
-              <p className="text-xs text-text-secondary">
-                Seret gambar ke area di bawah atau pilih dari komputer.
-              </p>
+          <Tooltip
+            classNames={{ children: "flex w-full gap-1 items-center" }}
+            title={<Thumb url={imageUrl} />}
+          >
+            <Thumb sm url={imageUrl} />
+            <div className="truncate w-full text-text-secondary">
+              {imageUrl || "Click for uplaod"}
             </div>
-            <IconButton
-              type="button"
-              variant="ghost"
-              size="sm"
-              disabled={isUploading}
-              onClick={() => {
-                resetLocalState();
-                closeDialog();
-              }}
-            >
-              <X size={18} />
-            </IconButton>
-          </div>
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              handleSelectFile(e.target.files?.[0]);
-              e.target.value = "";
+          </Tooltip>
+          <button
+            type="button"
+            disabled={isUploading}
+            className="p-[0.315rem] text-primary-main"
+            onClick={(e) => {
+              resetLocalState();
+              openDialog(e);
             }}
-          />
-
-          {!selectedFile ? (
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => fileInputRef.current?.click()}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  fileInputRef.current?.click();
-                }
-              }}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed p-8 text-center transition-colors ${
-                isDragging
-                  ? "border-primary bg-primary/5 text-primary"
-                  : "border-divider text-text-secondary hover:border-primary/60 hover:bg-divider/20"
-              }`}
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-divider/40">
-                <ImagePlus size={24} className="text-text-primary" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-text-primary">
-                  Klik untuk memilih atau seret gambar ke sini
-                </p>
-                <p className="text-xs text-text-secondary">
-                  Mendukung format PNG, JPG, GIF, atau WEBP
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-3 rounded-2xl border border-divider p-3">
-              <div className="relative flex justify-center overflow-hidden rounded-xl bg-divider/20">
-                {previewUrl && (
-                  <img
-                    src={previewUrl}
-                    alt="Preview unggahan"
-                    className="max-h-56 w-auto object-contain"
-                  />
-                )}
-              </div>
-              <div className="flex items-center justify-between gap-2 text-xs">
-                <div className="truncate">
-                  <p className="truncate font-medium text-text-primary">
-                    {selectedFile.name}
-                  </p>
-                  <p className="text-text-secondary">
-                    {(selectedFile.size / 1024).toFixed(1)} KB
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  disabled={isUploading}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  Ganti file
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {localError && <p className="text-xs text-error">{localError}</p>}
-
-          <div className="flex items-center justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              disabled={isUploading}
-              onClick={() => {
-                resetLocalState();
-                closeDialog();
-              }}
-            >
-              Batal
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              disabled={!selectedFile || isUploading}
-              onClick={() => void handleUpload(closeDialog)}
-              startIcon={
-                isUploading ? (
-                  <Loader2 size={16} className="animate-spin" />
-                ) : (
-                  <Upload size={16} />
-                )
-              }
-            >
-              {isUploading ? "Mengunggah..." : "Unggah"}
-            </Button>
-          </div>
-        </div>
+          >
+            {isUploading ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <Upload size={14} />
+            )}
+          </button>
+        </label>
       )}
-    </Dialog>
+      upload={async (file: File) => {
+        try {
+          setUploadError((prev) => ({ ...prev, [index]: "" }));
+          setUploadingIndex(index);
+          const res = await uploadApi(file, "TEST_ASSETS");
+          const publicUrl = res.uploadUrl.split("?")[0];
+
+          updateOption(index, {
+            label: "",
+            imageUrl: publicUrl,
+          });
+          resetLocalState();
+        } catch (err) {
+          const message =
+            err instanceof Error ? err.message : "Gagal mengunggah gambar";
+          setUploadError((prev) => ({ ...prev, [index]: message }));
+        } finally {
+          setUploadingIndex(null);
+        }
+      }}
+    />
   );
 }
 // -----------------------------------------------------------
@@ -333,7 +157,7 @@ function SingleChoice(props: {
     removeOption,
     addOption,
   } = props;
-
+  const textInputRefs = useRef<Record<number, HTMLInputElement | null>>({});
   const [modes, setModes] = useState<Record<number, OptionMode>>(() => {
     const initial: Record<number, OptionMode> = {};
     options.forEach((o, idx) => {
@@ -356,6 +180,7 @@ function SingleChoice(props: {
 
     if (nextMode === "text") {
       updateOption(index, { imageUrl: "" });
+      requestAnimationFrame(() => textInputRefs.current[index]?.focus());
     } else {
       updateOption(index, { label: "" });
     }
@@ -415,13 +240,15 @@ function SingleChoice(props: {
 
                 {/* Mode Switcher */}
                 <div
-                  className="inline-flex rounded-md border border-border bg-surface-secondary p-0.5"
+                  className="inline-flex rounded-md border border-divider bg-surface-secondary p-0.5"
                   role="group"
                   aria-label="Tipe konten opsi"
                 >
                   <button
                     type="button"
-                    onClick={() => handleSwitchMode(i, "text")}
+                    onClick={() => {
+                      handleSwitchMode(i, "text");
+                    }}
                     title="Gunakan Teks"
                     className={`flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors ${
                       currentMode === "text"
@@ -450,6 +277,9 @@ function SingleChoice(props: {
                 {/* Area Konten */}
                 {currentMode === "text" ? (
                   <Input
+                    ref={(el) => {
+                      textInputRefs.current[i] = el;
+                    }}
                     type="text"
                     value={o.label}
                     placeholder="Teks opsi"
@@ -460,32 +290,14 @@ function SingleChoice(props: {
                   />
                 ) : (
                   <div className="flex min-w-44 flex-1 items-center gap-2">
-                    {o.imageUrl.trim() ? (
-                      <div className="flex flex-1 items-center justify-between rounded-md border border-border bg-surface px-2.5 py-1">
-                        <div className="flex items-center gap-2 overflow-hidden">
-                          <Thumb url={o.imageUrl.trim()} />
-                          <span className="line-clamp-1 text-xs text-text-secondary">
-                            Gambar terunggah ({o.imageUrl.trim()})
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => updateOption(i, { imageUrl: "" })}
-                          className="ml-2 text-xs text-error hover:underline"
-                        >
-                          Ganti
-                        </button>
-                      </div>
-                    ) : (
-                      // DI GANTI DENGAN DIALOG KITA
-                      <SingleChoiceUploadDialog
-                        index={i}
-                        isUploading={isUploading}
-                        setUploadingIndex={setUploadingIndex}
-                        setUploadError={setUploadError}
-                        updateOption={updateOption}
-                      />
-                    )}
+                    <SingleChoiceUploadDialog
+                      index={i}
+                      imageUrl={o.imageUrl.trim()}
+                      isUploading={isUploading}
+                      setUploadingIndex={setUploadingIndex}
+                      setUploadError={setUploadError}
+                      updateOption={updateOption}
+                    />
                   </div>
                 )}
 

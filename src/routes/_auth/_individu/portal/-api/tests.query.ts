@@ -116,7 +116,10 @@ export const useFinishAttempt = () => {
       queryClient.invalidateQueries({
         queryKey: testKeys.attemptDetail(attemptId),
       });
-      queryClient.invalidateQueries({ queryKey: testKeys.attempts() });
+      queryClient.invalidateQueries({
+        queryKey: testKeys.attemptList(),
+        exact: false,
+      });
     },
   });
 };

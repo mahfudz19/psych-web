@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes } from "react";
+import { forwardRef, type InputHTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 import { cva } from "class-variance-authority";
 import type { color } from "../Type";
@@ -11,7 +11,7 @@ export interface InputProps extends Omit<
   size?: "sm" | "md" | "lg";
 }
 
-const inputVariants = cva(
+export const inputVariants = cva(
   "rounded-2xl border border-divider bg-bg-default text-text-primary placeholder:text-text-disabled focus:outline-none focus:ring-2 transition-all font-medium disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-text-disabled disabled:border-divider/50 disabled:opacity-60",
   {
     variants: {
@@ -37,16 +37,9 @@ const inputVariants = cva(
   },
 );
 
-export { inputVariants };
+const Input = forwardRef<HTMLInputElement, InputProps>((props: InputProps) => {
+  const { color, size, className, type, onWheel, ...restProps } = props;
 
-function Input({
-  color,
-  size,
-  className,
-  type,
-  onWheel,
-  ...restProps
-}: InputProps) {
   const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
     if (type === "number" && !onWheel) {
       e.currentTarget.blur();
@@ -63,6 +56,8 @@ function Input({
       className={twMerge(inputVariants({ color, size, className }))}
     />
   );
-}
+});
+
+Input.displayName = "Input";
 
 export default Input;

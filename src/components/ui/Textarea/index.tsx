@@ -1,5 +1,5 @@
 import { cva } from "class-variance-authority";
-import type { TextareaHTMLAttributes } from "react";
+import { forwardRef, type TextareaHTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 import type { color } from "../Type";
 
@@ -37,13 +37,15 @@ const inputVariants = cva(
   },
 );
 
-function Textarea({ color, size, className, ...restProps }: InputProps) {
-  return (
+const Textarea = forwardRef<HTMLTextAreaElement, InputProps>(
+  ({ color, size, className, ...restProps }: InputProps) => (
     <textarea
       {...restProps}
       className={twMerge(inputVariants({ color, size, className }))}
     />
-  );
-}
+  ),
+);
+
+Textarea.displayName = "Textarea";
 
 export default Textarea;

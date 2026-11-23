@@ -1,4 +1,4 @@
-import type { SelectHTMLAttributes } from "react";
+import { forwardRef, type SelectHTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 import { cva } from "class-variance-authority";
 import type { color } from "../Type";
@@ -37,21 +37,20 @@ const selectVariants = cva(
   },
 );
 
-function Select({
-  color,
-  size,
-  className,
-  children,
-  ...restProps
-}: SelectProps) {
-  return (
-    <select
-      {...restProps}
-      className={twMerge(selectVariants({ color, size, className }))}
-    >
-      {children}
-    </select>
-  );
-}
+const Select = forwardRef<HTMLSelectElement, SelectProps>(
+  (props: SelectProps) => {
+    const { color, size, className, children, ...restProps } = props;
+    return (
+      <select
+        {...restProps}
+        className={twMerge(selectVariants({ color, size, className }))}
+      >
+        {children}
+      </select>
+    );
+  },
+);
+
+Select.displayName = "Select";
 
 export default Select;

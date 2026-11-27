@@ -2,12 +2,10 @@ import { Plus, X } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 import type { DraftOption } from ".";
 import Checkbox from "../../../../../../../../../components/ui/Checkbox";
-import {
-  Button,
-  IconButton,
-  Input,
-  Select,
-} from "../../../norms/-components/NormTableService/Normform/ui";
+import Select from "../../../../../../../../../components/ui/Select";
+import Input from "../../../../../../../../../components/ui/Input";
+import IconButton from "../../../../../../../../../components/ui/IconButton";
+import Button from "../../../../../../../../../components/ui/Button";
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (

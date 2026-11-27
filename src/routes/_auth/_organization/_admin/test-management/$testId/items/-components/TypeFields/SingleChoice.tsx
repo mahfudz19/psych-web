@@ -4,14 +4,13 @@ import { MAX_CHOICE_OPTIONS } from ".";
 import UploadDialog from "../../../../../../../../../components/reusebale-components/UploadDialog";
 import Radio from "../../../../../../../../../components/ui/Radio";
 import { uploadApi } from "../../../../../../../../../components/utility/uploadApi";
-import {
-  Button,
-  IconButton,
-  Input,
-  Select,
-} from "../../../norms/-components/NormTableService/Normform/ui";
 import Tooltip from "../../../../../../../../../components/ui/Tooltip";
-import { inputVariants } from "../../../../../../../../../components/ui/Input";
+import Input, {
+  inputVariants,
+} from "../../../../../../../../../components/ui/Input";
+import Select from "../../../../../../../../../components/ui/Select";
+import IconButton from "../../../../../../../../../components/ui/IconButton";
+import Button from "../../../../../../../../../components/ui/Button";
 
 interface DraftOption {
   label: string;

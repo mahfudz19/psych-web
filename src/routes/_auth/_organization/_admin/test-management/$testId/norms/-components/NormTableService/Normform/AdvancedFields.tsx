@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
 import type { NormTable } from "../../../../../-api/test-definitions.type";
-import { Input, InputDate, Label } from "./ui";
 import { ChevronRight } from "lucide-react";
+import Label from "../../../../../../../../../../components/ui/Label";
+import Input from "../../../../../../../../../../components/ui/Input";
+import InputDate from "../../../../../../../../../../components/ui/InputDate";
 
 const dateOnly = (iso?: string | null) => (iso ? iso.slice(0, 10) : "");
 

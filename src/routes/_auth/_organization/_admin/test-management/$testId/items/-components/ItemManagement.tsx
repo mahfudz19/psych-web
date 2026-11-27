@@ -30,16 +30,14 @@ import type {
 import { DataTable } from "../../../../../../../../components/reusebale-components/DataTable";
 import Chip from "../../../../../../../../components/ui/Chip";
 import Dialog from "../../../../../../../../components/ui/Dialog";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-  Button,
-  DialogConfirmAction,
-  IconButton,
-} from "../../norms/-components/NormTableService/Normform/ui";
 import ItemForm from "./ItemForm";
 import Tooltip from "../../../../../../../../components/ui/Tooltip";
+import IconButton from "../../../../../../../../components/ui/IconButton";
+import Button from "../../../../../../../../components/ui/Button";
+import DialogConfirmAction from "../../../../../../../../components/reusebale-components/dialog/DialogConfirmAction";
+import Alert from "../../../../../../../../components/ui/Alert";
+import AlertTitle from "../../../../../../../../components/ui/Alert/AlertTitle";
+import AlertDescription from "../../../../../../../../components/ui/Alert/AlertDescription";
 
 interface Props {
   testId: string;

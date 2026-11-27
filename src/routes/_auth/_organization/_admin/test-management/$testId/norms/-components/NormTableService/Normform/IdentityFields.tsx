@@ -3,8 +3,10 @@ import type {
   NormTable,
   NormTargetScoreType,
 } from "../../../../../-api/test-definitions.type";
-import { Input, Label, Select } from "./ui";
 import { TARGET_LABEL } from "./constants";
+import Label from "../../../../../../../../../../components/ui/Label";
+import Input from "../../../../../../../../../../components/ui/Input";
+import Select from "../../../../../../../../../../components/ui/Select";
 
 interface Props {
   norm?: NormTable;

@@ -1,8 +1,10 @@
 import { ChevronRight, Plus, X } from "lucide-react";
 import type { CutoffsAction } from "./state";
 import type { DraftCutoff } from "./types";
-import { Button, IconButton, Input } from "./ui";
 import { useRef } from "react";
+import Input from "../../../../../../../../../../components/ui/Input";
+import IconButton from "../../../../../../../../../../components/ui/IconButton";
+import Button from "../../../../../../../../../../components/ui/Button";
 
 const FIELDS = [
   { key: "from", type: "number", placeholder: "Dari", aria: "dari" },

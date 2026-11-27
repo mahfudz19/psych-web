@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { parsePaste, type DraftRow } from "../norm-utils";
 import { hasData, type RowsAction } from "./state";
-import { Button, Textarea } from "./ui";
+import Textarea from "../../../../../../../../../../components/ui/Textarea";
+import Button from "../../../../../../../../../../components/ui/Button";
 
 interface Props {
   rows: DraftRow[];

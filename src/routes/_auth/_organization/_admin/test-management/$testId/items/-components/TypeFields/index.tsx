@@ -1,12 +1,10 @@
 import { type Dispatch, type SetStateAction } from "react";
 import type { ItemType } from "../../../../-api/test-definitions.type";
-import {
-  Label,
-  Select,
-} from "../../../norms/-components/NormTableService/Normform/ui";
 import LikertField from "./LikertField";
 import SingleChoice from "./SingleChoice";
 import TextInput from "./TextInput";
+import Label from "../../../../../../../../../components/ui/Label";
+import Select from "../../../../../../../../../components/ui/Select";
 
 const TYPE_OPTIONS: { value: ItemType; label: string; supported: boolean }[] = [
   { value: "SINGLE_CHOICE", label: "Pilihan tunggal", supported: true },

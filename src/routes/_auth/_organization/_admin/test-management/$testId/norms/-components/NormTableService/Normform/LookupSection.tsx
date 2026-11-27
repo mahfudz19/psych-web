@@ -12,10 +12,12 @@ import type { NormTargetScoreType } from "../../../../../-api/test-definitions.t
 import { MAX_GENERATED_ROWS } from "./constants";
 import { hasData, type RowField, type RowsAction } from "./state";
 import type { NormScaleInfo } from "./types";
-import { Button, IconButton, Input } from "./ui";
 import ConversionTester from "./ConversionTester";
 import PastePanel from "./PastePanel";
 import toast from "../../../../../../../../../../components/ui/Toast";
+import Button from "../../../../../../../../../../components/ui/Button";
+import Input from "../../../../../../../../../../components/ui/Input";
+import IconButton from "../../../../../../../../../../components/ui/IconButton";
 
 type Analysis = ReturnType<typeof analyzeRows>;
 type Coverage = ReturnType<typeof computeCoverage>;

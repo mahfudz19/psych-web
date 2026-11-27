@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toNum } from "../norm-utils";
-import { Input } from "./ui";
+import Input from "../../../../../../../../../../components/ui/Input";
 
 export interface TestResult {
   text: string;

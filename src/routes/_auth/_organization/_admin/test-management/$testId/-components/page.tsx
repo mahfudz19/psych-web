@@ -12,15 +12,13 @@ import {
   type BaseListParams,
 } from "../../../../../../../components/reusebale-components/DataTable";
 import Dialog from "../../../../../../../components/ui/Dialog";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-  Button,
-  DialogConfirmAction,
-  IconButton,
-} from "../norms/-components/NormTableService/Normform/ui";
 import SectionForm from "./SectionForm";
+import Button from "../../../../../../../components/ui/Button";
+import IconButton from "../../../../../../../components/ui/IconButton";
+import DialogConfirmAction from "../../../../../../../components/reusebale-components/dialog/DialogConfirmAction";
+import Alert from "../../../../../../../components/ui/Alert";
+import AlertTitle from "../../../../../../../components/ui/Alert/AlertTitle";
+import AlertDescription from "../../../../../../../components/ui/Alert/AlertDescription";
 
 function formatTime(seconds?: number | null) {
   if (!seconds) return "Tanpa Batas";

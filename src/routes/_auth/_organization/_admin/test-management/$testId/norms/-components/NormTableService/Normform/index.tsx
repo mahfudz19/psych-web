@@ -34,14 +34,12 @@ import {
   type RowsAction,
 } from "./state";
 import type { NormScaleInfo } from "./types";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-  Button,
-  DialogConfirmAction,
-  Label,
-} from "./ui";
+import Alert from "../../../../../../../../../../components/ui/Alert";
+import AlertTitle from "../../../../../../../../../../components/ui/Alert/AlertTitle";
+import AlertDescription from "../../../../../../../../../../components/ui/Alert/AlertDescription";
+import Label from "../../../../../../../../../../components/ui/Label";
+import DialogConfirmAction from "../../../../../../../../../../components/reusebale-components/dialog/DialogConfirmAction";
+import Button from "../../../../../../../../../../components/ui/Button";
 
 // Dipertahankan agar import lama (`from ".../norm-form"`) tidak rusak
 export type { NormEntryPayload, NormPayload, NormScaleInfo } from "./types";

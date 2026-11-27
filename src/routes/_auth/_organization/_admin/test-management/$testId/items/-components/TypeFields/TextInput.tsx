@@ -1,13 +1,11 @@
 import { Plus, X } from "lucide-react";
 import { useRef, type Dispatch, type SetStateAction } from "react";
 import type { ScoringTier } from ".";
-import {
-  Button,
-  IconButton,
-  Input,
-  Label,
-  Select,
-} from "../../../norms/-components/NormTableService/Normform/ui";
+import Input from "../../../../../../../../../components/ui/Input";
+import Label from "../../../../../../../../../components/ui/Label";
+import Select from "../../../../../../../../../components/ui/Select";
+import Button from "../../../../../../../../../components/ui/Button";
+import IconButton from "../../../../../../../../../components/ui/IconButton";
 
 function inferNormalizeMode(raw: string): NormalizeMode | null {
   const parts = raw

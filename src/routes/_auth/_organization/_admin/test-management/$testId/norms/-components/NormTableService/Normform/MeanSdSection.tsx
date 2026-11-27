@@ -2,8 +2,9 @@ import { useState } from "react";
 import { toNum } from "../norm-utils";
 import type { NormTargetScoreType } from "../../../../../-api/test-definitions.type";
 import { TARGET_LABEL } from "./constants";
-import { Input, Label } from "./ui";
 import ConversionTester from "./ConversionTester";
+import Label from "../../../../../../../../../../components/ui/Label";
+import Input from "../../../../../../../../../../components/ui/Input";
 
 interface Props {
   defaultMean: string;

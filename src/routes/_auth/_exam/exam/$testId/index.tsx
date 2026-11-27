@@ -23,6 +23,7 @@ function ExamSessionPage() {
 
   const attemptId = unwrap<AttemptState>(data?.data)?.id ?? "";
 
+  console.log("useStartOrResumeAttempt", data);
   const attemptQuery = useGetAttempt(attemptId, attemptId !== "");
   const attempt = unwrap<AttemptState>(attemptQuery.data);
   const { refetch: refetchAttempt } = attemptQuery;

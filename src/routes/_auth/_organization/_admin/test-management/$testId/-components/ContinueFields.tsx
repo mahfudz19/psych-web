@@ -4,16 +4,13 @@ import Input from "../../../../../../../components/ui/Input";
 import Label from "../../../../../../../components/ui/Label";
 import Textarea from "../../../../../../../components/ui/Textarea";
 import formatMinutesHint from "../../../../../../../components/utility/formatMinutesHint";
+import ConfigField from "./ConfigField";
 import ExampleField from "./ExampleField";
 import type {
-  ConfigInputType,
-  ConfigLayout,
-  SectionConfig,
   SectionFormInitial,
   StimulusContentType,
   WordListGroup,
 } from "./SectionForm";
-import Select from "../../../../../../../components/ui/Select";
 
 function normalizeWordListGroups(content: unknown): WordListGroup[] {
   if (!content || typeof content !== "object") return [];
@@ -36,180 +33,6 @@ function normalizeWordListGroups(content: unknown): WordListGroup[] {
 
   return [];
 }
-
-const cleanConfig = (cfg: SectionConfig): SectionConfig => {
-  const result: SectionConfig = {};
-  for (const [key, val] of Object.entries(cfg)) {
-    if (val !== undefined && val !== "") {
-      result[key] = val;
-    }
-  }
-  return result;
-};
-
-const ConfigField = ({ section }: { section?: SectionFormInitial }) => {
-  const [config, setConfig] = useState<SectionConfig>(
-    () => (section?.config as SectionConfig) ?? {},
-  );
-  const [jsonMode, setJsonMode] = useState(false);
-
-  const itemType = section?.defaultItemType ?? "SINGLE_CHOICE";
-  const isTextInput = itemType === "TEXT_INPUT";
-  const isChoice =
-    itemType === "SINGLE_CHOICE" || itemType === "MULTIPLE_CHOICE";
-
-  const updateKey = <K extends keyof SectionConfig>(
-    key: K,
-    value: SectionConfig[K],
-  ) => {
-    setConfig((prev) => {
-      const next = { ...prev, [key]: value };
-      // Jika inputType diubah dari NUMBER ke TEXT/kosong, hapus allowDecimals
-      if (key === "inputType" && value !== "NUMBER") {
-        delete next.allowDecimals;
-      }
-      return next;
-    });
-  };
-
-  const serializedConfig = JSON.stringify(cleanConfig(config));
-
-  return (
-    <div className="rounded-2xl border border-divider p-4 space-y-4">
-      <div className="flex items-center justify-between gap-4">
-        <Label
-          htmlFor="config"
-          tooltip="Konfigurasi unik subtes tanpa mengubah skema."
-        >
-          Konfigurasi Subtes (Config)
-        </Label>
-        <button
-          type="button"
-          onClick={() => setJsonMode((prev) => !prev)}
-          className="text-xs underline text-text-secondary hover:text-text-primary"
-        >
-          {jsonMode ? "Gunakan Form Builder" : "Edit JSON Mentah"}
-        </button>
-      </div>
-
-      {!jsonMode && (
-        <input type="hidden" name="config" value={serializedConfig} />
-      )}
-
-      {jsonMode ? (
-        <Textarea
-          id="config"
-          name="config"
-          value={JSON.stringify(cleanConfig(config), null, 2)}
-          onChange={(e) => {
-            try {
-              const parsed = JSON.parse(e.target.value);
-              if (
-                parsed &&
-                typeof parsed === "object" &&
-                !Array.isArray(parsed)
-              ) {
-                setConfig(parsed);
-              }
-            } catch {
-              // Tunggu sampai JSON valid
-            }
-          }}
-          rows={5}
-          spellCheck={false}
-          className="w-full font-mono"
-        />
-      ) : (
-        <div className="space-y-4">
-          {/* Opsi khusus Choice (SINGLE_CHOICE / MULTIPLE_CHOICE) */}
-          {isChoice && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="configLayout">Layout Opsi</Label>
-                <Select
-                  id="configLayout"
-                  value={config.layout ?? ""}
-                  onChange={(e) =>
-                    updateKey(
-                      "layout",
-                      (e.target.value || undefined) as ConfigLayout | undefined,
-                    )
-                  }
-                  className="w-full"
-                >
-                  <option value="">Default</option>
-                  <option value="VERTICAL">VERTICAL</option>
-                  <option value="HORIZONTAL">HORIZONTAL</option>
-                </Select>
-              </div>
-            </div>
-          )}
-
-          {/* Opsi khusus TEXT_INPUT */}
-          {isTextInput && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
-              <div>
-                <Label htmlFor="configInputType">Tipe Input</Label>
-                <Select
-                  id="configInputType"
-                  value={config.inputType ?? ""}
-                  onChange={(e) =>
-                    updateKey(
-                      "inputType",
-                      (e.target.value || undefined) as
-                        ConfigInputType | undefined,
-                    )
-                  }
-                  className="w-full"
-                >
-                  <option value="">Default (TEXT)</option>
-                  <option value="TEXT">TEXT</option>
-                  <option value="NUMBER">NUMBER</option>
-                </Select>
-              </div>
-
-              {config.inputType === "NUMBER" && (
-                <div className="pt-5">
-                  <Checkbox
-                    checked={Boolean(config.allowDecimals ?? false)}
-                    onChange={(e) =>
-                      updateKey("allowDecimals", e.target.checked)
-                    }
-                    label="Izinkan angka desimal (allowDecimals)"
-                  />
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Flag Boolean Umum */}
-          <div className="flex flex-wrap gap-6 pt-1">
-            <Checkbox
-              checked={Boolean(config.containsImages ?? false)}
-              onChange={(e) =>
-                updateKey("containsImages", e.target.checked || undefined)
-              }
-              label="Soal mengandung gambar (containsImages)"
-            />
-
-            {isChoice && (
-              <Checkbox
-                checked={Boolean(config.sharedOptionsByGroup ?? false)}
-                onChange={(e) =>
-                  updateKey(
-                    "sharedOptionsByGroup",
-                    e.target.checked || undefined,
-                  )
-                }
-                label="Opsi bersama per grup (sharedOptionsByGroup)"
-              />
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
 
 function TimeLimitSecondsField({ displaySeconds }: { displaySeconds: string }) {
   const [secondsValue, setSecondsValue] = useState<string>(displaySeconds);

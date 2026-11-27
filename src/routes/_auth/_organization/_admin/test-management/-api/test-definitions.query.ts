@@ -45,6 +45,10 @@ export const testDefinitionKeys = {
     testId: string,
     params?: BaseListParams & { sectionId?: string },
   ) => [...testDefinitionKeys.scaleLists(testId), { params }] as const,
+  allScales: (
+    testId: string,
+    params?: Omit<BaseListParams, "page" | "limit"> & { sectionId?: string },
+  ) => [...testDefinitionKeys.scales(testId), "all", { params }] as const,
   scaleDetails: (testId: string) =>
     [...testDefinitionKeys.scales(testId), "detail"] as const,
   scaleDetail: (testId: string, scaleId: string) =>
@@ -286,6 +290,21 @@ export function useGetTestScales(
     queryFn: () =>
       testApi.getTestScales(testId, params).catch((error) => {
         toast.error(error?.data?.message || "Gagal mengambil daftar skala");
+        throw error;
+      }),
+    enabled: !!testId,
+  });
+}
+
+export function useGetTestAllScales(
+  testId: string,
+  params?: Omit<BaseListParams, "page" | "limit"> & { sectionId?: string },
+) {
+  return useQuery({
+    queryKey: testDefinitionKeys.allScales(testId, params),
+    queryFn: () =>
+      testApi.getAllTestScales(testId, params).catch((error) => {
+        toast.error(error?.data?.message || "Gagal mengambil semua skala");
         throw error;
       }),
     enabled: !!testId,

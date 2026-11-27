@@ -14,8 +14,8 @@ import { Route } from "..";
 import {
   useCreateTestItem,
   useDeleteTestItemMutation,
+  useGetTestAllScales,
   useGetTestItems,
-  useGetTestScales,
   useGetTestSections,
   useUpdateTestItem,
 } from "../../../-api/test-definitions.query";
@@ -77,6 +77,13 @@ function evaluateItem(item: TestItem, isAbility: boolean) {
   }
   if (item.options.some((o) => !o.scoring)) return "Ada opsi tanpa aturan skor";
   if (item.type === "LIKERT" && !item.scaleId) return "Skala belum dipilih";
+  if (item.type === "FORCED_CHOICE") {
+    const hasMissingScale = item.options.some((o) => {
+      const scoring = o.scoring as Record<string, unknown> | null;
+      return !scoring?.scaleId && !scoring?.scaleCode;
+    });
+    if (hasMissingScale) return "Ada opsi tanpa skala";
+  }
   return null;
 }
 
@@ -152,8 +159,28 @@ function Section(props: {
 const SkalaCell = (props: { row: TestItem; scales: TestScale[] }) => {
   const { row, scales } = props;
   const scaleById = new Map(scales.map((s) => [s.id, s]));
-  const scale = row.scaleId ? scaleById.get(row.scaleId) : null;
-  return <span className="font-mono text-xs">{scale ? scale.code : "-"}</span>;
+  if (row.scaleId) {
+    const scale = scaleById.get(row.scaleId);
+    return <span className="font-mono text-xs">{scale ? scale.code : "-"}</span>;
+  }
+  // FORCED_CHOICE atau opsi dengan scoring skala spesifik
+  const optScales = Array.from(
+    new Set(
+      row.options
+        .map((o) => {
+          const scoring = o.scoring as Record<string, unknown> | null;
+          return (
+            (scoring?.scaleCode as string | undefined) ||
+            (scoring?.scaleId ? scaleById.get(scoring.scaleId as string)?.code : undefined)
+          );
+        })
+        .filter(Boolean),
+    ),
+  );
+  if (optScales.length > 0) {
+    return <span className="font-mono text-xs">{optScales.join(" / ")}</span>;
+  }
+  return <span className="font-mono text-xs">-</span>;
 };
 
 function ItemMutation(props: {
@@ -552,7 +579,7 @@ export default function ItemManagement({ testId, isLocked, category }: Props) {
   const tableState = Route.useSearch();
 
   const { data: sectionData, isLoading } = useGetTestSections(testId);
-  const { data: scaleData } = useGetTestScales(testId);
+  const { data: scaleData } = useGetTestAllScales(testId);
 
   const sections = sectionData?.data || [];
 

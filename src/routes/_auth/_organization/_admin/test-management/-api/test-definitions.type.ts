@@ -129,7 +129,7 @@ export interface TestExampleContent {
 export interface TestExample {
   content: TestExampleContent;
   options?: TestExampleOption[];
-  answer: string | string[];
+  answer?: string | string[];
   explanation?: string;
 }
 

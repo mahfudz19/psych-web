@@ -6,30 +6,31 @@ import Label from "../../../../../../../components/ui/Label";
 import Textarea from "../../../../../../../components/ui/Textarea";
 import Input from "../../../../../../../components/ui/Input";
 
+type RawTestExample = Partial<TestExample> & {
+  label?: string;
+};
+
 function normalizeExamples(
-  rawExamples?: Array<TestExample> | null,
+  rawExamples?: Array<RawTestExample> | null,
 ): TestExample[] {
   if (!Array.isArray(rawExamples)) return [];
 
   return rawExamples.map((item) => {
-    const legacy = item;
+    const text = item.content?.text ?? item.label ?? "";
+    const images = item.content?.images ?? [];
 
-    const text = legacy.content?.text ?? "";
-    const images = legacy.content?.images ?? [];
-
-    const options = legacy.options?.map((opt) => ({
+    const options = item.options?.map((opt) => ({
       key: opt.key ?? opt.label ?? "",
-      label: opt.key ? (opt.label ?? "") : (opt.label ?? opt.label ?? ""),
+      label: opt.key ? (opt.label ?? "") : (opt.label ?? ""),
     }));
 
-    const answer = legacy.answer ?? "";
-    const explanation = legacy.explanation;
-
     return {
-      content: { text, images },
-      options,
-      answer,
-      explanation,
+      content: { text, ...(images.length > 0 ? { images } : {}) },
+      ...(options ? { options } : {}),
+      ...(item.answer !== undefined ? { answer: item.answer } : {}),
+      ...(item.explanation !== undefined
+        ? { explanation: item.explanation }
+        : {}),
     };
   });
 }
@@ -51,19 +52,38 @@ const createEmptyExample = (
   explanation: "",
 });
 
+const CHOICE_TYPES = new Set([
+  "SINGLE_CHOICE",
+  "MULTIPLE_CHOICE",
+  "MULTI_CHOICE",
+  "FORCED_CHOICE",
+]);
+
 const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
   const [examples, setExamples] = useState<TestExample[]>(() =>
     normalizeExamples(section?.examples),
   );
   const [jsonMode, setJsonMode] = useState(false);
+  const [rawJson, setRawJson] = useState("");
+  const [jsonError, setJsonError] = useState<string | null>(null);
 
   const itemType = section?.defaultItemType ?? "SINGLE_CHOICE";
   const config = section?.config ?? {};
 
-  const isChoice =
-    itemType === "SINGLE_CHOICE" || itemType === "MULTIPLE_CHOICE";
+  const isChoice = CHOICE_TYPES.has(itemType);
+  const isMultiChoice =
+    itemType === "MULTIPLE_CHOICE" || itemType === "MULTI_CHOICE";
   const showOptionsEditor = isChoice && !config.sharedOptionsByGroup;
   const showImagesEditor = Boolean(config.containsImages);
+  const defaultOptionsCount = itemType === "FORCED_CHOICE" ? 2 : 5;
+
+  const toggleJsonMode = () => {
+    if (!jsonMode) {
+      setRawJson(JSON.stringify(examples, null, 2));
+      setJsonError(null);
+    }
+    setJsonMode((prev) => !prev);
+  };
 
   const updateExample = (
     index: number,
@@ -75,14 +95,18 @@ const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
   };
 
   const addExample = () => {
-    setExamples((prev) => [...prev, createEmptyExample(showOptionsEditor, 5)]);
+    setExamples((prev) => [
+      ...prev,
+      createEmptyExample(showOptionsEditor, defaultOptionsCount),
+    ]);
   };
 
   const removeExample = (index: number) => {
     setExamples((prev) => prev.filter((_, i) => i !== index));
   };
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 border border-divider rounded-xl p-4">
       <div className="flex items-center justify-between gap-4">
         <Checkbox
           name="showExamplesFirst"
@@ -91,7 +115,7 @@ const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
         />
         <button
           type="button"
-          onClick={() => setJsonMode((prev) => !prev)}
+          onClick={toggleJsonMode}
           className="text-xs underline text-text-secondary hover:text-text-primary"
         >
           {jsonMode ? "Gunakan Form Builder" : "Edit JSON Mentah"}
@@ -104,26 +128,34 @@ const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
       )}
 
       {jsonMode ? (
-        <div>
+        <div className="space-y-1">
           <Label htmlFor="examples" required>
             Contoh Soal (JSON)
           </Label>
           <Textarea
             id="examples"
             name="examples"
-            value={JSON.stringify(examples, null, 2)}
+            value={rawJson}
             onChange={(e) => {
+              const next = e.target.value;
+              setRawJson(next);
               try {
-                const parsed = JSON.parse(e.target.value);
-                if (Array.isArray(parsed)) setExamples(parsed);
+                const parsed = JSON.parse(next);
+                if (!Array.isArray(parsed)) {
+                  setJsonError("Format JSON harus berupa array.");
+                  return;
+                }
+                setExamples(normalizeExamples(parsed));
+                setJsonError(null);
               } catch {
-                // Biarkan user selesai mengetik JSON valid
+                setJsonError("Format JSON belum valid.");
               }
             }}
             rows={10}
             spellCheck={false}
             className="w-full font-mono"
           />
+          {jsonError && <p className="text-xs text-red-500">{jsonError}</p>}
         </div>
       ) : (
         <div className="space-y-4">
@@ -160,9 +192,9 @@ const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
                 </button>
               </div>
 
-              {/* Teks Soal */}
+              {/* Teks Soal / Label Contoh */}
               <div>
-                <Label>Teks Soal</Label>
+                <Label>Teks Soal / Judul Contoh</Label>
                 <Input
                   type="text"
                   value={ex.content.text ?? ""}
@@ -248,7 +280,27 @@ const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
               {/* Opsi Jawaban (Hanya jika Choice & bukan sharedOptionsByGroup) */}
               {showOptionsEditor && (
                 <div className="space-y-2">
-                  <Label>Opsi Jawaban</Label>
+                  <div className="flex items-center justify-between">
+                    <Label>Opsi Jawaban</Label>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateExample(idx, (prev) => {
+                          const current = prev.options ?? [];
+                          const nextKey = String.fromCharCode(
+                            97 + current.length,
+                          );
+                          return {
+                            ...prev,
+                            options: [...current, { key: nextKey, label: "" }],
+                          };
+                        })
+                      }
+                      className="text-xs underline"
+                    >
+                      + Tambah Opsi
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {(ex.options ?? []).map((opt, optIdx) => (
                       <div key={optIdx} className="flex items-center gap-2">
@@ -284,6 +336,23 @@ const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
                           className="flex-1"
                           placeholder={`Teks opsi ${opt.key}`}
                         />
+                        {(ex.options?.length ?? 0) > 2 && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              updateExample(idx, (prev) => ({
+                                ...prev,
+                                options: (prev.options ?? []).filter(
+                                  (_, i) => i !== optIdx,
+                                ),
+                              }))
+                            }
+                            className="text-xs text-red-500 hover:underline px-1"
+                            title="Hapus opsi"
+                          >
+                            ×
+                          </button>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -293,7 +362,7 @@ const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
               {/* Kunci Jawaban & Penjelasan */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <Label required>Kunci Jawaban</Label>
+                  <Label>Kunci Jawaban</Label>
                   <Input
                     type={
                       itemType === "TEXT_INPUT" && config.inputType === "NUMBER"
@@ -302,19 +371,23 @@ const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
                     }
                     value={
                       Array.isArray(ex.answer)
-                        ? ex.answer?.join(", ")
-                        : ex.answer
+                        ? ex.answer.join(", ")
+                        : (ex.answer ?? "")
                     }
                     onChange={(e) =>
                       updateExample(idx, (prev) => ({
                         ...prev,
-                        answer:
-                          itemType === "MULTIPLE_CHOICE"
-                            ? e.target.value.split(",").map((s) => s.trim())
-                            : e.target.value,
+                        answer: isMultiChoice
+                          ? e.target.value
+                              .split(",")
+                              .map((s) => s.trim())
+                              .filter(Boolean)
+                          : e.target.value,
                       }))
                     }
-                    placeholder={isChoice ? "a" : "Jawaban benar"}
+                    placeholder={
+                      isChoice ? "a (opsional)" : "Jawaban benar (opsional)"
+                    }
                     className="w-full"
                   />
                 </div>
@@ -329,7 +402,7 @@ const ExampleField = ({ section }: { section?: SectionFormInitial }) => {
                         explanation: e.target.value,
                       }))
                     }
-                    placeholder="Penjelasan singkat mengapa jawaban tersebut benar"
+                    placeholder="Penjelasan singkat (opsional)"
                     className="w-full"
                   />
                 </div>

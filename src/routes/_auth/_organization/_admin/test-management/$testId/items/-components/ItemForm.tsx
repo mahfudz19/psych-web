@@ -1,7 +1,12 @@
 import { useState, useRef } from "react";
 import StimulusImage from "./StimulusImage";
 import Advanced from "./Advanced";
-import TypeFields, { type ScoringTier, type NormalizeMode } from "./TypeFields";
+import TypeFields, {
+  type ScoringTier,
+  type NormalizeMode,
+  type SupportedType,
+  type DraftOption,
+} from "./TypeFields";
 import type { ItemType, TestItem } from "../../../-api/test-definitions.type";
 import toast from "../../../../../../../../components/ui/Toast";
 import { LoaderCircle } from "lucide-react";
@@ -11,14 +16,12 @@ import Textarea from "../../../../../../../../components/ui/Textarea";
 import Select from "../../../../../../../../components/ui/Select";
 import Input from "../../../../../../../../components/ui/Input";
 
-type SupportedType = "SINGLE_CHOICE" | "LIKERT" | "TEXT_INPUT";
-
 export interface ItemOptionPayload {
   key: string;
   label: string | null;
   imageUrl: string | null;
   order: number;
-  scoring: { points: number } | null;
+  scoring: ({ points: number } & Record<string, unknown>) | null;
 }
 
 export interface ItemPayload {
@@ -76,13 +79,12 @@ interface Props {
   onCancel: () => void;
 }
 
-interface DraftOption {
-  label: string;
-  imageUrl: string;
-  points: string;
-}
-
-const SUPPORTED: SupportedType[] = ["SINGLE_CHOICE", "LIKERT", "TEXT_INPUT"];
+const SUPPORTED: SupportedType[] = [
+  "SINGLE_CHOICE",
+  "LIKERT",
+  "TEXT_INPUT",
+  "FORCED_CHOICE",
+];
 
 const LIKERT_PRESETS: Record<string, { label: string; labels: string[] }> = {
   setuju: {
@@ -108,6 +110,7 @@ const blankOption = (): DraftOption => ({
   label: "",
   imageUrl: "",
   points: "",
+  scaleId: "",
 });
 
 function defaultOptions(type: SupportedType): DraftOption[] {
@@ -117,7 +120,14 @@ function defaultOptions(type: SupportedType): DraftOption[] {
       label,
       imageUrl: "",
       points: "",
+      scaleId: "",
     }));
+  }
+  if (type === "FORCED_CHOICE") {
+    return [
+      { label: "", imageUrl: "", points: "1", scaleId: "" },
+      { label: "", imageUrl: "", points: "1", scaleId: "" },
+    ];
   }
   return Array.from({ length: 5 }, blankOption);
 }
@@ -126,12 +136,19 @@ function optionsFromItem(item: TestItem): DraftOption[] {
   return [...item.options]
     .sort((a, b) => a.order - b.order)
     .map((o) => {
+      const scoring = o.scoring as Record<string, unknown> | null;
       const points =
-        o.scoring &&
-        typeof (o.scoring as { points?: unknown }).points === "number"
-          ? String((o.scoring as { points: number }).points)
+        scoring && typeof scoring.points === "number"
+          ? String(scoring.points)
           : "";
-      return { label: o.label ?? "", imageUrl: o.imageUrl ?? "", points };
+      const scaleId =
+        typeof scoring?.scaleId === "string" ? scoring.scaleId : "";
+      return {
+        label: o.label ?? "",
+        imageUrl: o.imageUrl ?? "",
+        points,
+        scaleId,
+      };
     });
 }
 
@@ -188,7 +205,9 @@ export default function ItemForm({
       : defaultOptions(startType),
   );
   const [keyStyle, setKeyStyle] = useState<"number" | "letter">(
-    item?.options?.[0]?.key === "a" ? "letter" : "number",
+    item?.options?.[0]?.key === "a" || startType === "FORCED_CHOICE"
+      ? "letter"
+      : "number",
   );
   const [correctIndex, setCorrectIndex] = useState<number | null>(() => {
     const correct = item?.answerKey?.correct?.[0];
@@ -269,8 +288,8 @@ export default function ItemForm({
     if (type === "TEXT_INPUT") {
       setAcceptedAnswers("");
       setScoringTiers([]);
-    } else if (type === "SINGLE_CHOICE") {
-      setOptions((prev) => prev.map(() => blankOption()));
+    } else {
+      setOptions(defaultOptions(type));
     }
   };
 
@@ -310,7 +329,7 @@ export default function ItemForm({
       }
     }
 
-    if (scoredInTotal && !scaleId) {
+    if (scoredInTotal && !scaleId && type !== "FORCED_CHOICE") {
       errs.push("Skala wajib dipilih agar soal ini masuk perhitungan skor");
     }
 
@@ -381,6 +400,39 @@ export default function ItemForm({
           scoring: { points: i + 1 },
         });
       });
+    } else if (type === "FORCED_CHOICE") {
+      if (options.length < 2) errs.push("Minimal 2 opsi untuk pilihan paksa");
+      options.forEach((o, i) => {
+        const label = o.label.trim();
+        const imageUrl = o.imageUrl.trim();
+        const key = optionKey(keyStyle, i);
+        if (!label && !imageUrl)
+          errs.push(`Opsi ${key} harus punya teks atau URL gambar`);
+        if (imageUrl && !/^https?:\/\//i.test(imageUrl)) {
+          errs.push(
+            `URL gambar opsi ${key} harus diawali http:// atau https://`,
+          );
+        }
+        if (!o.scaleId) {
+          errs.push(`Skala untuk opsi ${key} wajib dipilih`);
+        }
+        const p = Number(o.points);
+        if (o.points.trim() === "" || Number.isNaN(p)) {
+          errs.push(`Poin opsi ${key} wajib diisi`);
+        }
+        const targetScale = scales.find((s) => s.id === o.scaleId);
+        optionPayload.push({
+          key,
+          label: label || null,
+          imageUrl: imageUrl || null,
+          order: i + 1,
+          scoring: {
+            points: Number.isNaN(p) ? 1 : p,
+            scaleId: o.scaleId || undefined,
+            scaleCode: targetScale?.code || undefined,
+          },
+        });
+      });
     } else {
       if (options.length < 2) errs.push("Minimal 2 opsi");
       options.forEach((o, i) => {
@@ -438,7 +490,7 @@ export default function ItemForm({
       },
       options: optionPayload,
       groupId: groupId || null,
-      scaleId: scaleId || null,
+      scaleId: type === "FORCED_CHOICE" ? null : scaleId || null,
       reverseScored: type === "LIKERT" ? reverseScored : false,
       weight: w,
       scoredInTotal,
@@ -535,36 +587,44 @@ export default function ItemForm({
         </div>
 
         {/* SKALA */}
-        <div>
-          <Label
-            htmlFor="item-scale"
-            tooltip="Skala yang dinilai oleh soal ini. Skala milik section yang sedang dipilih ditampilkan lebih dulu. Jika section hanya punya satu skala, otomatis terpilih."
-          >
-            Skala
-          </Label>
-          <Select
-            id="item-scale"
-            name="scaleId"
-            defaultValue={
-              item?.scaleId ??
-              (sectionScales.length === 1 ? sectionScales[0].id : "")
-            }
-            className="w-full"
-          >
-            <option value="">-- Pilih skala --</option>
-            {orderedScales.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.code} - {s.name}
-                {s.sectionId === sectionId ? " (section ini)" : ""}
-              </option>
-            ))}
-          </Select>
-          {scales.length === 0 && (
-            <p className="mt-1 text-xs text-text-secondary">
-              Belum ada skala. Buat skala dulu di tab Scales.
-            </p>
-          )}
-        </div>
+        {type !== "FORCED_CHOICE" ? (
+          <div>
+            <Label
+              htmlFor="item-scale"
+              tooltip="Skala yang dinilai oleh soal ini. Skala milik section yang sedang dipilih ditampilkan lebih dulu. Jika section hanya punya satu skala, otomatis terpilih."
+            >
+              Skala
+            </Label>
+            <Select
+              id="item-scale"
+              name="scaleId"
+              defaultValue={
+                item?.scaleId ??
+                (sectionScales.length === 1 ? sectionScales[0].id : "")
+              }
+              className="w-full"
+            >
+              <option value="">-- Pilih skala --</option>
+              {orderedScales.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.code} - {s.name}
+                  {s.sectionId === sectionId ? " (section ini)" : ""}
+                </option>
+              ))}
+            </Select>
+            {scales.length === 0 && (
+              <p className="mt-1 text-xs text-text-secondary">
+                Belum ada skala. Buat skala dulu di tab Scales.
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="rounded-lg border border-divider bg-surface-secondary/40 p-3 text-xs text-text-secondary">
+            Skala pada soal bertipe{" "}
+            <strong>Pilihan paksa (FORCED_CHOICE)</strong> ditentukan per opsi
+            di bawah.
+          </div>
+        )}
 
         {/* OPSI & PENILAIAN */}
         <div className="space-y-3 border-t border-divider pt-4">
@@ -588,6 +648,7 @@ export default function ItemForm({
             setNormalize={setNormalize}
             isAbility={isAbility}
             type={type}
+            scales={orderedScales}
             blankOption={blankOption}
             optionKey={optionKey}
             isEdit={isEdit}

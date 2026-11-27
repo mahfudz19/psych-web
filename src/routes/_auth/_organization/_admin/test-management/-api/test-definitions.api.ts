@@ -1,5 +1,6 @@
 import type { NormPayload } from "../$testId/norms/-components/NormTableService/Normform";
 import type { BaseListParams } from "../../../../../../components/reusebale-components/DataTable";
+import type { ApiResponse } from "../../../../../../types/api";
 import { api } from "../../../../../../utils/api";
 import type {
   TestDefinition,
@@ -90,6 +91,42 @@ export function getTestScales(
   params?: BaseListParams & { sectionId?: string },
 ) {
   return api.get<TestScale[]>(`${BASE}/${testId}/scales`, { params });
+}
+
+export async function getAllTestScales(
+  testId: string,
+  params?: Omit<BaseListParams, "page" | "limit"> & { sectionId?: string },
+): Promise<ApiResponse<TestScale[]>> {
+  const limit = 50;
+  let page = 1;
+  let allScales: TestScale[] = [];
+
+  while (true) {
+    const res = await getTestScales(testId, { ...params, page, limit });
+    const items = res.data ?? [];
+    allScales = allScales.concat(items);
+
+    const totalPages =
+      res.meta?.totalPages ??
+      (res.meta?.total ? Math.ceil(res.meta.total / limit) : 1);
+
+    if (page >= totalPages || items.length === 0 || items.length < limit) {
+      break;
+    }
+    page += 1;
+  }
+
+  return {
+    success: true,
+    message: "OK",
+    data: allScales,
+    meta: {
+      page: 1,
+      limit: allScales.length,
+      total: allScales.length,
+      totalPages: 1,
+    },
+  };
 }
 
 export function getTestScaleDetail(testId: string, scaleId: string) {

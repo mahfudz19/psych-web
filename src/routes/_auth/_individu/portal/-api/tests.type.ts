@@ -1,3 +1,5 @@
+import type { PausePolicy } from "../../../_organization/_admin/test-management/-api/test-definitions.type";
+
 export interface SaveAnswersRequest {
   answers: Array<{
     itemId: string;
@@ -27,7 +29,7 @@ export interface TestDetailPublicResponse extends TestCatalog {
   instructions: string;
   version: string;
   totalDurationSeconds: number | null;
-  pausePolicy: string;
+  pausePolicy: PausePolicy;
   language: string;
   sections: Array<{
     id: string;
@@ -63,6 +65,7 @@ export interface AttemptResponse {
   testVersion: string;
   testCode: string;
   testName: string;
+  pausePolicy: PausePolicy;
   attemptNumber: number;
   status: string;
   startedAt: string | null;
@@ -78,7 +81,12 @@ export interface AttemptResponse {
     answeredCount: number;
     timeLimitSeconds: number | null;
     navigationPolicy: string;
-    status: "NOT_STARTED" | "STIMULUS_IN_PROGRESS" | "IN_PROGRESS" | "COMPLETED" | "EXPIRED";
+    status:
+      | "NOT_STARTED"
+      | "STIMULUS_IN_PROGRESS"
+      | "IN_PROGRESS"
+      | "COMPLETED"
+      | "EXPIRED";
     startedAt: string | null;
     deadlineAt: string | null;
     completedAt: string | null;

@@ -36,6 +36,8 @@ export interface TextInputSectionConfig {
 export interface SectionConfig
   extends ChoiceSectionConfig, TextInputSectionConfig {
   containsImages?: boolean;
+  requireAllAnswered?: boolean;
+  allowReview?: boolean;
   [key: string]: unknown;
 }
 

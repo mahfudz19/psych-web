@@ -1,6 +1,7 @@
 import { ImageIcon, Loader2, Plus, Type, Upload, X } from "lucide-react";
 import { useRef, useState, type Dispatch, type SetStateAction } from "react";
-import { MAX_CHOICE_OPTIONS } from ".";
+import { MAX_CHOICE_OPTIONS, type DraftOption } from ".";
+import type { ItemScaleOption } from "../ItemForm";
 import UploadDialog from "../../../../../../../../../components/reusebale-components/UploadDialog";
 import Radio from "../../../../../../../../../components/ui/Radio";
 import { uploadApi } from "../../../../../../../../../components/utility/uploadApi";
@@ -11,12 +12,6 @@ import Input, {
 import Select from "../../../../../../../../../components/ui/Select";
 import IconButton from "../../../../../../../../../components/ui/IconButton";
 import Button from "../../../../../../../../../components/ui/Button";
-
-interface DraftOption {
-  label: string;
-  imageUrl: string;
-  points: string;
-}
 
 function Thumb({ url, sm = false }: { url: string; sm?: boolean }) {
   if (!/^https?:\/\//i.test(url)) return null;
@@ -46,7 +41,6 @@ function Tag({ children }: { children: React.ReactNode }) {
 
 type OptionMode = "text" | "image";
 
-// --- Komponen UploadDialog Khusus untuk SingleChoice ---
 function SingleChoiceUploadDialog(props: {
   imageUrl: string;
   isUploading: boolean;
@@ -130,7 +124,6 @@ function SingleChoiceUploadDialog(props: {
     />
   );
 }
-// -----------------------------------------------------------
 
 function SingleChoice(props: {
   isAbility: boolean;
@@ -143,6 +136,8 @@ function SingleChoice(props: {
   updateOption: (index: number, patch: Partial<DraftOption>) => void;
   removeOption: (index: number) => void;
   addOption: () => void;
+  isForcedChoice?: boolean;
+  scales?: ItemScaleOption[];
 }) {
   const {
     isAbility,
@@ -155,6 +150,8 @@ function SingleChoice(props: {
     updateOption,
     removeOption,
     addOption,
+    isForcedChoice = false,
+    scales = [],
   } = props;
   const textInputRefs = useRef<Record<number, HTMLInputElement | null>>({});
   const [modes, setModes] = useState<Record<number, OptionMode>>(() => {
@@ -201,9 +198,11 @@ function SingleChoice(props: {
   return (
     <>
       <p className="mt-1 text-xs text-text-secondary">
-        {isAbility
-          ? "Pilih satu opsi sebagai kunci jawaban. Setiap opsi hanya boleh berupa teks atau gambar."
-          : "Beri poin pada setiap opsi. Skala wajib dipilih di atas."}
+        {isForcedChoice
+          ? "Pilih skala dan poin untuk masing-masing opsi (pilihan paksa / forced choice)."
+          : isAbility
+            ? "Pilih satu opsi sebagai kunci jawaban. Setiap opsi hanya boleh berupa teks atau gambar."
+            : "Beri poin pada setiap opsi. Skala wajib dipilih di atas."}
       </p>
 
       <div className="flex items-center gap-2">
@@ -298,6 +297,24 @@ function SingleChoice(props: {
                       updateOption={updateOption}
                     />
                   </div>
+                )}
+
+                {isForcedChoice && (
+                  <Select
+                    value={o.scaleId ?? ""}
+                    onChange={(e) =>
+                      updateOption(i, { scaleId: e.target.value })
+                    }
+                    className="w-36 sm:w-44 text-xs"
+                    aria-label={`Skala opsi ${optionKey(keyStyle, i)}`}
+                  >
+                    <option value="">-- Pilih skala --</option>
+                    {scales.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.code} - {s.name}
+                      </option>
+                    ))}
+                  </Select>
                 )}
 
                 {!isAbility && (

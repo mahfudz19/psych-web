@@ -10,10 +10,14 @@ const TYPE_OPTIONS: { value: ItemType; label: string; supported: boolean }[] = [
   { value: "SINGLE_CHOICE", label: "Pilihan tunggal", supported: true },
   { value: "LIKERT", label: "Skala Likert", supported: true },
   { value: "TEXT_INPUT", label: "Isian teks", supported: true },
+  {
+    value: "FORCED_CHOICE",
+    label: "Pilihan paksa (forced choice)",
+    supported: true,
+  },
   { value: "MULTI_CHOICE", label: "Pilihan ganda (segera)", supported: false },
   { value: "TRUE_FALSE", label: "Benar/salah (segera)", supported: false },
   { value: "YES_NO", label: "Ya/tidak (segera)", supported: false },
-  { value: "FORCED_CHOICE", label: "Pilihan paksa (segera)", supported: false },
   {
     value: "MOST_LEAST",
     label: "Paling / paling tidak (segera)",
@@ -24,7 +28,11 @@ const TYPE_OPTIONS: { value: ItemType; label: string; supported: boolean }[] = [
   { value: "DRAWING", label: "Gambar (segera)", supported: false },
 ];
 
-export type SupportedType = "SINGLE_CHOICE" | "LIKERT" | "TEXT_INPUT";
+export type SupportedType =
+  | "SINGLE_CHOICE"
+  | "LIKERT"
+  | "TEXT_INPUT"
+  | "FORCED_CHOICE";
 
 export const MAX_CHOICE_OPTIONS = 8;
 export const MAX_LIKERT_OPTIONS = 10;
@@ -33,6 +41,7 @@ export interface DraftOption {
   label: string;
   imageUrl: string;
   points: string;
+  scaleId?: string;
 }
 
 export type NormalizeMode = "NONE" | "TRIM_LEADING_ZEROS" | "LOWERCASE";
@@ -41,6 +50,8 @@ export interface ScoringTier {
   points: string;
   answers: string;
 }
+
+import type { ItemScaleOption } from "../ItemForm";
 
 function TypeFields(props: {
   preset: string;
@@ -62,6 +73,7 @@ function TypeFields(props: {
   setNormalize: Dispatch<SetStateAction<NormalizeMode>>;
   isAbility: boolean;
   type: SupportedType;
+  scales: ItemScaleOption[];
   blankOption: () => DraftOption;
   optionKey: (style: "number" | "letter", index: number) => string;
   handleTypeChange: (next: ItemType) => void;
@@ -88,6 +100,7 @@ function TypeFields(props: {
 
     isAbility,
     type,
+    scales,
     blankOption,
     optionKey,
     handleTypeChange,
@@ -122,11 +135,13 @@ function TypeFields(props: {
   };
 
   const modeLabel =
-    type === "LIKERT"
-      ? "Aturan skor (poin)"
-      : isAbility
-        ? "Kunci jawaban"
-        : "Aturan skor (poin)";
+    type === "FORCED_CHOICE"
+      ? "Skala per opsi"
+      : type === "LIKERT"
+        ? "Aturan skor (poin)"
+        : isAbility
+          ? "Kunci jawaban"
+          : "Aturan skor (poin)";
 
   return (
     <>
@@ -199,6 +214,8 @@ function TypeFields(props: {
               updateOption={updateOption}
               removeOption={removeOption}
               addOption={addOption}
+              isForcedChoice={type === "FORCED_CHOICE"}
+              scales={scales}
             />
           )}
         </>

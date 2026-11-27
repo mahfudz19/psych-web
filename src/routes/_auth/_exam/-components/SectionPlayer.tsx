@@ -70,7 +70,15 @@ function useSectionSession(
   const [answers, setAnswers] = useState<AnswerMap>(() =>
     Object.fromEntries(run.answers.map((a) => [a.itemId, a.response])),
   );
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() => {
+    const initialMap = Object.fromEntries(
+      run.answers.map((a) => [a.itemId, a.response]),
+    );
+    const firstUnanswered = items.findIndex(
+      (it) => !isAnswered(it, initialMap[it.id]),
+    );
+    return firstUnanswered >= 0 ? firstUnanswered : 0;
+  });
   const [serverTime, setServerTime] = useState<string | null>(
     section.serverTime,
   );
@@ -366,6 +374,8 @@ const TimeCount = (props: {
     finishSection: (auto: boolean) => Promise<void>;
     goTo: (next: number) => void;
   };
+  requireAllAnswered?: boolean;
+  onJumpToUnanswered?: () => void;
 }) => {
   const {
     testName,
@@ -377,6 +387,8 @@ const TimeCount = (props: {
     setConfirmOpen,
     answerable,
     answeredCount,
+    requireAllAnswered,
+    onJumpToUnanswered,
   } = props;
 
   const remaining = useCountdown(session.deadlineAt, session.serverTime, () => {
@@ -435,6 +447,8 @@ const TimeCount = (props: {
           unanswered={unanswered}
           submitting={session.submitting}
           submitError={session.submitError}
+          requireAllAnswered={requireAllAnswered}
+          onJumpToUnanswered={onJumpToUnanswered}
           onCancel={() => setConfirmOpen(false)}
           onConfirm={() => void session.finishSection(false)}
         />
@@ -580,20 +594,89 @@ const QuestionNavigator = (props: {
   onSelect: (index: number) => void;
 }) => {
   const { items, answers, currentIndex, forwardOnly, onSelect } = props;
+  const [filter, setFilter] = useState<"all" | "unanswered">("all");
+  const activeBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    activeBtnRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "nearest",
+    });
+  }, [currentIndex]);
+
+  const unansweredIndices = items
+    .map((it, idx) => (!isAnswered(it, answers[it.id]) ? idx : null))
+    .filter((idx): idx is number => idx !== null);
+
+  const displayed =
+    filter === "all"
+      ? items.map((it, i) => ({ it, i }))
+      : items
+          .map((it, i) => ({ it, i }))
+          .filter(({ it }) => !isAnswered(it, answers[it.id]));
 
   return (
-    <div className="space-y-2">
-      <p className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
-        Navigasi soal
-      </p>
-      <div className="flex flex-wrap gap-2">
-        {items.map((it, i) => {
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-divider pb-2">
+        <div className="flex items-center gap-2">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
+            Navigasi Soal
+          </p>
+          {!forwardOnly && items.length > 20 && (
+            <div className="inline-flex rounded-lg border border-divider bg-bg-default p-0.5 text-xs">
+              <button
+                type="button"
+                onClick={() => setFilter("all")}
+                className={`rounded-md px-2.5 py-0.5 font-semibold transition-colors ${
+                  filter === "all"
+                    ? "bg-primary-main text-primary-contrast shadow-xs"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                Semua ({items.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilter("unanswered")}
+                className={`rounded-md px-2.5 py-0.5 font-semibold transition-colors ${
+                  filter === "unanswered"
+                    ? "bg-primary-main text-primary-contrast shadow-xs"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                Belum ({unansweredIndices.length})
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Legenda warna */}
+        <div className="flex items-center gap-3 text-[11px] text-text-secondary">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded bg-primary-main" />
+            Aktif
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded bg-success-main/60" />
+            Terjawab
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded border border-divider bg-bg-default" />
+            Belum
+          </span>
+        </div>
+      </div>
+
+      <div className="max-h-64 overflow-y-auto p-1 flex flex-wrap gap-2">
+        {displayed.map(({ it, i }) => {
           const done = isAnswered(it, answers[it.id]);
           const current = i === currentIndex;
           const locked = forwardOnly && !current;
           return (
             <button
               key={it.id}
+              ref={current ? activeBtnRef : null}
               type="button"
               onClick={() => onSelect(i)}
               disabled={locked}
@@ -601,7 +684,7 @@ const QuestionNavigator = (props: {
               aria-current={current ? "step" : undefined}
               className={`h-9 w-9 rounded-lg border text-xs font-bold transition-all ${
                 current
-                  ? "border-primary-main bg-primary-main text-primary-contrast"
+                  ? "border-primary-main bg-primary-main text-primary-contrast ring-2 ring-primary-main/20"
                   : done
                     ? "border-success-main/40 bg-success-main/10 text-success-main"
                     : "border-divider bg-bg-default text-text-secondary"
@@ -627,6 +710,8 @@ const NavigationFooter = (props: {
   isLast: boolean;
   forwardOnly: boolean;
   submitting: boolean;
+  unanswered: number;
+  requireAllAnswered?: boolean;
   onPrev: () => void;
   onNext: () => void;
   onRequestFinish: () => void;
@@ -636,10 +721,14 @@ const NavigationFooter = (props: {
     isLast,
     forwardOnly,
     submitting,
+    unanswered,
+    requireAllAnswered = false,
     onPrev,
     onNext,
     onRequestFinish,
   } = props;
+
+  const finishDisabled = requireAllAnswered && unanswered > 0;
 
   return (
     <>
@@ -658,9 +747,13 @@ const NavigationFooter = (props: {
             type="button"
             onClick={onRequestFinish}
             disabled={submitting}
-            className="rounded-xl bg-primary-main px-6 py-2.5 text-xs font-bold text-primary-contrast shadow-sm transition-all hover:opacity-90"
+            className={`rounded-xl px-6 py-2.5 text-xs font-bold transition-all ${
+              finishDisabled
+                ? "border border-divider bg-bg-default text-text-secondary hover:border-primary-main/60"
+                : "bg-primary-main text-primary-contrast shadow-sm hover:opacity-90"
+            }`}
           >
-            Selesaikan Subtes
+            Selesaikan Subtes {unanswered > 0 ? `(${unanswered} belum)` : ""}
           </button>
         ) : (
           <button
@@ -681,9 +774,13 @@ const NavigationFooter = (props: {
             type="button"
             onClick={onRequestFinish}
             disabled={submitting}
-            className="text-xs font-semibold text-text-secondary underline-offset-2 hover:text-primary-main hover:underline"
+            className={`text-xs font-semibold underline-offset-2 hover:underline ${
+              finishDisabled
+                ? "text-text-secondary hover:text-text-primary"
+                : "text-text-secondary hover:text-primary-main"
+            }`}
           >
-            Selesaikan subtes sekarang
+            Selesaikan subtes sekarang {unanswered > 0 ? `(${unanswered} soal belum dijawab)` : ""}
           </button>
         </div>
       )}
@@ -695,10 +792,22 @@ const ConfirmSubmitModal = (props: {
   unanswered: number;
   submitting: boolean;
   submitError: string | null;
+  requireAllAnswered?: boolean;
+  onJumpToUnanswered?: () => void;
   onCancel: () => void;
   onConfirm: () => void;
 }) => {
-  const { unanswered, submitting, submitError, onCancel, onConfirm } = props;
+  const {
+    unanswered,
+    submitting,
+    submitError,
+    requireAllAnswered = false,
+    onJumpToUnanswered,
+    onCancel,
+    onConfirm,
+  } = props;
+
+  const isBlocked = requireAllAnswered && unanswered > 0;
 
   return (
     <div
@@ -709,34 +818,55 @@ const ConfirmSubmitModal = (props: {
     >
       <div className="w-full max-w-md space-y-4 rounded-3xl bg-bg-paper p-6 shadow-xl">
         <h2 id="confirm-title" className="text-lg font-bold text-text-primary">
-          Selesaikan subtes ini?
+          {isBlocked ? "Belum Bisa Dikumpulkan" : "Selesaikan subtes ini?"}
         </h2>
         <p className="text-sm leading-relaxed text-text-secondary">
-          {unanswered > 0
-            ? `Masih ada ${unanswered} soal yang belum terjawab. `
-            : "Semua soal sudah terjawab. "}
-          Setelah diselesaikan, subtes ini tidak bisa dibuka lagi.
+          {isBlocked ? (
+            <>
+              Subtes ini mewajibkan seluruh soal dijawab. Masih ada{" "}
+              <strong className="text-error-main">{unanswered} soal</strong> yang
+              belum diisi.
+            </>
+          ) : unanswered > 0 ? (
+            `Masih ada ${unanswered} soal yang belum terjawab. Setelah diselesaikan, subtes ini tidak bisa dibuka lagi.`
+          ) : (
+            "Semua soal sudah terjawab. Setelah diselesaikan, subtes ini tidak bisa dibuka lagi."
+          )}
         </p>
         {submitError && (
           <p className="text-sm text-error-main">{submitError}</p>
         )}
-        <div className="flex justify-end gap-3">
+        <div className="flex flex-wrap justify-end gap-3">
           <button
             type="button"
             onClick={onCancel}
             disabled={submitting}
             className="rounded-xl bg-divider/10 px-5 py-2.5 text-xs font-bold text-text-primary"
           >
-            Kembali
+            {isBlocked ? "Tutup" : "Kembali"}
           </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            disabled={submitting}
-            className="rounded-xl bg-primary-main px-5 py-2.5 text-xs font-bold text-primary-contrast"
-          >
-            {submitting ? "Menyimpan..." : "Ya, selesaikan"}
-          </button>
+          {isBlocked && onJumpToUnanswered && (
+            <button
+              type="button"
+              onClick={() => {
+                onCancel();
+                onJumpToUnanswered();
+              }}
+              className="rounded-xl bg-primary-main px-5 py-2.5 text-xs font-bold text-primary-contrast"
+            >
+              Lompat ke Soal Kosong →
+            </button>
+          )}
+          {!isBlocked && (
+            <button
+              type="button"
+              onClick={onConfirm}
+              disabled={submitting}
+              className="rounded-xl bg-primary-main px-5 py-2.5 text-xs font-bold text-primary-contrast"
+            >
+              {submitting ? "Menyimpan..." : "Ya, selesaikan"}
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -935,6 +1065,7 @@ export default function SectionPlayer(props: SectionPlayerProps) {
   // Local copy so we can swap in the full run after stimulus→questions transition
   const [activeRun, setActiveRun] = useState<SectionRun>(run);
   const { section, items } = activeRun;
+  console.log(section);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const stimulus = section.stimulusPhase;
@@ -1001,11 +1132,71 @@ export default function SectionPlayer(props: SectionPlayerProps) {
   const answeredCount = answerable.filter((it) =>
     isAnswered(it, session.answers[it.id]),
   ).length;
+  const unanswered = answerable.length - answeredCount;
   const item = items[session.index];
   const isLast = session.index === items.length - 1;
+  const requireAllAnswered = Boolean(section.config?.requireAllAnswered);
+
+  const firstUnansweredIndex = items.findIndex(
+    (it) => !isAnswered(it, session.answers[it.id]),
+  );
+  const handleJumpToUnanswered = () => {
+    if (firstUnansweredIndex >= 0) {
+      session.goTo(firstUnansweredIndex);
+    }
+  };
+
+  // Keyboard navigation & quick option selection (A/B or 1/2)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement;
+      const tag = activeEl?.tagName?.toLowerCase();
+      if (
+        tag === "input" ||
+        tag === "textarea" ||
+        activeEl?.getAttribute("contenteditable") === "true"
+      ) {
+        return;
+      }
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        session.goTo(session.index - 1);
+        return;
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        session.goTo(session.index + 1);
+        return;
+      }
+
+      if (
+        item &&
+        ["FORCED_CHOICE", "SINGLE_CHOICE", "TRUE_FALSE", "YES_NO"].includes(
+          item.type,
+        )
+      ) {
+        const sorted = [...item.options].sort((a, b) => a.order - b.order);
+        const k = e.key.toLowerCase();
+        let targetIndex = -1;
+        if (k === "a" || k === "1") targetIndex = 0;
+        else if (k === "b" || k === "2") targetIndex = 1;
+        else if (k === "c" || k === "3") targetIndex = 2;
+        else if (k === "d" || k === "4") targetIndex = 3;
+        else if (k === "e" || k === "5") targetIndex = 4;
+
+        if (targetIndex >= 0 && sorted[targetIndex]) {
+          e.preventDefault();
+          session.updateAnswer(item.id, { keys: [sorted[targetIndex].key] });
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [item, session]);
 
   // Layar stimulus (hafalan kata)
-  console.log({ stimulus, phase });
   if (phase === "STIMULUS" && stimulus) {
     return (
       <StimulusScreen
@@ -1059,6 +1250,8 @@ export default function SectionPlayer(props: SectionPlayerProps) {
         confirmOpen={confirmOpen}
         setConfirmOpen={setConfirmOpen}
         session={session}
+        requireAllAnswered={requireAllAnswered}
+        onJumpToUnanswered={handleJumpToUnanswered}
       />
 
       {/* PETUNJUK PENGERJAAN & CONTOH SOAL */}
@@ -1121,6 +1314,8 @@ export default function SectionPlayer(props: SectionPlayerProps) {
             isLast={isLast}
             forwardOnly={session.forwardOnly}
             submitting={session.submitting}
+            unanswered={unanswered}
+            requireAllAnswered={requireAllAnswered}
             onPrev={() => session.goTo(session.index - 1)}
             onNext={() => session.goTo(session.index + 1)}
             onRequestFinish={() => setConfirmOpen(true)}

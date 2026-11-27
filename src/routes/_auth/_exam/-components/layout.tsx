@@ -4,34 +4,10 @@ import { unwrap, type AttemptState } from "../-api/exam.types";
 import DialogConfirmAction from "../../../../components/reusebale-components/dialog/DialogConfirmAction";
 import Button from "../../../../components/ui/Button";
 import { Route } from "../../_exam/exam/$testId";
+import LoadingCard from "./LoadingCard";
 
-const Header = () => {
+const Header = ({ attempt }: { attempt: AttemptState }) => {
   const navigate = useNavigate();
-  const { testId } = Route.useParams();
-
-  const { data, isError } = useStartOrResumeAttempt(testId);
-
-  const attemptId = unwrap<AttemptState>(data?.data)?.id ?? "";
-
-  const attemptQuery = useGetAttempt(attemptId, attemptId !== "");
-  const attempt = unwrap<AttemptState>(attemptQuery.data);
-
-  const validate =
-    isError ||
-    attemptId === "" ||
-    attemptQuery.isLoading ||
-    attemptQuery.isError ||
-    !attempt;
-
-  if (validate) {
-    return (
-      <header className="h-16 bg-bg-paper border-b border-divider px-6 flex items-center justify-between sticky top-0 z-50 shadow-sm">
-        <div className="h-6 w-32 rounded-full bg-divider/60" />
-        <div className="h-6 w-2/3 rounded-lg bg-divider/60" />
-        <div className="h-6 w-32 rounded-full bg-divider/60" />
-      </header>
-    );
-  }
 
   const sections = [...attempt.sections].sort((a, b) => a.order - b.order);
 
@@ -85,13 +61,39 @@ const Header = () => {
   );
 };
 
+function LoadHeader() {
+  return (
+    <header className="h-16 bg-bg-paper border-b border-divider px-6 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+      <div className="h-6 w-32 rounded-full bg-divider/60" />
+      <div className="h-6 w-2/3 rounded-lg bg-divider/60" />
+      <div className="h-6 w-32 rounded-full bg-divider/60" />
+    </header>
+  );
+}
+
 export default function ExamRootLayout() {
+  const { testId } = Route.useParams();
+
+  const { data, isError } = useStartOrResumeAttempt(testId);
+
+  const attemptId = unwrap<AttemptState>(data?.data)?.id ?? "";
+
+  const attemptQuery = useGetAttempt(attemptId, attemptId !== "");
+  const attempt = unwrap<AttemptState>(attemptQuery.data);
+
+  const validate =
+    isError ||
+    attemptId === "" ||
+    attemptQuery.isLoading ||
+    attemptQuery.isError ||
+    !attempt;
+
   return (
     <div className="min-h-screen flex flex-col bg-bg-default text-text-primary selection:bg-primary-main/20">
-      <Header />
+      {validate ? <LoadHeader /> : <Header attempt={attempt} />}
 
       <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-8 space-y-2">
-        <Outlet />
+        {validate ? <LoadingCard /> : <Outlet />}
       </main>
     </div>
   );

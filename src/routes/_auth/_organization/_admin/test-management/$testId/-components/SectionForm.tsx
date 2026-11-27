@@ -3,18 +3,59 @@ import {
   useCreateTestSectionMutation,
   useUpdateTestSectionMutation,
 } from "../../-api/test-definitions.query";
+import type {
+  TestExample,
+  TestSectionCreatePayload,
+  TestSectionUpdatePayload,
+} from "../../-api/test-definitions.type";
 import Button from "../../../../../../../components/ui/Button";
 import Tabs from "../../../../../../../components/ui/Tabs";
 import Tab from "../../../../../../../components/ui/Tabs/Tab";
 import TabContent from "../../../../../../../components/ui/Tabs/TabContent";
+import toast from "../../../../../../../components/ui/Toast";
 import BaseField from "./BaseFields";
 import ContinueField from "./ContinueFields";
 import TimeField from "./TimeFields";
-import toast from "../../../../../../../components/ui/Toast";
-import type { TestExample } from "../../-api/test-definitions.type";
 
 export type NavigationPolicy = "FREE" | "FORWARD_ONLY";
 export type SectionStatus = "ACTIVE" | "RETIRED";
+
+export type ConfigLayout = "VERTICAL" | "HORIZONTAL";
+export type ConfigInputType = "TEXT" | "NUMBER";
+
+export interface ChoiceSectionConfig {
+  layout?: ConfigLayout;
+  sharedOptionsByGroup?: boolean;
+}
+
+export interface TextInputSectionConfig {
+  inputType?: ConfigInputType;
+  allowDecimals?: boolean;
+}
+
+export interface SectionConfig
+  extends ChoiceSectionConfig, TextInputSectionConfig {
+  containsImages?: boolean;
+  [key: string]: unknown;
+}
+
+export type StimulusContentType = "WORD_LIST" | "TEXT" | "IMAGE";
+
+export interface WordListGroup {
+  category: string;
+  words: string[];
+}
+
+export interface WordListContent {
+  groups: WordListGroup[];
+}
+
+export interface StimulusPhase {
+  contentType: StimulusContentType | string;
+  displaySeconds: number;
+  hideAfter: boolean;
+  content: WordListContent;
+}
 
 export interface SectionFormInitial {
   id?: string;
@@ -22,13 +63,13 @@ export interface SectionFormInitial {
   order?: number;
   name?: string;
   instructions?: string | null;
-  examples?: TestExample[] | null;
+  examples?: Array<TestExample> | null;
   showExamplesFirst?: boolean | null;
   timeLimitSeconds?: number | null;
   navigationPolicy?: string | null;
   defaultItemType?: string | null;
-  stimulusPhase?: Record<string, unknown> | null;
-  config?: Record<string, unknown> | null;
+  stimulusPhase?: StimulusPhase | null;
+  config?: SectionConfig | null;
   status?: string | null;
 }
 
@@ -123,10 +164,10 @@ export default function SectionForm({
         "Contoh soal",
         "array",
         errs,
-      );
+      ) as Array<TestExample> | null;
       const config = parseJsonField(str("config"), "Config", "object", errs);
 
-      let stimulusPhase: Record<string, unknown> | null = null;
+      let stimulusPhase: StimulusPhase | null = null;
       if (useStimulus) {
         const contentType = str("stimulusContentType");
         const displaySeconds = Number(str("stimulusDisplaySeconds"));
@@ -139,7 +180,7 @@ export default function SectionForm({
           "Fase hafalan: isi konten",
           "object",
           errs,
-        );
+        ) as StimulusPhase["content"];
         stimulusPhase = {
           contentType,
           displaySeconds,
@@ -153,32 +194,42 @@ export default function SectionForm({
         return;
       }
 
-      let payload = {
-        order,
-        name,
-        instructions: String(fd.get("instructions") ?? ""),
-        examples: examples as unknown[],
-        showExamplesFirst: fd.get("showExamplesFirst") === "on",
-        timeLimitSeconds,
-        navigationPolicy: str("navigationPolicy") as NavigationPolicy,
-        defaultItemType: str("defaultItemType"),
-        stimulusPhase,
-        config: config as Record<string, unknown>,
-        status: str("status") as SectionStatus,
-      };
-
       setIsSubmitting(true);
       if (isEdit) {
         if (!(section && section.id)) {
           toast.error("Invalid request payload structure");
           return;
         }
+        const payload: TestSectionUpdatePayload = {
+          order,
+          name,
+          instructions: String(fd.get("instructions") ?? ""),
+          examples: examples,
+          showExamplesFirst: fd.get("showExamplesFirst") === "on",
+          timeLimitSeconds,
+          navigationPolicy: str("navigationPolicy") as NavigationPolicy,
+          defaultItemType: str("defaultItemType"),
+          stimulusPhase,
+          config: config as Record<string, unknown>,
+          status: str("status") as SectionStatus,
+          id: section.id,
+        };
         const sectionId = section?.id;
-        await updateMutation.mutateAsync({
-          sectionId,
-          payload: { ...payload, id: section.id },
-        });
+        await updateMutation.mutateAsync({ sectionId, payload });
       } else {
+        const payload: TestSectionCreatePayload = {
+          order,
+          name,
+          instructions: String(fd.get("instructions") ?? ""),
+          examples: examples,
+          showExamplesFirst: fd.get("showExamplesFirst") === "on",
+          timeLimitSeconds,
+          navigationPolicy: str("navigationPolicy") as NavigationPolicy,
+          defaultItemType: str("defaultItemType"),
+          stimulusPhase,
+          config: config as Record<string, unknown>,
+          status: str("status") as SectionStatus,
+        };
         await createMutation.mutateAsync({ ...payload, code });
       }
       setIsSubmitting(false);

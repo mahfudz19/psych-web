@@ -35,9 +35,14 @@ export function getAttempt(attemptId: string) {
   return api.get<AttemptResponse>(`${BASE}/attempts/${attemptId}`);
 }
 
-export function startSection(attemptId: string, sectionId: string) {
+export function startSection(
+  attemptId: string,
+  sectionId: string,
+  stimulus?: { startedAt: string; deadlineAt: string },
+) {
   return api.post<SectionStartResponse>(
     `${BASE}/attempts/${attemptId}/sections/${sectionId}/start`,
+    { stimulus },
   );
 }
 

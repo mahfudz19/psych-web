@@ -1,23 +1,31 @@
 import { ArrowRight, BookOpen, Lightbulb } from "lucide-react";
-import type { AttemptSection, AttemptState } from "../-api/exam.types";
-import { formatLimit } from "../-api/exam.types";
+import type {
+  AttemptSection,
+  AttemptState,
+  SectionRun,
+} from "../-api/exam.types";
+import { formatLimit, unwrap } from "../-api/exam.types";
+import type { StimulusPhase } from "../../_organization/_admin/test-management/$testId/-components/SectionForm";
 import Button from "../../../../components/ui/Button";
 
 interface LobbyProps {
   attemptId: string;
   attempt: AttemptState;
-  nextSection: AttemptSection | null;
-  allDone: boolean;
-  resuming: AttemptSection | null;
-  starting: boolean;
-  startError: string | null;
-  onStart: (sectionId: string) => void;
+  run: SectionRun | null;
+  setRun: Dispatch<SetStateAction<SectionRun | null>>;
 }
 
 import { AlertCircle, Check, ChevronRight, Clock } from "lucide-react";
-import { useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { useGetTestSection } from "../../_organization/_admin/test-management/-api/test-definitions.query";
-import { useFinishAttempt } from "../-api/exam.api";
+import { useFinishAttempt, useStartSection } from "../-api/exam.api";
 import { useNavigate } from "@tanstack/react-router";
 
 interface SectionListProps {
@@ -26,9 +34,56 @@ interface SectionListProps {
   resuming: AttemptSection | null;
 }
 
+function normalizeRun(data: SectionRun): SectionRun {
+  return {
+    section: {
+      ...data.section,
+      instructions: data.section.instructions ?? null,
+      examples: data.section.examples ?? [],
+      showExamplesFirst: data.section.showExamplesFirst ?? true,
+      deadlineAt: data.section.deadlineAt ?? null,
+      stimulusDeadlineAt: data.section.stimulusDeadlineAt ?? null,
+      serverTime: data.section.serverTime ?? null,
+    },
+    items: data.items.map((it) => ({
+      ...it,
+      content: {
+        text: it.content?.text ?? null,
+        images: it.content?.images ?? [],
+        audioUrl: it.content?.audioUrl ?? null,
+      },
+      options: it.options ?? [],
+      constraints: it.constraints ?? {},
+    })),
+    answers: data.answers ?? [],
+  };
+}
+
 const SectionList = ({ attempt, nextSection, resuming }: SectionListProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef<HTMLDivElement>(null);
+
   const sections = [...attempt.sections].sort((a, b) => a.order - b.order);
+  const activeSectionId = resuming?.sectionId ?? nextSection?.sectionId;
+  useEffect(() => {
+    const container = scrollRef.current;
+    const activeEl = activeRef.current;
+    if (!container || !activeEl) return;
+
+    const frameId = requestAnimationFrame(() => {
+      const targetLeft =
+        activeEl.offsetLeft -
+        container.clientWidth / 2 +
+        activeEl.clientWidth / 2;
+
+      container.scrollTo({
+        left: Math.max(0, targetLeft),
+        behavior: "smooth",
+      });
+    });
+
+    return () => cancelAnimationFrame(frameId);
+  }, [activeSectionId, sections.length]);
 
   return (
     <div className="relative w-full">
@@ -41,21 +96,21 @@ const SectionList = ({ attempt, nextSection, resuming }: SectionListProps) => {
       {/* HORIZONTAL STEPPER CONTAINER */}
       <div
         ref={scrollRef}
-        className="no-scrollbar flex items-start gap-4 overflow-x-auto px-3 py-1 scroll-smooth snap-x snap-mandatory"
+        className="no-scrollbar relative flex items-center gap-1 overflow-x-auto px-3 py-1 snap-x snap-proximity"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {sections.map((s, index) => {
-          const isCurrent =
-            nextSection?.sectionId === s.sectionId ||
-            resuming?.sectionId === s.sectionId;
+          const isCurrent = activeSectionId === s.sectionId;
           const isCompleted = s.status === "COMPLETED";
           const isExpired = s.status === "EXPIRED";
           const isInProgress = s.status === "IN_PROGRESS";
+          const isStimulusInProgress = s.status === "STIMULUS_IN_PROGRESS";
 
           return (
             <div
               key={s.sectionId}
-              className="flex shrink-0 items-start snap-center"
+              ref={isCurrent ? activeRef : null}
+              className="flex gap-1 shrink-0 items-center snap-center"
             >
               {/* STEP CARD ITEM */}
               <div
@@ -102,7 +157,7 @@ const SectionList = ({ attempt, nextSection, resuming }: SectionListProps) => {
                   {isCurrent && (
                     <span className="flex items-center gap-1 rounded-full bg-primary-main/10 px-2 py-0.5 text-[10px] font-bold text-primary-main">
                       <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-main" />
-                      {isInProgress ? "Berjalan" : "Berikutnya"}
+                      {isStimulusInProgress ? "Hafalan" : isInProgress ? "Berjalan" : "Berikutnya"}
                     </span>
                   )}
                 </div>
@@ -137,7 +192,7 @@ const SectionList = ({ attempt, nextSection, resuming }: SectionListProps) => {
 
               {/* CONNECTOR ARROW / LINE BETWEEN STEPS */}
               {index < sections.length - 1 && (
-                <div className="flex h-full items-center justify-center px-1 pt-8 text-text-disabled/40">
+                <div className="flex h-full items-center justify-center text-text-disabled/40">
                   <ChevronRight size={18} />
                 </div>
               )}
@@ -188,31 +243,54 @@ const NextSection = (props: { testId: string; sectionId: string }) => {
             </h3>
 
             {section.examples.map((ex, idx: number) => {
-              // Ambil teks soal dari format baru (content.text) atau format lama (text)
-              const questionText = ex.content?.text || ex.text;
+              const questionText = ex.content?.text;
+              const questionImages = ex.content?.images;
               const hasOptions =
                 Array.isArray(ex.options) && ex.options.length > 0;
+
+              const formattedAnswer = Array.isArray(ex.answer)
+                ? ex.answer?.join(", ")
+                : ex.answer;
 
               return (
                 <div
                   key={idx}
                   className="space-y-4 rounded-2xl border border-divider bg-bg-paper/50 p-4 sm:p-5"
                 >
-                  {/* Pertanyaan Contoh Soal */}
+                  {/* Pertanyaan Contoh Soal (Teks) */}
                   {questionText && (
                     <p className="text-sm font-medium text-text-primary">
                       {questionText}
                     </p>
                   )}
 
+                  {/* Pertanyaan Contoh Soal (Gambar, jika ada) */}
+                  {questionImages && questionImages.length > 0 && (
+                    <div className="flex flex-wrap gap-3">
+                      {questionImages.map((img, imgIdx) =>
+                        img.url ? (
+                          <img
+                            key={img.assetId || imgIdx}
+                            src={img.url}
+                            alt={img.label || `Contoh gambar ${imgIdx + 1}`}
+                            className="max-h-40 rounded-lg border border-divider object-contain"
+                          />
+                        ) : null,
+                      )}
+                    </div>
+                  )}
+
                   {/* KONDISI A: Pilihan Ganda (Jika memiliki options) */}
                   {hasOptions && (
                     <div className="flex flex-col gap-2">
                       {ex.options?.map((opt) => {
-                        const isCorrect = ex.correctAnswer === opt.label;
+                        const isCorrect = Array.isArray(ex.answer)
+                          ? ex.answer.includes(opt.key)
+                          : ex.answer === opt.key;
+
                         return (
                           <div
-                            key={opt.label}
+                            key={opt.key}
                             className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-sm transition-colors ${
                               isCorrect
                                 ? "border-success-main bg-success-main/10 font-semibold text-success-main"
@@ -226,23 +304,23 @@ const NextSection = (props: { testId: string; sectionId: string }) => {
                                   : "border-divider bg-bg-paper"
                               }`}
                             >
-                              {opt.label}
+                              {opt.key}
                             </span>
-                            <span>{opt.text}</span>
+                            <span>{opt.label}</span>
                           </div>
                         );
                       })}
                     </div>
                   )}
 
-                  {/* KONDISI B: Isian Singkat / Jawaban Langsung (Jika tidak ada options & memakai field answer) */}
-                  {!hasOptions && ex.answer && (
+                  {/* KONDISI B: Isian Singkat / Jawaban Langsung */}
+                  {!hasOptions && formattedAnswer && (
                     <div className="flex items-center gap-2.5 rounded-xl border border-success-main/40 bg-success-main/10 px-3.5 py-2.5 text-sm">
                       <span className="text-xs font-medium text-text-secondary">
                         Jawaban:
                       </span>
                       <span className="font-semibold text-success-main">
-                        {ex.answer}
+                        {formattedAnswer}
                       </span>
                     </div>
                   )}
@@ -263,20 +341,9 @@ const NextSection = (props: { testId: string; sectionId: string }) => {
   );
 };
 
-export default function Lobby(props: LobbyProps) {
-  const {
-    attemptId,
-    attempt,
-    nextSection,
-    allDone,
-    resuming,
-    starting,
-    startError,
-    onStart,
-  } = props;
+const FinishButton = (props: { attemptId: string }) => {
+  const { attemptId } = props;
   const navigate = useNavigate();
-
-  // FINISH
   const [finishError, setFinishError] = useState<string | null>(null);
   const { mutateAsync: finishAsync, isPending: finishing } = useFinishAttempt();
 
@@ -285,15 +352,151 @@ export default function Lobby(props: LobbyProps) {
     setFinishError(null);
     try {
       await finishAsync(attemptId);
-      navigate({ to: "/test-history/$attemptId", params: { attemptId } });
+      navigate({ to: "/test-history/$attemptId", params: { attemptId } } as any);
     } catch {
       setFinishError(
         "Tes belum bisa diselesaikan. Periksa koneksi Anda lalu coba lagi.",
       );
     }
   };
+
   return (
-    <div>
+    <>
+      <h2 className="text-lg font-bold text-text-primary">
+        Semua subtes sudah dikerjakan
+      </h2>
+      <p className="mx-auto max-w-md text-sm leading-relaxed text-text-secondary">
+        Tekan tombol di bawah untuk mengirim jawaban Anda dan menyelesaikan tes.
+      </p>
+      {finishError && <p className="text-sm text-error-main">{finishError}</p>}
+      <Button
+        type="button"
+        onClick={onFinish}
+        disabled={finishing}
+        loading={finishing}
+      >
+        {finishing ? "Menyelesaikan..." : "Selesaikan Tes"}
+      </Button>
+    </>
+  );
+};
+
+const StartButton = (props: {
+  attemptId: string;
+  attempt: AttemptState;
+  nextSection: AttemptSection | null;
+  resuming: AttemptSection | null;
+  isTryAgain?: boolean;
+  run: SectionRun | null;
+  setRun: Dispatch<SetStateAction<SectionRun | null>>;
+}) => {
+  const { isTryAgain, attemptId, attempt, nextSection, run, resuming, setRun } =
+    props;
+  const [startError, setStartError] = useState<string | null>(null);
+  const { mutateAsync: startSectionAsync, isPending: starting } =
+    useStartSection();
+
+  const onStart = useCallback(
+    async (sectionId: string) => {
+      if (!attemptId) return;
+      setStartError(null);
+      try {
+        const res = await startSectionAsync({ attemptId, sectionId });
+        const data = unwrap<SectionRun & {
+          stimulusPhase?: StimulusPhase | null;
+          stimulusDeadlineAt?: string | null;
+        }>(res);
+        if (!data?.section) {
+          throw new Error("Bentuk respons subtes tidak dikenali");
+        }
+        // Backend returns stimulusPhase at root level during STIMULUS_IN_PROGRESS
+        const stimulusPhase = data.stimulusPhase ?? data.section.stimulusPhase ?? null;
+        const stimulusDeadlineAt = data.stimulusDeadlineAt ?? data.section.stimulusDeadlineAt ?? null;
+        const normalized = normalizeRun({
+          ...data,
+          section: {
+            ...data.section,
+            stimulusPhase,
+            stimulusDeadlineAt,
+          },
+          items: data.items ?? [],
+          answers: data.answers ?? [],
+        });
+        setRun(normalized);
+      } catch {
+        setStartError(
+          "Subtes belum bisa dimulai. Periksa koneksi Anda lalu coba lagi.",
+        );
+      }
+    },
+    [attemptId, startSectionAsync],
+  );
+
+  const resumedRef = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    if (!attempt || attempt.status !== "IN_PROGRESS" || run) return;
+    const open = attempt.sections.find(
+      (s) => s.status === "IN_PROGRESS" || s.status === "STIMULUS_IN_PROGRESS",
+    );
+    if (!open || resumedRef.current.has(open.sectionId)) return;
+    resumedRef.current.add(open.sectionId);
+    void onStart(open.sectionId);
+  }, [attempt, run, onStart]);
+  if (isTryAgain) {
+    if (!resuming) return <></>;
+    return (
+      <>
+        {startError && (
+          <div className="flex items-center justify-between gap-3 text-xs text-error-main">
+            <span>{startError}</span>
+            <Button
+              type="button"
+              onClick={() => onStart(resuming.sectionId)}
+              disabled={starting}
+              className="shrink-0 font-bold hover:underline"
+            >
+              Coba lagi
+            </Button>
+          </div>
+        )}
+      </>
+    );
+  }
+
+  if (!nextSection) return <></>;
+  return (
+    <>
+      {startError && <p className="text-sm text-error-main">{startError}</p>}
+      <Button
+        type="button"
+        onClick={() => onStart(nextSection.sectionId)}
+        disabled={starting}
+        loading={starting}
+        endIcon={<ArrowRight size={16} />}
+      >
+        Mulai Subtes
+      </Button>
+    </>
+  );
+};
+
+export default function Lobby(props: LobbyProps) {
+  const { attemptId, attempt, run, setRun } = props;
+
+  const sections = [...attempt.sections].sort((a, b) => a.order - b.order);
+  const resuming =
+    sections.find(
+      (s) => s.status === "IN_PROGRESS" || s.status === "STIMULUS_IN_PROGRESS",
+    ) ?? null;
+  const nextSection = resuming
+    ? null
+    : (sections.find((s) => s.status === "NOT_STARTED") ?? null);
+  const allDone = sections.every(
+    (s) => s.status === "COMPLETED" || s.status === "EXPIRED",
+  );
+
+  return (
+    <>
       {/* DAFTAR SUBTES */}
       <SectionList
         attempt={attempt}
@@ -311,19 +514,16 @@ export default function Lobby(props: LobbyProps) {
             Subtes ini sedang berjalan. Waktunya tetap dihitung sejak Anda
             memulainya.
           </p>
-          {startError && (
-            <div className="flex items-center justify-between gap-3 text-xs text-error-main">
-              <span>{startError}</span>
-              <Button
-                type="button"
-                onClick={() => onStart(resuming.sectionId)}
-                disabled={starting}
-                className="shrink-0 font-bold hover:underline"
-              >
-                Coba lagi
-              </Button>
-            </div>
-          )}
+
+          <StartButton
+            attemptId={attemptId}
+            attempt={attempt}
+            nextSection={nextSection}
+            resuming={resuming}
+            run={run}
+            setRun={setRun}
+            isTryAgain
+          />
         </div>
       )}
 
@@ -364,45 +564,23 @@ export default function Lobby(props: LobbyProps) {
             </p>
           )}
 
-          {startError && (
-            <p className="text-sm text-error-main">{startError}</p>
-          )}
-
-          <Button
-            type="button"
-            onClick={() => onStart(nextSection.sectionId)}
-            disabled={starting}
-            loading={starting}
-            endIcon={<ArrowRight size={16} />}
-          >
-            Mulai Subtes
-          </Button>
+          <StartButton
+            attemptId={attemptId}
+            attempt={attempt}
+            nextSection={nextSection}
+            resuming={resuming}
+            run={run}
+            setRun={setRun}
+          />
         </div>
       )}
 
       {/* SEMUA SUBTES SELESAI */}
       {!resuming && !nextSection && allDone && (
         <div className="space-y-4 rounded-3xl border border-divider bg-bg-paper p-6 text-center shadow-sm sm:p-8">
-          <h2 className="text-lg font-bold text-text-primary">
-            Semua subtes sudah dikerjakan
-          </h2>
-          <p className="mx-auto max-w-md text-sm leading-relaxed text-text-secondary">
-            Tekan tombol di bawah untuk mengirim jawaban Anda dan menyelesaikan
-            tes.
-          </p>
-          {finishError && (
-            <p className="text-sm text-error-main">{finishError}</p>
-          )}
-          <Button
-            type="button"
-            onClick={onFinish}
-            disabled={finishing}
-            loading={finishing}
-          >
-            {finishing ? "Menyelesaikan..." : "Selesaikan Tes"}
-          </Button>
+          <FinishButton attemptId={attemptId} />
         </div>
       )}
-    </div>
+    </>
   );
 }

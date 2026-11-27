@@ -36,6 +36,7 @@ import { Route as AuthOrganizationAndIndividuBillingIndexRouteImport } from './r
 import { Route as AuthIndividuTestIndexRouteImport } from './routes/_auth/_individu/test/index'
 import { Route as AuthIndividuTestHistoryIndexRouteImport } from './routes/_auth/_individu/test-history/index'
 import { Route as AuthIndividuPortalIndexRouteImport } from './routes/_auth/_individu/portal/index'
+import { Route as AuthExamExamIndexRouteImport } from './routes/_auth/_exam/exam/index'
 import { Route as GuestRegisterInviteTokenIndexRouteImport } from './routes/_guest/register/invite/$token/index'
 import { Route as AuthOrganizationAdminUsersIndexRouteImport } from './routes/_auth/_organization/_admin/users/index'
 import { Route as AuthOrganizationAdminTransactionsIndexRouteImport } from './routes/_auth/_organization/_admin/transactions/index'
@@ -200,6 +201,11 @@ const AuthIndividuPortalIndexRoute = AuthIndividuPortalIndexRouteImport.update({
   path: '/portal/',
   getParentRoute: () => AuthIndividuRoute,
 } as any)
+const AuthExamExamIndexRoute = AuthExamExamIndexRouteImport.update({
+  id: '/exam/',
+  path: '/exam/',
+  getParentRoute: () => AuthExamRoute,
+} as any)
 const GuestRegisterInviteTokenIndexRoute =
   GuestRegisterInviteTokenIndexRouteImport.update({
     id: '/register/invite/$token/',
@@ -331,6 +337,7 @@ export interface FileRoutesByFullPath {
   '/login/': typeof GuestLoginIndexRoute
   '/register/': typeof GuestRegisterIndexRoute
   '/reset-password/': typeof GuestResetPasswordIndexRoute
+  '/exam/': typeof AuthExamExamIndexRoute
   '/portal/': typeof AuthIndividuPortalIndexRoute
   '/test-history/': typeof AuthIndividuTestHistoryIndexRoute
   '/test/': typeof AuthIndividuTestIndexRoute
@@ -372,6 +379,7 @@ export interface FileRoutesByTo {
   '/login': typeof GuestLoginIndexRoute
   '/register': typeof GuestRegisterIndexRoute
   '/reset-password': typeof GuestResetPasswordIndexRoute
+  '/exam': typeof AuthExamExamIndexRoute
   '/portal': typeof AuthIndividuPortalIndexRoute
   '/test-history': typeof AuthIndividuTestHistoryIndexRoute
   '/test': typeof AuthIndividuTestIndexRoute
@@ -421,6 +429,7 @@ export interface FileRoutesById {
   '/_guest/login/': typeof GuestLoginIndexRoute
   '/_guest/register/': typeof GuestRegisterIndexRoute
   '/_guest/reset-password/': typeof GuestResetPasswordIndexRoute
+  '/_auth/_exam/exam/': typeof AuthExamExamIndexRoute
   '/_auth/_individu/portal/': typeof AuthIndividuPortalIndexRoute
   '/_auth/_individu/test-history/': typeof AuthIndividuTestHistoryIndexRoute
   '/_auth/_individu/test/': typeof AuthIndividuTestIndexRoute
@@ -466,6 +475,7 @@ export interface FileRouteTypes {
     | '/login/'
     | '/register/'
     | '/reset-password/'
+    | '/exam/'
     | '/portal/'
     | '/test-history/'
     | '/test/'
@@ -507,6 +517,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
+    | '/exam'
     | '/portal'
     | '/test-history'
     | '/test'
@@ -555,6 +566,7 @@ export interface FileRouteTypes {
     | '/_guest/login/'
     | '/_guest/register/'
     | '/_guest/reset-password/'
+    | '/_auth/_exam/exam/'
     | '/_auth/_individu/portal/'
     | '/_auth/_individu/test-history/'
     | '/_auth/_individu/test/'
@@ -786,6 +798,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndividuPortalIndexRouteImport
       parentRoute: typeof AuthIndividuRoute
     }
+    '/_auth/_exam/exam/': {
+      id: '/_auth/_exam/exam/'
+      path: '/exam'
+      fullPath: '/exam/'
+      preLoaderRoute: typeof AuthExamExamIndexRouteImport
+      parentRoute: typeof AuthExamRoute
+    }
     '/_guest/register/invite/$token/': {
       id: '/_guest/register/invite/$token/'
       path: '/register/invite/$token'
@@ -930,10 +949,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthExamRouteChildren {
+  AuthExamExamIndexRoute: typeof AuthExamExamIndexRoute
   AuthExamExamTestIdIndexRoute: typeof AuthExamExamTestIdIndexRoute
 }
 
 const AuthExamRouteChildren: AuthExamRouteChildren = {
+  AuthExamExamIndexRoute: AuthExamExamIndexRoute,
   AuthExamExamTestIdIndexRoute: AuthExamExamTestIdIndexRoute,
 }
 

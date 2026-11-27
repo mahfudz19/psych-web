@@ -1,10 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  useGetAttempt,
-  useStartOrResumeAttempt,
-  useStartSection,
-} from "../../-api/exam.api";
+import { useState } from "react";
+import { useGetAttempt, useStartOrResumeAttempt } from "../../-api/exam.api";
 import {
   unwrap,
   type AttemptState,
@@ -20,30 +16,6 @@ export const Route = createFileRoute("/_auth/_exam/exam/$testId/")({
   component: ExamSessionPage,
 });
 
-export function normalizeRun(data: SectionRun): SectionRun {
-  return {
-    section: {
-      ...data.section,
-      instructions: data.section.instructions ?? null,
-      examples: data.section.examples ?? [],
-      showExamplesFirst: data.section.showExamplesFirst ?? true,
-      deadlineAt: data.section.deadlineAt ?? null,
-      serverTime: data.section.serverTime ?? null,
-    },
-    items: data.items.map((it) => ({
-      ...it,
-      content: {
-        text: it.content?.text ?? null,
-        images: it.content?.images ?? [],
-        audioUrl: it.content?.audioUrl ?? null,
-      },
-      options: it.options ?? [],
-      constraints: it.constraints ?? {},
-    })),
-    answers: data.answers ?? [],
-  };
-}
-
 function ExamSessionPage() {
   const { testId } = Route.useParams();
 
@@ -56,43 +28,6 @@ function ExamSessionPage() {
   const { refetch: refetchAttempt } = attemptQuery;
 
   const [run, setRun] = useState<SectionRun | null>(null);
-  const [startError, setStartError] = useState<string | null>(null);
-  const { mutateAsync: startSectionAsync, isPending: starting } =
-    useStartSection();
-
-  const beginSection = useCallback(
-    async (sectionId: string) => {
-      if (!attemptId) return;
-      setStartError(null);
-      try {
-        const res = await startSectionAsync({ attemptId, sectionId });
-        const data = unwrap<SectionRun>(res);
-        if (!data?.section || !Array.isArray(data.items)) {
-          throw new Error("Bentuk respons subtes tidak dikenali");
-        }
-        setRun(normalizeRun(data));
-      } catch {
-        setStartError(
-          "Subtes belum bisa dimulai. Periksa koneksi Anda lalu coba lagi.",
-        );
-      }
-    },
-    [attemptId, startSectionAsync],
-  );
-
-  const resumedRef = useRef<Set<string>>(new Set());
-  useEffect(() => {
-    if (!attempt || attempt.status !== "IN_PROGRESS" || run) return;
-    const open = attempt.sections.find((s) => s.status === "IN_PROGRESS");
-    if (!open || resumedRef.current.has(open.sectionId)) return;
-    resumedRef.current.add(open.sectionId);
-    void beginSection(open.sectionId);
-  }, [attempt, run, beginSection]);
-
-  const handleSectionFinished = useCallback(() => {
-    setRun(null);
-    void refetchAttempt();
-  }, [refetchAttempt]);
 
   if (attemptQuery.isLoading) return <LoadingCard />;
 
@@ -116,30 +51,15 @@ function ExamSessionPage() {
         attemptId={attempt.id}
         testName={attempt.testName}
         run={run}
-        onFinished={handleSectionFinished}
+        onFinished={() => {
+          setRun(null);
+          void refetchAttempt();
+        }}
       />
     );
   }
 
-  const sections = [...attempt.sections].sort((a, b) => a.order - b.order);
-  const resuming = sections.find((s) => s.status === "IN_PROGRESS") ?? null;
-  const nextSection = resuming
-    ? null
-    : (sections.find((s) => s.status === "NOT_STARTED") ?? null);
-  const allDone = sections.every(
-    (s) => s.status === "COMPLETED" || s.status === "EXPIRED",
-  );
-
   return (
-    <Lobby
-      attemptId={attemptId}
-      attempt={attempt}
-      nextSection={nextSection}
-      allDone={allDone}
-      resuming={resuming}
-      starting={starting}
-      startError={startError}
-      onStart={(sectionId) => void beginSection(sectionId)}
-    />
+    <Lobby attemptId={attemptId} attempt={attempt} run={run} setRun={setRun} />
   );
 }

@@ -172,6 +172,7 @@ function SectionManagement({
                 <Dialog
                   dismissible={false}
                   maxWidth="4xl"
+                  scroll="paper"
                   className="text-left"
                   trigger={(openDialog) => (
                     <IconButton

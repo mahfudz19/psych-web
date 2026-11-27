@@ -78,7 +78,7 @@ export interface AttemptResponse {
     answeredCount: number;
     timeLimitSeconds: number | null;
     navigationPolicy: string;
-    status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "EXPIRED";
+    status: "NOT_STARTED" | "STIMULUS_IN_PROGRESS" | "IN_PROGRESS" | "COMPLETED" | "EXPIRED";
     startedAt: string | null;
     deadlineAt: string | null;
     completedAt: string | null;
@@ -86,6 +86,11 @@ export interface AttemptResponse {
 }
 
 export interface SectionStartResponse {
+  stimulusPhase?: {
+    displaySeconds: number;
+    content: any;
+  } | null;
+  stimulusDeadlineAt?: string | null;
   section: {
     id: string;
     code: string;
@@ -99,6 +104,7 @@ export interface SectionStartResponse {
     startedAt: string | null;
     deadlineAt: string | null;
     serverTime: string;
+    stimulusDeadlineAt?: string | null;
   };
   items: Array<{
     id: string;

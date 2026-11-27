@@ -1,6 +1,8 @@
 import type {
   NavigationPolicy,
+  SectionConfig,
   SectionStatus,
+  StimulusPhase,
 } from "../$testId/-components/SectionForm";
 import type { BaseListParams } from "../../../../../../components/reusebale-components/DataTable";
 
@@ -108,14 +110,27 @@ export interface TestOption {
   text: string;
 }
 
-export interface TestExample {
-  text: string;
-  options?: TestOption[];
-  correctAnswer: string;
-  explanation?: string;
+export interface TestExampleImage {
+  label: string;
+  assetId?: string;
+  url?: string;
+}
 
-  answer?: string;
-  content?: { text?: string };
+export interface TestExampleOption {
+  key: string;
+  label: string;
+}
+
+export interface TestExampleContent {
+  text?: string;
+  images?: TestExampleImage[];
+}
+
+export interface TestExample {
+  content: TestExampleContent;
+  options?: TestExampleOption[];
+  answer: string | string[];
+  explanation?: string;
 }
 
 // --- 2. TEST SECTION ---
@@ -132,8 +147,8 @@ export interface TestSection {
   itemCount?: number;
   navigationPolicy?: string;
   defaultItemType?: string;
-  stimulusPhase?: Record<string, unknown> | null;
-  config?: Record<string, any>;
+  stimulusPhase?: StimulusPhase | null;
+  config?: SectionConfig;
   status?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -145,13 +160,13 @@ export type TestSectionCreatePayload = {
   order: number;
   name: string;
   instructions: string;
-  examples: unknown[];
+  examples: Array<TestExample> | null;
   showExamplesFirst: boolean;
   timeLimitSeconds: number | null;
   navigationPolicy: NavigationPolicy;
   defaultItemType: string;
-  stimulusPhase: Record<string, unknown> | null;
-  config: Record<string, unknown>;
+  stimulusPhase: StimulusPhase | null;
+  config: SectionConfig;
   status: SectionStatus;
 };
 

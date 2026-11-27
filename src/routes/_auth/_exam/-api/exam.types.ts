@@ -1,3 +1,9 @@
+import type {
+  SectionConfig,
+  StimulusPhase,
+} from "../../_organization/_admin/test-management/$testId/-components/SectionForm";
+import type { TestExample } from "../../_organization/_admin/test-management/-api/test-definitions.type";
+
 export interface ExamItemOption {
   key: string;
   label: string | null;
@@ -31,7 +37,11 @@ export type AnswerResponse =
 export type AnswerMap = Record<string, AnswerResponse | null>;
 
 export type SectionStatus =
-  "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "EXPIRED";
+  | "NOT_STARTED"
+  | "STIMULUS_IN_PROGRESS"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "EXPIRED";
 export type NavigationPolicy = "FREE" | "FORWARD_ONLY";
 
 export interface AttemptSection {
@@ -69,7 +79,11 @@ export interface SectionInfo {
   code: string;
   name: string;
   instructions: string | null;
-  examples: unknown[];
+  examples: TestExample[];
+  stimulusPhase: StimulusPhase | null;
+  stimulusStartedAt: string | null;
+  stimulusDeadlineAt: string | null;
+  config: SectionConfig;
   showExamplesFirst: boolean;
   timeLimitSeconds: number | null;
   navigationPolicy: NavigationPolicy;

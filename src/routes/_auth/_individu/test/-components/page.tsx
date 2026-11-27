@@ -1,8 +1,11 @@
 import { Link } from "@tanstack/react-router";
+import { RotateCcw } from "lucide-react";
+import IconButton from "../../../../../components/ui/IconButton";
 import { useGetCatalog } from "../../portal/-api/tests.query";
 import type { TestCatalog } from "../../portal/-api/tests.type";
 
-const Header = () => {
+const Header = (props: { isLoading: boolean; refetch: () => void }) => {
+  const { isLoading, refetch } = props;
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-divider">
       <div>
@@ -14,12 +17,24 @@ const Header = () => {
           wajib dari institusi Anda.
         </p>
       </div>
-      <Link
-        to="/portal"
-        className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold text-text-secondary bg-divider/20 hover:bg-divider/40 transition-colors w-fit"
-      >
-        &larr; Kembali ke Portal
-      </Link>
+      <div className="flex items-center">
+        <Link
+          to="/portal"
+          className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold text-text-secondary bg-divider/20 hover:bg-divider/40 transition-colors w-fit"
+        >
+          &larr; Kembali ke Portal
+        </Link>
+        <IconButton
+          size="sm"
+          onClick={refetch}
+          disabled={isLoading}
+          loading={isLoading}
+          variant="text"
+          color="neutral"
+        >
+          <RotateCcw size={18} />
+        </IconButton>
+      </div>
     </div>
   );
 };
@@ -46,8 +61,8 @@ const Skeleton = ({ isLoading }: { isLoading: boolean }) => {
   ));
 };
 
-const ErrorPage = (props: { isError: boolean; refetch: () => void }) => {
-  const { isError, refetch } = props;
+const ErrorPage = (props: { isError: boolean }) => {
+  const { isError } = props;
   if (!isError) return <></>;
 
   return (
@@ -64,19 +79,12 @@ const ErrorPage = (props: { isError: boolean; refetch: () => void }) => {
           koneksi internet Anda dan coba lagi.
         </p>
       </div>
-      <button
-        onClick={refetch}
-        className="px-5 py-2.5 rounded-xl text-xs font-bold bg-primary-main text-primary-contrast hover:opacity-90 transition-all shadow-sm"
-      >
-        Coba Lagi
-      </button>
     </div>
   );
 };
 
-const List = (props: { isError: boolean; availableTests: TestCatalog[] }) => {
-  const { availableTests, isError } = props;
-  if (isError) return <></>;
+const List = (props: { availableTests: TestCatalog[] }) => {
+  const { availableTests } = props;
 
   if (availableTests.length === 0) {
     return (
@@ -148,12 +156,12 @@ export default function TestCatalogPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
-      <Header />
+      <Header isLoading={isLoading} refetch={refetch} />
 
       <div className="grid grid-cols-1 gap-4">
         <Skeleton isLoading={isLoading} />
-        <ErrorPage isError={!isLoading && isError} refetch={refetch} />
-        <List isError={isLoading && isError} availableTests={availableTests} />
+        <ErrorPage isError={isError} />
+        <List availableTests={availableTests} />
       </div>
     </div>
   );
